@@ -36,16 +36,4 @@ h1{
 
 button{
   width:70px;
-  height:60px;
-  margin:3px;
-  border:none;
-  border-radius:12px;
-  font-size:22px;
-  cursor:pointer;
-  background:#333;
-  color:white;
-}
-
-button:hover{
-  background:#555;
 }
