@@ -83,3 +83,10 @@ button:hover{
 .equal{
   background:#007bff;
 }
+
+
+.subtitle{
+  color:#bbbbbb;
+  text-align:center;
+  margin-bottom:20px;
+}
