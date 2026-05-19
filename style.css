@@ -80,10 +80,12 @@ button{
   height:auto;
   display:block;
   margin:15px auto 0 auto;
-  background:white;
+
+  background:rgba(255,255,255,0.2);
   color:#222;
+
   transition:0.3s;
-  box-shadow:0 0 10px rgba(0,0,0,0.08);
+  box-shadow:0 0 10px rgba(0,0,0,0.03);
 }
 
 button:hover{
@@ -105,14 +107,14 @@ button:hover{
 }
 
 .card{
-  background:rgba(255,255,255,0.6);
+  background:rgba(255,255,255,0.2);
   padding:14px;
   border-radius:18px;
   margin:10px auto;
   color:#222;
   text-align:center;
   transition:0.3s;
-  box-shadow:0 0 10px rgba(0,0,0,0.05);
+  box-shadow:0 0 10px rgba(0,0,0,0.03);
 
   width:220px;
 }
@@ -163,10 +165,10 @@ button:hover{
 
 .history{
   width:220px;
-  background:white;
+  background:rgba(255,255,255,0.2);
   padding:20px;
   border-radius:20px;
-  box-shadow:0 0 12px rgba(0,0,0,0.08);
+  box-shadow:0 0 12px rgba(0,0,0,0.03);
 }
 
 .history h3{
@@ -219,14 +221,13 @@ button:hover{
 .dropdown-content{
   display:none;
   position:absolute;
-  top:25px;
-  left:0;
-  background:white;
+  background:rgba(255,255,255,0.2);
   min-width:220px;
   border-radius:15px;
-  box-shadow:0 0 15px rgba(0,0,0,0.15);
+  box-shadow:0 0 15px rgba(0,0,0,0.03);
   overflow:hidden;
-  z-index:9999;
+  top:30px;
+  backdrop-filter:blur(10px);
 }
 
 .dropdown-content a{
