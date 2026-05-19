@@ -124,3 +124,11 @@ button:hover{
 .card p{
   color:#bbbbbb;
 }
+.card{
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:scale(1.03);
+  box-shadow:0 0 20px rgba(0,123,255,0.4);
+}
