@@ -27,7 +27,7 @@ nav a:hover{
   align-items:flex-start;
   min-height:100vh;
   margin:0;
-  padding-top:20px;
+  padding-top:80px;
 }
 
 .calculator{
@@ -186,4 +186,15 @@ button:hover{
   border-bottom:1px solid #eee;
   font-size:14px;
   color:#555;
+}
+
+@media(max-width:700px){
+  .calculator-container{
+    flex-direction:column;
+    align-items:center;
+  }
+
+  .history{
+    width:280px;
+  }
 }
