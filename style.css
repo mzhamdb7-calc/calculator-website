@@ -65,13 +65,17 @@ body{
 }
 
 button{
-  height:60px;
-  border:none;
-  border-radius:12px;
-  font-size:22px;
-  cursor:pointer;
   background:#e0e0e0;
   color:#222;
+  border:none;
+  border-radius:50px;
+  font-size:16px;
+  cursor:pointer;
+  padding:10px 20px;
+  width:auto;
+  height:auto;
+  display:block;
+  margin:15px auto 0 auto;
 }
 
 button:hover{
