@@ -92,8 +92,11 @@ nav::before{
 /* MAIN CALCULATOR */
 
 .calculator{
-  width:760px;
-
+  width:fit-content;
+  min-width:420px;
+  max-width:760px;
+  margin:auto;
+  
   padding:45px;
 
   text-align:center;
