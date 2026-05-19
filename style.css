@@ -19,7 +19,7 @@ nav a:hover{
 }
 
 
-  body{
+ body{
   font-family:Arial,sans-serif;
   background:#e5e5e5;
   display:flex;
@@ -27,17 +27,17 @@ nav a:hover{
   align-items:flex-start;
   min-height:100vh;
   margin:0;
-  padding-top:60px;
+  padding-top:20px;
 }
-
 
 .calculator{
   background:white;
-  padding:25px;
+  padding:20px;
   border-radius:20px;
   width:280px;
   box-shadow:0 0 20px rgba(0,0,0,0.1);
   margin-bottom:40px;
+  margin-top:0;
 }
 
 h1{
