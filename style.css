@@ -11,24 +11,30 @@ body{
 nav{
   position:fixed;
   top:25px;
-  right:25px;
   left:50%;
   transform:translateX(-50%);
   z-index:1000;
 
   display:flex;
-  flex-direction:column;
   align-items:center;
-  gap:14px;
+  justify-content:center;
+  gap:30px;
+
+  flex-wrap:nowrap;
+  white-space:nowrap;
 
   background:linear-gradient(145deg,#b7bec8,#9ea7b3);
 
-  padding:22px;
-  border-radius:35px;
+  padding:18px 40px;
+
+  border-radius:60px;
 
   box-shadow:
     10px 10px 25px rgba(120,130,145,0.45),
     -6px -6px 18px rgba(255,255,255,0.7);
+
+    backdrop-filter:blur(12px);
+    
 }
 
 nav a{
@@ -37,6 +43,11 @@ nav a{
   margin:0 18px;
   font-size:17px;
   font-weight:600;
+}
+
+nav a,
+.dropbtn{
+  flex-shrink:0;
 }
 
 nav a:hover{
