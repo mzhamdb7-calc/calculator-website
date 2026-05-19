@@ -1,3 +1,37 @@
+nav{
+  position:absolute;
+  top:20px;
+}
+
+nav a{
+  color:white;
+  text-decoration:none;
+  margin:10px;
+  font-size:18px;
+}
+
+nav a:hover{
+  color:#007bff;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 body{
   font-family:Arial,sans-serif;
   background:#121212;
