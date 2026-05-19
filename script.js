@@ -54,5 +54,10 @@ function saveHistory(expression, result){
 
 function clearHistory(){
   history = [];
-  document.getElementById("historyList").innerHTML = "";
+
+  const historyList = document.getElementById("historyList");
+
+  if(historyList){
+    historyList.innerHTML = "";
+  }
 }

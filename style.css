@@ -595,16 +595,19 @@ html{
 }
 
 nav.scrolled{
+  position:fixed;
+
   top:25px;
   right:25px;
   left:auto;
+
   transform:none;
 
-  display:flex;
   flex-direction:column;
-  align-items:center;
-  gap:14px;
+
+  width:auto;
 
   padding:22px;
+
   border-radius:35px;
 }
