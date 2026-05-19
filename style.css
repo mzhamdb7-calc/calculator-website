@@ -650,3 +650,50 @@ h1{
 .subtitle{
   font-size:17px;
 }
+
+.calculator-container{
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  gap:10px;
+
+  width:fit-content;
+  margin:0 auto;
+}
+
+.calculator{
+  width:520px;
+  padding:28px;
+}
+
+.history{
+  width:170px;
+  padding:18px;
+}
+
+.buttons{
+  display:grid;
+  grid-template-columns:repeat(4,60px);
+  gap:14px;
+  justify-content:center;
+}
+
+button{
+  width:55px;
+  height:55px;
+  font-size:18px;
+}
+
+#display{
+  width:90%;
+  height:65px;
+  font-size:28px;
+}
+
+h1{
+  font-size:42px;
+}
+
+.subtitle{
+  font-size:16px;
+}
