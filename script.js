@@ -85,3 +85,36 @@ document.addEventListener("click", function(event){
   }
 
 });
+
+function addFunction(func){
+  const display = document.getElementById("display");
+
+  if(func === "sin"){
+    display.value += "Math.sin(";
+  }
+
+  if(func === "cos"){
+    display.value += "Math.cos(";
+  }
+
+  if(func === "tan"){
+    display.value += "Math.tan(";
+  }
+
+  if(func === "log"){
+    display.value += "Math.log10(";
+  }
+
+  if(func === "ln"){
+    display.value += "Math.log(";
+  }
+
+  if(func === "sqrt"){
+    display.value += "Math.sqrt(";
+  }
+}
+
+function addPower(){
+  const display = document.getElementById("display");
+  display.value += "**";
+}

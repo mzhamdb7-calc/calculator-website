@@ -708,3 +708,18 @@ h1{
 .subtitle{
   font-size:16px;
 }
+
+.scientific-grid{
+  grid-template-columns:repeat(5,60px);
+  gap:14px;
+}
+
+.scientific-grid button{
+  width:55px;
+  height:55px;
+  font-size:15px;
+}
+
+.scientific-grid .equal{
+  background:linear-gradient(145deg,#c7ced8,#aeb7c2);
+}
