@@ -1,19 +1,30 @@
+body{
+  font-family:Arial,sans-serif;
+  background:#f7f8fa;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  min-height:100vh;
+  margin:0;
+  padding:110px 20px 40px;
+}
+
 nav{
-  background:rgba(255,255,255,0.55);
-backdrop-filter:blur(10px);
-padding:14px 24px;
-border-radius:50px;
   position:fixed;
-  top:20px;
+  top:25px;
   left:50%;
   transform:translateX(-50%);
   z-index:1000;
+  background:linear-gradient(145deg,#ffffff,#e9edf3);
+  padding:16px 35px;
+  border-radius:50px;
+  box-shadow:0 8px 20px rgba(120,130,150,0.25);
 }
 
 nav a{
-  color:#222;
+  color:#111;
   text-decoration:none;
-  margin:10px;
+  margin:0 18px;
   font-size:16px;
   font-weight:600;
 }
@@ -22,174 +33,85 @@ nav a:hover{
   color:#007bff;
 }
 
-
- body{
-  font-family:Arial,sans-serif;
-  background:#ececec;
+.calculator-container{
   display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
-  margin:0;
-  padding:20px;
+  gap:35px;
+  align-items:flex-start;
+}
+
+.calculator,
+.history{
+  background:linear-gradient(145deg,#ffffff,#e8ecf3);
+  border-radius:55px;
+  box-shadow:
+    12px 12px 30px rgba(150,160,180,0.25),
+    -12px -12px 30px rgba(255,255,255,0.9);
+  text-align:center;
 }
 
 .calculator{
-  
-  backdrop-filter:blur(12px);
-background:rgba(255,255,255,0.45);
-  width:95%;
-  min-height:85vh;
+  width:720px;
+  min-height:650px;
+  padding:45px;
+}
 
-  padding:40px 30px;
-
-  border-radius:60px;
-
-  box-sizing:border-box;
-  text-align:center;
-
-  margin:auto;
-
-  box-shadow:0 0 25px rgba(0,0,0,0.03);
+.history{
+  width:230px;
+  padding:30px;
 }
 
 h1{
-  font-size:32px;
-  color:#222;
-  text-align:center;
+  font-size:40px;
+  color:#111;
 }
 
 .subtitle{
   color:#666;
-  text-align:center;
-  margin-bottom:20px;
+  font-size:18px;
 }
 
 #display{
-  width:100%;
-  height:60px;
-  font-size:28px;
-  margin-bottom:15px;
+  width:90%;
+  height:70px;
   border:none;
-  border-radius:12px;
+  border-radius:18px;
+  background:#eef1f6;
+  box-shadow:inset 4px 4px 10px rgba(150,160,180,0.25),
+             inset -4px -4px 10px rgba(255,255,255,0.9);
+  font-size:28px;
   text-align:right;
-  padding-right:10px;
-  background:rgba(255,255,255,0.5);
-  color:#222;
+  padding:0 20px;
   box-sizing:border-box;
+  margin:25px auto 35px;
+  display:block;
 }
 
 .buttons{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
+  grid-template-columns:repeat(4,85px);
+  gap:25px;
+  justify-content:center;
 }
 
 button{
+  width:70px;
+  height:70px;
   border:none;
-  border-radius:50px;
-  font-size:16px;
+  border-radius:50%;
+  background:linear-gradient(145deg,#ffffff,#e5e9f0);
+  box-shadow:
+    6px 6px 14px rgba(150,160,180,0.28),
+    -6px -6px 14px rgba(255,255,255,0.95);
+  font-size:24px;
   cursor:pointer;
-  padding:12px 20px;
-  width:auto;
-  height:auto;
-  display:block;
-  margin:15px auto 0 auto;
-background:rgba(255,255,255,0.4);
-  
-  color:#222;
-
-  transition:0.3s;
-  box-shadow:0 0 10px rgba(0,0,0,0.03);
-}
-
-button:hover{
-  background:rgba(255,255,255,0.35);
-  color:#222;
-}
-
-.zero{
-  grid-column:span 2;
-}
-
-.equal{
-  background:rgba(255,255,255,0.2);
-  color:#222;
-}
-
-.card-link{
-  text-decoration:none;
-}
-
-.card{
-  background:rgba(255,255,255,0.45);
-  
-  padding:14px;
-  border-radius:18px;
-  margin:10px auto;
-  color:#222;
-  text-align:center;
-  transition:0.3s;
-  box-shadow:0 0 10px rgba(0,0,0,0.03);
-
-  width:220px;
-}
-
-.card p{
-  color:#777;
-  font-size:12px;
-  text-transform:lowercase;
-}
-
-.card:hover{
-   transform:translateY(-3px);
-  background:rgba(255,255,255,0.35);
-}
-
-@media(max-width:500px){
-
-  .calculator{
-    width:90%;
-    padding:20px;
-  }
-
-  nav a{
-    font-size:16px;
-    margin:8px;
-  }
-
-  button{
-    font-size:15px;
-  }
-
-  #display{
-    font-size:24px;
-  }
-
-}
-.card h2{
-  font-size:22px;
-  margin-bottom:2px;
   color:#111;
 }
 
-.calculator-container{
-  display:flex;
-  gap:20px;
-  align-items:flex-start;
-}
-
-.history{
-  width:220px;
-  background:rgba(255,255,255,0.2);
-  padding:20px;
-  border-radius:20px;
-  box-shadow:0 0 12px rgba(0,0,0,0.03);
-}
-
-.history h3{
-  margin-top:0;
-  color:#222;
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:
+    4px 4px 10px rgba(150,160,180,0.3),
+    -4px -4px 10px rgba(255,255,255,1);
 }
 
 .history ul{
@@ -200,21 +122,32 @@ button:hover{
 }
 
 .history li{
-  padding:8px 0;
-  border-bottom:1px solid #eee;
-  font-size:14px;
+  padding:8px;
   color:#555;
 }
 
-@media(max-width:700px){
-  .calculator-container{
-    flex-direction:column;
-    align-items:center;
-  }
+.card-link{
+  text-decoration:none;
+}
 
-  .history{
-    width:280px;
-  }
+.card{
+  background:linear-gradient(145deg,#ffffff,#e8ecf3);
+  width:220px;
+  margin:15px auto;
+  padding:18px;
+  border-radius:30px;
+  color:#111;
+  box-shadow:6px 6px 16px rgba(150,160,180,0.2);
+}
+
+.card h2{
+  font-size:24px;
+  margin-bottom:3px;
+}
+
+.card p{
+  color:#666;
+  font-size:13px;
 }
 
 .dropdown{
@@ -223,68 +156,55 @@ button:hover{
 }
 
 .dropbtn{
-  background:transparent;
-  border:none;
+  width:auto;
+  height:auto;
+  border-radius:0;
+  background:none;
+  box-shadow:none;
   font-size:16px;
   font-weight:600;
-  color:#222;
-  cursor:pointer;
-  box-shadow:none;
-  padding:0;
-  margin:0 10px;
+  margin:0 18px;
 }
 
 .dropdown-content{
   display:none;
   position:absolute;
-  background:rgba(255,255,255,0.2);
+  top:35px;
+  background:white;
   min-width:220px;
-  border-radius:15px;
-  box-shadow:0 0 15px rgba(0,0,0,0.03);
+  border-radius:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.12);
   overflow:hidden;
-  top:30px;
-  backdrop-filter:blur(10px);
 }
 
 .dropdown-content a{
-  color:#222;
-  padding:12px 16px;
-  text-decoration:none;
   display:block;
-  font-size:14px;
   margin:0;
+  padding:14px;
+  font-size:14px;
 }
 
 .dropdown:hover .dropdown-content{
   display:block;
 }
 
-input{
-  display:block;
-  margin:0 auto;
-  text-align:center;
-}
+@media(max-width:800px){
+  .calculator-container{
+    flex-direction:column;
+    align-items:center;
+  }
 
-.buttons{
-  
-  display:grid;
-  grid-template-columns:repeat(4,80px);
-  justify-content:center;
-  gap:10px;
-}
+  .calculator{
+    width:90%;
+  }
 
-.history{
-  text-align:center;
-}
+  .buttons{
+    grid-template-columns:repeat(4,65px);
+    gap:15px;
+  }
 
-.history ul{
-  text-align:center;
-}
-
-.dropdown-content a{
-  text-align:center;
-}
-
-.home-page{
-  background:transparent;
+  button{
+    width:60px;
+    height:60px;
+  }
 }
