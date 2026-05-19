@@ -205,7 +205,7 @@ button:hover{
 }
 
 .dropbtn{
-  background:none;
+  background:transparent;
   border:none;
   font-size:16px;
   font-weight:600;
@@ -216,20 +216,17 @@ button:hover{
   margin:0 10px;
 }
 
-.dropbtn:hover{
-  background:none;
-  color:#007bff;
-}
-
 .dropdown-content{
   display:none;
   position:absolute;
+  top:25px;
+  left:0;
   background:white;
   min-width:220px;
   border-radius:15px;
-  box-shadow:0 0 15px rgba(0,0,0,0.1);
+  box-shadow:0 0 15px rgba(0,0,0,0.15);
   overflow:hidden;
-  top:30px;
+  z-index:9999;
 }
 
 .dropdown-content a{
@@ -238,11 +235,7 @@ button:hover{
   text-decoration:none;
   display:block;
   font-size:14px;
-}
-
-.dropdown-content a:hover{
-  background:#f2f2f2;
-  color:#007bff;
+  margin:0;
 }
 
 .dropdown:hover .dropdown-content{
