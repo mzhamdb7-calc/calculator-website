@@ -1,6 +1,6 @@
 body{
   font-family:Arial,sans-serif;
-  background:#121212;;
+  background:#121212;
   display:flex;
   justify-content:center;
   align-items:center;
@@ -32,12 +32,17 @@ h1{
   padding-right:10px;
   background:#2c2c2c;
   color:white;
+  box-sizing:border-box;
+}
+
+.buttons{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
 }
 
 button{
-  width:70px;
   height:60px;
-  margin:3px;
   border:none;
   border-radius:12px;
   font-size:22px;
@@ -48,4 +53,12 @@ button{
 
 button:hover{
   background:#555;
+}
+
+.zero{
+  grid-column:span 2;
+}
+
+.equal{
+  background:#007bff;
 }
