@@ -27,6 +27,7 @@ function calculate(){
     let result = eval(expression);
 
     display.value = result;
+
     saveHistory(expression, result);
   }catch{
     display.value = "Error";
@@ -36,25 +37,22 @@ function calculate(){
 let history = [];
 
 function saveHistory(expression, result){
+  const historyList = document.getElementById("historyList");
+
+  if(!historyList) return;
+
   history.push(expression + " = " + result);
-  updateHistory();
-}
 
-function updateHistory(){
-  let list = document.getElementById("historyList");
-
-  if(!list) return;
-
-  list.innerHTML = "";
+  historyList.innerHTML = "";
 
   history.slice().reverse().forEach(item => {
-    let li = document.createElement("li");
+    const li = document.createElement("li");
     li.textContent = item;
-    list.appendChild(li);
+    historyList.appendChild(li);
   });
 }
 
 function clearHistory(){
   history = [];
-  updateHistory();
+  document.getElementById("historyList").innerHTML = "";
 }
