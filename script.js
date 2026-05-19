@@ -20,47 +20,41 @@ function removeLast(){
 }
 
 function calculate(){
-  let expression = display.value;
+  const display = document.getElementById("display");
 
-let result = eval(expression);
+  try{
+    let expression = display.value;
+    let result = eval(expression);
 
-display.value = result;
-
-saveHistory(expression,result);
+    display.value = result;
+    saveHistory(expression, result);
+  }catch{
+    display.value = "Error";
+  }
 }
 
 let history = [];
 
-function saveHistory(expression,result){
-
+function saveHistory(expression, result){
   history.push(expression + " = " + result);
-
   updateHistory();
-
 }
 
 function updateHistory(){
-
   let list = document.getElementById("historyList");
+
+  if(!list) return;
 
   list.innerHTML = "";
 
   history.slice().reverse().forEach(item => {
-
     let li = document.createElement("li");
-
     li.textContent = item;
-
     list.appendChild(li);
-
   });
-
 }
 
 function clearHistory(){
-
   history = [];
-
   updateHistory();
-
 }
