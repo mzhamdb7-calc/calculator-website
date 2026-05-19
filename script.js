@@ -24,7 +24,7 @@ function calculate(){
 
   try{
     let expression = display.value;
-    let result = eval(expression);
+    let result = Function('"use strict"; return (' + expression + ')')();
 
     display.value = result;
 
@@ -118,20 +118,24 @@ function addPower(){
   const display = document.getElementById("display");
   display.value += "**";
 }
-
 window.addEventListener("scroll", function(){
 
   const scrollBtn = document.getElementById("scrollTopBtn");
 
-  if(window.scrollY > 200){
+  if(!scrollBtn) return;
 
+  if(window.scrollY > 200){
     scrollBtn.style.opacity = "1";
     scrollBtn.style.pointerEvents = "auto";
-
   }else{
-
     scrollBtn.style.opacity = "0";
     scrollBtn.style.pointerEvents = "none";
   }
 
 });
+function scrollToTop(){
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
