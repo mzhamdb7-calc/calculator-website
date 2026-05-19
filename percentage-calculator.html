@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Percentage Calculator</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Free percentage calculator to calculate percentages quickly online.">
+</head>
+<body>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="basic-calculator.html">Basic Calculator</a>
+  <a href="bmi-calculator.html">BMI Calculator</a>
+  <a href="age-calculator.html">Age Calculator</a>
+</nav>
+
+<div class="calculator">
+  <h1>Percentage Calculator</h1>
+  <p class="subtitle">Calculate percentage values quickly.</p>
+
+  <input type="number" id="percent" placeholder="Percentage %">
+  <br><br>
+
+  <input type="number" id="number" placeholder="Of number">
+  <br><br>
+
+  <button onclick="calculatePercentage()">Calculate</button>
+
+  <h2 id="result"></h2>
+</div>
+
+<script>
+function calculatePercentage(){
+  let percent = document.getElementById("percent").value;
+  let number = document.getElementById("number").value;
+  let result = (percent / 100) * number;
+
+  document.getElementById("result").innerText =
+  percent + "% of " + number + " is " + result;
+}
+</script>
+
+</body>
+</html>
