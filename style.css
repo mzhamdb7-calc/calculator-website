@@ -32,17 +32,12 @@ nav a:hover{
 
 .calculator{
   background:white;
-  padding:20px;
-  border-radius:20px;
-  width:90%;
-  max-width:900px;
-  box-shadow:0 0 20px rgba(0,0,0,0.1);
-  margin-bottom:40px;
-  margin-top:0;
-
+  width:100%;
+  min-height:100vh;
+  padding:40px 20px;
+  box-sizing:border-box;
   text-align:center;
 }
-
 h1{
   font-size:32px;
   color:#222;
@@ -110,25 +105,27 @@ button:hover{
 }
 
 .card{
-  background:white;
-  padding:20px;
+  background:rgba(255,255,255,0.6);
+  padding:14px;
   border-radius:18px;
-  margin-bottom:20px;
+  margin:10px auto;
   color:#222;
   text-align:center;
   transition:0.3s;
-  box-shadow:0 0 12px rgba(0,0,0,0.08);
+  box-shadow:0 0 10px rgba(0,0,0,0.05);
+
+  width:220px;
 }
 
 .card p{
   color:#777;
-  font-size:14px;
+  font-size:12px;
   text-transform:lowercase;
 }
 
 .card:hover{
-  transform:translateY(-5px);
-  box-shadow:0 0 18px rgba(0,123,255,0.15);
+  transform:translateY(-3px);
+  background:rgba(255,255,255,0.9);
 }
 
 @media(max-width:500px){
@@ -153,8 +150,8 @@ button:hover{
 
 }
 .card h2{
-  font-size:28px;
-  margin-bottom:5px;
+  font-size:22px;
+  margin-bottom:2px;
   color:#111;
 }
 
