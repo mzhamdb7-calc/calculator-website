@@ -90,3 +90,25 @@ button:hover{
   text-align:center;
   margin-bottom:20px;
 }
+@media(max-width:500px){
+
+  .calculator{
+    width:90%;
+    padding:20px;
+  }
+
+  button{
+    height:55px;
+    font-size:20px;
+  }
+
+  #display{
+    font-size:24px;
+  }
+
+  nav a{
+    font-size:16px;
+    margin:8px;
+  }
+
+}
