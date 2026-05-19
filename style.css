@@ -112,3 +112,15 @@ button:hover{
   }
 
 }
+.card{
+  background:#2c2c2c;
+  padding:20px;
+  border-radius:15px;
+  margin-bottom:20px;
+  color:white;
+  text-align:center;
+}
+
+.card p{
+  color:#bbbbbb;
+}
