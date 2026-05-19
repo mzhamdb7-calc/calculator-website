@@ -7,14 +7,32 @@
 <meta name="description" content="Free online calculators for BMI, age, percentages, loans and more.">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
+<script>
+window.addEventListener("scroll", function(){
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if(window.scrollY > 80){
+    navbar.classList.add("scrolled");
+    menuIcon.classList.add("show");
+  }else{
+    navbar.classList.remove("scrolled");
+    navbar.classList.remove("open");
+    menuIcon.classList.remove("show");
+  }
+});
+
+function toggleMenu(){
+  document.getElementById("navbar").classList.toggle("open");
+}
+</script>
 <body>
 
-<nav>
+<nav id="navbar">
 
   <a href="index.html">Home</a>
 
   <div class="dropdown">
-
     <button class="dropbtn">Calculators ▼</button>
 
     <div class="dropdown-content">
@@ -25,12 +43,15 @@
       <a href="loan-calculator.html">Loan Calculator</a>
       <a href="discount-calculator.html">Discount Calculator</a>
     </div>
-
   </div>
 
   <a href="about.html">About</a>
 
 </nav>
+
+<button id="menuIcon" onclick="toggleMenu()">☰</button>
+
+<button id="menuIcon" onclick="toggleMenu()">☰</button>
 
 <div class="calculator home-page">
 

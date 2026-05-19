@@ -6,9 +6,28 @@
   <link rel="icon" href="favicon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+<script>
+window.addEventListener("scroll", function(){
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if(window.scrollY > 80){
+    navbar.classList.add("scrolled");
+    menuIcon.classList.add("show");
+  }else{
+    navbar.classList.remove("scrolled");
+    navbar.classList.remove("open");
+    menuIcon.classList.remove("show");
+  }
+});
+
+function toggleMenu(){
+  document.getElementById("navbar").classList.toggle("open");
+}
+</script>
 <body>
 
-<nav>
+<nav id="navbar">
 
   <a href="index.html">Home</a>
 
