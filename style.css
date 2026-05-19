@@ -105,7 +105,8 @@ nav::before{
 /* MAIN CALCULATOR */
 
 .calculator{
-  width:min(95vw,900px);
+  width:700px;
+max-width:70vw;
   margin:auto;
 
   padding:45px;
@@ -176,18 +177,16 @@ h1{
 /* BUTTON GRID */
 
 .buttons{
-  display:grid;
-  grid-template-columns:repeat(4,90px);
-  justify-content:center;
-  gap:26px;
+   grid-template-columns:repeat(4,70px);
+  gap:18px;
 }
 
 /* BUTTONS */
 
 button{
-  width:85px;
-  height:85px;
-
+  width:65px;
+  height:65px;
+  font-size:18px;
   border:none;
 
   border-radius:50%;
@@ -198,7 +197,6 @@ button{
     7px 7px 18px rgba(120,130,145,0.45),
     -4px -4px 10px rgba(255,255,255,0.7);
 
-  font-size:18px;
 
   color:#111;
 
@@ -225,9 +223,8 @@ button:active{
 /* HISTORY */
 
 .history{
-  width:240px;
-  padding:30px;
-  text-align:center;
+  width:190px;
+  padding:20px;
 }
 
 .history h3{
