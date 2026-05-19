@@ -31,7 +31,7 @@ nav a:hover{
 }
 
 .calculator{
-  background:white;
+  background:transparent;
   width:100%;
   min-height:100vh;
   padding:40px 20px;
