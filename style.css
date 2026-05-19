@@ -26,16 +26,15 @@ body{
   align-items:center;
   height:100vh;
   margin:0;
-  padding-top:140px;
+  padding-top:160px;
 }
 
 .calculator{
-  .calculator{
-  background:white;;
+  background:white;
   padding:25px;
   border-radius:20px;
   width:320px;
-  box-shadow:0 0 20px rgba(0,0,0,0.5);
+  box-shadow:0 0 20px rgba(0,0,0,0.2);
 }
 
 
@@ -139,6 +138,3 @@ button:hover{
   box-shadow:0 0 20px rgba(0,123,255,0.4);
 }
 
-.card-link{
-  text-decoration:none;
-}
