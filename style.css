@@ -31,13 +31,14 @@ nav a:hover{
 }
 
 .calculator{
-  background:transparent;
+  background:white;
   width:100%;
   min-height:100vh;
   padding:40px 20px;
   box-sizing:border-box;
   text-align:center;
 }
+
 h1{
   font-size:32px;
   color:#222;
@@ -266,4 +267,8 @@ input{
 
 .dropdown-content a{
   text-align:center;
+}
+
+.home-page{
+  background:transparent;
 }
