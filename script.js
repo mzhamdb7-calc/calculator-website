@@ -61,3 +61,27 @@ function clearHistory(){
     historyList.innerHTML = "";
   }
 }
+
+function toggleMenu(){
+
+  const navbar = document.getElementById("navbar");
+
+  navbar.classList.toggle("open");
+
+}
+
+document.addEventListener("click", function(event){
+
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if(
+    navbar &&
+    menuIcon &&
+    !navbar.contains(event.target) &&
+    !menuIcon.contains(event.target)
+  ){
+    navbar.classList.remove("open");
+  }
+
+});

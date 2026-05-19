@@ -453,7 +453,7 @@ nav.scrolled{
 }
 
 nav.open{
-  display:block;
+  display:flex;
   position:fixed;
   top:90px;
   right:25px;
