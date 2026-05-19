@@ -20,7 +20,7 @@ nav a:hover{
 
 body{
   font-family:Arial,sans-serif;
-  background:#121212;
+  background:#e5e5e5;;
   display:flex;
   justify-content:center;
   align-items:center;
@@ -30,15 +30,17 @@ body{
 }
 
 .calculator{
-  background:#1e1e1e;
+  .calculator{
+  background:white;;
   padding:25px;
   border-radius:20px;
   width:320px;
   box-shadow:0 0 20px rgba(0,0,0,0.5);
 }
 
-h1{
-  color:white;
+
+ h1{
+  color:#222;;
   text-align:center;
 }
 
@@ -51,8 +53,8 @@ h1{
   border-radius:10px;
   text-align:right;
   padding-right:10px;
-  background:#2c2c2c;
-  color:white;
+   background:#f2f2f2;
+  color:#222;
   box-sizing:border-box;
 }
 
@@ -68,8 +70,8 @@ button{
   border-radius:12px;
   font-size:22px;
   cursor:pointer;
-  background:#333;
-  color:white;
+  background:#e0e0e0;
+  color:#222;
 }
 
 button:hover{
