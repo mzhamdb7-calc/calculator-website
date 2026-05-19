@@ -3,30 +3,30 @@ nav{
   top:20px;
   left:50%;
   transform:translateX(-50%);
+  z-index:1000;
 }
 
 nav a{
-  color:white;
+  color:#222;
   text-decoration:none;
   margin:10px;
   font-size:18px;
+  font-weight:600;
 }
 
 nav a:hover{
   color:#007bff;
 }
 
-
-
 body{
   font-family:Arial,sans-serif;
-  background:#e5e5e5;;
+  background:#e5e5e5;
   display:flex;
   justify-content:center;
-  align-items:center;
-  height:100vh;
+  align-items:flex-start;
+  min-height:100vh;
   margin:0;
-  padding-top:10px;
+  padding-top:140px;
 }
 
 .calculator{
@@ -34,13 +34,19 @@ body{
   padding:25px;
   border-radius:20px;
   width:320px;
-  box-shadow:0 0 20px rgba(0,0,0,0.2);
+  box-shadow:0 0 20px rgba(0,0,0,0.1);
+  margin-bottom:40px;
 }
 
-
- h1{
-  color:#222;;
+h1{
+  color:#222;
   text-align:center;
+}
+
+.subtitle{
+  color:#666;
+  text-align:center;
+  margin-bottom:20px;
 }
 
 #display{
@@ -49,10 +55,10 @@ body{
   font-size:28px;
   margin-bottom:15px;
   border:none;
-  border-radius:10px;
+  border-radius:12px;
   text-align:right;
   padding-right:10px;
-   background:#f2f2f2;
+  background:#f2f2f2;
   color:#222;
   box-sizing:border-box;
 }
@@ -68,16 +74,15 @@ button{
   border-radius:50px;
   font-size:16px;
   cursor:pointer;
-  padding:10px 20px;
+  padding:12px 20px;
   width:auto;
   height:auto;
   display:block;
   margin:15px auto 0 auto;
-
   background:white;
   color:#222;
-
   transition:0.3s;
+  box-shadow:0 0 10px rgba(0,0,0,0.08);
 }
 
 button:hover{
@@ -91,14 +96,33 @@ button:hover{
 
 .equal{
   background:#007bff;
+  color:white;
 }
 
+.card-link{
+  text-decoration:none;
+}
 
-.subtitle{
-  color:#bbbbbb;
-  text-align:center;
+.card{
+  background:white;
+  padding:20px;
+  border-radius:18px;
   margin-bottom:20px;
+  color:#222;
+  text-align:center;
+  transition:0.3s;
+  box-shadow:0 0 12px rgba(0,0,0,0.08);
 }
+
+.card p{
+  color:#666;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 0 18px rgba(0,123,255,0.15);
+}
+
 @media(max-width:500px){
 
   .calculator{
@@ -106,39 +130,17 @@ button:hover{
     padding:20px;
   }
 
+  nav a{
+    font-size:16px;
+    margin:8px;
+  }
+
   button{
-    height:55px;
-    font-size:20px;
+    font-size:15px;
   }
 
   #display{
     font-size:24px;
   }
 
-  nav a{
-    font-size:16px;
-    margin:8px;
-  }
-
 }
-.card{
-  background:white;
-  padding:20px;
-  border-radius:15px;
-  margin-bottom:20px;
-  color:#222;
-  text-align:center;
-}
-
-.card p{
-  color:#666;
-}
-.card{
-  transition:0.3s;
-}
-
-.card:hover{
-  transform:scale(1.03);
-  box-shadow:0 0 20px rgba(0,123,255,0.4);
-}
-
