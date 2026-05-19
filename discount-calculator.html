@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Discount Calculator</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Free discount calculator to calculate sale price and savings online.">
+</head>
+<body>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="basic-calculator.html">Basic Calculator</a>
+  <a href="bmi-calculator.html">BMI Calculator</a>
+  <a href="age-calculator.html">Age Calculator</a>
+</nav>
+
+<div class="calculator">
+  <h1>Discount Calculator</h1>
+  <p class="subtitle">Calculate final price after discount.</p>
+
+  <input type="number" id="price" placeholder="Original price">
+  <br><br>
+
+  <input type="number" id="discount" placeholder="Discount %">
+  <br><br>
+
+  <button onclick="calculateDiscount()">Calculate</button>
+
+  <h2 id="result"></h2>
+</div>
+
+<script>
+function calculateDiscount(){
+  let price = document.getElementById("price").value;
+  let discount = document.getElementById("discount").value;
+
+  let savings = price * discount / 100;
+  let finalPrice = price - savings;
+
+  document.getElementById("result").innerText =
+  "Final price: " + finalPrice.toFixed(2) + " | You save: " + savings.toFixed(2);
+}
+</script>
+
+</body>
+</html>
