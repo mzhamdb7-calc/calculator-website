@@ -18,7 +18,8 @@ nav a:hover{
   color:#007bff;
 }
 
-body{
+
+  body{
   font-family:Arial,sans-serif;
   background:#e5e5e5;
   display:flex;
@@ -26,8 +27,9 @@ body{
   align-items:flex-start;
   min-height:100vh;
   margin:0;
-  padding-top:220px;
+  padding-top:60px;
 }
+
 
 .calculator{
   background:white;
