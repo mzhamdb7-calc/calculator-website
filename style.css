@@ -10,7 +10,7 @@ nav a{
   color:#222;
   text-decoration:none;
   margin:10px;
-  font-size:18px;
+  font-size:16px;
   font-weight:600;
 }
 
@@ -26,19 +26,20 @@ body{
   align-items:flex-start;
   min-height:100vh;
   margin:0;
-  padding-top:140px;
+  padding-top:220px;
 }
 
 .calculator{
   background:white;
   padding:25px;
   border-radius:20px;
-  width:320px;
+  width:280px;
   box-shadow:0 0 20px rgba(0,0,0,0.1);
   margin-bottom:40px;
 }
 
 h1{
+  font-size:32px;
   color:#222;
   text-align:center;
 }
@@ -116,6 +117,7 @@ button:hover{
 
 .card p{
   color:#666;
+  font-size:14px;
 }
 
 .card:hover{
@@ -143,4 +145,7 @@ button:hover{
     font-size:24px;
   }
 
+}
+.card h2{
+  font-size:20px;
 }
