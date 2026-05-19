@@ -93,7 +93,7 @@ nav::before{
 
 .calculator{
   width:760px;
-  min-height:700px;
+  display:inline-block;
   padding:45px;
   text-align:center;
 }
@@ -166,13 +166,16 @@ button{
     7px 7px 18px rgba(120,130,145,0.45),
     -4px -4px 10px rgba(255,255,255,0.7);
 
-  font-size:34px;
+  font-size:18px;
 
   color:#111;
 
   cursor:pointer;
 
   transition:0.2s;
+  display:flex;
+align-items:center;
+justify-content:center;
 }
 
 button:hover{
