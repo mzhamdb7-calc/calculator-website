@@ -93,9 +93,24 @@ nav::before{
 
 .calculator{
   width:760px;
-  display:inline-block;
+
   padding:45px;
+
   text-align:center;
+
+  background:linear-gradient(145deg,#b7bec8,#9ea7b3);
+
+  border-radius:55px;
+
+  box-shadow:
+    14px 14px 35px rgba(120,130,145,0.4),
+    -8px -8px 20px rgba(255,255,255,0.65);
+
+  position:relative;
+
+  overflow:hidden;
+
+  display:inline-block;
 }
 
 h1{
