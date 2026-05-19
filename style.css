@@ -710,16 +710,20 @@ h1{
 }
 
 .scientific-grid{
-  grid-template-columns:repeat(5,60px);
-  gap:14px;
+  display:grid;
+  grid-template-columns:repeat(7,90px);
+  gap:8px;
+  justify-content:center;
 }
 
 .scientific-grid button{
-  width:55px;
-  height:55px;
+  width:85px;
+  height:52px;
+  border-radius:25px;
   font-size:15px;
 }
 
 .scientific-grid .equal{
-  background:linear-gradient(145deg,#c7ced8,#aeb7c2);
+  background:#0b57d0;
+  color:white;
 }
