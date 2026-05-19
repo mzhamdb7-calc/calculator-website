@@ -252,7 +252,10 @@ input{
 }
 
 .buttons{
+  display:grid;
+  grid-template-columns:repeat(4,80px);
   justify-content:center;
+  gap:10px;
 }
 
 .history{
