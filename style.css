@@ -122,16 +122,16 @@ button:hover{
 
 }
 .card{
-  background:#2c2c2c;
+  background:white;
   padding:20px;
   border-radius:15px;
   margin-bottom:20px;
-  color:white;
+  color:#222;
   text-align:center;
 }
 
 .card p{
-  color:#bbbbbb;
+  color:#666;
 }
 .card{
   transition:0.3s;
