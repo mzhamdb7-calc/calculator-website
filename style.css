@@ -155,3 +155,35 @@ button:hover{
   color:#111;
 }
 
+.calculator-container{
+  display:flex;
+  gap:20px;
+  align-items:flex-start;
+}
+
+.history{
+  width:220px;
+  background:white;
+  padding:20px;
+  border-radius:20px;
+  box-shadow:0 0 12px rgba(0,0,0,0.08);
+}
+
+.history h3{
+  margin-top:0;
+  color:#222;
+}
+
+.history ul{
+  list-style:none;
+  padding:0;
+  max-height:300px;
+  overflow-y:auto;
+}
+
+.history li{
+  padding:8px 0;
+  border-bottom:1px solid #eee;
+  font-size:14px;
+  color:#555;
+}
