@@ -26,6 +26,39 @@ function toggleMenu(){
   document.getElementById("navbar").classList.toggle("open");
 }
 </script>
+<button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
+
+<script>
+
+window.addEventListener("scroll", function(){
+
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+  const scrollBtn = document.getElementById("scrollTopBtn");
+
+  if(window.scrollY > 80){
+
+    navbar.style.top = "120px";
+
+    scrollBtn.style.display = "flex";
+
+  }else{
+
+    navbar.style.top = "25px";
+
+    scrollBtn.style.display = "none";
+  }
+
+});
+
+function scrollToTop(){
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+
+</script>
 <body>
 
 <nav id="navbar">
@@ -54,16 +87,21 @@ function toggleMenu(){
   <h1>Loan Calculator</h1>
   <p class="subtitle">Estimate your monthly loan payment.</p>
 
-  <input type="number" id="amount" placeholder="Loan amount">
-  <br><br>
+  <div class="loan-form">
 
-  <input type="number" id="interest" placeholder="Annual interest rate %">
-  <br><br>
+  <div class="loan-inputs">
 
-  <input type="number" id="years" placeholder="Loan years">
-  <br><br>
+    <input type="number" id="amount" placeholder="Loan amount">
+
+    <input type="number" id="interest" placeholder="Annual interest rate %">
+
+    <input type="number" id="years" placeholder="Loan years">
+
+  </div>
 
   <button onclick="calculateLoan()">Calculate</button>
+
+</div>
 
   <h2 id="result"></h2>
 </div>

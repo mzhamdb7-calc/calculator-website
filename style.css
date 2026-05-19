@@ -9,6 +9,7 @@ body{
 /* NAVBAR */
 
 nav{
+  
   position:fixed;
   top:25px;
   left:50%;
@@ -496,3 +497,39 @@ nav.open{
   margin:0;
 }
 
+html{
+  scroll-behavior:smooth;
+}
+
+#scrollTopBtn{
+  position:fixed;
+
+  bottom:25px;
+  right:25px;
+
+  width:60px;
+  height:60px;
+
+  border:none;
+  border-radius:50%;
+
+  background:linear-gradient(145deg,#b7bec8,#9ea7b3);
+
+  box-shadow:
+    8px 8px 20px rgba(120,130,145,0.4),
+    -5px -5px 15px rgba(255,255,255,0.7);
+
+  color:#111;
+
+  font-size:26px;
+
+  cursor:pointer;
+
+  display:none;
+
+  z-index:3000;
+}
+
+#scrollTopBtn:hover{
+  transform:translateY(-3px);
+}
