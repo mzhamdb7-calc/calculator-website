@@ -116,8 +116,9 @@ button:hover{
 }
 
 .card p{
-  color:#666;
+  color:#777;
   font-size:14px;
+  text-transform:lowercase;
 }
 
 .card:hover{
@@ -147,5 +148,8 @@ button:hover{
 
 }
 .card h2{
-  font-size:20px;
+  font-size:28px;
+  margin-bottom:5px;
+  color:#111;
 }
+
