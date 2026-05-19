@@ -112,8 +112,11 @@ nav::before{
   position:relative;
 
   overflow:hidden;
-
-  display:inline-block;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+margin:auto;
 }
 
 h1{
@@ -444,6 +447,52 @@ nav.open{
   transform:none;
 }
 
+.loan-form{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:30px;
+
+  margin-top:40px;
+}
+
+.loan-inputs{
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+
+.loan-inputs input{
+  width:260px;
+  height:45px;
+
+  border:none;
+  border-radius:14px;
+
+  padding:0 18px;
+
+  font-size:18px;
+
+  background:linear-gradient(145deg,#d9dee5,#bcc5d0);
+
+  box-shadow:
+    inset 3px 3px 8px rgba(130,140,155,0.3),
+    inset -2px -2px 6px rgba(255,255,255,0.6);
+}
+
+.loan-form button{
+  margin:0;
+}
 
 
+.loan-form button{
+  width:140px;
+  height:55px;
+
+  border-radius:30px;
+
+  font-size:20px;
+
+  margin:0;
+}
 
