@@ -6,27 +6,7 @@
   <link rel="icon" href="favicon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<script>
-window.addEventListener("scroll", function(){
-  const navbar = document.getElementById("navbar");
-  const menuIcon = document.getElementById("menuIcon");
-
-  if(window.scrollY > 80){
-    navbar.classList.add("scrolled");
-    menuIcon.classList.add("show");
-  }else{
-    navbar.classList.remove("scrolled");
-    navbar.classList.remove("open");
-    menuIcon.classList.remove("show");
-  }
-});
-
-function toggleMenu(){
-  document.getElementById("navbar").classList.toggle("open");
-}
-</script>
 <button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
-
 <script>
 
 window.addEventListener("scroll", function(){
@@ -37,24 +17,44 @@ window.addEventListener("scroll", function(){
 
   if(window.scrollY > 80){
 
+    navbar.classList.add("scrolled");
+    menuIcon.classList.add("show");
+
     navbar.style.top = "120px";
+
+  }else{
+
+    navbar.classList.remove("scrolled");
+    navbar.classList.remove("open");
+    menuIcon.classList.remove("show");
+
+    navbar.style.top = "25px";
+  }
+
+  if(window.scrollY > 200){
 
     scrollBtn.style.display = "flex";
 
   }else{
-
-    navbar.style.top = "25px";
 
     scrollBtn.style.display = "none";
   }
 
 });
 
+function toggleMenu(){
+
+  document.getElementById("navbar").classList.toggle("open");
+
+}
+
 function scrollToTop(){
+
   window.scrollTo({
     top:0,
     behavior:"smooth"
   });
+
 }
 
 </script>
