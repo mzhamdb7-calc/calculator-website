@@ -1,5 +1,5 @@
 nav{
-  background:rgba(245,245,245,0.7);
+  background:rgba(255,255,255,0.55);
 backdrop-filter:blur(10px);
 padding:14px 24px;
 border-radius:50px;
@@ -25,7 +25,7 @@ nav a:hover{
 
  body{
   font-family:Arial,sans-serif;
-  background:#f5f5f5;
+  background:#ececec;
   display:flex;
   justify-content:center;
   align-items:center;
@@ -35,9 +35,9 @@ nav a:hover{
 }
 
 .calculator{
-  background:rgba(255,255,255,0.2);
+  
   backdrop-filter:blur(12px);
-
+background:rgba(255,255,255,0.45);
   width:95%;
   min-height:85vh;
 
@@ -74,7 +74,7 @@ h1{
   border-radius:12px;
   text-align:right;
   padding-right:10px;
-  background:rgba(255,255,255,0.2);
+  background:rgba(255,255,255,0.5);
   color:#222;
   box-sizing:border-box;
 }
@@ -95,8 +95,8 @@ button{
   height:auto;
   display:block;
   margin:15px auto 0 auto;
-
-  background:rgba(255,255,255,0.2);
+background:rgba(255,255,255,0.4);
+  
   color:#222;
 
   transition:0.3s;
@@ -122,7 +122,8 @@ button:hover{
 }
 
 .card{
-  background:rgba(255,255,255,0.2);
+  background:rgba(255,255,255,0.45);
+  
   padding:14px;
   border-radius:18px;
   margin:10px auto;
@@ -265,6 +266,7 @@ input{
 }
 
 .buttons{
+  
   display:grid;
   grid-template-columns:repeat(4,80px);
   justify-content:center;
