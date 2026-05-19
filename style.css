@@ -771,3 +771,40 @@ h1{
 
   margin:0;
 }
+.calculator{
+  width:760px;
+  max-width:760px;
+  padding:35px;
+}
+
+.scientific-grid{
+  display:grid;
+  grid-template-columns:repeat(7,85px);
+  gap:10px;
+  justify-content:center;
+  width:100%;
+}
+
+.scientific-grid button{
+  width:78px;
+  height:52px;
+  border-radius:28px;
+  font-size:15px;
+  margin:0;
+}
+
+#display{
+  width:85%;
+  height:65px;
+  font-size:30px;
+  margin-bottom:25px;
+}
+
+h1{
+  font-size:44px;
+}
+
+.subtitle{
+  font-size:16px;
+  margin-bottom:25px;
+}
