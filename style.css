@@ -105,8 +105,8 @@ nav::before{
 /* MAIN CALCULATOR */
 
 .calculator{
-  width:700px;
-max-width:70vw;
+  width:fit-content;
+max-width:none;
   margin:auto;
 
   padding:45px;
