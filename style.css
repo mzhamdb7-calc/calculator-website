@@ -622,3 +622,31 @@ body {
     font-size: 18px;
   }
 }
+/* FIX STACKED DROPDOWN GOING OUT OF SCREEN */
+
+#navbar.open {
+  top: 15px;
+  right: 20px;
+
+  max-height: calc(100vh - 30px);
+  overflow-y: auto;
+
+  width: 260px;
+}
+
+#navbar.open a,
+#navbar.open .dropbtn {
+  height: 55px;
+  font-size: 24px;
+}
+
+#navbar.open .dropdown-content {
+  width: 260px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+#navbar.open .dropdown-content a {
+  height: 48px;
+  font-size: 20px !important;
+}
