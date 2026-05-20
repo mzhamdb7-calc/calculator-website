@@ -3,16 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
 <title>Cartoon Calculator</title>
 
 <style>
-
 *{
   margin:0;
   padding:0;
   box-sizing:border-box;
-  font-family: "Comic Sans MS", cursive;
+  font-family:"Comic Sans MS", cursive;
 }
 
 body{
@@ -20,58 +18,34 @@ body{
   overflow-x:hidden;
 }
 
-/* PAGE */
-
 .page{
   max-width:1200px;
   min-height:100vh;
   margin:auto;
   background:#f8f8f8;
   border:5px solid black;
-  position:relative;
 }
-
-/* TOP ADS */
 
 .top-ad{
   height:90px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:35px;
-  font-weight:bold;
   border-bottom:5px solid black;
   background:#ffffff;
-
-  box-shadow:
-  5px 5px 0px black;
+  box-shadow:5px 5px 0px black;
 }
-
-/* MAIN LAYOUT */
 
 .layout{
   display:grid;
   grid-template-columns:220px 1fr 90px;
 }
 
-/* LEFT ADS */
-
 .left-ad{
   border-right:5px solid black;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:35px;
-  font-weight:bold;
   min-height:900px;
   background:#fff;
 }
 
-/* CONTENT */
-
 .content{
   padding:40px;
-  position:relative;
 }
 
 /* NAVBAR */
@@ -79,129 +53,111 @@ body{
 nav{
   width:600px;
   margin:auto;
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
+  display:flex;
   border:5px solid black;
   background:white;
-
   transform:rotate(-1deg);
-
-  box-shadow:
-  6px 6px 0px black;
+  box-shadow:6px 6px 0px black;
+  z-index:1000;
 }
 
-nav a{
+nav a,
+.dropbtn{
+  width:200px;
   text-decoration:none;
   color:black;
   font-size:30px;
   text-align:center;
   padding:10px;
+  border:none;
   border-right:5px solid black;
+  background:white;
+  cursor:pointer;
 }
 
 nav a:last-child{
   border-right:none;
 }
 
-nav a:hover{
+nav a:hover,
+.dropbtn:hover{
   background:#ffe56c;
 }
 
-/* CALCULATOR BOX */
+.dropdown{
+  position:relative;
+}
 
-.calculator-box{
-  width:620px;
-  margin:40px auto;
-  border:5px solid black;
-  padding:30px;
+.dropdown-content{
+  display:none;
+  position:absolute;
+  top:62px;
+  left:0;
+  width:230px;
   background:white;
-
-  transform:rotate(0.5deg);
-
-  box-shadow:
-  8px 8px 0px black;
-}
-
-.calculator-box h1{
-  text-align:center;
-  font-size:45px;
-  margin-bottom:25px;
-}
-
-/* GRID */
-
-.calculator-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:35px;
-}
-
-/* CARDS */
-
-.card{
-  height:110px;
   border:5px solid black;
-  text-decoration:none;
-  color:black;
+  box-shadow:6px 6px 0 black;
+  z-index:3000;
+}
 
+.dropdown-content a{
+  display:block;
+  width:100%;
+  font-size:20px;
+  border-right:none;
+  border-bottom:4px solid black;
+}
+
+.dropdown:hover .dropdown-content{
+  display:block;
+}
+
+/* SCROLL MENU */
+
+nav.scrolled{
+  display:none;
+}
+
+nav.open{
   display:flex;
-  justify-content:center;
-  align-items:center;
-
-  font-size:35px;
-  font-weight:bold;
-
-  background:#ffffff;
-
-  transition:0.2s;
-
-  box-shadow:
-  5px 5px 0px black;
+  position:fixed;
+  top:120px;
+  right:100px;
+  width:260px;
+  flex-direction:column;
+  transform:none;
+  z-index:3000;
 }
 
-.card:nth-child(1){
-  background:#ffd3d3;
+nav.open a,
+nav.open .dropbtn{
+  width:100%;
+  border-right:none;
+  border-bottom:5px solid black;
 }
 
-.card:nth-child(2){
-  background:#d3ffd9;
+nav.open .dropdown-content{
+  position:static;
+  width:100%;
+  box-shadow:none;
+  border-left:none;
+  border-right:none;
 }
 
-.card:nth-child(3){
-  background:#d3e5ff;
-}
-
-.card:nth-child(4){
-  background:#fff1b8;
-}
-
-.card:nth-child(5){
-  background:#f1d3ff;
-}
-
-.card:nth-child(6){
-  background:#d3fff9;
-}
-
-.card:hover{
-  transform:
-  translate(-3px,-3px)
-  rotate(-1deg);
-
-  box-shadow:
-  9px 9px 0px black;
-}
-
-/* RIGHT MENU */
-
-.right-menu{
-  padding-top:50px;
-  display:flex;
-  justify-content:center;
-}
+/* HAMBURGER */
 
 .hamburger{
-  width:45px;
+  position:fixed;
+  top:50px;
+  right:35px;
+  width:55px;
+  cursor:pointer;
+  display:none;
+  z-index:4000;
+}
+
+.hamburger.show{
+  display:block;
 }
 
 .hamburger span{
@@ -212,26 +168,71 @@ nav a:hover{
   border-radius:20px;
 }
 
-/* FLOATING BUTTON */
+/* CALCULATOR BOX */
+
+.calculator-box{
+  width:620px;
+  margin:40px auto;
+  border:5px solid black;
+  padding:30px;
+  background:white;
+  transform:rotate(0.5deg);
+  box-shadow:8px 8px 0px black;
+}
+
+.calculator-box h1{
+  text-align:center;
+  font-size:45px;
+  margin-bottom:25px;
+}
+
+.calculator-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:35px;
+}
+
+.card{
+  height:110px;
+  border:5px solid black;
+  text-decoration:none;
+  color:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:35px;
+  font-weight:bold;
+  background:#ffffff;
+  transition:0.2s;
+  box-shadow:5px 5px 0px black;
+}
+
+.card:nth-child(1){ background:#ffd3d3; }
+.card:nth-child(2){ background:#d3ffd9; }
+.card:nth-child(3){ background:#d3e5ff; }
+.card:nth-child(4){ background:#fff1b8; }
+.card:nth-child(5){ background:#f1d3ff; }
+.card:nth-child(6){ background:#d3fff9; }
+
+.card:hover{
+  transform:translate(-3px,-3px) rotate(-1deg);
+  box-shadow:9px 9px 0px black;
+}
+
+/* SCROLL TOP */
 
 .scroll-top{
   position:fixed;
   right:35px;
   bottom:35px;
-
   width:70px;
   height:70px;
-
   border:5px solid black;
   background:white;
-
   font-size:40px;
   font-weight:bold;
-
   cursor:pointer;
-
-  box-shadow:
-  5px 5px 0px black;
+  box-shadow:5px 5px 0px black;
 }
 
 .scroll-top:hover{
@@ -241,13 +242,11 @@ nav a:hover{
 /* RESPONSIVE */
 
 @media(max-width:768px){
-
   .layout{
     grid-template-columns:1fr;
   }
 
-  .left-ad,
-  .right-menu{
+  .left-ad{
     display:none;
   }
 
@@ -259,8 +258,20 @@ nav a:hover{
     width:100%;
   }
 
-  nav a{
+  nav a,
+  .dropbtn{
     font-size:20px;
+    width:33.33%;
+  }
+
+  nav.open{
+    right:20px;
+    width:260px;
+  }
+
+  nav.open a,
+  nav.open .dropbtn{
+    width:100%;
   }
 
   .calculator-box{
@@ -274,9 +285,7 @@ nav a:hover{
   .card{
     font-size:28px;
   }
-
 }
-
 </style>
 </head>
 
@@ -284,66 +293,44 @@ nav a:hover{
 
 <div class="page">
 
-  <div class="top-ad">
-    
-  </div>
+  <div class="top-ad"></div>
 
   <div class="layout">
 
-    <div class="left-ad">
-      
-    </div>
+    <div class="left-ad"></div>
 
     <div class="content">
 
-      <nav>
+      <nav id="navbar">
         <a href="#">home</a>
-        <a href="#">calculator</a>
+
+        <div class="dropdown">
+          <button class="dropbtn">calculator</button>
+
+          <div class="dropdown-content">
+            <a href="#">basic</a>
+            <a href="#">finance</a>
+            <a href="#">health</a>
+            <a href="#">math</a>
+            <a href="#">unit</a>
+            <a href="#">date</a>
+          </div>
+        </div>
+
         <a href="#">about</a>
       </nav>
 
       <div class="calculator-box">
-
         <h1>Calculator</h1>
 
         <div class="calculator-grid">
-
-          <a href="#" class="card">
-            basic
-          </a>
-
-          <a href="#" class="card">
-            finance
-          </a>
-
-          <a href="#" class="card">
-            health
-          </a>
-
-          <a href="#" class="card">
-            math
-          </a>
-
-          <a href="#" class="card">
-            unit
-          </a>
-
-          <a href="#" class="card">
-            date
-          </a>
-
+          <a href="#" class="card">basic</a>
+          <a href="#" class="card">finance</a>
+          <a href="#" class="card">health</a>
+          <a href="#" class="card">math</a>
+          <a href="#" class="card">unit</a>
+          <a href="#" class="card">date</a>
         </div>
-
-      </div>
-
-    </div>
-
-    <div class="right-menu">
-
-      <div class="hamburger">
-        <span></span>
-        <span></span>
-        <span></span>
       </div>
 
     </div>
@@ -352,11 +339,48 @@ nav a:hover{
 
 </div>
 
-<button
-class="scroll-top"
-onclick="window.scrollTo({top:0,behavior:'smooth'})">
-↑
-</button>
+<div class="hamburger" id="hamburger" onclick="toggleMenu()">
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
+<button class="scroll-top" onclick="scrollToTop()">↑</button>
+
+<script>
+window.addEventListener("scroll", function(){
+  const navbar = document.getElementById("navbar");
+  const hamburger = document.getElementById("hamburger");
+
+  if(window.scrollY > 120){
+    navbar.classList.add("scrolled");
+    hamburger.classList.add("show");
+  }else{
+    navbar.classList.remove("scrolled");
+    navbar.classList.remove("open");
+    hamburger.classList.remove("show");
+  }
+});
+
+function toggleMenu(){
+  const navbar = document.getElementById("navbar");
+
+  navbar.classList.toggle("open");
+
+  if(navbar.classList.contains("open")){
+    navbar.classList.remove("scrolled");
+  }else{
+    navbar.classList.add("scrolled");
+  }
+}
+
+function scrollToTop(){
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+</script>
 
 </body>
 </html>
