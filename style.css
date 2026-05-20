@@ -18,11 +18,12 @@ body {
   top: 25px;
   left: 50%;
   transform: translateX(-50%) rotate(-1deg);
-  z-index: 1000;
+  z-index: 9000;
   display: flex;
   background: white;
   border: 5px solid black;
   box-shadow: 7px 7px 0 black;
+  overflow: visible;
 }
 
 #navbar a,
@@ -50,6 +51,7 @@ body {
 
 .dropdown {
   position: relative;
+  z-index: 9500;
 }
 
 .dropdown-content {
@@ -61,6 +63,7 @@ body {
   background: white;
   border: 5px solid black;
   box-shadow: 6px 6px 0 black;
+  z-index: 9999;
 }
 
 .dropdown-content a {
@@ -88,6 +91,7 @@ body {
   left: auto;
   transform: none;
   flex-direction: column;
+  z-index: 9999;
 }
 
 #navbar.open a,
@@ -112,7 +116,7 @@ body {
   position: fixed;
   top: 35px;
   right: 30px;
-  z-index: 1100;
+  z-index: 10000;
   width: 60px;
   height: 55px;
   border: 5px solid black;
@@ -136,6 +140,8 @@ body {
   display: grid;
   grid-template-columns: 280px 1fr;
   gap: 35px;
+  position: relative;
+  z-index: 1;
 }
 
 /* HISTORY */
@@ -181,6 +187,8 @@ body {
   box-shadow: 9px 9px 0 black;
   padding: 30px;
   transform: rotate(0.5deg);
+  position: relative;
+  z-index: 1;
 }
 
 .calculator h1 {
@@ -251,7 +259,7 @@ body {
   position: fixed;
   right: 30px;
   bottom: 30px;
-  z-index: 1200;
+  z-index: 10000;
   width: 65px;
   height: 65px;
   align-items: center;
