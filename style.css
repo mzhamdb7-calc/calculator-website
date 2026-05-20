@@ -188,8 +188,12 @@ body {
   border: 5px solid black;
   box-shadow: 9px 9px 0 black;
   padding: 30px;
+
+  /* IMPORTANT FIX */
+  transform: none;
+
   position: relative;
-  z-index: 1;
+  z-index: 0;
 }
 
 .calculator h1 {
@@ -304,4 +308,27 @@ body {
     height: 58px;
     font-size: 18px;
   }
+}
+
+/* DROPDOWN FIX */
+
+#navbar {
+  position: relative;
+  z-index: 999999 !important;
+}
+
+.dropdown {
+  position: relative;
+  z-index: 999999 !important;
+}
+
+.dropdown-content {
+  z-index: 9999999 !important;
+}
+
+.calculator,
+.calculator-container,
+.card {
+  position: relative;
+  z-index: 0 !important;
 }
