@@ -1,213 +1,362 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Calculator Website</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
+<title>Cartoon Calculator</title>
 
-    body {
-      background: #eef3f8;
-      color: #111;
-    }
+<style>
 
-    .page {
-      max-width: 1200px;
-      min-height: 100vh;
-      margin: auto;
-      background: white;
-      position: relative;
-    }
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: "Comic Sans MS", cursive;
+}
 
-    .top-ad {
-      height: 90px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 4px solid #000;
-      font-size: 22px;
-    }
+body{
+  background:#dfe7ef;
+  overflow-x:hidden;
+}
 
-    .layout {
-      display: grid;
-      grid-template-columns: 210px 1fr 90px;
-      min-height: calc(100vh - 90px);
-    }
+/* PAGE */
 
-    .left-ad {
-      border-right: 4px solid #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-    }
+.page{
+  max-width:1200px;
+  min-height:100vh;
+  margin:auto;
+  background:#f8f8f8;
+  border:5px solid black;
+  position:relative;
+}
 
-    .content {
-      padding: 45px 60px;
-      position: relative;
-    }
+/* TOP ADS */
 
-    nav {
-      max-width: 560px;
-      margin: 0 auto 35px;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      border: 4px solid #000;
-    }
+.top-ad{
+  height:90px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:35px;
+  font-weight:bold;
+  border-bottom:5px solid black;
+  background:#ffffff;
 
-    nav a {
-      text-align: center;
-      padding: 5px;
-      font-size: 20px;
-      text-decoration: none;
-      color: #111;
-      border-right: 4px solid #000;
-    }
+  box-shadow:
+  5px 5px 0px black;
+}
 
-    nav a:last-child {
-      border-right: none;
-    }
+/* MAIN LAYOUT */
 
-    .calculator-box {
-      max-width: 560px;
-      margin: auto;
-      border: 4px solid #000;
-      padding: 20px 30px 70px;
-    }
+.layout{
+  display:grid;
+  grid-template-columns:220px 1fr 90px;
+}
 
-    .calculator-box h1 {
-      text-align: center;
-      font-size: 22px;
-      margin-bottom: 20px;
-      font-weight: normal;
-    }
+/* LEFT ADS */
 
-    .calculator-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 30px 40px;
-    }
+.left-ad{
+  border-right:5px solid black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:35px;
+  font-weight:bold;
+  min-height:900px;
+  background:#fff;
+}
 
-    .card {
-      height: 85px;
-      border: 4px solid #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      text-decoration: none;
-      color: #111;
-      background: white;
-    }
+/* CONTENT */
 
-    .card:hover {
-      background: #f2f2f2;
-    }
+.content{
+  padding:40px;
+  position:relative;
+}
 
-    .right-menu {
-      padding-top: 45px;
-      display: flex;
-      justify-content: center;
-    }
+/* NAVBAR */
 
-    .hamburger {
-      width: 36px;
-      cursor: pointer;
-    }
+nav{
+  width:600px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  border:5px solid black;
+  background:white;
 
-    .hamburger span {
-      display: block;
-      height: 4px;
-      background: #000;
-      margin: 8px 0;
-      border-radius: 2px;
-    }
+  transform:rotate(-1deg);
 
-    .scroll-top {
-      position: fixed;
-      right: 35px;
-      bottom: 35px;
-      width: 55px;
-      height: 55px;
-      border: 4px solid #000;
-      background: white;
-      font-size: 35px;
-      cursor: pointer;
-    }
+  box-shadow:
+  6px 6px 0px black;
+}
 
-    @media (max-width: 768px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
+nav a{
+  text-decoration:none;
+  color:black;
+  font-size:30px;
+  text-align:center;
+  padding:10px;
+  border-right:5px solid black;
+}
 
-      .left-ad,
-      .right-menu {
-        display: none;
-      }
+nav a:last-child{
+  border-right:none;
+}
 
-      .content {
-        padding: 25px 15px;
-      }
+nav a:hover{
+  background:#ffe56c;
+}
 
-      nav,
-      .calculator-box {
-        max-width: 100%;
-      }
+/* CALCULATOR BOX */
 
-      .calculator-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+.calculator-box{
+  width:620px;
+  margin:40px auto;
+  border:5px solid black;
+  padding:30px;
+  background:white;
+
+  transform:rotate(0.5deg);
+
+  box-shadow:
+  8px 8px 0px black;
+}
+
+.calculator-box h1{
+  text-align:center;
+  font-size:45px;
+  margin-bottom:25px;
+}
+
+/* GRID */
+
+.calculator-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:35px;
+}
+
+/* CARDS */
+
+.card{
+  height:110px;
+  border:5px solid black;
+  text-decoration:none;
+  color:black;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  font-size:35px;
+  font-weight:bold;
+
+  background:#ffffff;
+
+  transition:0.2s;
+
+  box-shadow:
+  5px 5px 0px black;
+}
+
+.card:nth-child(1){
+  background:#ffd3d3;
+}
+
+.card:nth-child(2){
+  background:#d3ffd9;
+}
+
+.card:nth-child(3){
+  background:#d3e5ff;
+}
+
+.card:nth-child(4){
+  background:#fff1b8;
+}
+
+.card:nth-child(5){
+  background:#f1d3ff;
+}
+
+.card:nth-child(6){
+  background:#d3fff9;
+}
+
+.card:hover{
+  transform:
+  translate(-3px,-3px)
+  rotate(-1deg);
+
+  box-shadow:
+  9px 9px 0px black;
+}
+
+/* RIGHT MENU */
+
+.right-menu{
+  padding-top:50px;
+  display:flex;
+  justify-content:center;
+}
+
+.hamburger{
+  width:45px;
+}
+
+.hamburger span{
+  display:block;
+  height:6px;
+  background:black;
+  margin:8px 0;
+  border-radius:20px;
+}
+
+/* FLOATING BUTTON */
+
+.scroll-top{
+  position:fixed;
+  right:35px;
+  bottom:35px;
+
+  width:70px;
+  height:70px;
+
+  border:5px solid black;
+  background:white;
+
+  font-size:40px;
+  font-weight:bold;
+
+  cursor:pointer;
+
+  box-shadow:
+  5px 5px 0px black;
+}
+
+.scroll-top:hover{
+  transform:rotate(-10deg);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+  .layout{
+    grid-template-columns:1fr;
+  }
+
+  .left-ad,
+  .right-menu{
+    display:none;
+  }
+
+  .content{
+    padding:20px;
+  }
+
+  nav{
+    width:100%;
+  }
+
+  nav a{
+    font-size:20px;
+  }
+
+  .calculator-box{
+    width:100%;
+  }
+
+  .calculator-grid{
+    grid-template-columns:1fr;
+  }
+
+  .card{
+    font-size:28px;
+  }
+
+}
+
+</style>
 </head>
 
 <body>
-  <div class="page">
-    <header class="top-ad">ads</header>
 
-    <main class="layout">
-      <aside class="left-ad">ads</aside>
+<div class="page">
 
-      <section class="content">
-        <nav>
-          <a href="#">home</a>
-          <a href="#">calculator</a>
-          <a href="#">about</a>
-        </nav>
-
-        <div class="calculator-box">
-          <h1>Calculator</h1>
-
-          <div class="calculator-grid">
-            <a href="#" class="card">basic</a>
-            <a href="#" class="card">finance</a>
-            <a href="#" class="card">health</a>
-            <a href="#" class="card">math</a>
-            <a href="#" class="card">unit</a>
-            <a href="#" class="card">date</a>
-          </div>
-        </div>
-      </section>
-
-      <aside class="right-menu">
-        <div class="hamburger">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      </aside>
-    </main>
-
-    <button class="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-      ↑
-    </button>
+  <div class="top-ad">
+    ads
   </div>
+
+  <div class="layout">
+
+    <div class="left-ad">
+      ads
+    </div>
+
+    <div class="content">
+
+      <nav>
+        <a href="#">home</a>
+        <a href="#">calculator</a>
+        <a href="#">about</a>
+      </nav>
+
+      <div class="calculator-box">
+
+        <h1>Calculator</h1>
+
+        <div class="calculator-grid">
+
+          <a href="#" class="card">
+            basic
+          </a>
+
+          <a href="#" class="card">
+            finance
+          </a>
+
+          <a href="#" class="card">
+            health
+          </a>
+
+          <a href="#" class="card">
+            math
+          </a>
+
+          <a href="#" class="card">
+            unit
+          </a>
+
+          <a href="#" class="card">
+            date
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="right-menu">
+
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<button
+class="scroll-top"
+onclick="window.scrollTo({top:0,behavior:'smooth'})">
+↑
+</button>
+
 </body>
 </html>
