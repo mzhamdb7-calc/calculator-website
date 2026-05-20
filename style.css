@@ -188,7 +188,6 @@ body {
   border: 5px solid black;
   box-shadow: 9px 9px 0 black;
   padding: 30px;
-  transform: rotate(0.5deg);
   position: relative;
   z-index: 1;
 }
