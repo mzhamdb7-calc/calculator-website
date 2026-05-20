@@ -23,7 +23,6 @@ body {
   background: white;
   border: 5px solid black;
   box-shadow: 7px 7px 0 black;
-  overflow: visible;
 }
 
 #navbar a,
@@ -51,19 +50,19 @@ body {
 
 .dropdown {
   position: relative;
-  z-index: 999999;
 }
 
 .dropdown-content {
   display: none;
-  position: absolute;
-  top: 65px;
-  left: 0;
+  position: fixed;
+  top: 92px;
+  left: 50%;
+  transform: translateX(-95px);
   width: 230px;
   background: white;
   border: 5px solid black;
   box-shadow: 6px 6px 0 black;
-  z-index: 999999;
+  z-index: 9999999;
 }
 
 .dropdown-content a {
@@ -78,12 +77,12 @@ body {
   display: block;
 }
 
-/* hide navbar when scrolled */
+/* SCROLL MENU */
+
 #navbar.scrolled {
   display: none;
 }
 
-/* show stacked menu when ☰ clicked */
 #navbar.open {
   display: flex;
   top: 110px;
@@ -103,6 +102,7 @@ body {
 
 #navbar.open .dropdown-content {
   position: static;
+  transform: none;
   width: 260px;
   box-shadow: none;
   border-left: none;
@@ -140,8 +140,6 @@ body {
   display: grid;
   grid-template-columns: 280px 1fr;
   gap: 35px;
-  position: relative;
-  z-index: 1;
 }
 
 /* HISTORY */
@@ -152,8 +150,6 @@ body {
   box-shadow: 7px 7px 0 black;
   padding: 20px;
   transform: rotate(-1deg);
-  position: relative;
-  z-index: 1;
 }
 
 .history-top {
@@ -188,12 +184,6 @@ body {
   border: 5px solid black;
   box-shadow: 9px 9px 0 black;
   padding: 30px;
-
-  /* IMPORTANT FIX */
-  transform: none;
-
-  position: relative;
-  z-index: 0;
 }
 
 .calculator h1 {
@@ -290,6 +280,11 @@ body {
     font-size: 22px;
   }
 
+  .dropdown-content {
+    top: 83px;
+    transform: translateX(-40px);
+  }
+
   .calculator-container {
     grid-template-columns: 1fr;
     margin-top: 120px;
@@ -308,27 +303,4 @@ body {
     height: 58px;
     font-size: 18px;
   }
-}
-
-/* DROPDOWN FIX */
-
-#navbar {
-  position: relative;
-  z-index: 999999 !important;
-}
-
-.dropdown {
-  position: relative;
-  z-index: 999999 !important;
-}
-
-.dropdown-content {
-  z-index: 9999999 !important;
-}
-
-.calculator,
-.calculator-container,
-.card {
-  position: relative;
-  z-index: 0 !important;
 }
