@@ -1,153 +1,213 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Free Online Calculators</title>
-  <link rel="stylesheet" href="style.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Free online calculators for BMI, age, percentages, loans and more.">
-<link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculator Website</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #eef3f8;
+      color: #111;
+    }
+
+    .page {
+      max-width: 1200px;
+      min-height: 100vh;
+      margin: auto;
+      background: white;
+      position: relative;
+    }
+
+    .top-ad {
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 4px solid #000;
+      font-size: 22px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 210px 1fr 90px;
+      min-height: calc(100vh - 90px);
+    }
+
+    .left-ad {
+      border-right: 4px solid #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .content {
+      padding: 45px 60px;
+      position: relative;
+    }
+
+    nav {
+      max-width: 560px;
+      margin: 0 auto 35px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 4px solid #000;
+    }
+
+    nav a {
+      text-align: center;
+      padding: 5px;
+      font-size: 20px;
+      text-decoration: none;
+      color: #111;
+      border-right: 4px solid #000;
+    }
+
+    nav a:last-child {
+      border-right: none;
+    }
+
+    .calculator-box {
+      max-width: 560px;
+      margin: auto;
+      border: 4px solid #000;
+      padding: 20px 30px 70px;
+    }
+
+    .calculator-box h1 {
+      text-align: center;
+      font-size: 22px;
+      margin-bottom: 20px;
+      font-weight: normal;
+    }
+
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px 40px;
+    }
+
+    .card {
+      height: 85px;
+      border: 4px solid #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      text-decoration: none;
+      color: #111;
+      background: white;
+    }
+
+    .card:hover {
+      background: #f2f2f2;
+    }
+
+    .right-menu {
+      padding-top: 45px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .hamburger {
+      width: 36px;
+      cursor: pointer;
+    }
+
+    .hamburger span {
+      display: block;
+      height: 4px;
+      background: #000;
+      margin: 8px 0;
+      border-radius: 2px;
+    }
+
+    .scroll-top {
+      position: fixed;
+      right: 35px;
+      bottom: 35px;
+      width: 55px;
+      height: 55px;
+      border: 4px solid #000;
+      background: white;
+      font-size: 35px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .left-ad,
+      .right-menu {
+        display: none;
+      }
+
+      .content {
+        padding: 25px 15px;
+      }
+
+      nav,
+      .calculator-box {
+        max-width: 100%;
+      }
+
+      .calculator-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
-<script>
-window.addEventListener("scroll", function(){
-  const navbar = document.getElementById("navbar");
-  const menuIcon = document.getElementById("menuIcon");
 
-  if(window.scrollY > 80){
-    navbar.classList.add("scrolled");
-    menuIcon.classList.add("show");
-  }else{
-    navbar.classList.remove("scrolled");
-    navbar.classList.remove("open");
-    menuIcon.classList.remove("show");
-  }
-});
-
-function toggleMenu(){
-  document.getElementById("navbar").classList.toggle("open");
-}
-</script>
-
-
-<script>
-
-window.addEventListener("scroll", function(){
-
-  const navbar = document.getElementById("navbar");
-  const menuIcon = document.getElementById("menuIcon");
-  const scrollBtn = document.getElementById("scrollTopBtn");
-
-  if(window.scrollY > 80){
-
-    navbar.style.top = "120px";
-
-    scrollBtn.style.display = "flex";
-
-  }else{
-
-    navbar.style.top = "25px";
-
-    scrollBtn.style.display = "none";
-  }
-
-});
-
-function scrollToTop(){
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-}
-
-</script>
-<button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
 <body>
+  <div class="page">
+    <header class="top-ad">ads</header>
 
-<nav id="navbar">
+    <main class="layout">
+      <aside class="left-ad">ads</aside>
 
-  <a href="index.html">Home</a>
+      <section class="content">
+        <nav>
+          <a href="#">home</a>
+          <a href="#">calculator</a>
+          <a href="#">about</a>
+        </nav>
 
-  <div class="dropdown">
-    <button class="dropbtn">Calculators ▼</button>
+        <div class="calculator-box">
+          <h1>Calculator</h1>
 
-    <div class="dropdown-content">
-      <a href="basic-calculator.html">Basic Calculator</a>
-      <a href="bmi-calculator.html">BMI Calculator</a>
-      <a href="age-calculator.html">Age Calculator</a>
-      <a href="percentage-calculator.html">Percentage Calculator</a>
-      <a href="loan-calculator.html">Loan Calculator</a>
-      <a href="discount-calculator.html">Discount Calculator</a>
-    </div>
+          <div class="calculator-grid">
+            <a href="#" class="card">basic</a>
+            <a href="#" class="card">finance</a>
+            <a href="#" class="card">health</a>
+            <a href="#" class="card">math</a>
+            <a href="#" class="card">unit</a>
+            <a href="#" class="card">date</a>
+          </div>
+        </div>
+      </section>
+
+      <aside class="right-menu">
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </aside>
+    </main>
+
+    <button class="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+      ↑
+    </button>
   </div>
-
-  <a href="about.html">About</a>
-
-</nav>
-
-<button id="menuIcon" onclick="toggleMenu()">☰</button>
-
-<button id="menuIcon" onclick="toggleMenu()">☰</button>
-
-<div class="calculator home-page">
-
-  <h1>Free Online Calculators</h1>
-
-  <p class="subtitle">Choose a calculator below.</p>
-
-  <a href="basic-calculator.html" class="card-link">
-  <div class="card">
-    <h2>Basic</h2>
-<p>calculator</p>
-  </div>
-</a>
-
-
-<br>
-
-  <a href="bmi-calculator.html" class="card-link">
-  <div class="card">
-    <h2>BMI </h2>
-  <p>calculator</p>
-  </div>
-</a>
-  
-  <br>
-
-  <a href="age-calculator.html" class="card-link">
-  <div class="card">
-    <h2>Age </h2>
-    <p>calculator</p>
-  </div>
-</a>
-
-<br>
-
- <a href="percentage-calculator.html" class="card-link">
-  <div class="card">
-    <h2>Percentage</h2>
-    <p>calculator</p>
-  </div>
-</a>
-
-<br>
-
- <a href="loan-calculator.html" class="card-link">
-  <div class="card">
-    <h2>Loan </h2>
-    <p>calculator</p>
-  </div>
-</a> 
-
-<br>
-
-<a href="discount-calculator.html" class="card-link">
-  <div class="card">
-    <h2>Discount </h2>
-    <p>calculator</p>
-  </div>
-</a> 
-
-
-</div>
-
 </body>
 </html>
