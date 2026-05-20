@@ -1,526 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Cartoon Calculator</title>
-
-<style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:"Comic Sans MS", cursive, sans-serif;
-}
-
-body{
-  background:#dfe7ef;
-  overflow-x:hidden;
-}
-
-.page{
-  max-width:1200px;
-  min-height:100vh;
-  margin:auto;
-  background:#f8f8f8;
-  border:5px solid black;
-}
-
-.top-ad{
-  height:90px;
-  border-bottom:5px solid black;
-  background:#ffffff;
-  box-shadow:5px 5px 0 black;
-}
-
-.layout{
-  display:grid;
-  grid-template-columns:220px 1fr 90px;
-}
-
-.left-ad{
-  border-right:5px solid black;
-  min-height:900px;
-  background:#fff;
-}
-
-.content{
-  padding:40px;
-}
-
-/* NAVBAR */
-
-#navbar{
-  width:720px;
-  height:90px;
-
-  margin:auto;
-
-  display:flex;
-
-  position:relative;
-  z-index:999999;
-
-  background:white;
-  border:5px solid black;
-
-  transform:rotate(-1deg);
-  box-shadow:7px 7px 0 black;
-}
-
-#navbar a,
-.dropbtn{
-  width:240px;
-  height:90px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  padding:0;
-
-  color:black;
-  text-decoration:none;
-
-  font-size:28px;
-  font-weight:bold;
-
-  background:white;
-
-  border:none;
-  border-right:5px solid black;
-
-  cursor:pointer;
-}
-
-#navbar a:last-child{
-  border-right:none;
-}
-
-#navbar a:hover,
-.dropbtn:hover{
-  background:#ffe66d;
-}
-
-/* DROPDOWN */
-
-.dropdown{
-  width:240px;
-  position:relative;
-}
-
-.dropdown-content{
-  display:none;
-
-  position:absolute;
-  top:85px;
-  left:-5px;
-
-  width:250px;
-
-  background:white;
-
-  border:5px solid black;
-  box-shadow:6px 6px 0 black;
-
-  z-index:9999999;
-}
-
-.dropdown-content a{
-  width:100%;
-  height:55px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  font-size:20px;
-
-  border-right:none;
-  border-bottom:4px solid black;
-}
-
-.dropdown-content a:last-child{
-  border-bottom:none;
-}
-
-.dropdown:hover .dropdown-content{
-  display:block;
-}
-
-/* SCROLL MENU */
-
-#navbar.scrolled{
-  display:none;
-}
-
-#navbar.open{
-  display:flex;
-
-  position:fixed;
-
-  top:120px;
-  right:35px;
-  left:auto;
-
-  width:260px;
-  height:auto;
-
-  margin:0;
-
-  transform:none;
-
-  flex-direction:column;
-
-  z-index:999999;
-}
-
-#navbar.open a,
-#navbar.open .dropbtn{
-  width:260px;
-  height:70px;
-
-  border-right:none;
-  border-bottom:5px solid black;
-}
-
-#navbar.open .dropdown{
-  width:260px;
-}
-
-#navbar.open .dropdown-content{
-  position:static;
-
-  width:260px;
-
-  box-shadow:none;
-
-  border-left:none;
-  border-right:none;
-}
-
-/* HAMBURGER */
-
-.hamburger{
-  position:fixed;
-  top:50px;
-  right:35px;
-
-  width:55px;
-
-  cursor:pointer;
-
-  display:none;
-
-  z-index:999999;
-}
-
-.hamburger.show{
-  display:block;
-}
-
-.hamburger span{
-  display:block;
-
-  height:6px;
-
-  background:black;
-
-  margin:8px 0;
-
-  border-radius:20px;
-}
-
-/* CALCULATOR BOX */
-
-.calculator-box{
-  width:620px;
-
-  margin:40px auto;
-
-  border:5px solid black;
-
-  padding:30px;
-
-  background:white;
-
-  box-shadow:8px 8px 0 black;
-
-  position:relative;
-  z-index:1;
-}
-
-.calculator-box h1{
-  text-align:center;
-
-  font-size:45px;
-
-  margin-bottom:25px;
-}
-
-.calculator-grid{
-  display:grid;
-
-  grid-template-columns:1fr 1fr;
-
-  gap:35px;
-}
-
-.card{
-  height:110px;
-
-  border:5px solid black;
-
-  text-decoration:none;
-  color:black;
-
-  display:flex;
-  justify-content:center;
-  align-items:center;
-
-  font-size:35px;
-  font-weight:bold;
-
-  background:#ffffff;
-
-  transition:0.2s;
-
-  box-shadow:5px 5px 0 black;
-}
-
-.card:nth-child(1){ background:#ffd3d3; }
-.card:nth-child(2){ background:#d3ffd9; }
-.card:nth-child(3){ background:#d3e5ff; }
-.card:nth-child(4){ background:#fff1b8; }
-.card:nth-child(5){ background:#f1d3ff; }
-.card:nth-child(6){ background:#d3fff9; }
-
-.card:hover{
-  transform:translate(-3px,-3px) rotate(-1deg);
-  box-shadow:9px 9px 0 black;
-}
-
-/* SCROLL TOP */
-
-.scroll-top{
-  position:fixed;
-
-  right:35px;
-  bottom:35px;
-
-  width:70px;
-  height:70px;
-
-  border:5px solid black;
-
-  background:white;
-
-  font-size:40px;
-  font-weight:bold;
-
-  cursor:pointer;
-
-  box-shadow:5px 5px 0 black;
-
-  z-index:999999;
-}
-
-.scroll-top:hover{
-  transform:rotate(-10deg);
-}
-
-/* RESPONSIVE */
-
-@media(max-width:768px){
-
-  .layout{
-    grid-template-columns:1fr;
-  }
-
-  .left-ad{
-    display:none;
-  }
-
-  .content{
-    padding:20px;
-  }
-
-  #navbar{
-    width:100%;
-    height:70px;
-  }
-
-  #navbar a,
-  .dropbtn{
-    width:33.33%;
-    height:70px;
-
-    font-size:20px;
-  }
-
-  .dropdown{
-    width:33.33%;
-  }
-
-  .dropdown-content{
-    top:65px;
-    left:-5px;
-
-    width:210px;
-  }
-
-  .dropdown-content a{
-    width:100%;
-    height:50px;
-
-    font-size:18px;
-  }
-
-  #navbar.open{
-    right:20px;
-
-    width:260px;
-    height:auto;
-  }
-
-  #navbar.open a,
-  #navbar.open .dropbtn{
-    width:260px;
-  }
-
-  #navbar.open .dropdown{
-    width:260px;
-  }
-
-  #navbar.open .dropdown-content{
-    width:260px;
-  }
-
-  .calculator-box{
-    width:100%;
-
-    margin-top:40px;
-  }
-
-  .calculator-grid{
-    grid-template-columns:1fr;
-  }
-
-  .card{
-    font-size:28px;
-  }
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Cartoon Calculator</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Free online calculators for BMI, age, percentages, loans and more.">
 </head>
 
 <body>
 
-<div class="page">
+  <button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
 
-  <div class="top-ad"></div>
+  <nav id="navbar">
 
-  <div class="layout">
+    <a href="index.html">home</a>
 
-    <div class="left-ad"></div>
+    <div class="dropdown">
 
-    <div class="content">
+      <button type="button" class="dropbtn">
+        calculator
+      </button>
 
-      <nav id="navbar">
-
-        <a href="index.html">home</a>
-
-        <div class="dropdown">
-
-          <button class="dropbtn">calculator</button>
-
-          <div class="dropdown-content">
-            <a href="basic-calculator.html">basic</a>
-            <a href="age-calculator.html">age</a>
-            <a href="bmi-calculator.html">bmi</a>
-            <a href="discount-calculator.html">discount</a>
-            <a href="loan-calculator.html">loan</a>
-            <a href="percentage-calculator.html">percentage</a>
-          </div>
-
-        </div>
-
-        <a href="about.html">about</a>
-
-      </nav>
-
-      <div class="calculator-box">
-
-        <h1>Calculator</h1>
-
-        <div class="calculator-grid">
-          <a href="basic-calculator.html" class="card">basic</a>
-          <a href="age-calculator.html" class="card">age</a>
-          <a href="bmi-calculator.html" class="card">bmi</a>
-          <a href="discount-calculator.html" class="card">discount</a>
-          <a href="loan-calculator.html" class="card">loan</a>
-          <a href="percentage-calculator.html" class="card">percentage</a>
-        </div>
-
+      <div class="dropdown-content">
+        <a href="basic-calculator.html">basic</a>
+        <a href="age-calculator.html">age</a>
+        <a href="bmi-calculator.html">bmi</a>
+        <a href="discount-calculator.html">discount</a>
+        <a href="loan-calculator.html">loan</a>
+        <a href="percentage-calculator.html">percentage</a>
       </div>
 
     </div>
 
-  </div>
+    <a href="about.html">about</a>
 
-</div>
+  </nav>
 
-<div class="hamburger" id="hamburger" onclick="toggleMenu()">
-  <span></span>
-  <span></span>
-  <span></span>
-</div>
+  <button id="menuIcon" onclick="toggleMenu()">☰</button>
 
-<button class="scroll-top" onclick="scrollToTop()">↑</button>
+  <main class="calculator-box">
 
-<script>
-window.addEventListener("scroll", function(){
+    <h1>Calculator</h1>
 
-  const navbar = document.getElementById("navbar");
-  const hamburger = document.getElementById("hamburger");
+    <div class="calculator-grid">
 
-  if(window.scrollY > 120){
+      <a href="basic-calculator.html" class="card">basic</a>
+      <a href="age-calculator.html" class="card">age</a>
+      <a href="bmi-calculator.html" class="card">bmi</a>
+      <a href="discount-calculator.html" class="card">discount</a>
+      <a href="loan-calculator.html" class="card">loan</a>
+      <a href="percentage-calculator.html" class="card">percentage</a>
 
-    navbar.classList.add("scrolled");
-    hamburger.classList.add("show");
+    </div>
 
-  }else{
+  </main>
 
-    navbar.classList.remove("scrolled");
-    navbar.classList.remove("open");
-    hamburger.classList.remove("show");
-
-  }
-
-});
-
-function toggleMenu(){
-
-  const navbar = document.getElementById("navbar");
-
-  navbar.classList.toggle("open");
-
-  if(navbar.classList.contains("open")){
-    navbar.classList.remove("scrolled");
-  }else{
-    navbar.classList.add("scrolled");
-  }
-
-}
-
-function scrollToTop(){
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
-}
-</script>
+  <script src="script.js"></script>
 
 </body>
 </html>

@@ -78,43 +78,7 @@
 
   </main>
 
-  <script>
-    window.addEventListener("scroll", function () {
-      const navbar = document.getElementById("navbar");
-      const menuIcon = document.getElementById("menuIcon");
-      const scrollBtn = document.getElementById("scrollTopBtn");
-
-      if (window.scrollY > 80) {
-        navbar.classList.add("scrolled");
-        menuIcon.classList.add("show");
-      } else {
-        navbar.classList.remove("scrolled");
-        navbar.classList.remove("open");
-        menuIcon.classList.remove("show");
-      }
-
-      scrollBtn.style.display = window.scrollY > 200 ? "flex" : "none";
-    });
-
-    function toggleMenu() {
-      const navbar = document.getElementById("navbar");
-
-      navbar.classList.toggle("open");
-
-      if (navbar.classList.contains("open")) {
-        navbar.classList.remove("scrolled");
-      } else {
-        navbar.classList.add("scrolled");
-      }
-    }
-
-    function scrollToTop() {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    }
-  </script>
+  <script src="script.js"></script>
 
 </body>
 </html>
