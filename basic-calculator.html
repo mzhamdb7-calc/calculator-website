@@ -1,147 +1,127 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Calculator</title>
   <link rel="stylesheet" href="style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Free online calculators for BMI, age, percentages, loans and more.">
-<link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta name="description" content="Free online calculators for BMI, age, percentages, loans and more.">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
-<button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
-<script>
 
-window.addEventListener("scroll", function(){
-
-  const navbar = document.getElementById("navbar");
-  const menuIcon = document.getElementById("menuIcon");
-  const scrollBtn = document.getElementById("scrollTopBtn");
-
-  if(window.scrollY > 80){
-
-    navbar.classList.add("scrolled");
-    menuIcon.classList.add("show");
-
-    navbar.style.top = "120px";
-
-  }else{
-
-    navbar.classList.remove("scrolled");
-    navbar.classList.remove("open");
-    menuIcon.classList.remove("show");
-
-    navbar.style.top = "25px";
-  }
-
-  if(window.scrollY > 200){
-
-    scrollBtn.style.display = "flex";
-
-  }else{
-
-    scrollBtn.style.display = "none";
-  }
-
-});
-
-function toggleMenu(){
-
-  document.getElementById("navbar").classList.toggle("open");
-
-}
-
-function scrollToTop(){
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
-}
-
-</script>
 <body>
-<nav id="navbar">
 
-  <a href="index.html">Home</a>
+  <button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
 
-  <div class="dropdown">
-    <button class="dropbtn">Calculators ▼</button>
+  <nav id="navbar">
+    <a href="index.html">Home</a>
 
-    <div class="dropdown-content">
-      <a href="basic-calculator.html">Basic Calculator</a>
-      <a href="bmi-calculator.html">BMI Calculator</a>
-      <a href="age-calculator.html">Age Calculator</a>
-      <a href="percentage-calculator.html">Percentage Calculator</a>
-      <a href="loan-calculator.html">Loan Calculator</a>
-      <a href="discount-calculator.html">Discount Calculator</a>
+    <div class="dropdown">
+      <button class="dropbtn">Calculators ▼</button>
+
+      <div class="dropdown-content">
+        <a href="basic-calculator.html">Basic Calculator</a>
+        <a href="bmi-calculator.html">BMI Calculator</a>
+        <a href="age-calculator.html">Age Calculator</a>
+        <a href="percentage-calculator.html">Percentage Calculator</a>
+        <a href="loan-calculator.html">Loan Calculator</a>
+        <a href="discount-calculator.html">Discount Calculator</a>
+      </div>
     </div>
-  </div>
 
-  <a href="about.html">About</a>
+    <a href="about.html">About</a>
+  </nav>
 
-</nav>
+  <button id="menuIcon" onclick="toggleMenu()">☰</button>
 
-<button id="menuIcon" onclick="toggleMenu()">☰</button>
+  <main class="calculator-container">
 
-<div class="calculator-container">
+    <section class="history">
+      <div class="history-top">
+        <h3>History</h3>
+        <button class="clear-btn" onclick="clearHistory()">Clear</button>
+      </div>
 
-<div class="history">
-   <div class="history-top">
+      <ul id="historyList"></ul>
+    </section>
 
-    <h3>History</h3>
+    <section class="calculator">
+      <h1>Calculator</h1>
 
-    <button class="clear-btn" onclick="clearHistory()">Clear</button>
+      <p class="subtitle">
+        Free online calculator for quick math calculations.
+      </p>
 
-  </div>
+      <input type="text" id="display" readonly>
 
-  <ul id="historyList"></ul>
-</div>
+      <div class="buttons scientific-grid">
+        <button onclick="add('Math.PI')">π</button>
+        <button onclick="addFunction('sin')">sin</button>
+        <button onclick="addFunction('ln')">ln</button>
+        <button onclick="add('7')">7</button>
+        <button onclick="add('8')">8</button>
+        <button onclick="add('9')">9</button>
+        <button onclick="add('/')">÷</button>
 
-<div class="calculator">
-  <h1>Calculator</h1>
-<p class="subtitle">
-Free online calculator for quick math calculations.
-</p>
-  <input type="text" id="display" readonly>
+        <button onclick="add('Math.E')">e</button>
+        <button onclick="addFunction('cos')">cos</button>
+        <button onclick="addFunction('log')">log</button>
+        <button onclick="add('4')">4</button>
+        <button onclick="add('5')">5</button>
+        <button onclick="add('6')">6</button>
+        <button onclick="add('*')">×</button>
 
-  <div class="buttons scientific-grid">
+        <button onclick="add('Ans')">Ans</button>
+        <button onclick="addFunction('tan')">tan</button>
+        <button onclick="addFunction('sqrt')">√</button>
+        <button onclick="add('1')">1</button>
+        <button onclick="add('2')">2</button>
+        <button onclick="add('3')">3</button>
+        <button onclick="add('-')">−</button>
 
-  <button onclick="add('Math.PI')">π</button>
-  <button onclick="addFunction('sin')">sin</button>
-  <button onclick="addFunction('ln')">ln</button>
-  <button onclick="add('7')">7</button>
-  <button onclick="add('8')">8</button>
-  <button onclick="add('9')">9</button>
-  <button onclick="add('/')">÷</button>
+        <button onclick="clearDisplay()">AC</button>
+        <button onclick="addPower()">xʸ</button>
+        <button onclick="add('%')">%</button>
+        <button onclick="add('0')">0</button>
+        <button onclick="add('.')">.</button>
+        <button onclick="calculate()" class="equal">=</button>
+        <button onclick="add('+')">+</button>
+      </div>
+    </section>
 
-  <button onclick="add('Math.E')">e</button>
-  <button onclick="addFunction('cos')">cos</button>
-  <button onclick="addFunction('log')">log</button>
-  <button onclick="add('4')">4</button>
-  <button onclick="add('5')">5</button>
-  <button onclick="add('6')">6</button>
-  <button onclick="add('*')">×</button>
+  </main>
 
-  <button onclick="add('Ans')">Ans</button>
-  <button onclick="addFunction('tan')">tan</button>
-  <button onclick="addFunction('sqrt')">√</button>
-  <button onclick="add('1')">1</button>
-  <button onclick="add('2')">2</button>
-  <button onclick="add('3')">3</button>
-  <button onclick="add('-')">−</button>
+  <script src="script.js"></script>
 
-  <button onclick="clearDisplay()">AC</button>
-  <button onclick="addPower()">xʸ</button>
-  <button onclick="add('%')">%</button>
-  <button onclick="add('0')">0</button>
-  <button onclick="add('.')">.</button>
-  <button onclick="calculate()" class="equal">=</button>
-  <button onclick="add('+')">+</button>
+  <script>
+    window.addEventListener("scroll", function(){
+      const navbar = document.getElementById("navbar");
+      const menuIcon = document.getElementById("menuIcon");
+      const scrollBtn = document.getElementById("scrollTopBtn");
 
-</div>
-</div>
-<div>
-<script src="script.js"></script>
+      if(window.scrollY > 80){
+        navbar.classList.add("scrolled");
+        menuIcon.classList.add("show");
+      } else {
+        navbar.classList.remove("scrolled");
+        navbar.classList.remove("open");
+        menuIcon.classList.remove("show");
+      }
+
+      scrollBtn.style.display = window.scrollY > 200 ? "flex" : "none";
+    });
+
+    function toggleMenu(){
+      document.getElementById("navbar").classList.toggle("open");
+    }
+
+    function scrollToTop(){
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+  </script>
 
 </body>
 </html>
