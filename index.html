@@ -29,8 +29,8 @@ body{
 .top-ad{
   height:90px;
   border-bottom:5px solid black;
-  background:#ffffff;
-  box-shadow:5px 5px 0px black;
+  background:#fff;
+  box-shadow:5px 5px 0 black;
 }
 
 .layout{
@@ -50,59 +50,66 @@ body{
 
 /* NAVBAR */
 
-nav{
-  width:600px;
+#navbar{
+  width:720px;
+  height:90px;
   margin:auto;
   display:flex;
-  border:5px solid black;
+  position:relative;
+  z-index:999999;
   background:white;
+  border:5px solid black;
+  box-shadow:7px 7px 0 black;
   transform:rotate(-1deg);
-  box-shadow:6px 6px 0px black;
-  z-index:1000;
 }
 
-nav a,
+#navbar a,
 .dropbtn{
-  width:200px;
+  width:240px;
+  height:80px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   text-decoration:none;
   color:black;
   font-size:30px;
-  text-align:center;
-  padding:10px;
+  font-weight:bold;
   border:none;
   border-right:5px solid black;
   background:white;
   cursor:pointer;
 }
 
-nav a:last-child{
+#navbar a:last-child{
   border-right:none;
 }
 
-nav a:hover,
+#navbar a:hover,
 .dropbtn:hover{
   background:#ffe56c;
 }
 
 .dropdown{
+  width:240px;
   position:relative;
 }
 
 .dropdown-content{
   display:none;
-  position:absolute;
-  top:62px;
-  left:0;
-  width:230px;
+  position:fixed;
+  top:185px;
+  left:50%;
+  transform:translateX(-50%);
+  width:240px;
   background:white;
   border:5px solid black;
   box-shadow:6px 6px 0 black;
-  z-index:3000;
+  z-index:9999999;
 }
 
 .dropdown-content a{
-  display:block;
   width:100%;
+  height:55px;
   font-size:20px;
   border-right:none;
   border-bottom:4px solid black;
@@ -114,31 +121,39 @@ nav a:hover,
 
 /* SCROLL MENU */
 
-nav.scrolled{
+#navbar.scrolled{
   display:none;
 }
 
-nav.open{
+#navbar.open{
   display:flex;
   position:fixed;
   top:120px;
-  right:100px;
+  right:35px;
+  left:auto;
   width:260px;
+  height:auto;
   flex-direction:column;
   transform:none;
-  z-index:3000;
+  z-index:999999;
 }
 
-nav.open a,
-nav.open .dropbtn{
-  width:100%;
+#navbar.open a,
+#navbar.open .dropbtn{
+  width:260px;
+  height:70px;
   border-right:none;
   border-bottom:5px solid black;
 }
 
-nav.open .dropdown-content{
+#navbar.open .dropdown{
+  width:260px;
+}
+
+#navbar.open .dropdown-content{
   position:static;
-  width:100%;
+  transform:none;
+  width:260px;
   box-shadow:none;
   border-left:none;
   border-right:none;
@@ -153,7 +168,7 @@ nav.open .dropdown-content{
   width:55px;
   cursor:pointer;
   display:none;
-  z-index:4000;
+  z-index:999999;
 }
 
 .hamburger.show{
@@ -176,212 +191,11 @@ nav.open .dropdown-content{
   border:5px solid black;
   padding:30px;
   background:white;
-  transform:rotate(0.5deg);
-  box-shadow:8px 8px 0px black;
+  box-shadow:8px 8px 0 black;
+  position:relative;
+  z-index:1;
 }
 
 .calculator-box h1{
   text-align:center;
-  font-size:45px;
-  margin-bottom:25px;
-}
-
-.calculator-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:35px;
-}
-
-.card{
-  height:110px;
-  border:5px solid black;
-  text-decoration:none;
-  color:black;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:35px;
-  font-weight:bold;
-  background:#ffffff;
-  transition:0.2s;
-  box-shadow:5px 5px 0px black;
-}
-
-.card:nth-child(1){ background:#ffd3d3; }
-.card:nth-child(2){ background:#d3ffd9; }
-.card:nth-child(3){ background:#d3e5ff; }
-.card:nth-child(4){ background:#fff1b8; }
-.card:nth-child(5){ background:#f1d3ff; }
-.card:nth-child(6){ background:#d3fff9; }
-
-.card:hover{
-  transform:translate(-3px,-3px) rotate(-1deg);
-  box-shadow:9px 9px 0px black;
-}
-
-/* SCROLL TOP */
-
-.scroll-top{
-  position:fixed;
-  right:35px;
-  bottom:35px;
-  width:70px;
-  height:70px;
-  border:5px solid black;
-  background:white;
-  font-size:40px;
-  font-weight:bold;
-  cursor:pointer;
-  box-shadow:5px 5px 0px black;
-}
-
-.scroll-top:hover{
-  transform:rotate(-10deg);
-}
-
-/* RESPONSIVE */
-
-@media(max-width:768px){
-  .layout{
-    grid-template-columns:1fr;
-  }
-
-  .left-ad{
-    display:none;
-  }
-
-  .content{
-    padding:20px;
-  }
-
-  nav{
-    width:100%;
-  }
-
-  nav a,
-  .dropbtn{
-    font-size:20px;
-    width:33.33%;
-  }
-
-  nav.open{
-    right:20px;
-    width:260px;
-  }
-
-  nav.open a,
-  nav.open .dropbtn{
-    width:100%;
-  }
-
-  .calculator-box{
-    width:100%;
-  }
-
-  .calculator-grid{
-    grid-template-columns:1fr;
-  }
-
-  .card{
-    font-size:28px;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<div class="page">
-
-  <div class="top-ad"></div>
-
-  <div class="layout">
-
-    <div class="left-ad"></div>
-
-    <div class="content">
-
-      <nav id="navbar">
-        <a href="index.html">home</a>
-
-        <div class="dropdown">
-          <button class="dropbtn">calculator</button>
-
-          <div class="dropdown-content">
-            <a href="basic-calculator.html">basic</a>
-            <a href="age-calculator.html">Age</a>
-            <a href="bmi-calculator.html">BMI</a>
-            <a href="discount-calculator.html">Discount</a>
-            <a href="loan-calculator.html">Loan</a>
-            <a href="percentage-calculator.html">percentages</a>
-          </div>
-        </div>
-
-        <a href="about.html">about</a>
-      </nav>
-
-      <div class="calculator-box">
-        <h1>Calculator</h1>
-        
-
-        <div class="calculator-grid">
-          <a href="basic-calculator.html" class="card">basic</a>
-            <a href="age-calculator.html" class="card">Age</a>
-            <a href="bmi-calculator.html" class="card">BMI</a>
-            <a href="discount-calculator.html" class="card">Discount</a>
-            <a href="loan-calculator.html" class="card">Loan</a>
-            <a href="percentage-calculator.html" class="card">percentages</a>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-<div class="hamburger" id="hamburger" onclick="toggleMenu()">
-  <span></span>
-  <span></span>
-  <span></span>
-</div>
-
-<button class="scroll-top" onclick="scrollToTop()">↑</button>
-
-<script>
-window.addEventListener("scroll", function(){
-  const navbar = document.getElementById("navbar");
-  const hamburger = document.getElementById("hamburger");
-
-  if(window.scrollY > 120){
-    navbar.classList.add("scrolled");
-    hamburger.classList.add("show");
-  }else{
-    navbar.classList.remove("scrolled");
-    navbar.classList.remove("open");
-    hamburger.classList.remove("show");
-  }
-});
-
-function toggleMenu(){
-  const navbar = document.getElementById("navbar");
-
-  navbar.classList.toggle("open");
-
-  if(navbar.classList.contains("open")){
-    navbar.classList.remove("scrolled");
-  }else{
-    navbar.classList.add("scrolled");
-  }
-}
-
-function scrollToTop(){
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-}
-</script>
-
-</body>
-</html>
+  font-size:45
