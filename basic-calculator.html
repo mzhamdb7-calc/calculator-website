@@ -15,43 +15,46 @@
 
   <nav id="navbar">
 
-  <a href="index.html">home</a>
+    <a href="index.html">home</a>
 
-  <div class="dropdown">
+    <div class="dropdown">
 
-    <button class="dropbtn">
-      calculator
-    </button>
+      <button type="button" class="dropbtn">
+        calculator
+      </button>
 
-    <div class="dropdown-content">
-      <a href="basic-calculator.html">Basic</a>
-      <a href="bmi-calculator.html">BMI</a>
-      <a href="age-calculator.html">Age</a>
-      <a href="percentage-calculator.html">Percentage</a>
-      <a href="loan-calculator.html">Loan</a>
-      <a href="discount-calculator.html">Discount</a>
+      <div class="dropdown-content">
+        <a href="basic-calculator.html">basic</a>
+        <a href="age-calculator.html">age</a>
+        <a href="bmi-calculator.html">bmi</a>
+        <a href="discount-calculator.html">discount</a>
+        <a href="loan-calculator.html">loan</a>
+        <a href="percentage-calculator.html">percentage</a>
+      </div>
+
     </div>
 
-  </div>
+    <a href="about.html">about</a>
 
-  <a href="about.html">about</a>
+  </nav>
 
-</nav>
-
-<button id="menuIcon" onclick="toggleMenu()">☰</button>
+  <button id="menuIcon" onclick="toggleMenu()">☰</button>
 
   <main class="calculator-container">
 
     <section class="history">
+
       <div class="history-top">
         <h3>History</h3>
-        <button class="clear-btn" onclick="clearHistory()">Clear</button>
+        <button type="button" class="clear-btn" onclick="clearHistory()">Clear</button>
       </div>
 
       <ul id="historyList"></ul>
+
     </section>
 
     <section class="calculator">
+
       <h1>Calculator</h1>
 
       <p class="subtitle">
@@ -61,73 +64,47 @@
       <input type="text" id="display" readonly>
 
       <div class="buttons scientific-grid">
-        <button onclick="add('Math.PI')">π</button>
-        <button onclick="addFunction('sin')">sin</button>
-        <button onclick="addFunction('ln')">ln</button>
-        <button onclick="add('7')">7</button>
-        <button onclick="add('8')">8</button>
-        <button onclick="add('9')">9</button>
-        <button onclick="add('/')">÷</button>
 
-        <button onclick="add('Math.E')">e</button>
-        <button onclick="addFunction('cos')">cos</button>
-        <button onclick="addFunction('log')">log</button>
-        <button onclick="add('4')">4</button>
-        <button onclick="add('5')">5</button>
-        <button onclick="add('6')">6</button>
-        <button onclick="add('*')">×</button>
+        <button type="button" onclick="add('Math.PI')">π</button>
+        <button type="button" onclick="addFunction('sin')">sin</button>
+        <button type="button" onclick="addFunction('ln')">ln</button>
+        <button type="button" onclick="add('7')">7</button>
+        <button type="button" onclick="add('8')">8</button>
+        <button type="button" onclick="add('9')">9</button>
+        <button type="button" onclick="add('/')">÷</button>
 
-        <button onclick="add('Ans')">Ans</button>
-        <button onclick="addFunction('tan')">tan</button>
-        <button onclick="addFunction('sqrt')">√</button>
-        <button onclick="add('1')">1</button>
-        <button onclick="add('2')">2</button>
-        <button onclick="add('3')">3</button>
-        <button onclick="add('-')">−</button>
+        <button type="button" onclick="add('Math.E')">e</button>
+        <button type="button" onclick="addFunction('cos')">cos</button>
+        <button type="button" onclick="addFunction('log')">log</button>
+        <button type="button" onclick="add('4')">4</button>
+        <button type="button" onclick="add('5')">5</button>
+        <button type="button" onclick="add('6')">6</button>
+        <button type="button" onclick="add('*')">×</button>
 
-        <button onclick="clearDisplay()">AC</button>
-        <button onclick="addPower()">xʸ</button>
-        <button onclick="add('%')">%</button>
-        <button onclick="add('0')">0</button>
-        <button onclick="add('.')">.</button>
-        <button onclick="calculate()" class="equal">=</button>
-        <button onclick="add('+')">+</button>
+        <button type="button" onclick="add('Ans')">Ans</button>
+        <button type="button" onclick="addFunction('tan')">tan</button>
+        <button type="button" onclick="addFunction('sqrt')">√</button>
+        <button type="button" onclick="add('1')">1</button>
+        <button type="button" onclick="add('2')">2</button>
+        <button type="button" onclick="add('3')">3</button>
+        <button type="button" onclick="add('-')">−</button>
+
+        <button type="button" onclick="clearDisplay()">AC</button>
+        <button type="button" onclick="addPower()">xʸ</button>
+        <button type="button" onclick="add('%')">%</button>
+        <button type="button" onclick="add('0')">0</button>
+        <button type="button" onclick="add('.')">.</button>
+        <button type="button" onclick="calculate()" class="equal">=</button>
+        <button type="button" onclick="add('+')">+</button>
+
       </div>
+
     </section>
 
   </main>
 
   <script src="script.js"></script>
 
-  <script>
-    window.addEventListener("scroll", function(){
-      const navbar = document.getElementById("navbar");
-      const menuIcon = document.getElementById("menuIcon");
-      const scrollBtn = document.getElementById("scrollTopBtn");
-
-      if(window.scrollY > 80){
-        navbar.classList.add("scrolled");
-        menuIcon.classList.add("show");
-      } else {
-        navbar.classList.remove("scrolled");
-        navbar.classList.remove("open");
-        menuIcon.classList.remove("show");
-      }
-
-      scrollBtn.style.display = window.scrollY > 200 ? "flex" : "none";
-    });
-
-    function toggleMenu(){
-      document.getElementById("navbar").classList.toggle("open");
-    }
-
-    function scrollToTop(){
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    }
-  </script>
-
+  
 </body>
 </html>

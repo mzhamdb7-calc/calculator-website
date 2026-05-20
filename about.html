@@ -1,119 +1,120 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>About</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="favicon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="About this free online calculator website.">
 </head>
 
-<script>
-
-window.addEventListener("scroll", function(){
-
-  const navbar = document.getElementById("navbar");
-  const menuIcon = document.getElementById("menuIcon");
-  const scrollBtn = document.getElementById("scrollTopBtn");
-
-  if(window.scrollY > 80){
-
-    navbar.classList.add("scrolled");
-    menuIcon.classList.add("show");
-
-    navbar.style.top = "120px";
-
-  }else{
-
-    navbar.classList.remove("scrolled");
-    navbar.classList.remove("open");
-    menuIcon.classList.remove("show");
-
-    navbar.style.top = "25px";
-  }
-
-  if(window.scrollY > 200){
-
-    scrollBtn.style.display = "flex";
-
-  }else{
-
-    scrollBtn.style.display = "none";
-  }
-
-});
-
-function toggleMenu(){
-
-  document.getElementById("navbar").classList.toggle("open");
-
-}
-
-function scrollToTop(){
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
-}
-
-</script>
-<button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
 <body>
 
-<nav id="navbar">
+  <button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
 
-  <a href="index.html">Home</a>
+  <nav id="navbar">
 
-  <div class="dropdown">
-    <button class="dropbtn">Calculators ▼</button>
+    <a href="index.html">home</a>
 
-    <div class="dropdown-content">
-      <a href="basic-calculator.html">Basic Calculator</a>
-      <a href="bmi-calculator.html">BMI Calculator</a>
-      <a href="age-calculator.html">Age Calculator</a>
-      <a href="percentage-calculator.html">Percentage Calculator</a>
-      <a href="loan-calculator.html">Loan Calculator</a>
-      <a href="discount-calculator.html">Discount Calculator</a>
+    <div class="dropdown">
+
+      <button type="button" class="dropbtn">
+        calculator
+      </button>
+
+      <div class="dropdown-content">
+        <a href="basic-calculator.html">basic</a>
+        <a href="age-calculator.html">age</a>
+        <a href="bmi-calculator.html">bmi</a>
+        <a href="discount-calculator.html">discount</a>
+        <a href="loan-calculator.html">loan</a>
+        <a href="percentage-calculator.html">percentage</a>
+      </div>
+
     </div>
-  </div>
 
-  <a href="about.html">About</a>
+    <a href="about.html">about</a>
 
-</nav>
+  </nav>
 
-<div class="calculator">
+  <button id="menuIcon" onclick="toggleMenu()">☰</button>
 
-  <h1>About</h1>
+  <main class="about-container">
 
-  <div class="card">
-    <h2>About</h2>
-    <p>
-      This website provides free online calculators for quick and easy calculations.
-    </p>
-  </div>
+    <section class="about-box">
 
-  <div class="card">
-  <h2>Privacy Policy</h2>
+      <h1>About</h1>
 
-  <p>
-    This website may use cookies and third-party services such as Google AdSense to improve user experience and display advertisements.
-  </p>
+      <div class="about-card">
+        <h2>About</h2>
+        <p>
+          This website provides free online calculators for quick and easy calculations.
+        </p>
+      </div>
 
-  <p>
-    No personal information is collected directly from users.
-  </p>
-</div>
+      <div class="about-card">
+        <h2>Privacy Policy</h2>
 
-  <div class="card">
-  <h2>Contact</h2>
+        <p>
+          This website may use cookies and third-party services such as Google AdSense
+          to improve user experience and display advertisements.
+        </p>
 
-  <p>
-    Email: your-email@gmail.com
-  </p>
-</div>
+        <p>
+          No personal information is collected directly from users.
+        </p>
+      </div>
 
-</div>
+      <div class="about-card">
+        <h2>Contact</h2>
+
+        <p>
+          Email: your-email@gmail.com
+        </p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script>
+    window.addEventListener("scroll", function () {
+      const navbar = document.getElementById("navbar");
+      const menuIcon = document.getElementById("menuIcon");
+      const scrollBtn = document.getElementById("scrollTopBtn");
+
+      if (window.scrollY > 80) {
+        navbar.classList.add("scrolled");
+        menuIcon.classList.add("show");
+      } else {
+        navbar.classList.remove("scrolled");
+        navbar.classList.remove("open");
+        menuIcon.classList.remove("show");
+      }
+
+      scrollBtn.style.display = window.scrollY > 200 ? "flex" : "none";
+    });
+
+    function toggleMenu() {
+      const navbar = document.getElementById("navbar");
+
+      navbar.classList.toggle("open");
+
+      if (navbar.classList.contains("open")) {
+        navbar.classList.remove("scrolled");
+      } else {
+        navbar.classList.add("scrolled");
+      }
+    }
+
+    function scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+  </script>
 
 </body>
 </html>

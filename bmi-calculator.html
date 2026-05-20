@@ -1,115 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>BMI Calculator</title>
   <link rel="stylesheet" href="style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Free online calculators for BMI, age, percentages, loans and more.">
-<link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta name="description" content="Calculate your BMI with this free online Body Mass Index calculator.">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
-<script>
-
-window.addEventListener("scroll", function(){
-
-  const navbar = document.getElementById("navbar");
-  const menuIcon = document.getElementById("menuIcon");
-  const scrollBtn = document.getElementById("scrollTopBtn");
-
-  if(window.scrollY > 80){
-
-    navbar.classList.add("scrolled");
-    menuIcon.classList.add("show");
-
-    navbar.style.top = "120px";
-
-  }else{
-
-    navbar.classList.remove("scrolled");
-    navbar.classList.remove("open");
-    menuIcon.classList.remove("show");
-
-    navbar.style.top = "25px";
-  }
-
-  if(window.scrollY > 200){
-
-    scrollBtn.style.display = "flex";
-
-  }else{
-
-    scrollBtn.style.display = "none";
-  }
-
-});
-
-function toggleMenu(){
-
-  document.getElementById("navbar").classList.toggle("open");
-
-}
-
-function scrollToTop(){
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
-}
-
-</script>
-<button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
 <body>
 
-<nav id="navbar">
+  <button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
 
-  <a href="index.html">Home</a>
+  <nav id="navbar">
 
-  <div class="dropdown">
-    <button class="dropbtn">Calculators ▼</button>
+    <a href="index.html">home</a>
 
-    <div class="dropdown-content">
-      <a href="basic-calculator.html">Basic Calculator</a>
-      <a href="bmi-calculator.html">BMI Calculator</a>
-      <a href="age-calculator.html">Age Calculator</a>
-      <a href="percentage-calculator.html">Percentage Calculator</a>
-      <a href="loan-calculator.html">Loan Calculator</a>
-      <a href="discount-calculator.html">Discount Calculator</a>
+    <div class="dropdown">
+
+      <button type="button" class="dropbtn">
+        calculator
+      </button>
+
+      <div class="dropdown-content">
+        <a href="basic-calculator.html">basic</a>
+        <a href="age-calculator.html">age</a>
+        <a href="bmi-calculator.html">bmi</a>
+        <a href="discount-calculator.html">discount</a>
+        <a href="loan-calculator.html">loan</a>
+        <a href="percentage-calculator.html">percentage</a>
+      </div>
+
     </div>
-  </div>
 
-  <a href="about.html">About</a>
+    <a href="about.html">about</a>
 
-</nav>
+  </nav>
 
-<button id="menuIcon" onclick="toggleMenu()">☰</button>
+  <button id="menuIcon" onclick="toggleMenu()">☰</button>
 
-<div class="calculator">
-  <h1>BMI Calculator</h1>
+  <main class="single-calculator-container">
 
-  <p class="subtitle">Check your Body Mass Index.</p>
+    <section class="calculator">
 
-  <input type="number" id="weight" placeholder="Weight in kg">
-  <br><br>
-  <input type="number" id="height" placeholder="Height in cm">
-  <br><br>
+      <h1>BMI Calculator</h1>
 
-  <button onclick="calculateBMI()">bmi</button>
+      <p class="subtitle">
+        Check your Body Mass Index.
+      </p>
 
-  <h2 id="bmiResult"></h2>
-</div>
+      <label for="weight">Weight in kg:</label>
+      <input type="number" id="weight" placeholder="Example: 70">
 
-<script>
-function calculateBMI(){
-  let weight = document.getElementById("weight").value;
-  let height = document.getElementById("height").value / 100;
+      <label for="height">Height in cm:</label>
+      <input type="number" id="height" placeholder="Example: 170">
 
-  let bmi = weight / (height * height);
+      <button type="button" onclick="calculateBMI()" class="main-btn">
+        calculate bmi
+      </button>
 
-  document.getElementById("bmiResult").innerText = "Your BMI is " + bmi.toFixed(2);
-}
-</script>
+      <h2 id="bmiResult"></h2>
+
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+  
+  <script>
+   
+
+    function calculateBMI() {
+      const weight = Number(document.getElementById("weight").value);
+      const heightCm = Number(document.getElementById("height").value);
+      const result = document.getElementById("bmiResult");
+
+      if (weight <= 0 || heightCm <= 0) {
+        result.innerText = "Please enter a valid weight and height.";
+        return;
+      }
+
+      const heightM = heightCm / 100;
+      const bmi = weight / (heightM * heightM);
+
+      let category = "";
+
+      if (bmi < 18.5) {
+        category = "Underweight";
+      } else if (bmi < 25) {
+        category = "Normal weight";
+      } else if (bmi < 30) {
+        category = "Overweight";
+      } else {
+        category = "Obese";
+      }
+
+      result.innerText = "Your BMI is " + bmi.toFixed(2) + " — " + category;
+    }
+  </script>
 
 </body>
 </html>

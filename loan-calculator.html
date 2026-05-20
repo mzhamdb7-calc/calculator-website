@@ -1,73 +1,115 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Loan Calculator</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="favicon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Free loan calculator to estimate monthly loan payments online.">
 </head>
-<button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
+
 <body>
 
-<nav id="navbar">
+  <button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
 
-  <a href="index.html">Home</a>
+  <nav id="navbar">
 
-  <div class="dropdown">
-    <button class="dropbtn">Calculators ▼</button>
+    <a href="index.html">home</a>
 
-    <div class="dropdown-content">
-      <a href="basic-calculator.html">Basic Calculator</a>
-      <a href="bmi-calculator.html">BMI Calculator</a>
-      <a href="age-calculator.html">Age Calculator</a>
-      <a href="percentage-calculator.html">Percentage Calculator</a>
-      <a href="loan-calculator.html">Loan Calculator</a>
-      <a href="discount-calculator.html">Discount Calculator</a>
+    <div class="dropdown">
+
+      <button type="button" class="dropbtn">
+        calculator
+      </button>
+
+      <div class="dropdown-content">
+        <a href="basic-calculator.html">basic</a>
+        <a href="age-calculator.html">age</a>
+        <a href="bmi-calculator.html">bmi</a>
+        <a href="discount-calculator.html">discount</a>
+        <a href="loan-calculator.html">loan</a>
+        <a href="percentage-calculator.html">percentage</a>
+      </div>
+
     </div>
-  </div>
 
-  <a href="about.html">About</a>
+    <a href="about.html">about</a>
 
-</nav>
+  </nav>
 
-<button id="menuIcon" onclick="toggleMenu()">☰</button>
-<div class="calculator">
-  <h1>Loan Calculator</h1>
-  <p class="subtitle">Estimate your monthly loan payment.</p>
+  <button id="menuIcon" onclick="toggleMenu()">☰</button>
 
-  <div class="loan-form">
+  <main class="single-calculator-container">
 
-  <div class="loan-inputs">
+    <section class="calculator">
 
-    <input type="number" id="amount" placeholder="Loan amount">
+      <h1>Loan Calculator</h1>
 
-    <input type="number" id="interest" placeholder="Annual interest rate %">
+      <p class="subtitle">
+        Estimate your monthly loan payment.
+      </p>
 
-    <input type="number" id="years" placeholder="Loan years">
+      <label for="amount">Loan amount:</label>
+      <input type="number" id="amount" placeholder="Example: 10000">
 
-  </div>
+      <label for="interest">Annual interest rate %:</label>
+      <input type="number" id="interest" placeholder="Example: 5">
 
-  <button onclick="calculateLoan()">Loan</button>
+      <label for="years">Loan years:</label>
+      <input type="number" id="years" placeholder="Example: 3">
 
-</div>
+      <button type="button" onclick="calculateLoan()" class="main-btn">
+        calculate loan
+      </button>
 
-  <h2 id="result"></h2>
-</div>
+      <h2 id="result"></h2>
+
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
 
 <script>
-function calculateLoan(){
-  let amount = document.getElementById("amount").value;
-  let interest = document.getElementById("interest").value / 100 / 12;
-  let months = document.getElementById("years").value * 12;
+    
+    function calculateLoan() {
+      const amount = Number(document.getElementById("amount").value);
+      const annualInterest = Number(document.getElementById("interest").value);
+      const years = Number(document.getElementById("years").value);
+      const result = document.getElementById("result");
 
-  let payment = amount * interest * Math.pow(1 + interest, months) /
-  (Math.pow(1 + interest, months) - 1);
+      if (amount <= 0) {
+        result.innerText = "Please enter a valid loan amount.";
+        return;
+      }
 
-  document.getElementById("result").innerText =
-  "Monthly payment: " + payment.toFixed(2);
-}
-</script>
+      if (annualInterest < 0) {
+        result.innerText = "Please enter a valid interest rate.";
+        return;
+      }
+
+      if (years <= 0) {
+        result.innerText = "Please enter valid loan years.";
+        return;
+      }
+
+      const months = years * 12;
+      const monthlyInterest = annualInterest / 100 / 12;
+
+      let payment;
+
+      if (monthlyInterest === 0) {
+        payment = amount / months;
+      } else {
+        payment =
+          amount * monthlyInterest * Math.pow(1 + monthlyInterest, months) /
+          (Math.pow(1 + monthlyInterest, months) - 1);
+      }
+
+      result.innerText = "Monthly payment: " + payment.toFixed(2);
+    }
+  </script>
 
 </body>
 </html>

@@ -1,128 +1,101 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Age Calculator</title>
   <link rel="stylesheet" href="style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Free online calculators for BMI, age, percentages, loans and more.">
-<link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta name="description" content="Calculate your age instantly with this free online age calculator.">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
-<script>
-
-window.addEventListener("scroll", function(){
-
-  const navbar = document.getElementById("navbar");
-  const menuIcon = document.getElementById("menuIcon");
-  const scrollBtn = document.getElementById("scrollTopBtn");
-
-  if(window.scrollY > 80){
-
-    navbar.classList.add("scrolled");
-    menuIcon.classList.add("show");
-
-    navbar.style.top = "120px";
-
-  }else{
-
-    navbar.classList.remove("scrolled");
-    navbar.classList.remove("open");
-    menuIcon.classList.remove("show");
-
-    navbar.style.top = "25px";
-  }
-
-  if(window.scrollY > 200){
-
-    scrollBtn.style.display = "flex";
-
-  }else{
-
-    scrollBtn.style.display = "none";
-  }
-
-});
-
-function toggleMenu(){
-
-  document.getElementById("navbar").classList.toggle("open");
-
-}
-
-function scrollToTop(){
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
-}
-
-</script>
-<button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
 <body>
 
-<nav id="navbar">
+  <button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
 
-  <a href="index.html">Home</a>
+  <nav id="navbar">
 
-  <div class="dropdown">
-    <button class="dropbtn">Calculators ▼</button>
+    <a href="index.html">home</a>
 
-    <div class="dropdown-content">
-      <a href="basic-calculator.html">Basic Calculator</a>
-      <a href="bmi-calculator.html">BMI Calculator</a>
-      <a href="age-calculator.html">Age Calculator</a>
-      <a href="percentage-calculator.html">Percentage Calculator</a>
-      <a href="loan-calculator.html">Loan Calculator</a>
-      <a href="discount-calculator.html">Discount Calculator</a>
+    <div class="dropdown">
+
+      <button type="button" class="dropbtn">
+        calculator
+      </button>
+
+      <div class="dropdown-content">
+        <a href="basic-calculator.html">basic</a>
+        <a href="age-calculator.html">age</a>
+        <a href="bmi-calculator.html">bmi</a>
+        <a href="discount-calculator.html">discount</a>
+        <a href="loan-calculator.html">loan</a>
+        <a href="percentage-calculator.html">percentage</a>
+      </div>
+
     </div>
-  </div>
 
-  <a href="about.html">About</a>
+    <a href="about.html">about</a>
 
-</nav>
+  </nav>
 
-<button id="menuIcon" onclick="toggleMenu()">☰</button>
+  <button id="menuIcon" onclick="toggleMenu()">☰</button>
 
-<div class="calculator">
+  <main class="single-calculator-container">
 
-  <h1>Age Calculator</h1>
+    <section class="calculator">
 
-  <p class="subtitle">Calculate your age instantly.</p>
+      <h1>Age Calculator</h1>
 
-  <input type="date" id="birthdate">
+      <p class="subtitle">
+        Calculate your age instantly.
+      </p>
 
-  <br><br>
+      <label for="birthdate">Enter your birth date:</label>
 
-  <button onclick="calculateAge()">age</button>
+      <input type="date" id="birthdate">
 
-  <h2 id="result"></h2>
+      <button type="button" onclick="calculateAge()" class="main-btn">
+        calculate age
+      </button>
 
-</div>
+      <h2 id="result"></h2>
 
-<script>
+    </section>
 
-function calculateAge(){
+  </main>
 
-  let birthdate = new Date(document.getElementById("birthdate").value);
+  <script src="script.js"></script>
+  
+  <script>
+    
 
-  let today = new Date();
+    function calculateAge() {
+      const birthdateInput = document.getElementById("birthdate").value;
+      const result = document.getElementById("result");
 
-  let age = today.getFullYear() - birthdate.getFullYear();
+      if (birthdateInput === "") {
+        result.innerText = "Please select your birth date.";
+        return;
+      }
 
-  let month = today.getMonth() - birthdate.getMonth();
+      const birthdate = new Date(birthdateInput);
+      const today = new Date();
 
-  if(month < 0 || (month === 0 && today.getDate() < birthdate.getDate())){
-    age--;
-  }
+      if (birthdate > today) {
+        result.innerText = "Birth date cannot be in the future.";
+        return;
+      }
 
-  document.getElementById("result").innerText =
-  "You are " + age + " years old.";
+      let age = today.getFullYear() - birthdate.getFullYear();
+      const month = today.getMonth() - birthdate.getMonth();
 
-}
+      if (month < 0 || (month === 0 && today.getDate() < birthdate.getDate())) {
+        age--;
+      }
 
-</script>
+      result.innerText = "You are " + age + " years old.";
+    }
+  </script>
 
 </body>
 </html>

@@ -9,37 +9,66 @@ body {
   min-height: 120vh;
   background: #dfeeff;
   color: #111;
+  overflow-x: hidden;
 }
 
-/* NAVBAR */
+/* =========================
+   NAVBAR - SAME SIZE ALL PAGES
+========================= */
 
 #navbar {
+  width: 720px;
+  height: 90px;
+
   position: fixed;
   top: 25px;
   left: 50%;
   transform: translateX(-50%) rotate(-1deg);
+
   z-index: 999999;
+
   display: flex;
+
   background: white;
   border: 5px solid black;
   box-shadow: 7px 7px 0 black;
+
+  overflow: visible;
+}
+
+#navbar > a,
+#navbar > .dropdown {
+  width: 240px;
+  height: 90px;
+  flex: 0 0 240px;
 }
 
 #navbar a,
 .dropbtn {
-  width: 190px;
-  padding: 14px 20px;
-  font-size: 30px;
+  width: 100%;
+  height: 90px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  font-size: 28px;
   font-weight: bold;
+
   color: black;
   text-decoration: none;
+
   background: white;
+
   border: none;
   border-right: 5px solid black;
+
   cursor: pointer;
 }
 
-#navbar a:last-child {
+#navbar > a:last-child {
   border-right: none;
 }
 
@@ -48,29 +77,44 @@ body {
   background: #ffe66d;
 }
 
+/* DROPDOWN */
+
 .dropdown {
   position: relative;
 }
 
 .dropdown-content {
   display: none;
-  position: fixed;
-  top: 92px;
-  left: 50%;
-  transform: translateX(-95px);
-  width: 230px;
+
+  position: absolute;
+  top: 85px;
+  left: -5px;
+
+  width: 250px;
+
   background: white;
   border: 5px solid black;
   box-shadow: 6px 6px 0 black;
+
   z-index: 9999999;
 }
 
 .dropdown-content a {
-  display: block;
   width: 100%;
+  height: 55px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   font-size: 20px !important;
+
   border-right: none !important;
   border-bottom: 4px solid black;
+}
+
+.dropdown-content a:last-child {
+  border-bottom: none;
 }
 
 .dropdown:hover .dropdown-content {
@@ -85,26 +129,46 @@ body {
 
 #navbar.open {
   display: flex;
+
+  position: fixed;
+
   top: 110px;
   right: 35px;
   left: auto;
+
+  width: 260px;
+  height: auto;
+
   transform: none;
+
   flex-direction: column;
+
   z-index: 999999;
+}
+
+#navbar.open > a,
+#navbar.open > .dropdown {
+  width: 260px;
+  height: auto;
+  flex: none;
 }
 
 #navbar.open a,
 #navbar.open .dropbtn {
   width: 260px;
+  height: 70px;
+
   border-right: none;
   border-bottom: 5px solid black;
 }
 
 #navbar.open .dropdown-content {
   position: static;
-  transform: none;
+
   width: 260px;
+
   box-shadow: none;
+
   border-left: none;
   border-right: none;
 }
@@ -113,17 +177,24 @@ body {
 
 #menuIcon {
   display: none;
+
   position: fixed;
   top: 35px;
   right: 30px;
+
   z-index: 999999;
+
   width: 60px;
   height: 55px;
+
   border: 5px solid black;
   background: white;
+
   font-size: 30px;
   font-weight: bold;
+
   box-shadow: 5px 5px 0 black;
+
   cursor: pointer;
 }
 
@@ -131,18 +202,19 @@ body {
   display: block;
 }
 
-/* MAIN */
+/* =========================
+   BASIC CALCULATOR PAGE
+========================= */
 
 .calculator-container {
   max-width: 1100px;
   margin: 150px auto 80px;
   padding: 30px;
+
   display: grid;
   grid-template-columns: 280px 1fr;
   gap: 35px;
 }
-
-/* HISTORY */
 
 .history {
   background: #fff4b8;
@@ -177,8 +249,6 @@ body {
   font-size: 18px;
 }
 
-/* CALCULATOR */
-
 .calculator {
   background: white;
   border: 5px solid black;
@@ -203,15 +273,16 @@ body {
   height: 75px;
   margin-bottom: 25px;
   padding: 10px 18px;
+
   border: 5px solid black;
   background: #f8f8f8;
+
   font-size: 32px;
   font-weight: bold;
   text-align: right;
+
   box-shadow: inset 4px 4px 0 #ddd;
 }
-
-/* BUTTONS */
 
 .scientific-grid {
   display: grid;
@@ -221,12 +292,17 @@ body {
 
 .buttons button {
   height: 65px;
+
   border: 4px solid black;
   background: #d9f7ff;
+
   font-size: 22px;
   font-weight: bold;
+
   cursor: pointer;
+
   box-shadow: 4px 4px 0 black;
+
   transition: 0.15s;
 }
 
@@ -247,42 +323,256 @@ body {
   background: #b8ffb8 !important;
 }
 
-/* SCROLL TOP */
+/* =========================
+   INDEX PAGE CARDS
+========================= */
+
+.calculator-box {
+  width: 620px;
+  margin: 150px auto 80px;
+
+  border: 5px solid black;
+  padding: 30px;
+
+  background: white;
+
+  box-shadow: 8px 8px 0 black;
+}
+
+.calculator-box h1 {
+  text-align: center;
+  font-size: 45px;
+  margin-bottom: 25px;
+}
+
+.calculator-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 35px;
+}
+
+.card {
+  height: 110px;
+
+  border: 5px solid black;
+
+  text-decoration: none;
+  color: black;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 35px;
+  font-weight: bold;
+
+  background: white;
+
+  transition: 0.2s;
+
+  box-shadow: 5px 5px 0 black;
+}
+
+.card:nth-child(1) { background: #ffd3d3; }
+.card:nth-child(2) { background: #d3ffd9; }
+.card:nth-child(3) { background: #d3e5ff; }
+.card:nth-child(4) { background: #fff1b8; }
+.card:nth-child(5) { background: #f1d3ff; }
+.card:nth-child(6) { background: #d3fff9; }
+
+.card:hover {
+  transform: translate(-3px, -3px) rotate(-1deg);
+  box-shadow: 9px 9px 0 black;
+}
+
+/* =========================
+   SINGLE CALCULATOR PAGES
+========================= */
+
+.single-calculator-container {
+  max-width: 700px;
+  margin: 150px auto 80px;
+  padding: 30px;
+}
+
+.calculator label {
+  display: block;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.calculator input[type="date"],
+.calculator input[type="number"],
+.calculator input[type="text"] {
+  width: 100%;
+  height: 60px;
+
+  padding: 10px 15px;
+  margin-bottom: 20px;
+
+  border: 5px solid black;
+  background: #f8f8f8;
+
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.main-btn,
+.calculator > button {
+  width: 100%;
+  height: 60px;
+
+  border: 5px solid black;
+  background: #b8ffb8;
+
+  font-size: 24px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  box-shadow: 5px 5px 0 black;
+}
+
+.main-btn:hover,
+.calculator > button:hover {
+  background: #ffe66d;
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0 black;
+}
+
+#result,
+#bmiResult,
+#loanResult,
+#discountResult,
+#percentageResult {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 28px;
+}
+
+/* =========================
+   ABOUT PAGE
+========================= */
+
+.about-container {
+  max-width: 900px;
+  margin: 150px auto 80px;
+  padding: 30px;
+}
+
+.about-box {
+  background: white;
+  border: 5px solid black;
+  box-shadow: 9px 9px 0 black;
+  padding: 30px;
+}
+
+.about-box h1 {
+  text-align: center;
+  font-size: 48px;
+  margin-bottom: 25px;
+}
+
+.about-card {
+  background: #fff4b8;
+  border: 5px solid black;
+  box-shadow: 5px 5px 0 black;
+  padding: 22px;
+  margin-bottom: 25px;
+}
+
+.about-card h2 {
+  font-size: 30px;
+  margin-bottom: 12px;
+}
+
+.about-card p {
+  font-size: 20px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+/* =========================
+   SCROLL TOP
+========================= */
 
 #scrollTopBtn {
   display: none;
+
   position: fixed;
   right: 30px;
   bottom: 30px;
+
   z-index: 999999;
+
   width: 65px;
   height: 65px;
+
   align-items: center;
   justify-content: center;
+
   border: 5px solid black;
   background: white;
+
   font-size: 38px;
   font-weight: bold;
+
   box-shadow: 5px 5px 0 black;
+
   cursor: pointer;
 }
 
-/* MOBILE */
+/* =========================
+   MOBILE
+========================= */
 
 @media (max-width: 850px) {
   #navbar {
-    width: 85%;
+    width: 95%;
+    height: 70px;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown {
+    width: 33.33%;
+    height: 70px;
+    flex: 0 0 33.33%;
   }
 
   #navbar a,
   .dropbtn {
-    width: 100%;
-    font-size: 22px;
+    height: 70px;
+    font-size: 20px;
   }
 
   .dropdown-content {
-    top: 83px;
-    transform: translateX(-40px);
+    top: 65px;
+    left: -5px;
+    width: 220px;
+  }
+
+  .dropdown-content a {
+    height: 50px;
+    font-size: 18px !important;
+  }
+
+  #navbar.open {
+    right: 20px;
+    width: 260px;
+    height: auto;
+  }
+
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 260px;
+    flex: none;
+  }
+
+  #navbar.open a,
+  #navbar.open .dropbtn {
+    width: 260px;
+    height: 70px;
   }
 
   .calculator-container {
@@ -291,16 +581,44 @@ body {
     padding: 20px;
   }
 
+  .single-calculator-container,
+  .about-container {
+    margin-top: 120px;
+    padding: 20px;
+  }
+
   .scientific-grid {
     grid-template-columns: repeat(4, 1fr);
   }
 
-  .calculator h1 {
+  .calculator h1,
+  .about-box h1 {
     font-size: 36px;
   }
 
   .buttons button {
     height: 58px;
+    font-size: 18px;
+  }
+
+  .calculator-box {
+    width: 95%;
+    margin-top: 120px;
+  }
+
+  .calculator-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    font-size: 28px;
+  }
+
+  .about-card h2 {
+    font-size: 26px;
+  }
+
+  .about-card p {
     font-size: 18px;
   }
 }

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Discount Calculator</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="favicon.ico">
@@ -8,110 +9,90 @@
   <meta name="description" content="Free discount calculator to calculate sale price and savings online.">
 </head>
 
-<script>
-
-window.addEventListener("scroll", function(){
-
-  const navbar = document.getElementById("navbar");
-  const menuIcon = document.getElementById("menuIcon");
-  const scrollBtn = document.getElementById("scrollTopBtn");
-
-  if(window.scrollY > 80){
-
-    navbar.classList.add("scrolled");
-    menuIcon.classList.add("show");
-
-    navbar.style.top = "120px";
-
-  }else{
-
-    navbar.classList.remove("scrolled");
-    navbar.classList.remove("open");
-    menuIcon.classList.remove("show");
-
-    navbar.style.top = "25px";
-  }
-
-  if(window.scrollY > 200){
-
-    scrollBtn.style.display = "flex";
-
-  }else{
-
-    scrollBtn.style.display = "none";
-  }
-
-});
-
-function toggleMenu(){
-
-  document.getElementById("navbar").classList.toggle("open");
-
-}
-
-function scrollToTop(){
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
-}
-
-</script>
-<button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
 <body>
 
-<nav id="navbar">
+  <button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
 
-  <a href="index.html">Home</a>
+  <nav id="navbar">
 
-  <div class="dropdown">
-    <button class="dropbtn">Calculators ▼</button>
+    <a href="index.html">home</a>
 
-    <div class="dropdown-content">
-      <a href="basic-calculator.html">Basic Calculator</a>
-      <a href="bmi-calculator.html">BMI Calculator</a>
-      <a href="age-calculator.html">Age Calculator</a>
-      <a href="percentage-calculator.html">Percentage Calculator</a>
-      <a href="loan-calculator.html">Loan Calculator</a>
-      <a href="discount-calculator.html">Discount Calculator</a>
+    <div class="dropdown">
+
+      <button type="button" class="dropbtn">
+        calculator
+      </button>
+
+      <div class="dropdown-content">
+        <a href="basic-calculator.html">basic</a>
+        <a href="age-calculator.html">age</a>
+        <a href="bmi-calculator.html">bmi</a>
+        <a href="discount-calculator.html">discount</a>
+        <a href="loan-calculator.html">loan</a>
+        <a href="percentage-calculator.html">percentage</a>
+      </div>
+
     </div>
-  </div>
 
-  <a href="about.html">About</a>
+    <a href="about.html">about</a>
 
-</nav>
+  </nav>
 
-<button id="menuIcon" onclick="toggleMenu()">☰</button>
+  <button id="menuIcon" onclick="toggleMenu()">☰</button>
 
-<div class="calculator">
-  <h1>Discount Calculator</h1>
-  <p class="subtitle">Calculate final price after discount.</p>
+  <main class="single-calculator-container">
 
-  <input type="number" id="price" placeholder="Original price">
-  <br><br>
+    <section class="calculator">
 
-  <input type="number" id="discount" placeholder="Discount %">
-  <br><br>
+      <h1>Discount Calculator</h1>
 
-  <button onclick="calculateDiscount()">discount</button>
+      <p class="subtitle">
+        Calculate final price after discount.
+      </p>
 
-  <h2 id="result"></h2>
-</div>
+      <label for="price">Original price:</label>
+      <input type="number" id="price" placeholder="Example: 100">
 
-<script>
-function calculateDiscount(){
-  let price = document.getElementById("price").value;
-  let discount = document.getElementById("discount").value;
+      <label for="discount">Discount percentage:</label>
+      <input type="number" id="discount" placeholder="Example: 20">
 
-  let savings = price * discount / 100;
-  let finalPrice = price - savings;
+      <button type="button" onclick="calculateDiscount()" class="main-btn">
+        calculate discount
+      </button>
 
-  document.getElementById("result").innerText =
-  "Final price: " + finalPrice.toFixed(2) + " | You save: " + savings.toFixed(2);
-}
-</script>
+      <h2 id="result"></h2>
+
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+  <script>
+   
+
+    function calculateDiscount() {
+      const price = Number(document.getElementById("price").value);
+      const discount = Number(document.getElementById("discount").value);
+      const result = document.getElementById("result");
+
+      if (price <= 0) {
+        result.innerText = "Please enter a valid original price.";
+        return;
+      }
+
+      if (discount < 0 || discount > 100) {
+        result.innerText = "Please enter a discount between 0 and 100.";
+        return;
+      }
+
+      const savings = price * discount / 100;
+      const finalPrice = price - savings;
+
+      result.innerText =
+        "Final price: " + finalPrice.toFixed(2) +
+        " | You save: " + savings.toFixed(2);
+    }
+  </script>
 
 </body>
 </html>
