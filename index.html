@@ -10,7 +10,7 @@
   margin:0;
   padding:0;
   box-sizing:border-box;
-  font-family:"Comic Sans MS", cursive;
+  font-family:"Comic Sans MS", cursive, sans-serif;
 }
 
 body{
@@ -30,7 +30,7 @@ body{
   height:90px;
   border-bottom:5px solid black;
   background:#ffffff;
-  box-shadow:5px 5px 0px black;
+  box-shadow:5px 5px 0 black;
 }
 
 .layout{
@@ -50,62 +50,98 @@ body{
 
 /* NAVBAR */
 
-nav{
-  width:600px;
+#navbar{
+  width:720px;
+  height:90px;
+
   margin:auto;
+
   display:flex;
-  border:5px solid black;
+
+  position:relative;
+  z-index:999999;
+
   background:white;
+  border:5px solid black;
+
   transform:rotate(-1deg);
-  box-shadow:6px 6px 0px black;
-  z-index:1000;
+  box-shadow:7px 7px 0 black;
 }
 
-nav a,
+#navbar a,
 .dropbtn{
-  width:200px;
-  text-decoration:none;
+  width:240px;
+  height:90px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:0;
+
   color:black;
-  font-size:30px;
-  text-align:center;
-  padding:10px;
+  text-decoration:none;
+
+  font-size:28px;
+  font-weight:bold;
+
+  background:white;
+
   border:none;
   border-right:5px solid black;
-  background:white;
+
   cursor:pointer;
 }
 
-nav a:last-child{
+#navbar a:last-child{
   border-right:none;
 }
 
-nav a:hover,
+#navbar a:hover,
 .dropbtn:hover{
-  background:#ffe56c;
+  background:#ffe66d;
 }
 
+/* DROPDOWN */
+
 .dropdown{
+  width:240px;
   position:relative;
 }
 
 .dropdown-content{
   display:none;
+
   position:absolute;
-  top:62px;
-  left:0;
-  width:230px;
+  top:85px;
+  left:-5px;
+
+  width:250px;
+
   background:white;
+
   border:5px solid black;
   box-shadow:6px 6px 0 black;
-  z-index:3000;
+
+  z-index:9999999;
 }
 
 .dropdown-content a{
-  display:block;
   width:100%;
+  height:55px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
   font-size:20px;
+
   border-right:none;
   border-bottom:4px solid black;
+}
+
+.dropdown-content a:last-child{
+  border-bottom:none;
 }
 
 .dropdown:hover .dropdown-content{
@@ -114,32 +150,51 @@ nav a:hover,
 
 /* SCROLL MENU */
 
-nav.scrolled{
+#navbar.scrolled{
   display:none;
 }
 
-nav.open{
+#navbar.open{
   display:flex;
+
   position:fixed;
+
   top:120px;
-  right:100px;
+  right:35px;
+  left:auto;
+
   width:260px;
-  flex-direction:column;
+  height:auto;
+
+  margin:0;
+
   transform:none;
-  z-index:3000;
+
+  flex-direction:column;
+
+  z-index:999999;
 }
 
-nav.open a,
-nav.open .dropbtn{
-  width:100%;
+#navbar.open a,
+#navbar.open .dropbtn{
+  width:260px;
+  height:70px;
+
   border-right:none;
   border-bottom:5px solid black;
 }
 
-nav.open .dropdown-content{
+#navbar.open .dropdown{
+  width:260px;
+}
+
+#navbar.open .dropdown-content{
   position:static;
-  width:100%;
+
+  width:260px;
+
   box-shadow:none;
+
   border-left:none;
   border-right:none;
 }
@@ -150,10 +205,14 @@ nav.open .dropdown-content{
   position:fixed;
   top:50px;
   right:35px;
+
   width:55px;
+
   cursor:pointer;
+
   display:none;
-  z-index:4000;
+
+  z-index:999999;
 }
 
 .hamburger.show{
@@ -162,9 +221,13 @@ nav.open .dropdown-content{
 
 .hamburger span{
   display:block;
+
   height:6px;
+
   background:black;
+
   margin:8px 0;
+
   border-radius:20px;
 }
 
@@ -172,39 +235,57 @@ nav.open .dropdown-content{
 
 .calculator-box{
   width:620px;
+
   margin:40px auto;
+
   border:5px solid black;
+
   padding:30px;
+
   background:white;
-  transform:rotate(0.5deg);
-  box-shadow:8px 8px 0px black;
+
+  box-shadow:8px 8px 0 black;
+
+  position:relative;
+  z-index:1;
 }
 
 .calculator-box h1{
   text-align:center;
+
   font-size:45px;
+
   margin-bottom:25px;
 }
 
 .calculator-grid{
   display:grid;
+
   grid-template-columns:1fr 1fr;
+
   gap:35px;
 }
 
 .card{
   height:110px;
+
   border:5px solid black;
+
   text-decoration:none;
   color:black;
+
   display:flex;
   justify-content:center;
   align-items:center;
+
   font-size:35px;
   font-weight:bold;
+
   background:#ffffff;
+
   transition:0.2s;
-  box-shadow:5px 5px 0px black;
+
+  box-shadow:5px 5px 0 black;
 }
 
 .card:nth-child(1){ background:#ffd3d3; }
@@ -216,23 +297,32 @@ nav.open .dropdown-content{
 
 .card:hover{
   transform:translate(-3px,-3px) rotate(-1deg);
-  box-shadow:9px 9px 0px black;
+  box-shadow:9px 9px 0 black;
 }
 
 /* SCROLL TOP */
 
 .scroll-top{
   position:fixed;
+
   right:35px;
   bottom:35px;
+
   width:70px;
   height:70px;
+
   border:5px solid black;
+
   background:white;
+
   font-size:40px;
   font-weight:bold;
+
   cursor:pointer;
-  box-shadow:5px 5px 0px black;
+
+  box-shadow:5px 5px 0 black;
+
+  z-index:999999;
 }
 
 .scroll-top:hover{
@@ -242,6 +332,7 @@ nav.open .dropdown-content{
 /* RESPONSIVE */
 
 @media(max-width:768px){
+
   .layout{
     grid-template-columns:1fr;
   }
@@ -254,28 +345,61 @@ nav.open .dropdown-content{
     padding:20px;
   }
 
-  nav{
+  #navbar{
     width:100%;
+    height:70px;
   }
 
-  nav a,
+  #navbar a,
   .dropbtn{
+    width:33.33%;
+    height:70px;
+
     font-size:20px;
+  }
+
+  .dropdown{
     width:33.33%;
   }
 
-  nav.open{
+  .dropdown-content{
+    top:65px;
+    left:-5px;
+
+    width:210px;
+  }
+
+  .dropdown-content a{
+    width:100%;
+    height:50px;
+
+    font-size:18px;
+  }
+
+  #navbar.open{
     right:20px;
+
+    width:260px;
+    height:auto;
+  }
+
+  #navbar.open a,
+  #navbar.open .dropbtn{
     width:260px;
   }
 
-  nav.open a,
-  nav.open .dropbtn{
-    width:100%;
+  #navbar.open .dropdown{
+    width:260px;
+  }
+
+  #navbar.open .dropdown-content{
+    width:260px;
   }
 
   .calculator-box{
     width:100%;
+
+    margin-top:40px;
   }
 
   .calculator-grid{
@@ -302,36 +426,41 @@ nav.open .dropdown-content{
     <div class="content">
 
       <nav id="navbar">
+
         <a href="index.html">home</a>
 
         <div class="dropdown">
+
           <button class="dropbtn">calculator</button>
 
           <div class="dropdown-content">
             <a href="basic-calculator.html">basic</a>
-            <a href="age-calculator.html">Age</a>
-            <a href="bmi-calculator.html">BMI</a>
-            <a href="discount-calculator.html">Discount</a>
-            <a href="loan-calculator.html">Loan</a>
-            <a href="percentage-calculator.html">percentages</a>
+            <a href="age-calculator.html">age</a>
+            <a href="bmi-calculator.html">bmi</a>
+            <a href="discount-calculator.html">discount</a>
+            <a href="loan-calculator.html">loan</a>
+            <a href="percentage-calculator.html">percentage</a>
           </div>
+
         </div>
 
         <a href="about.html">about</a>
+
       </nav>
 
       <div class="calculator-box">
+
         <h1>Calculator</h1>
-        
 
         <div class="calculator-grid">
           <a href="basic-calculator.html" class="card">basic</a>
-            <a href="age-calculator.html" class="card">Age</a>
-            <a href="bmi-calculator.html" class="card">BMI</a>
-            <a href="discount-calculator.html" class="card">Discount</a>
-            <a href="loan-calculator.html" class="card">Loan</a>
-            <a href="percentage-calculator.html" class="card">percentages</a>
+          <a href="age-calculator.html" class="card">age</a>
+          <a href="bmi-calculator.html" class="card">bmi</a>
+          <a href="discount-calculator.html" class="card">discount</a>
+          <a href="loan-calculator.html" class="card">loan</a>
+          <a href="percentage-calculator.html" class="card">percentage</a>
         </div>
+
       </div>
 
     </div>
@@ -350,20 +479,27 @@ nav.open .dropdown-content{
 
 <script>
 window.addEventListener("scroll", function(){
+
   const navbar = document.getElementById("navbar");
   const hamburger = document.getElementById("hamburger");
 
   if(window.scrollY > 120){
+
     navbar.classList.add("scrolled");
     hamburger.classList.add("show");
+
   }else{
+
     navbar.classList.remove("scrolled");
     navbar.classList.remove("open");
     hamburger.classList.remove("show");
+
   }
+
 });
 
 function toggleMenu(){
+
   const navbar = document.getElementById("navbar");
 
   navbar.classList.toggle("open");
@@ -373,13 +509,16 @@ function toggleMenu(){
   }else{
     navbar.classList.add("scrolled");
   }
+
 }
 
 function scrollToTop(){
+
   window.scrollTo({
     top:0,
     behavior:"smooth"
   });
+
 }
 </script>
 
