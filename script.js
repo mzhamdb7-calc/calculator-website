@@ -258,3 +258,96 @@ document.addEventListener("DOMContentLoaded", function () {
   createHandToggleButton();
   loadHandMode();
 });
+/* KEYBOARD SUPPORT FOR BASIC CALCULATOR */
+
+document.addEventListener("keydown", function (event) {
+  const display = document.getElementById("display");
+
+  if (!display) return;
+
+  const key = event.key;
+
+  if (!isNaN(key)) {
+    add(key);
+    flashButton(key);
+    return;
+  }
+
+  if (key === ".") {
+    add(".");
+    flashButton(".");
+    return;
+  }
+
+  if (key === "+") {
+    add("+");
+    flashButton("+");
+    return;
+  }
+
+  if (key === "-") {
+    add("-");
+    flashButton("−");
+    return;
+  }
+
+  if (key === "*" || key.toLowerCase() === "x") {
+    add("*");
+    flashButton("×");
+    return;
+  }
+
+  if (key === "/") {
+    event.preventDefault();
+    add("/");
+    flashButton("÷");
+    return;
+  }
+
+  if (key === "Enter" || key === "=") {
+    event.preventDefault();
+    calculate();
+    flashButton("=");
+    return;
+  }
+
+  if (key === "Backspace") {
+    removeLast();
+    flashButton("←");
+    return;
+  }
+
+  if (key === "Delete" || key === "Escape") {
+    clearDisplay();
+    flashButton("AC");
+    return;
+  }
+
+  if (key === "^") {
+    addPower();
+    flashButton("xʸ");
+    return;
+  }
+
+  if (key.toLowerCase() === "r") {
+    addFunction("sqrt");
+    flashButton("√");
+    return;
+  }
+});
+
+/* BUTTON FLASH EFFECT */
+
+function flashButton(buttonText) {
+  const buttons = document.querySelectorAll(".buttons button");
+
+  buttons.forEach(function (button) {
+    if (button.textContent.trim() === buttonText) {
+      button.classList.add("keyboard-active");
+
+      setTimeout(function () {
+        button.classList.remove("keyboard-active");
+      }, 150);
+    }
+  });
+}
