@@ -4584,7 +4584,7 @@ body.menu-scrolled #menuIcon {
 
   body.menu-scrolled #navbar.open .nav-group:hover > summary::after,
   #navbar.scrolled.open .nav-group:hover > summary::after {
-    content: " ◀" !important;
+   
   }
 
   /* Age / BMI submenu opens to the LEFT of health */
@@ -5019,7 +5019,7 @@ body.menu-scrolled #menuIcon {
 
   body.menu-scrolled #navbar.open .nav-group > summary::after,
   #navbar.scrolled.open .nav-group > summary::after {
-    content: " ◀" !important;
+    
 
     position: static !important;
 
@@ -5677,7 +5677,7 @@ body.menu-scrolled #menuIcon {
   /* Arrow symbol same as PC */
   #navbar .nav-group > summary::after,
   #navbar.open .nav-group > summary::after {
-    content: "◀" !important;
+    
 
     display: inline-flex !important;
     align-items: center !important;
@@ -6303,14 +6303,14 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after,
 body.menu-scrolled #navbar.open .dropdown-content .nav-group:hover > summary::after,
 #navbar.scrolled.open .dropdown-content .nav-group:hover > summary::after,
 #navbar.open.phone-menu-open .dropdown-content .nav-group:hover > summary::after {
-  content: " ◀" !important;
+  
 }
 
 /* When opened side menu health/finance = left arrow */
 body.menu-scrolled #navbar.open .dropdown-content .nav-group[open] > summary::after,
 #navbar.scrolled.open .dropdown-content .nav-group[open] > summary::after,
 #navbar.open.phone-menu-open .dropdown-content .nav-group[open] > summary::after {
-  content: " ◀" !important;
+  
 }
 
 /* SIDE MENU ONLY:
@@ -6341,14 +6341,14 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after,
 body.menu-scrolled #navbar.open .dropdown-content .nav-group:hover > summary::after,
 #navbar.scrolled.open .dropdown-content .nav-group:hover > summary::after,
 #navbar.open.phone-menu-open .dropdown-content .nav-group:hover > summary::after {
-  content: " ◀" !important;
+  
 }
 
 /* Opened side menu health/finance */
 body.menu-scrolled #navbar.open .dropdown-content .nav-group[open] > summary::after,
 #navbar.scrolled.open .dropdown-content .nav-group[open] > summary::after,
 #navbar.open.phone-menu-open .dropdown-content .nav-group[open] > summary::after {
-  content: " ◀" !important;
+
 }
 
 /* PHONE: bottom menu bar like reference image */
@@ -7113,7 +7113,7 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group[open] > summary::af
   #navbar .dropdown-content .nav-group[open] > summary::after,
   #navbar.open .dropdown-content .nav-group[open] > summary::after,
   body.menu-scrolled #navbar.open .dropdown-content .nav-group[open] > summary::after {
-    content: "◀" !important;
+  
   }
 }
 /* PHONE BOTTOM MENU ONLY: health/finance expand upward + PC-style CSS arrow */
@@ -7304,6 +7304,58 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group[open] > summary::af
   html body.menu-scrolled #navbar#navbar.open .dropdown-content details.nav-group[open] > summary::after,
   html body #navbar#navbar.scrolled.open .dropdown-content details.nav-group[open] > summary::after,
   html body #navbar#navbar .dropdown-content details.nav-group[open] > summary::after {
+    content: "" !important;
+
+    border-top: 6px solid transparent !important;
+    border-bottom: 6px solid transparent !important;
+    border-right: 8px solid var(--black) !important;
+    border-left: none !important;
+  }
+}
+/* PHONE: remove emoji arrow in bottom menu dropdown */
+@media (max-width: 850px) {
+  #navbar .dropdown-content details.nav-group > summary {
+    list-style: none !important;
+  }
+
+  #navbar .dropdown-content details.nav-group > summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  #navbar .dropdown-content details.nav-group > summary::marker {
+    content: "" !important;
+  }
+
+  /* remove old emoji/text arrow */
+  #navbar .dropdown-content details.nav-group > summary::after,
+  #navbar.open .dropdown-content details.nav-group > summary::after,
+  body.menu-scrolled #navbar.open .dropdown-content details.nav-group > summary::after,
+  #navbar.scrolled.open .dropdown-content details.nav-group > summary::after,
+  #navbar.open.phone-menu-open .dropdown-content details.nav-group > summary::after {
+    content: "" !important;
+
+    display: inline-block !important;
+    width: 0 !important;
+    height: 0 !important;
+
+    margin-left: 8px !important;
+
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
+
+    border-left: 6px solid transparent !important;
+    border-right: 6px solid transparent !important;
+    border-top: 8px solid var(--black) !important;
+    border-bottom: none !important;
+  }
+
+  /* when opened, use CSS left arrow, not emoji */
+  #navbar .dropdown-content details.nav-group[open] > summary::after,
+  #navbar.open .dropdown-content details.nav-group[open] > summary::after,
+  body.menu-scrolled #navbar.open .dropdown-content details.nav-group[open] > summary::after,
+  #navbar.scrolled.open .dropdown-content details.nav-group[open] > summary::after,
+  #navbar.open.phone-menu-open .dropdown-content details.nav-group[open] > summary::after {
     content: "" !important;
 
     border-top: 6px solid transparent !important;
