@@ -7364,3 +7364,36 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group[open] > summary::af
     border-left: none !important;
   }
 }
+/* SIDE MENU ONLY: health/finance arrow down normally, left on hover */
+@media (min-width: 851px) {
+  /* normal side menu arrow */
+  body.menu-scrolled #navbar.open .dropdown-content details.nav-group > summary::after,
+  #navbar.scrolled.open .dropdown-content details.nav-group > summary::after {
+    content: " ▼" !important;
+    display: inline-block !important;
+    margin-left: 8px !important;
+
+    color: var(--black) !important;
+    background: transparent !important;
+
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+
+    font-size: 16px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+  }
+
+  /* when hover, arrow changes left */
+  body.menu-scrolled #navbar.open .dropdown-content details.nav-group:hover > summary::after,
+  #navbar.scrolled.open .dropdown-content details.nav-group:hover > summary::after {
+    content: " ◀" !important;
+  }
+
+  /* when open, also keep arrow left */
+  body.menu-scrolled #navbar.open .dropdown-content details.nav-group[open] > summary::after,
+  #navbar.scrolled.open .dropdown-content details.nav-group[open] > summary::after {
+    content: " ◀" !important;
+  }
+}
