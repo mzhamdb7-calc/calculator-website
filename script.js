@@ -1472,3 +1472,32 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 });
+/* PHONE SIDE MENU: remove real emoji arrows from health/finance text */
+document.addEventListener("DOMContentLoaded", function () {
+  function cleanSideMenuArrows() {
+    document
+      .querySelectorAll("#navbar .dropdown-content details.nav-group > summary")
+      .forEach(function (summary) {
+        summary.childNodes.forEach(function (node) {
+          if (node.nodeType === Node.TEXT_NODE) {
+            node.textContent = node.textContent
+              .replace(/[\u25BC\u25B2\u25C0\u25B6\u2B05\uFE0F]/g, "")
+              .replace(/[▼▲◀▶⬅]/g, "")
+              .trim();
+          }
+        });
+      });
+  }
+
+  cleanSideMenuArrows();
+
+  document.addEventListener("click", function () {
+    setTimeout(cleanSideMenuArrows, 0);
+  });
+
+  document.querySelectorAll("#navbar .dropdown-content details.nav-group").forEach(function (detail) {
+    detail.addEventListener("toggle", function () {
+      setTimeout(cleanSideMenuArrows, 0);
+    });
+  });
+});
