@@ -2658,3 +2658,21 @@ body.left-hand .scroll-top {
     right: auto !important;
   }
 }
+/* SIDE BUTTONS 50% OPACITY, 100% ON HOVER */
+
+#menuIcon,
+#resizeNavigator,
+#handToggleBtn,
+#scrollTopBtn,
+.scroll-top {
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+#menuIcon:hover,
+#resizeNavigator:hover,
+#handToggleBtn:hover,
+#scrollTopBtn:hover,
+.scroll-top:hover {
+  opacity: 1;
+}
