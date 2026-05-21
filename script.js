@@ -11,8 +11,11 @@ try {
   calcHistory = [];
 }
 
-lastAnswer = Number(localStorage.getItem("lastAnswer")) || 0;
-
+try {
+  lastAnswer = Number(localStorage.getItem("lastAnswer")) || 0;
+} catch {
+  lastAnswer = 0;
+}
 
 /* =========================
    DISPLAY FUNCTIONS
@@ -62,7 +65,6 @@ function removeLast() {
 
   display.value = display.value.slice(0, -1);
 }
-
 
 /* =========================
    MATH FUNCTIONS
@@ -145,7 +147,6 @@ function calculate() {
   }
 }
 
-
 /* =========================
    HISTORY WITH COPY BUTTON
 ========================= */
@@ -182,9 +183,10 @@ function showHistory() {
     copyBtn.className = "history-copy-btn";
     copyBtn.textContent = "copy";
 
-    copyBtn.onclick = function () {
+    copyBtn.addEventListener("click", function (event) {
+      event.stopPropagation();
       copyHistoryItem(item, copyBtn);
-    };
+    });
 
     li.appendChild(text);
     li.appendChild(copyBtn);
@@ -193,26 +195,50 @@ function showHistory() {
 }
 
 function copyHistoryItem(text, button) {
-  navigator.clipboard.writeText(text).then(function () {
-    button.textContent = "copied";
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text)
+      .then(function () {
+        showCopied(button);
+      })
+      .catch(function () {
+        fallbackCopy(text, button);
+      });
+  } else {
+    fallbackCopy(text, button);
+  }
+}
 
-    setTimeout(function () {
-      button.textContent = "copy";
-    }, 1000);
-  }).catch(function () {
-    const tempInput = document.createElement("textarea");
-    tempInput.value = text;
-    document.body.appendChild(tempInput);
-    tempInput.select();
+function fallbackCopy(text, button) {
+  const tempInput = document.createElement("textarea");
+  tempInput.value = text;
+  tempInput.style.position = "fixed";
+  tempInput.style.left = "-9999px";
+  tempInput.style.top = "-9999px";
+
+  document.body.appendChild(tempInput);
+  tempInput.focus();
+  tempInput.select();
+
+  try {
     document.execCommand("copy");
-    document.body.removeChild(tempInput);
-
-    button.textContent = "copied";
+    showCopied(button);
+  } catch {
+    button.textContent = "failed";
 
     setTimeout(function () {
       button.textContent = "copy";
     }, 1000);
-  });
+  }
+
+  document.body.removeChild(tempInput);
+}
+
+function showCopied(button) {
+  button.textContent = "copied";
+
+  setTimeout(function () {
+    button.textContent = "copy";
+  }, 1000);
 }
 
 function clearHistory() {
@@ -225,7 +251,6 @@ function clearHistory() {
     historyList.innerHTML = "";
   }
 }
-
 
 /* =========================
    NAVBAR + SCROLL
@@ -290,7 +315,6 @@ function scrollToTop() {
   });
 }
 
-
 /* =========================
    LEFT / RIGHT HAND MODE
 ========================= */
@@ -334,7 +358,6 @@ function toggleHandMode() {
     localStorage.setItem("handMode", "left");
   }
 }
-
 
 /* =========================
    KEYBOARD SUPPORT
@@ -435,7 +458,6 @@ function flashButton(buttonText) {
     }
   });
 }
-
 
 /* =========================
    PAGE LOAD
