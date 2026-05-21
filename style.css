@@ -894,3 +894,113 @@ body.right-hand #navbar.open {
   transform: translate(-2px, -2px);
   box-shadow: 5px 5px 0 black;
 }
+
+/* =========================
+   COPY BUTTONS ON HOVER
+========================= */
+
+/* Result copy wrapper */
+.result-copy-wrap {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+  margin-top: 25px;
+}
+
+/* Keep result text nice */
+.result-copy-wrap h2 {
+  margin-top: 0 !important;
+  white-space: pre-line;
+}
+
+/* Result copy button */
+.result-copy-btn {
+  opacity: 0;
+  pointer-events: none;
+
+  border: 4px solid black;
+  background: #ffd3d3;
+
+  padding: 6px 10px;
+
+  font-size: 14px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  box-shadow: 3px 3px 0 black;
+}
+
+/* Show copy button only when hovering result */
+.result-copy-wrap:hover .result-copy-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.result-copy-btn:hover {
+  background: #ffe66d;
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 black;
+}
+
+/* History item layout */
+.history-item {
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  gap: 10px !important;
+  align-items: start !important;
+
+  margin-bottom: 12px !important;
+  padding-bottom: 10px !important;
+
+  border-bottom: 3px solid black !important;
+}
+
+.history-text {
+  font-size: 18px;
+  line-height: 1.4;
+
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* History copy button hidden by default */
+.history-copy-btn {
+  opacity: 0;
+  pointer-events: none;
+
+  border: 4px solid black;
+  background: #ffd3d3;
+
+  padding: 6px 10px;
+
+  font-size: 14px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  box-shadow: 3px 3px 0 black;
+}
+
+/* Show copy button only when hovering history item */
+.history-item:hover .history-copy-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.history-copy-btn:hover {
+  background: #ffe66d;
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 black;
+}
+
+/* Mobile: always show copy buttons because hover is hard on phone */
+@media (max-width: 850px) {
+  .history-copy-btn,
+  .result-copy-btn {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
