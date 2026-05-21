@@ -1459,3 +1459,16 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+/* Remove emoji arrow text from phone side menu health/finance */
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("#navbar .dropdown-content details.nav-group > summary")
+    .forEach(function (summary) {
+      summary.childNodes.forEach(function (node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          node.textContent = node.textContent
+            .replace(/[▼▲◀▶⬅️🔽🔼]/g, "")
+            .trim();
+        }
+      });
+    });
+});

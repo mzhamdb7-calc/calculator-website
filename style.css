@@ -7213,3 +7213,41 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group[open] > summary::af
     border-left: none !important;
   }
 }
+/* PHONE SIDE MENU: remove emoji arrow and use CSS triangle arrow */
+@media (max-width: 850px) {
+  html body #navbar .dropdown-content details.nav-group > summary,
+  html body #navbar.open .dropdown-content details.nav-group > summary,
+  html body.menu-scrolled #navbar.open .dropdown-content details.nav-group > summary {
+    gap: 8px !important;
+  }
+
+  html body #navbar .dropdown-content details.nav-group > summary::after,
+  html body #navbar.open .dropdown-content details.nav-group > summary::after,
+  html body.menu-scrolled #navbar.open .dropdown-content details.nav-group > summary::after {
+    content: "" !important;
+
+    display: inline-block !important;
+    width: 0 !important;
+    height: 0 !important;
+
+    margin-left: 6px !important;
+
+    border-left: 6px solid transparent !important;
+    border-right: 6px solid transparent !important;
+    border-top: 8px solid var(--black) !important;
+    border-bottom: none !important;
+
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  html body #navbar .dropdown-content details.nav-group[open] > summary::after,
+  html body #navbar.open .dropdown-content details.nav-group[open] > summary::after,
+  html body.menu-scrolled #navbar.open .dropdown-content details.nav-group[open] > summary::after {
+    border-top: 6px solid transparent !important;
+    border-bottom: 6px solid transparent !important;
+    border-right: 8px solid var(--black) !important;
+    border-left: none !important;
+  }
+}
