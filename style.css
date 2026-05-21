@@ -2860,3 +2860,130 @@ body.right-hand .scroll-top {
 #navbar.scrolled {
   display: flex !important;
 }
+/* =====================================================
+   FORCE MENU ROW LINES ON EVERY PAGE
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+/* Main top navbar boxes */
+#navbar > a,
+#navbar > .dropdown > .dropbtn {
+  border: 3px solid var(--black) !important;
+}
+
+/* Calculator dropdown box */
+.dropdown-content {
+  border: 3px solid var(--black) !important;
+  overflow: visible !important;
+}
+
+/* Every direct dropdown row */
+.dropdown-content > a,
+.dropdown-content > .nav-group > summary {
+  border-bottom: 3px solid var(--black) !important;
+  box-shadow: inset 0 -3px 0 var(--black) !important;
+}
+
+/* Remove line only from the very last dropdown row */
+.dropdown-content > *:last-child,
+.dropdown-content > *:last-child > summary {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* Health / finance rows */
+.nav-group {
+  border-bottom: none !important;
+}
+
+.nav-group > summary {
+  border-bottom: 3px solid var(--black) !important;
+  box-shadow: inset 0 -3px 0 var(--black) !important;
+}
+
+/* Side submenu rows, example: age, bmi, loan, discount */
+.nav-group-links {
+  border: 3px solid var(--black) !important;
+}
+
+.nav-group-links a {
+  border-bottom: 3px solid var(--black) !important;
+  box-shadow: inset 0 -3px 0 var(--black) !important;
+}
+
+.nav-group-links a:last-child {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* PC side menu version */
+@media (min-width: 851px) {
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    border: 3px solid var(--black) !important;
+  }
+
+  #navbar.open .dropdown-content {
+    border: 3px solid var(--black) !important;
+  }
+
+  #navbar.open .dropdown-content > a,
+  #navbar.open .dropdown-content > .nav-group > summary {
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: inset 0 -3px 0 var(--black) !important;
+  }
+
+  #navbar.open .dropdown-content > *:last-child,
+  #navbar.open .dropdown-content > *:last-child > summary {
+    border-bottom: none !important;
+    box-shadow: none !important;
+  }
+
+  #navbar.open .nav-group-links {
+    border: 3px solid var(--black) !important;
+  }
+
+  #navbar.open .nav-group-links a {
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: inset 0 -3px 0 var(--black) !important;
+  }
+
+  #navbar.open .nav-group-links a:last-child {
+    border-bottom: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Fix broken arrow/line overlap */
+  #navbar.open .nav-group > summary::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  #navbar.open .nav-group > summary::after {
+    position: static !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Phone menu version */
+@media (max-width: 850px) {
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn {
+    border: 3px solid var(--black) !important;
+  }
+
+  .dropdown-content > a,
+  .dropdown-content > .nav-group > summary,
+  .nav-group-links a {
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: inset 0 -3px 0 var(--black) !important;
+  }
+
+  .dropdown-content > *:last-child,
+  .dropdown-content > *:last-child > summary,
+  .nav-group-links a:last-child {
+    border-bottom: none !important;
+    box-shadow: none !important;
+  }
+}
