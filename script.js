@@ -1007,3 +1007,81 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+/* =====================================================
+   HOUSE ICON HOVER EXPANDS MENU
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!navbar || !menuIcon) return;
+
+  let closeTimer;
+
+  function isPastTopMenu() {
+    return window.scrollY > 90;
+  }
+
+  function openMenu() {
+    if (!isPastTopMenu()) return;
+
+    document.body.classList.add("menu-scrolled");
+    navbar.classList.add("scrolled");
+    navbar.classList.add("open");
+    menuIcon.classList.add("show");
+  }
+
+  function closeMenuSoon() {
+    clearTimeout(closeTimer);
+
+    closeTimer = setTimeout(function () {
+      if (!navbar.matches(":hover") && !menuIcon.matches(":hover")) {
+        navbar.classList.remove("open");
+      }
+    }, 180);
+  }
+
+  function updateScrollMenu() {
+    if (isPastTopMenu()) {
+      document.body.classList.add("menu-scrolled");
+      navbar.classList.add("scrolled");
+      menuIcon.classList.add("show");
+    } else {
+      document.body.classList.remove("menu-scrolled");
+      navbar.classList.remove("scrolled");
+      navbar.classList.remove("open");
+      menuIcon.classList.remove("show");
+    }
+  }
+
+  menuIcon.addEventListener("mouseenter", openMenu);
+  menuIcon.addEventListener("mouseleave", closeMenuSoon);
+
+  navbar.addEventListener("mouseenter", function () {
+    clearTimeout(closeTimer);
+  });
+
+  navbar.addEventListener("mouseleave", closeMenuSoon);
+
+  menuIcon.addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!isPastTopMenu()) return;
+
+    document.body.classList.add("menu-scrolled");
+    navbar.classList.add("scrolled");
+    menuIcon.classList.add("show");
+    navbar.classList.toggle("open");
+  });
+
+  document.addEventListener("click", function (event) {
+    if (!navbar.contains(event.target) && !menuIcon.contains(event.target)) {
+      navbar.classList.remove("open");
+    }
+  });
+
+  window.addEventListener("scroll", updateScrollMenu);
+  updateScrollMenu();
+});
