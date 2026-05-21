@@ -1016,3 +1016,94 @@ body.right-hand #navbar.open {
 .calculator label[for="birthdate"] {
   text-align: center;
 }
+
+/* =========================
+   BMI CALCULATOR HISTORY
+========================= */
+
+.bmi-calculator-container {
+  max-width: 1180px;
+  margin: 130px auto 80px;
+  padding: 30px;
+
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 35px;
+  align-items: start;
+}
+
+.bmi-history-box {
+  background: #fff4b8;
+  border: 5px solid black;
+  box-shadow: 7px 7px 0 black;
+  padding: 20px;
+  transform: rotate(-1deg);
+
+  min-height: 450px;
+  max-height: 520px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.bmi-history-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.bmi-history-top h3 {
+  font-size: 24px;
+}
+
+#bmiHistoryList {
+  list-style: none;
+  font-size: 17px;
+  line-height: 1.4;
+
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+#bmiHistoryList li {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 3px solid black;
+}
+
+#bmiResult {
+  white-space: pre-line;
+}
+
+/* Center BMI inputs nicely */
+.bmi-calculator-container .calculator label {
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.bmi-calculator-container .calculator input[type="number"] {
+  max-width: 720px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Mobile */
+@media (max-width: 850px) {
+  .bmi-calculator-container {
+    grid-template-columns: 1fr;
+    margin-top: 110px;
+    padding: 20px;
+  }
+
+  .bmi-history-box {
+    min-height: auto;
+    max-height: 300px;
+  }
+}
