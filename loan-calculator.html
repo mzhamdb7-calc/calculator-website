@@ -11,7 +11,7 @@
 
 <body>
 
-  <button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()">↑</button>
 
   <nav id="navbar">
 
@@ -34,7 +34,7 @@
 
   </nav>
 
-  <button id="menuIcon" onclick="toggleMenu()">☰</button>
+  <button id="menuIcon" type="button" onclick="toggleMenu()">☰</button>
 
   <main class="loan-calculator-container">
 
@@ -73,7 +73,13 @@
         calculate loan
       </button>
 
-      <h2 id="loanResult"></h2>
+      <div class="result-copy-wrap">
+        <h2 id="loanResult"></h2>
+
+        <button type="button" class="result-copy-btn" onclick="copyLoanResult(this)">
+          copy
+        </button>
+      </div>
 
     </section>
 
@@ -163,7 +169,7 @@
         copyBtn.textContent = "copy";
 
         copyBtn.onclick = function() {
-          copyLoanText(item, copyBtn);
+          copyText(item, copyBtn);
         };
 
         li.appendChild(text);
@@ -172,7 +178,15 @@
       });
     }
 
-    function copyLoanText(text, button) {
+    function copyLoanResult(button) {
+      const resultText = document.getElementById("loanResult").innerText;
+
+      if (resultText.trim() === "") return;
+
+      copyText(resultText, button);
+    }
+
+    function copyText(text, button) {
       const tempInput = document.createElement("textarea");
 
       tempInput.value = text;
@@ -185,6 +199,7 @@
       tempInput.select();
 
       document.execCommand("copy");
+
       document.body.removeChild(tempInput);
 
       button.textContent = "copied";

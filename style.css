@@ -147,35 +147,15 @@ body {
 }
 
 /* =========================
-   MENU ICON
+   PAGE LAYOUTS
 ========================= */
 
-#menuIcon {
-  display: none;
-  position: fixed;
-  top: 35px;
-  right: 30px;
-  z-index: 999999;
-  width: 60px;
-  height: 55px;
-  border: 5px solid black;
-  background: white;
-  font-size: 30px;
-  font-weight: bold;
-  box-shadow: 5px 5px 0 black;
-  cursor: pointer;
-}
-
-#menuIcon.show {
-  display: block;
-}
-
-/* =========================
-   BASIC CALCULATOR PAGE
-========================= */
-
-.calculator-container {
-  max-width: 1100px;
+.calculator-container,
+.age-calculator-container,
+.bmi-calculator-container,
+.discount-calculator-container,
+.loan-calculator-container {
+  max-width: 1180px;
   margin: 130px auto 80px;
   padding: 30px;
   display: grid;
@@ -184,26 +164,50 @@ body {
   align-items: start;
 }
 
-.history {
+.single-calculator-container {
+  max-width: 820px;
+  margin: 130px auto 80px;
+  padding: 30px;
+}
+
+/* =========================
+   HISTORY / RESULT SIDE BOXES
+========================= */
+
+.history,
+.age-history-box,
+.bmi-history-box,
+.discount-history-box,
+.loan-history-box {
+  width: 280px;
+  min-height: 450px;
+  max-height: 520px;
   background: #fff4b8;
   border: 5px solid black;
   box-shadow: 7px 7px 0 black;
   padding: 20px;
   transform: rotate(-1deg);
-  max-height: 520px;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
-.history-top {
+.history-top,
+.age-history-top,
+.bmi-history-top,
+.discount-history-top,
+.loan-history-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 18px;
 }
 
-.history h3 {
-  font-size: 28px;
+.history h3,
+.age-history-top h3,
+.bmi-history-top h3,
+.discount-history-top h3,
+.loan-history-top h3 {
+  font-size: 24px;
 }
 
 .clear-btn {
@@ -215,22 +219,31 @@ body {
   box-shadow: 3px 3px 0 black;
 }
 
-#historyList {
+#historyList,
+#ageHistoryList,
+#bmiHistoryList,
+#discountHistoryList,
+#loanHistoryList {
   list-style: none;
-  font-size: 18px;
+  font-size: 17px;
+  line-height: 1.4;
   max-width: 100%;
   overflow-wrap: break-word;
   word-break: break-word;
 }
 
+/* =========================
+   HISTORY COPY BUTTONS
+========================= */
+
 .history-item {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
-  align-items: start;
-  margin-bottom: 12px;
-  padding-bottom: 10px;
-  border-bottom: 3px solid black;
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  gap: 10px !important;
+  align-items: start !important;
+  margin-bottom: 12px !important;
+  padding-bottom: 10px !important;
+  border-bottom: 3px solid black !important;
 }
 
 .history-text {
@@ -240,7 +253,10 @@ body {
   word-break: break-word;
 }
 
-.history-copy-btn {
+.history-copy-btn,
+.result-copy-btn {
+  opacity: 0;
+  pointer-events: none;
   border: 4px solid black;
   background: #ffd3d3;
   padding: 6px 10px;
@@ -250,10 +266,31 @@ body {
   box-shadow: 3px 3px 0 black;
 }
 
-.history-copy-btn:hover {
+.history-item:hover .history-copy-btn,
+.result-copy-wrap:hover .result-copy-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.history-copy-btn:hover,
+.result-copy-btn:hover {
   background: #ffe66d;
   transform: translate(-2px, -2px);
   box-shadow: 5px 5px 0 black;
+}
+
+.result-copy-wrap {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+  margin-top: 28px;
+}
+
+.result-copy-wrap h2 {
+  margin-top: 0 !important;
+  white-space: pre-line;
 }
 
 /* =========================
@@ -261,6 +298,9 @@ body {
 ========================= */
 
 .calculator {
+  width: 100%;
+  max-width: 780px;
+  margin: 0 auto;
   background: white;
   border: 5px solid black;
   box-shadow: 9px 9px 0 black;
@@ -270,51 +310,97 @@ body {
 .calculator h1 {
   text-align: center;
   font-size: 48px;
-  margin-bottom: 8px;
+  line-height: 1.1;
+  margin-bottom: 12px;
 }
 
 .subtitle {
   text-align: center;
-  font-size: 18px;
-  margin-bottom: 25px;
+  font-size: 20px;
+  line-height: 1.4;
+  margin-bottom: 28px;
 }
 
+.calculator label {
+  display: block;
+  max-width: 720px;
+  margin: 0 auto 12px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.calculator input[type="date"],
+.calculator input[type="number"],
+.calculator input[type="text"],
 #display {
   width: 100%;
-  height: 75px;
-  margin-bottom: 25px;
+  max-width: 720px;
+  height: 70px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 22px;
   padding: 10px 18px;
   border: 5px solid black;
   background: #f8f8f8;
-  font-size: 32px;
+  font-size: 28px;
   font-weight: bold;
-  text-align: right;
   box-shadow: inset 4px 4px 0 #ddd;
 }
 
-/* DISPLAY + ANS BUTTON */
+#display {
+  text-align: right;
+}
+
+/* =========================
+   DISPLAY + ANS BUTTON
+========================= */
 
 .display-row {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto 28px;
   display: grid;
-  grid-template-columns: 1fr 180px;
-  gap: 0;
-  margin-bottom: 25px;
+  grid-template-columns: 1fr 170px;
 }
 
 .display-row #display {
+  max-width: none;
   margin-bottom: 0;
 }
 
 .ans-btn {
-  height: 75px;
+  height: 70px;
   border: 5px solid black;
   background: #b8ffb8;
-  font-size: 24px;
+  font-size: 26px;
   font-weight: bold;
   cursor: pointer;
   box-shadow: 5px 5px 0 black;
 }
 
+/* =========================
+   MAIN BUTTONS
+========================= */
+
+.main-btn,
+.calculator > button {
+  width: 100%;
+  max-width: 720px;
+  height: 70px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border: 5px solid black;
+  background: #b8ffb8;
+  font-size: 26px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 5px 5px 0 black;
+}
+
+.main-btn:hover,
+.calculator > button:hover,
 .ans-btn:hover {
   background: #ffe66d;
   transform: translate(-3px, -3px);
@@ -322,14 +408,49 @@ body {
 }
 
 /* =========================
-   BUTTONS
+   RESULT TEXT
 ========================= */
+
+#result,
+#bmiResult,
+#loanResult,
+#discountResult,
+#percentageResult {
+  margin-top: 28px;
+  text-align: center;
+  font-size: 32px;
+  line-height: 1.35;
+  white-space: pre-line;
+}
+
+/* =========================
+   CALCULATOR BUTTON GRIDS
+========================= */
+
+.basic-grid,
+.scientific-grid {
+  width: 100%;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+  gap: 14px;
+}
+
+.basic-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.scientific-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
 
 .buttons button {
   height: 65px;
   border: 4px solid black;
   background: #d9f7ff;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: bold;
   cursor: pointer;
   box-shadow: 4px 4px 0 black;
@@ -338,28 +459,15 @@ body {
 
 .buttons button:hover,
 .buttons button.keyboard-active {
+  background: #ffe66d !important;
   transform: translate(-3px, -3px) rotate(-2deg);
   box-shadow: 7px 7px 0 black;
-  background: #ffe66d !important;
-}
-
-.equal {
-  background: #b8ffb8 !important;
-}
-
-/* BASIC CALCULATOR GRID */
-
-.basic-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
 }
 
 .basic-grid button {
   background: #d9f7ff;
 }
 
-/* Pink buttons: +, −, ×, ÷, xʸ, √, ←, AC */
 .basic-grid button:nth-child(1),
 .basic-grid button:nth-child(2),
 .basic-grid button:nth-child(3),
@@ -375,16 +483,9 @@ body {
   background: #d9f7ff !important;
 }
 
-.basic-grid button.equal {
+.basic-grid button.equal,
+.equal {
   background: #b8ffb8 !important;
-}
-
-/* SCIENTIFIC CALCULATOR GRID */
-
-.scientific-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 14px;
 }
 
 .scientific-grid button:nth-child(7n),
@@ -447,72 +548,16 @@ body {
 }
 
 /* =========================
-   SINGLE CALCULATOR PAGES
+   AGE DATE INPUT
 ========================= */
-
-.single-calculator-container {
-  max-width: 700px;
-  margin: 130px auto 80px;
-  padding: 30px;
-}
-
-.calculator label {
-  display: block;
-  font-size: 22px;
-  font-weight: bold;
-  margin-bottom: 12px;
-}
-
-.calculator input[type="date"],
-.calculator input[type="number"],
-.calculator input[type="text"] {
-  width: 100%;
-  height: 60px;
-  padding: 10px 15px;
-  margin-bottom: 20px;
-  border: 5px solid black;
-  background: #f8f8f8;
-  font-size: 22px;
-  font-weight: bold;
-}
-
-.main-btn,
-.calculator > button {
-  width: 100%;
-  height: 60px;
-  border: 5px solid black;
-  background: #b8ffb8;
-  font-size: 24px;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 5px 5px 0 black;
-}
-
-.main-btn:hover,
-.calculator > button:hover {
-  background: #ffe66d;
-  transform: translate(-3px, -3px);
-  box-shadow: 8px 8px 0 black;
-}
-
-#result,
-#bmiResult,
-#loanResult,
-#discountResult,
-#percentageResult {
-  margin-top: 25px;
-  text-align: center;
-  font-size: 28px;
-  white-space: pre-line;
-}
-
-/* AGE DATE INPUT SIZE */
 
 #birthdate {
   width: 50%;
   min-width: 300px;
   max-width: 450px;
-  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
 #birthdate::-webkit-calendar-picker-indicator {
@@ -521,59 +566,36 @@ body {
   cursor: pointer;
 }
 
+.calculator label[for="birthdate"] {
+  text-align: center;
+}
+
 /* =========================
-   AGE CALCULATOR HISTORY
+   BMI UNIT TOGGLE
 ========================= */
 
-.age-calculator-container {
-  max-width: 1180px;
-  margin: 130px auto 80px;
-  padding: 30px;
+.bmi-title-row {
   display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 35px;
+  grid-template-columns: 120px 1fr 120px;
   align-items: start;
+  gap: 10px;
 }
 
-.age-history-box {
-  background: #fff4b8;
+#unitToggleBtn {
   border: 5px solid black;
-  box-shadow: 7px 7px 0 black;
-  padding: 20px;
-  transform: rotate(-1deg);
-  min-height: 450px;
-  max-height: 520px;
-  overflow-y: auto;
-  overflow-x: hidden;
+  background: #fff4b8;
+  color: black;
+  height: 55px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 5px 5px 0 black;
 }
 
-.age-history-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 18px;
-}
-
-.age-history-top h3 {
-  font-size: 24px;
-}
-
-#ageHistoryList {
-  list-style: none;
-  font-size: 17px;
-  line-height: 1.4;
-  max-width: 100%;
-  overflow-wrap: break-word;
-  word-break: break-word;
-}
-
-#ageHistoryList li {
-  max-width: 100%;
-  overflow-wrap: break-word;
-  word-break: break-word;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 3px solid black;
+#unitToggleBtn:hover {
+  background: #ffe66d;
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0 black;
 }
 
 /* =========================
@@ -619,57 +641,127 @@ body {
 }
 
 /* =========================
-   SCROLL TOP
+   SIDE BUTTONS
 ========================= */
+
+#menuIcon {
+  display: none;
+  position: fixed;
+  top: 18px;
+  right: 22px;
+  z-index: 9999999;
+  width: 50px;
+  height: 48px;
+  border: 5px solid black;
+  background: white;
+  color: black;
+  font-size: 26px;
+  font-weight: bold;
+  box-shadow: 5px 5px 0 black;
+  cursor: pointer;
+}
+
+#menuIcon.show {
+  display: block;
+}
+
+#resizeNavigator {
+  position: fixed;
+  right: 22px;
+  top: 235px;
+  z-index: 9999999;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  zoom: 1 !important;
+  transform: none !important;
+}
+
+#resizeNavigator button {
+  width: 52px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 5px solid black;
+  background: white;
+  color: black;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: 5px 5px 0 black;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  transform: none !important;
+}
+
+#handToggleBtn {
+  position: fixed;
+  right: 22px;
+  bottom: 120px;
+  top: auto;
+  width: 58px;
+  height: 50px;
+  border: 5px solid black;
+  background: white;
+  color: black;
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 5px 5px 0 black;
+  cursor: pointer;
+  z-index: 9999999;
+  transform: none !important;
+}
 
 #scrollTopBtn,
 .scroll-top {
   display: none;
   position: fixed;
-  right: 30px;
-  bottom: 30px;
-  z-index: 999999;
-  width: 65px;
-  height: 65px;
-  align-items: center;
-  justify-content: center;
-  border: 5px solid black;
-  background: white;
-  font-size: 38px;
-  font-weight: bold;
-  box-shadow: 5px 5px 0 black;
-  cursor: pointer;
-}
-
-/* =========================
-   LEFT / RIGHT HAND MODE
-========================= */
-
-#handToggleBtn {
-  position: fixed;
-  right: 30px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 65px;
-  height: 65px;
+  right: 22px;
+  bottom: 28px;
+  width: 58px;
+  height: 50px;
   border: 5px solid black;
   background: white;
   color: black;
-  font-size: 30px;
+  font-size: 28px;
   font-weight: bold;
-  box-shadow: 5px 5px 0 black;
-  cursor: pointer;
-  z-index: 999999;
-  display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 5px 5px 0 black;
+  cursor: pointer;
+  z-index: 9999999;
+  transform: none !important;
 }
 
-body.left-hand #handToggleBtn,
+/* side buttons opacity */
+#menuIcon,
+#resizeNavigator,
+#handToggleBtn,
+#scrollTopBtn,
+.scroll-top {
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+#menuIcon:hover,
+#resizeNavigator:hover,
+#handToggleBtn:hover,
+#scrollTopBtn:hover,
+.scroll-top:hover {
+  opacity: 1;
+}
+
+/* left-hand mode */
 body.left-hand #menuIcon,
+body.left-hand #resizeNavigator,
+body.left-hand #handToggleBtn,
 body.left-hand #scrollTopBtn,
 body.left-hand .scroll-top {
-  left: 30px;
+  left: 22px;
   right: auto;
 }
 
@@ -678,28 +770,12 @@ body.left-hand #navbar.open {
   right: auto;
 }
 
-body.left-hand .calculator-container {
-  grid-template-columns: 1fr 280px;
-}
-
-body.left-hand .calculator {
-  order: 1;
-}
-
-body.left-hand .history {
-  order: 2;
-}
-
-body.right-hand #handToggleBtn,
 body.right-hand #menuIcon,
+body.right-hand #resizeNavigator,
+body.right-hand #handToggleBtn,
 body.right-hand #scrollTopBtn,
 body.right-hand .scroll-top {
-  right: 30px;
-  left: auto;
-}
-
-body.right-hand #navbar.open {
-  right: 20px;
+  right: 22px;
   left: auto;
 }
 
@@ -741,7 +817,6 @@ body.right-hand #navbar.open {
     top: 15px;
     right: 20px;
     width: 260px;
-    height: auto;
     max-height: calc(100vh - 30px);
     overflow-y: auto;
   }
@@ -766,833 +841,10 @@ body.right-hand #navbar.open {
   }
 
   .calculator-container,
-  .age-calculator-container {
-    grid-template-columns: 1fr;
-    margin-top: 110px;
-    padding: 20px;
-  }
-
-  .single-calculator-container,
-  .about-container {
-    margin-top: 110px;
-    padding: 20px;
-  }
-
-  .history,
-  .age-history-box {
-    max-height: 300px;
-    min-height: auto;
-  }
-
-  .scientific-grid,
-  .basic-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .calculator h1,
-  .about-box h1 {
-    font-size: 36px;
-  }
-
-  .buttons button {
-    height: 58px;
-    font-size: 18px;
-  }
-
-  .display-row {
-    grid-template-columns: 1fr 100px;
-  }
-
-  .ans-btn {
-    height: 65px;
-    font-size: 20px;
-  }
-
-  #birthdate {
-    width: 100%;
-    min-width: 0;
-  }
-
-  .calculator-box {
-    width: 95%;
-    margin-top: 110px;
-  }
-
-  .calculator-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .card {
-    font-size: 28px;
-  }
-
-  .about-card h2 {
-    font-size: 26px;
-  }
-
-  .about-card p {
-    font-size: 18px;
-  }
-
-  #handToggleBtn {
-    width: 55px;
-    height: 55px;
-    font-size: 24px;
-  }
-
-  body.left-hand .calculator-container {
-    grid-template-columns: 1fr;
-  }
-
-  body.left-hand .calculator,
-  body.left-hand .history {
-    order: initial;
-  }
-}
-/* =========================
-   FINAL HISTORY COPY BUTTON STYLE
-========================= */
-
-.history-item {
-  display: grid !important;
-  grid-template-columns: 1fr auto !important;
-  gap: 10px !important;
-  align-items: start !important;
-
-  margin-bottom: 12px !important;
-  padding-bottom: 10px !important;
-
-  border-bottom: 3px solid black !important;
-}
-
-.history-text {
-  font-size: 18px;
-  line-height: 1.4;
-
-  overflow-wrap: break-word;
-  word-break: break-word;
-}
-
-.history-copy-btn {
-  display: inline-block !important;
-
-  border: 4px solid black;
-  background: #ffd3d3;
-
-  padding: 6px 10px;
-
-  font-size: 14px;
-  font-weight: bold;
-
-  cursor: pointer;
-
-  box-shadow: 3px 3px 0 black;
-}
-
-.history-copy-btn:hover {
-  background: #ffe66d;
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0 black;
-}
-
-/* =========================
-   COPY BUTTONS ON HOVER
-========================= */
-
-/* Result copy wrapper */
-.result-copy-wrap {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
-  align-items: center;
-  margin-top: 25px;
-}
-
-/* Keep result text nice */
-.result-copy-wrap h2 {
-  margin-top: 0 !important;
-  white-space: pre-line;
-}
-
-/* Result copy button */
-.result-copy-btn {
-  opacity: 0;
-  pointer-events: none;
-
-  border: 4px solid black;
-  background: #ffd3d3;
-
-  padding: 6px 10px;
-
-  font-size: 14px;
-  font-weight: bold;
-
-  cursor: pointer;
-
-  box-shadow: 3px 3px 0 black;
-}
-
-/* Show copy button only when hovering result */
-.result-copy-wrap:hover .result-copy-btn {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.result-copy-btn:hover {
-  background: #ffe66d;
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0 black;
-}
-
-/* History item layout */
-.history-item {
-  display: grid !important;
-  grid-template-columns: 1fr auto !important;
-  gap: 10px !important;
-  align-items: start !important;
-
-  margin-bottom: 12px !important;
-  padding-bottom: 10px !important;
-
-  border-bottom: 3px solid black !important;
-}
-
-.history-text {
-  font-size: 18px;
-  line-height: 1.4;
-
-  overflow-wrap: break-word;
-  word-break: break-word;
-}
-
-/* History copy button hidden by default */
-.history-copy-btn {
-  opacity: 0;
-  pointer-events: none;
-
-  border: 4px solid black;
-  background: #ffd3d3;
-
-  padding: 6px 10px;
-
-  font-size: 14px;
-  font-weight: bold;
-
-  cursor: pointer;
-
-  box-shadow: 3px 3px 0 black;
-}
-
-/* Show copy button only when hovering history item */
-.history-item:hover .history-copy-btn {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.history-copy-btn:hover {
-  background: #ffe66d;
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0 black;
-}
-
-/* Mobile: always show copy buttons because hover is hard on phone */
-@media (max-width: 850px) {
-  .history-copy-btn,
-  .result-copy-btn {
-    opacity: 1;
-    pointer-events: auto;
-  }
-}
-
-/* CENTER AGE DATE INPUT */
-
-#birthdate {
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-}
-
-.calculator label[for="birthdate"] {
-  text-align: center;
-}
-
-/* =========================
-   BMI CALCULATOR HISTORY
-========================= */
-
-.bmi-calculator-container {
-  max-width: 1180px;
-  margin: 130px auto 80px;
-  padding: 30px;
-
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 35px;
-  align-items: start;
-}
-
-.bmi-history-box {
-  background: #fff4b8;
-  border: 5px solid black;
-  box-shadow: 7px 7px 0 black;
-  padding: 20px;
-  transform: rotate(-1deg);
-
-  min-height: 450px;
-  max-height: 520px;
-
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.bmi-history-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 18px;
-}
-
-.bmi-history-top h3 {
-  font-size: 24px;
-}
-
-#bmiHistoryList {
-  list-style: none;
-  font-size: 17px;
-  line-height: 1.4;
-
-  max-width: 100%;
-  overflow-wrap: break-word;
-  word-break: break-word;
-}
-
-#bmiHistoryList li {
-  max-width: 100%;
-  overflow-wrap: break-word;
-  word-break: break-word;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 3px solid black;
-}
-
-#bmiResult {
-  white-space: pre-line;
-}
-
-/* Center BMI inputs nicely */
-.bmi-calculator-container .calculator label {
-  max-width: 720px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.bmi-calculator-container .calculator input[type="number"] {
-  max-width: 720px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* Mobile */
-@media (max-width: 850px) {
-  .bmi-calculator-container {
-    grid-template-columns: 1fr;
-    margin-top: 110px;
-    padding: 20px;
-  }
-
-  .bmi-history-box {
-    min-height: auto;
-    max-height: 300px;
-  }
-}
-
-/* BMI UNIT TOGGLE BUTTON */
-
-.bmi-title-row {
-  display: grid;
-  grid-template-columns: 120px 1fr 120px;
-  align-items: start;
-  gap: 10px;
-}
-
-#unitToggleBtn {
-  border: 5px solid black;
-  background: #fff4b8;
-  color: black;
-
-  height: 55px;
-
-  font-size: 20px;
-  font-weight: bold;
-
-  cursor: pointer;
-
-  box-shadow: 5px 5px 0 black;
-}
-
-#unitToggleBtn:hover {
-  background: #ffe66d;
-  transform: translate(-3px, -3px);
-  box-shadow: 8px 8px 0 black;
-}
-
-@media (max-width: 850px) {
-  .bmi-title-row {
-    grid-template-columns: 1fr;
-  }
-
-  #unitToggleBtn {
-    width: 140px;
-    margin: 0 auto 15px;
-    order: -1;
-  }
-}
-/* =========================
-   BASIC HISTORY BOX SAME AS RESULT BOXES
-========================= */
-
-.history {
-  min-height: 450px;
-  max-height: 520px;
-
-  background: #fff4b8;
-  border: 5px solid black;
-  box-shadow: 7px 7px 0 black;
-
-  padding: 20px;
-
-  transform: rotate(-1deg);
-
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.history-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  margin-bottom: 18px;
-}
-
-.history h3 {
-  font-size: 24px;
-}
-
-#historyList {
-  list-style: none;
-  font-size: 17px;
-  line-height: 1.4;
-
-  max-width: 100%;
-  overflow-wrap: break-word;
-  word-break: break-word;
-}
-
-#historyList li {
-  max-width: 100%;
-  overflow-wrap: break-word;
-  word-break: break-word;
-}
-
-/* Mobile */
-@media (max-width: 850px) {
-  .history {
-    min-height: auto;
-    max-height: 300px;
-  }
-}
-/* =========================
-   DISCOUNT CALCULATOR HISTORY
-========================= */
-
-.discount-calculator-container {
-  max-width: 1180px;
-  margin: 130px auto 80px;
-  padding: 30px;
-
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 35px;
-  align-items: start;
-}
-
-.discount-history-box {
-  background: #fff4b8;
-  border: 5px solid black;
-  box-shadow: 7px 7px 0 black;
-  padding: 20px;
-  transform: rotate(-1deg);
-
-  min-height: 450px;
-  max-height: 520px;
-
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.discount-history-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 18px;
-}
-
-.discount-history-top h3 {
-  font-size: 24px;
-}
-
-#discountHistoryList {
-  list-style: none;
-  font-size: 17px;
-  line-height: 1.4;
-
-  max-width: 100%;
-  overflow-wrap: break-word;
-  word-break: break-word;
-}
-
-#discountHistoryList li {
-  max-width: 100%;
-  overflow-wrap: break-word;
-  word-break: break-word;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 3px solid black;
-}
-
-/* Mobile */
-@media (max-width: 850px) {
-  .discount-calculator-container {
-    grid-template-columns: 1fr;
-    margin-top: 110px;
-    padding: 20px;
-  }
-
-  .discount-history-box {
-    min-height: auto;
-    max-height: 300px;
-  }
-}
-
-/* =========================
-   SIDE BUTTONS SPACING
-========================= */
-
-/* Orientation button */
-#handToggleBtn {
-  top: 45%;
-}
-
-/* Resize navigator */
-#resizeNavigator {
-  position: fixed;
-  right: 30px;
-  top: calc(45% + 85px);
-
-  z-index: 999999;
-
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-#resizeNavigator button {
-  width: 55px;
-  height: 45px;
-
-  border: 5px solid black;
-  background: white;
-  color: black;
-
-  font-size: 22px;
-  font-weight: bold;
-
-  cursor: pointer;
-
-  box-shadow: 5px 5px 0 black;
-}
-
-#resizeNavigator button:hover {
-  background: #ffe66d;
-  transform: translate(-2px, -2px);
-  box-shadow: 7px 7px 0 black;
-}
-
-/* Scroll top button lower */
-#scrollTopBtn,
-.scroll-top {
-  bottom: 30px;
-}
-
-/* Left hand mode */
-body.left-hand #resizeNavigator {
-  left: 30px;
-  right: auto;
-}
-
-/* Right hand mode */
-body.right-hand #resizeNavigator {
-  right: 30px;
-  left: auto;
-}
-
-/* Mobile */
-@media (max-width: 850px) {
-  #handToggleBtn {
-    top: 42%;
-  }
-
-  #resizeNavigator {
-    right: 20px;
-    top: calc(42% + 75px);
-    gap: 10px;
-  }
-
-  body.left-hand #resizeNavigator {
-    left: 20px;
-    right: auto;
-  }
-
-  #resizeNavigator button {
-    width: 48px;
-    height: 40px;
-    font-size: 18px;
-  }
-}
-
-/* =========================
-   SAME SIZE FOR ALL CALCULATOR PAGES
-========================= */
-
-/* Same outer layout width */
-.calculator-container,
-.age-calculator-container,
-.bmi-calculator-container,
-.discount-calculator-container {
-  max-width: 1180px;
-  margin: 130px auto 80px;
-  padding: 30px;
-
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 35px;
-  align-items: start;
-}
-
-/* Pages without history box */
-.single-calculator-container {
-  max-width: 820px;
-  margin: 130px auto 80px;
-  padding: 30px;
-}
-
-/* Same calculator box size */
-.calculator {
-  width: 100%;
-  max-width: 780px;
-  margin: 0 auto;
-
-  background: white;
-  border: 5px solid black;
-  box-shadow: 9px 9px 0 black;
-
-  padding: 30px;
-}
-
-/* Same title size */
-.calculator h1 {
-  text-align: center;
-  font-size: 48px;
-  line-height: 1.1;
-  margin-bottom: 12px;
-}
-
-/* Same subtitle/text size */
-.subtitle {
-  text-align: center;
-  font-size: 20px;
-  line-height: 1.4;
-  margin-bottom: 28px;
-}
-
-/* Same label text size */
-.calculator label {
-  display: block;
-  max-width: 720px;
-
-  margin: 0 auto 12px;
-
-  font-size: 24px;
-  font-weight: bold;
-}
-
-/* Same input bar size */
-.calculator input[type="date"],
-.calculator input[type="number"],
-.calculator input[type="text"],
-#display {
-  width: 100%;
-  max-width: 720px;
-  height: 70px;
-
-  display: block;
-
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 22px;
-
-  padding: 10px 18px;
-
-  border: 5px solid black;
-  background: #f8f8f8;
-
-  font-size: 28px;
-  font-weight: bold;
-
-  box-shadow: inset 4px 4px 0 #ddd;
-}
-
-/* Same calculate button size */
-.main-btn,
-.calculator > button {
-  width: 100%;
-  max-width: 720px;
-  height: 70px;
-
-  display: block;
-
-  margin-left: auto;
-  margin-right: auto;
-
-  border: 5px solid black;
-  background: #b8ffb8;
-
-  font-size: 26px;
-  font-weight: bold;
-
-  cursor: pointer;
-
-  box-shadow: 5px 5px 0 black;
-}
-
-.main-btn:hover,
-.calculator > button:hover {
-  background: #ffe66d;
-  transform: translate(-3px, -3px);
-  box-shadow: 8px 8px 0 black;
-}
-
-/* Same result text size */
-#result,
-#bmiResult,
-#loanResult,
-#discountResult,
-#percentageResult {
-  margin-top: 28px;
-  text-align: center;
-
-  font-size: 32px;
-  line-height: 1.35;
-
-  white-space: pre-line;
-}
-
-/* Same basic calculator display + ANS size */
-.display-row {
-  width: 100%;
-  max-width: 720px;
-
-  margin: 0 auto 28px;
-
-  display: grid;
-  grid-template-columns: 1fr 170px;
-}
-
-.display-row #display {
-  max-width: none;
-  margin-bottom: 0;
-}
-
-.ans-btn {
-  height: 70px;
-
-  border: 5px solid black;
-  background: #b8ffb8;
-
-  font-size: 26px;
-  font-weight: bold;
-
-  cursor: pointer;
-
-  box-shadow: 5px 5px 0 black;
-}
-
-.ans-btn:hover {
-  background: #ffe66d;
-  transform: translate(-3px, -3px);
-  box-shadow: 8px 8px 0 black;
-}
-
-/* Same calculator button/number size */
-.buttons button {
-  height: 65px;
-
-  border: 4px solid black;
-
-  font-size: 24px;
-  font-weight: bold;
-
-  cursor: pointer;
-
-  box-shadow: 4px 4px 0 black;
-}
-
-/* Same grid width */
-.basic-grid,
-.scientific-grid {
-  width: 100%;
-  max-width: 720px;
-
-  margin-left: auto;
-  margin-right: auto;
-
-  gap: 14px;
-}
-
-/* Basic grid */
-.basic-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-}
-
-/* Scientific grid */
-.scientific-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-}
-
-/* Same history/result side bar */
-.history,
-.age-history-box,
-.bmi-history-box,
-.discount-history-box {
-  width: 280px;
-  min-height: 450px;
-  max-height: 520px;
-
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-/* Mobile */
-@media (max-width: 850px) {
-  .calculator-container,
   .age-calculator-container,
   .bmi-calculator-container,
-  .discount-calculator-container {
+  .discount-calculator-container,
+  .loan-calculator-container {
     grid-template-columns: 1fr;
     margin-top: 110px;
     padding: 20px;
@@ -1656,152 +908,58 @@ body.right-hand #resizeNavigator {
   .history,
   .age-history-box,
   .bmi-history-box,
-  .discount-history-box {
+  .discount-history-box,
+  .loan-history-box {
     width: 100%;
     min-height: auto;
     max-height: 300px;
   }
-}
 
-/* =========================
-   SIDE BUTTONS - NEW POSITION
-========================= */
+  #birthdate {
+    width: 100%;
+    min-width: 0;
+  }
 
-/* MENU ICON */
-#menuIcon {
-  display: none;
-  position: fixed;
-  top: 18px;
-  right: 22px;
-  z-index: 999999;
+  .bmi-title-row {
+    grid-template-columns: 1fr;
+  }
 
-  width: 50px;
-  height: 48px;
+  #unitToggleBtn {
+    width: 140px;
+    margin: 0 auto 15px;
+    order: -1;
+  }
 
-  border: 5px solid black;
-  background: white;
+  .calculator-box {
+    width: 95%;
+    margin-top: 110px;
+  }
 
-  font-size: 26px;
-  font-weight: bold;
+  .calculator-grid {
+    grid-template-columns: 1fr;
+  }
 
-  box-shadow: 5px 5px 0 black;
-  cursor: pointer;
-}
+  .card {
+    font-size: 28px;
+  }
 
-#menuIcon.show {
-  display: block;
-}
+  .about-container {
+    margin-top: 110px;
+    padding: 20px;
+  }
 
-/* RESIZE NAVIGATOR (+ 100 -) */
-#resizeNavigator {
-  position: fixed;
-  right: 22px;
-  top: 240px;
+  .about-box h1 {
+    font-size: 36px;
+  }
 
-  z-index: 999999;
+  .about-card h2 {
+    font-size: 26px;
+  }
 
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+  .about-card p {
+    font-size: 18px;
+  }
 
-#resizeNavigator button {
-  width: 50px;
-  height: 46px;
-
-  border: 5px solid black;
-  background: white;
-  color: black;
-
-  font-size: 18px;
-  font-weight: bold;
-
-  cursor: pointer;
-
-  box-shadow: 5px 5px 0 black;
-}
-
-#resizeNavigator button:hover {
-  background: #ffe66d;
-  transform: translate(-2px, -2px);
-  box-shadow: 7px 7px 0 black;
-}
-
-/* ORIENTATION BUTTON */
-#handToggleBtn {
-  position: fixed;
-  right: 22px;
-  bottom: 120px;
-
-  width: 58px;
-  height: 50px;
-
-  border: 5px solid black;
-  background: white;
-  color: black;
-
-  font-size: 24px;
-  font-weight: bold;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  box-shadow: 5px 5px 0 black;
-  cursor: pointer;
-  z-index: 999999;
-}
-
-/* SCROLL TOP BUTTON */
-#scrollTopBtn,
-.scroll-top {
-  position: fixed;
-  right: 22px;
-  bottom: 28px;
-
-  width: 58px;
-  height: 50px;
-
-  border: 5px solid black;
-  background: white;
-  color: black;
-
-  font-size: 28px;
-  font-weight: bold;
-
-  display: none;
-  align-items: center;
-  justify-content: center;
-
-  box-shadow: 5px 5px 0 black;
-  cursor: pointer;
-  z-index: 999999;
-}
-
-/* LEFT HAND MODE */
-body.left-hand #menuIcon {
-  left: 22px;
-  right: auto;
-}
-
-body.left-hand #resizeNavigator {
-  left: 22px;
-  right: auto;
-}
-
-body.left-hand #handToggleBtn {
-  left: 22px;
-  right: auto;
-}
-
-body.left-hand #scrollTopBtn,
-body.left-hand .scroll-top {
-  left: 22px;
-  right: auto;
-}
-
-/* MOBILE */
-@media (max-width: 850px) {
   #menuIcon {
     top: 16px;
     right: 16px;
@@ -1813,12 +971,12 @@ body.left-hand .scroll-top {
   #resizeNavigator {
     right: 16px;
     top: 210px;
-    gap: 8px;
+    gap: 12px;
   }
 
   #resizeNavigator button {
-    width: 46px;
-    height: 42px;
+    width: 48px;
+    height: 44px;
     font-size: 17px;
   }
 
@@ -1847,1073 +1005,10 @@ body.left-hand .scroll-top {
     left: 16px;
     right: auto;
   }
-}
-
-/* =====================================================
-   FINAL REPAIR OVERRIDE
-   Paste this at the VERY BOTTOM of style.css
-===================================================== */
-
-/* ---------- Same calculator layout for all calculator pages ---------- */
-
-.calculator-container,
-.age-calculator-container,
-.bmi-calculator-container,
-.discount-calculator-container {
-  max-width: 1180px !important;
-  margin: 130px auto 80px !important;
-  padding: 30px !important;
-
-  display: grid !important;
-  grid-template-columns: 280px 1fr !important;
-  gap: 35px !important;
-  align-items: start !important;
-}
-
-.single-calculator-container {
-  max-width: 820px !important;
-  margin: 130px auto 80px !important;
-  padding: 30px !important;
-}
-
-/* ---------- Same calculator box size ---------- */
-
-.calculator {
-  width: 100% !important;
-  max-width: 780px !important;
-  margin: 0 auto !important;
-
-  background: white !important;
-  border: 5px solid black !important;
-  box-shadow: 9px 9px 0 black !important;
-
-  padding: 30px !important;
-}
-
-/* ---------- Same title/text sizes ---------- */
-
-.calculator h1 {
-  text-align: center !important;
-  font-size: 48px !important;
-  line-height: 1.1 !important;
-  margin-bottom: 12px !important;
-}
-
-.subtitle {
-  text-align: center !important;
-  font-size: 20px !important;
-  line-height: 1.4 !important;
-  margin-bottom: 28px !important;
-}
-
-.calculator label {
-  display: block !important;
-  max-width: 720px !important;
-
-  margin: 0 auto 12px !important;
-
-  font-size: 24px !important;
-  font-weight: bold !important;
-}
-
-/* ---------- Same input bar size ---------- */
-
-.calculator input[type="date"],
-.calculator input[type="number"],
-.calculator input[type="text"],
-#display {
-  width: 100% !important;
-  max-width: 720px !important;
-  height: 70px !important;
-
-  display: block !important;
-
-  margin-left: auto !important;
-  margin-right: auto !important;
-  margin-bottom: 22px !important;
-
-  padding: 10px 18px !important;
-
-  border: 5px solid black !important;
-  background: #f8f8f8 !important;
-
-  font-size: 28px !important;
-  font-weight: bold !important;
-
-  box-shadow: inset 4px 4px 0 #ddd !important;
-}
-
-/* ---------- Basic calculator display + ANS ---------- */
-
-.display-row {
-  width: 100% !important;
-  max-width: 720px !important;
-
-  margin: 0 auto 28px !important;
-
-  display: grid !important;
-  grid-template-columns: 1fr 170px !important;
-}
-
-.display-row #display {
-  max-width: none !important;
-  margin-bottom: 0 !important;
-}
-
-.ans-btn {
-  height: 70px !important;
-
-  border: 5px solid black !important;
-  background: #b8ffb8 !important;
-
-  font-size: 26px !important;
-  font-weight: bold !important;
-
-  cursor: pointer !important;
-
-  box-shadow: 5px 5px 0 black !important;
-}
-
-/* ---------- Same calculate button size ---------- */
-
-.main-btn,
-.calculator > button {
-  width: 100% !important;
-  max-width: 720px !important;
-  height: 70px !important;
-
-  display: block !important;
-
-  margin-left: auto !important;
-  margin-right: auto !important;
-
-  border: 5px solid black !important;
-  background: #b8ffb8 !important;
-
-  font-size: 26px !important;
-  font-weight: bold !important;
-
-  cursor: pointer !important;
-
-  box-shadow: 5px 5px 0 black !important;
-}
-
-.main-btn:hover,
-.calculator > button:hover,
-.ans-btn:hover {
-  background: #ffe66d !important;
-  transform: translate(-3px, -3px) !important;
-  box-shadow: 8px 8px 0 black !important;
-}
-
-/* ---------- Same result size ---------- */
-
-#result,
-#bmiResult,
-#loanResult,
-#discountResult,
-#percentageResult {
-  margin-top: 28px !important;
-  text-align: center !important;
-
-  font-size: 32px !important;
-  line-height: 1.35 !important;
-
-  white-space: pre-line !important;
-}
-
-/* ---------- Same calculator number/button size ---------- */
-
-.basic-grid,
-.scientific-grid {
-  width: 100% !important;
-  max-width: 720px !important;
-
-  margin-left: auto !important;
-  margin-right: auto !important;
-
-  gap: 14px !important;
-}
-
-.basic-grid {
-  display: grid !important;
-  grid-template-columns: repeat(4, 1fr) !important;
-}
-
-.scientific-grid {
-  display: grid !important;
-  grid-template-columns: repeat(7, 1fr) !important;
-}
-
-.buttons button {
-  height: 65px !important;
-
-  border: 4px solid black !important;
-
-  font-size: 24px !important;
-  font-weight: bold !important;
-
-  cursor: pointer !important;
-
-  box-shadow: 4px 4px 0 black !important;
-}
-
-/* ---------- Button colors ---------- */
-
-.basic-grid button {
-  background: #d9f7ff !important;
-}
-
-.basic-grid button:nth-child(1),
-.basic-grid button:nth-child(2),
-.basic-grid button:nth-child(3),
-.basic-grid button:nth-child(4),
-.basic-grid button:nth-child(8),
-.basic-grid button:nth-child(12),
-.basic-grid button:nth-child(16),
-.basic-grid .ac-btn {
-  background: #ffd3d3 !important;
-}
-
-.basic-grid .zero-btn {
-  background: #d9f7ff !important;
-}
-
-.basic-grid button.equal,
-.equal {
-  background: #b8ffb8 !important;
-}
-
-.buttons button:hover,
-.buttons button.keyboard-active {
-  background: #ffe66d !important;
-  transform: translate(-3px, -3px) rotate(-2deg) !important;
-  box-shadow: 7px 7px 0 black !important;
-}
-
-/* ---------- Side history/result boxes same size ---------- */
-
-.history,
-.age-history-box,
-.bmi-history-box,
-.discount-history-box {
-  width: 280px !important;
-  min-height: 450px !important;
-  max-height: 520px !important;
-
-  background: #fff4b8 !important;
-  border: 5px solid black !important;
-  box-shadow: 7px 7px 0 black !important;
-
-  padding: 20px !important;
-
-  transform: rotate(-1deg) !important;
-
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-}
-
-.history-top,
-.age-history-top,
-.bmi-history-top,
-.discount-history-top {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-
-  margin-bottom: 18px !important;
-}
-
-.history h3,
-.age-history-top h3,
-.bmi-history-top h3,
-.discount-history-top h3 {
-  font-size: 24px !important;
-}
-
-#historyList,
-#ageHistoryList,
-#bmiHistoryList,
-#discountHistoryList {
-  list-style: none !important;
-  font-size: 17px !important;
-  line-height: 1.4 !important;
-
-  max-width: 100% !important;
-  overflow-wrap: break-word !important;
-  word-break: break-word !important;
-}
-
-/* ---------- Copy buttons only show on hover ---------- */
-
-.history-item {
-  display: grid !important;
-  grid-template-columns: 1fr auto !important;
-  gap: 10px !important;
-  align-items: start !important;
-
-  margin-bottom: 12px !important;
-  padding-bottom: 10px !important;
-
-  border-bottom: 3px solid black !important;
-}
-
-.history-text {
-  font-size: 18px !important;
-  line-height: 1.4 !important;
-
-  overflow-wrap: break-word !important;
-  word-break: break-word !important;
-}
-
-.history-copy-btn,
-.result-copy-btn {
-  opacity: 0 !important;
-  pointer-events: none !important;
-
-  border: 4px solid black !important;
-  background: #ffd3d3 !important;
-
-  padding: 6px 10px !important;
-
-  font-size: 14px !important;
-  font-weight: bold !important;
-
-  cursor: pointer !important;
-
-  box-shadow: 3px 3px 0 black !important;
-}
-
-.history-item:hover .history-copy-btn,
-.result-copy-wrap:hover .result-copy-btn {
-  opacity: 1 !important;
-  pointer-events: auto !important;
-}
-
-.history-copy-btn:hover,
-.result-copy-btn:hover {
-  background: #ffe66d !important;
-  transform: translate(-2px, -2px) !important;
-  box-shadow: 5px 5px 0 black !important;
-}
-
-/* ---------- Age date input centered ---------- */
-
-#birthdate {
-  width: 50% !important;
-  min-width: 300px !important;
-  max-width: 450px !important;
-
-  margin-left: auto !important;
-  margin-right: auto !important;
-
-  text-align: center !important;
-}
-
-.calculator label[for="birthdate"] {
-  text-align: center !important;
-}
-
-/* ---------- BMI unit toggle ---------- */
-
-.bmi-title-row {
-  display: grid !important;
-  grid-template-columns: 120px 1fr 120px !important;
-  align-items: start !important;
-  gap: 10px !important;
-}
-
-#unitToggleBtn {
-  border: 5px solid black !important;
-  background: #fff4b8 !important;
-  color: black !important;
-
-  height: 55px !important;
-
-  font-size: 20px !important;
-  font-weight: bold !important;
-
-  cursor: pointer !important;
-
-  box-shadow: 5px 5px 0 black !important;
-}
-
-#unitToggleBtn:hover {
-  background: #ffe66d !important;
-  transform: translate(-3px, -3px) !important;
-  box-shadow: 8px 8px 0 black !important;
-}
-
-/* ---------- Side buttons new position ---------- */
-
-#menuIcon {
-  display: none;
-  position: fixed !important;
-  top: 18px !important;
-  right: 22px !important;
-  z-index: 999999 !important;
-
-  width: 50px !important;
-  height: 48px !important;
-
-  border: 5px solid black !important;
-  background: white !important;
-  color: black !important;
-
-  font-size: 26px !important;
-  font-weight: bold !important;
-
-  box-shadow: 5px 5px 0 black !important;
-  cursor: pointer !important;
-}
-
-#menuIcon.show {
-  display: block !important;
-}
-
-#resizeNavigator {
-  position: fixed !important;
-  right: 22px !important;
-  top: 240px !important;
-
-  z-index: 999999 !important;
-
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 10px !important;
-}
-
-#resizeNavigator button {
-  width: 50px !important;
-  height: 46px !important;
-
-  border: 5px solid black !important;
-  background: white !important;
-  color: black !important;
-
-  font-size: 18px !important;
-  font-weight: bold !important;
-
-  cursor: pointer !important;
-
-  box-shadow: 5px 5px 0 black !important;
-}
-
-#handToggleBtn {
-  position: fixed !important;
-  right: 22px !important;
-  top: auto !important;
-  bottom: 120px !important;
-  transform: none !important;
-
-  width: 58px !important;
-  height: 50px !important;
-
-  border: 5px solid black !important;
-  background: white !important;
-  color: black !important;
-
-  font-size: 24px !important;
-  font-weight: bold !important;
-
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-
-  box-shadow: 5px 5px 0 black !important;
-  cursor: pointer !important;
-  z-index: 999999 !important;
-}
-
-#scrollTopBtn,
-.scroll-top {
-  position: fixed !important;
-  right: 22px !important;
-  bottom: 28px !important;
-
-  width: 58px !important;
-  height: 50px !important;
-
-  border: 5px solid black !important;
-  background: white !important;
-  color: black !important;
-
-  font-size: 28px !important;
-  font-weight: bold !important;
-
-  display: none;
-  align-items: center !important;
-  justify-content: center !important;
-
-  box-shadow: 5px 5px 0 black !important;
-  cursor: pointer !important;
-  z-index: 999999 !important;
-}
-
-/* ---------- Left-hand mode ---------- */
-
-body.left-hand #menuIcon,
-body.left-hand #resizeNavigator,
-body.left-hand #handToggleBtn,
-body.left-hand #scrollTopBtn,
-body.left-hand .scroll-top {
-  left: 22px !important;
-  right: auto !important;
-}
-
-body.left-hand #navbar.open {
-  left: 20px !important;
-  right: auto !important;
-}
-
-body.right-hand #menuIcon,
-body.right-hand #resizeNavigator,
-body.right-hand #handToggleBtn,
-body.right-hand #scrollTopBtn,
-body.right-hand .scroll-top {
-  right: 22px !important;
-  left: auto !important;
-}
-
-/* ---------- Mobile repair ---------- */
-
-@media (max-width: 850px) {
-  .calculator-container,
-  .age-calculator-container,
-  .bmi-calculator-container,
-  .discount-calculator-container {
-    grid-template-columns: 1fr !important;
-    margin-top: 110px !important;
-    padding: 20px !important;
-  }
-
-  .single-calculator-container {
-    max-width: 100% !important;
-    margin-top: 110px !important;
-    padding: 20px !important;
-  }
-
-  .calculator {
-    max-width: 100% !important;
-    padding: 22px !important;
-  }
-
-  .calculator h1 {
-    font-size: 36px !important;
-  }
-
-  .subtitle {
-    font-size: 18px !important;
-  }
-
-  .calculator label {
-    font-size: 22px !important;
-  }
-
-  .calculator input[type="date"],
-  .calculator input[type="number"],
-  .calculator input[type="text"],
-  #display {
-    height: 62px !important;
-    font-size: 24px !important;
-  }
-
-  .main-btn,
-  .calculator > button {
-    height: 62px !important;
-    font-size: 22px !important;
-  }
-
-  .display-row {
-    grid-template-columns: 1fr 100px !important;
-  }
-
-  .ans-btn {
-    height: 62px !important;
-    font-size: 20px !important;
-  }
-
-  .buttons button {
-    height: 58px !important;
-    font-size: 20px !important;
-  }
-
-  .scientific-grid {
-    grid-template-columns: repeat(4, 1fr) !important;
-  }
-
-  .history,
-  .age-history-box,
-  .bmi-history-box,
-  .discount-history-box {
-    width: 100% !important;
-    min-height: auto !important;
-    max-height: 300px !important;
-  }
-
-  #birthdate {
-    width: 100% !important;
-    min-width: 0 !important;
-  }
-
-  .bmi-title-row {
-    grid-template-columns: 1fr !important;
-  }
-
-  #unitToggleBtn {
-    width: 140px !important;
-    margin: 0 auto 15px !important;
-    order: -1 !important;
-  }
-
-  #menuIcon {
-    top: 16px !important;
-    right: 16px !important;
-    width: 46px !important;
-    height: 44px !important;
-    font-size: 24px !important;
-  }
-
-  #resizeNavigator {
-    right: 16px !important;
-    top: 210px !important;
-    gap: 8px !important;
-  }
-
-  #resizeNavigator button {
-    width: 46px !important;
-    height: 42px !important;
-    font-size: 17px !important;
-  }
-
-  #handToggleBtn {
-    right: 16px !important;
-    bottom: 100px !important;
-    width: 52px !important;
-    height: 46px !important;
-    font-size: 21px !important;
-  }
-
-  #scrollTopBtn,
-  .scroll-top {
-    right: 16px !important;
-    bottom: 22px !important;
-    width: 52px !important;
-    height: 46px !important;
-    font-size: 24px !important;
-  }
-
-  body.left-hand #menuIcon,
-  body.left-hand #resizeNavigator,
-  body.left-hand #handToggleBtn,
-  body.left-hand #scrollTopBtn,
-  body.left-hand .scroll-top {
-    left: 16px !important;
-    right: auto !important;
-  }
 
   .history-copy-btn,
   .result-copy-btn {
-    opacity: 1 !important;
-    pointer-events: auto !important;
-  }
-}
-/* =========================
-   FINAL SIDE BUTTON POSITION FIX
-========================= */
-
-#menuIcon {
-  position: fixed !important;
-  top: 18px !important;
-  right: 22px !important;
-
-  width: 50px !important;
-  height: 48px !important;
-
-  z-index: 9999999 !important;
-}
-
-#resizeNavigator {
-  position: fixed !important;
-  right: 22px !important;
-  top: 235px !important;
-
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 14px !important;
-
-  z-index: 9999999 !important;
-
-  zoom: 1 !important;
-  transform: none !important;
-}
-
-#resizeNavigator button {
-  width: 52px !important;
-  height: 48px !important;
-
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-
-  border: 5px solid black !important;
-  background: white !important;
-  color: black !important;
-
-  font-size: 18px !important;
-  font-weight: bold !important;
-
-  box-shadow: 5px 5px 0 black !important;
-
-  margin: 0 !important;
-  padding: 0 !important;
-
-  transform: none !important;
-}
-
-#handToggleBtn {
-  position: fixed !important;
-  right: 22px !important;
-  bottom: 120px !important;
-  top: auto !important;
-
-  width: 58px !important;
-  height: 50px !important;
-
-  zoom: 1 !important;
-  transform: none !important;
-
-  z-index: 9999999 !important;
-}
-
-#scrollTopBtn,
-.scroll-top {
-  position: fixed !important;
-  right: 22px !important;
-  bottom: 28px !important;
-
-  width: 58px !important;
-  height: 50px !important;
-
-  zoom: 1 !important;
-  transform: none !important;
-
-  z-index: 9999999 !important;
-}
-
-/* LEFT HAND MODE */
-
-body.left-hand #menuIcon,
-body.left-hand #resizeNavigator,
-body.left-hand #handToggleBtn,
-body.left-hand #scrollTopBtn,
-body.left-hand .scroll-top {
-  left: 22px !important;
-  right: auto !important;
-}
-
-/* MOBILE */
-
-@media (max-width: 850px) {
-  #menuIcon {
-    top: 16px !important;
-    right: 16px !important;
-    width: 46px !important;
-    height: 44px !important;
-  }
-
-  #resizeNavigator {
-    right: 16px !important;
-    top: 210px !important;
-    gap: 12px !important;
-  }
-
-  #resizeNavigator button {
-    width: 48px !important;
-    height: 44px !important;
-    font-size: 17px !important;
-  }
-
-  #handToggleBtn {
-    right: 16px !important;
-    bottom: 100px !important;
-    width: 52px !important;
-    height: 46px !important;
-  }
-
-  #scrollTopBtn,
-  .scroll-top {
-    right: 16px !important;
-    bottom: 22px !important;
-    width: 52px !important;
-    height: 46px !important;
-  }
-
-  body.left-hand #menuIcon,
-  body.left-hand #resizeNavigator,
-  body.left-hand #handToggleBtn,
-  body.left-hand #scrollTopBtn,
-  body.left-hand .scroll-top {
-    left: 16px !important;
-    right: auto !important;
-  }
-}
-/* SIDE BUTTONS 50% OPACITY, 100% ON HOVER */
-
-#menuIcon,
-#resizeNavigator,
-#handToggleBtn,
-#scrollTopBtn,
-.scroll-top {
-  opacity: 0.5;
-  transition: opacity 0.2s ease;
-}
-
-#menuIcon:hover,
-#resizeNavigator:hover,
-#handToggleBtn:hover,
-#scrollTopBtn:hover,
-.scroll-top:hover {
-  opacity: 1;
-}
-/* =========================
-   LOAN CALCULATOR HISTORY
-========================= */
-
-.loan-calculator-container {
-  max-width: 1180px;
-  margin: 130px auto 80px;
-  padding: 30px;
-
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 35px;
-  align-items: start;
-}
-
-.loan-history-box {
-  background: #fff4b8;
-  border: 5px solid black;
-  box-shadow: 7px 7px 0 black;
-  padding: 20px;
-  transform: rotate(-1deg);
-
-  min-height: 450px;
-  max-height: 520px;
-
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.loan-history-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 18px;
-}
-
-.loan-history-top h3 {
-  font-size: 24px;
-}
-
-#loanHistoryList {
-  list-style: none;
-  font-size: 17px;
-  line-height: 1.4;
-
-  max-width: 100%;
-  overflow-wrap: break-word;
-  word-break: break-word;
-}
-
-#loanHistoryList li {
-  max-width: 100%;
-  overflow-wrap: break-word;
-  word-break: break-word;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 3px solid black;
-}
-
-@media (max-width: 850px) {
-  .loan-calculator-container {
-    grid-template-columns: 1fr;
-    margin-top: 110px;
-    padding: 20px;
-  }
-
-  .loan-history-box {
-    min-height: auto;
-    max-height: 300px;
-  }
-}
-
-/* =====================================================
-   FINAL LOAN + RESULT BAR REPAIR
-   Paste at the VERY BOTTOM of style.css
-===================================================== */
-
-/* Include loan page in same calculator layout */
-.calculator-container,
-.age-calculator-container,
-.bmi-calculator-container,
-.discount-calculator-container,
-.loan-calculator-container {
-  max-width: 1180px !important;
-  margin: 130px auto 80px !important;
-  padding: 30px !important;
-
-  display: grid !important;
-  grid-template-columns: 280px 1fr !important;
-  gap: 35px !important;
-  align-items: start !important;
-}
-
-/* Include loan history box with all result/history side boxes */
-.history,
-.age-history-box,
-.bmi-history-box,
-.discount-history-box,
-.loan-history-box {
-  width: 280px !important;
-  min-height: 450px !important;
-  max-height: 520px !important;
-
-  background: #fff4b8 !important;
-  border: 5px solid black !important;
-  box-shadow: 7px 7px 0 black !important;
-
-  padding: 20px !important;
-
-  transform: rotate(-1deg) !important;
-
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-}
-
-/* Loan history top row */
-.loan-history-top {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-  margin-bottom: 18px !important;
-}
-
-.loan-history-top h3 {
-  font-size: 24px !important;
-}
-
-/* Loan history list */
-#loanHistoryList {
-  list-style: none !important;
-  font-size: 17px !important;
-  line-height: 1.4 !important;
-
-  max-width: 100% !important;
-  overflow-wrap: break-word !important;
-  word-break: break-word !important;
-}
-
-#loanHistoryList li {
-  max-width: 100% !important;
-  overflow-wrap: break-word !important;
-  word-break: break-word !important;
-
-  margin-bottom: 12px !important;
-  padding-bottom: 8px !important;
-
-  border-bottom: 3px solid black !important;
-}
-
-/* Loan result same as other result text */
-#loanResult {
-  margin-top: 28px !important;
-  text-align: center !important;
-
-  font-size: 32px !important;
-  line-height: 1.35 !important;
-
-  white-space: pre-line !important;
-}
-
-/* Copy buttons hidden until hover */
-.history-copy-btn,
-.result-copy-btn {
-  opacity: 0 !important;
-  pointer-events: none !important;
-
-  border: 4px solid black !important;
-  background: #ffd3d3 !important;
-
-  padding: 6px 10px !important;
-
-  font-size: 14px !important;
-  font-weight: bold !important;
-
-  cursor: pointer !important;
-
-  box-shadow: 3px 3px 0 black !important;
-}
-
-.history-item:hover .history-copy-btn,
-.result-copy-wrap:hover .result-copy-btn {
-  opacity: 1 !important;
-  pointer-events: auto !important;
-}
-
-.history-copy-btn:hover,
-.result-copy-btn:hover {
-  background: #ffe66d !important;
-  transform: translate(-2px, -2px) !important;
-  box-shadow: 5px 5px 0 black !important;
-}
-
-/* Make history item layout consistent */
-.history-item {
-  display: grid !important;
-  grid-template-columns: 1fr auto !important;
-  gap: 10px !important;
-  align-items: start !important;
-
-  margin-bottom: 12px !important;
-  padding-bottom: 10px !important;
-
-  border-bottom: 3px solid black !important;
-}
-
-.history-text {
-  font-size: 18px !important;
-  line-height: 1.4 !important;
-
-  overflow-wrap: break-word !important;
-  word-break: break-word !important;
-}
-
-/* Mobile repair for loan page too */
-@media (max-width: 850px) {
-  .calculator-container,
-  .age-calculator-container,
-  .bmi-calculator-container,
-  .discount-calculator-container,
-  .loan-calculator-container {
-    grid-template-columns: 1fr !important;
-    margin-top: 110px !important;
-    padding: 20px !important;
-  }
-
-  .history,
-  .age-history-box,
-  .bmi-history-box,
-  .discount-history-box,
-  .loan-history-box {
-    width: 100% !important;
-    min-height: auto !important;
-    max-height: 300px !important;
-  }
-
-  .history-copy-btn,
-  .result-copy-btn {
-    opacity: 1 !important;
-    pointer-events: auto !important;
+    opacity: 1;
+    pointer-events: auto;
   }
 }
