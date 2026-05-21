@@ -468,3 +468,75 @@ document.addEventListener("DOMContentLoaded", function () {
   loadHandMode();
   showHistory();
 });
+
+/* =========================
+   FINAL HISTORY COPY BUTTON FIX
+========================= */
+
+function saveHistory(expression, result) {
+  const item = expression + " = " + result;
+
+  calcHistory.push(item);
+
+  if (calcHistory.length > 50) {
+    calcHistory.shift();
+  }
+
+  localStorage.setItem("calcHistory", JSON.stringify(calcHistory));
+
+  showHistory();
+}
+
+function showHistory() {
+  const historyList = document.getElementById("historyList");
+
+  if (!historyList) return;
+
+  historyList.innerHTML = "";
+
+  calcHistory.slice().reverse().forEach(function (item) {
+    const li = document.createElement("li");
+    li.className = "history-item";
+
+    const text = document.createElement("span");
+    text.className = "history-text";
+    text.textContent = item;
+
+    const copyBtn = document.createElement("button");
+    copyBtn.type = "button";
+    copyBtn.className = "history-copy-btn";
+    copyBtn.textContent = "Copy";
+
+    copyBtn.onclick = function () {
+      copyHistoryItem(item, copyBtn);
+    };
+
+    li.appendChild(text);
+    li.appendChild(copyBtn);
+
+    historyList.appendChild(li);
+  });
+}
+
+function copyHistoryItem(text, button) {
+  const tempInput = document.createElement("textarea");
+  tempInput.value = text;
+  document.body.appendChild(tempInput);
+
+  tempInput.select();
+  tempInput.setSelectionRange(0, 99999);
+
+  document.execCommand("copy");
+
+  document.body.removeChild(tempInput);
+
+  button.textContent = "Copied";
+
+  setTimeout(function () {
+    button.textContent = "Copy";
+  }, 1000);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  showHistory();
+});

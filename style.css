@@ -849,3 +849,48 @@ body.right-hand #navbar.open {
     order: initial;
   }
 }
+/* =========================
+   FINAL HISTORY COPY BUTTON STYLE
+========================= */
+
+.history-item {
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  gap: 10px !important;
+  align-items: start !important;
+
+  margin-bottom: 12px !important;
+  padding-bottom: 10px !important;
+
+  border-bottom: 3px solid black !important;
+}
+
+.history-text {
+  font-size: 18px;
+  line-height: 1.4;
+
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.history-copy-btn {
+  display: inline-block !important;
+
+  border: 4px solid black;
+  background: #ffd3d3;
+
+  padding: 6px 10px;
+
+  font-size: 14px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  box-shadow: 3px 3px 0 black;
+}
+
+.history-copy-btn:hover {
+  background: #ffe66d;
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 black;
+}
