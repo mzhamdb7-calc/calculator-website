@@ -1127,3 +1127,87 @@ body.right-hand .scroll-top {
     max-height: 300px;
   }
 }
+
+/* =========================
+   SAME INPUT + CALCULATE BUTTON SIZE AS AGE CALCULATOR
+========================= */
+
+/* Input boxes for Age, BMI, Discount, Loan, Percentage */
+.age-calculator-container .calculator input,
+.bmi-calculator-container .calculator input,
+.discount-calculator-container .calculator input,
+.loan-calculator-container .calculator input,
+.percentage-calculator-container .calculator input,
+.single-calculator-container .calculator input {
+  width: 50% !important;
+  min-width: 300px !important;
+  max-width: 450px !important;
+
+  height: 70px !important;
+
+  display: block !important;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-bottom: 22px !important;
+}
+
+/* Calculate buttons for Age, BMI, Discount, Loan, Percentage */
+.age-calculator-container .main-btn,
+.bmi-calculator-container .main-btn,
+.discount-calculator-container .main-btn,
+.loan-calculator-container .main-btn,
+.percentage-calculator-container .main-btn,
+.single-calculator-container .main-btn {
+  width: 50% !important;
+  min-width: 300px !important;
+  max-width: 450px !important;
+
+  height: 70px !important;
+
+  display: block !important;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Labels follow the same width */
+.age-calculator-container .calculator label,
+.bmi-calculator-container .calculator label,
+.discount-calculator-container .calculator label,
+.loan-calculator-container .calculator label,
+.percentage-calculator-container .calculator label,
+.single-calculator-container .calculator label {
+  width: 50% !important;
+  min-width: 300px !important;
+  max-width: 450px !important;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Mobile: use full width */
+@media (max-width: 850px) {
+  .age-calculator-container .calculator input,
+  .bmi-calculator-container .calculator input,
+  .discount-calculator-container .calculator input,
+  .loan-calculator-container .calculator input,
+  .percentage-calculator-container .calculator input,
+  .single-calculator-container .calculator input,
+  .age-calculator-container .main-btn,
+  .bmi-calculator-container .main-btn,
+  .discount-calculator-container .main-btn,
+  .loan-calculator-container .main-btn,
+  .percentage-calculator-container .main-btn,
+  .single-calculator-container .main-btn,
+  .age-calculator-container .calculator label,
+  .bmi-calculator-container .calculator label,
+  .discount-calculator-container .calculator label,
+  .loan-calculator-container .calculator label,
+  .percentage-calculator-container .calculator label,
+  .single-calculator-container .calculator label {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 450px !important;
+  }
+}
