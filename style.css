@@ -64,10 +64,6 @@ body {
   background: #ffe66d;
 }
 
-/* =========================
-   DROPDOWN
-========================= */
-
 .dropdown {
   position: relative;
 }
@@ -87,9 +83,6 @@ body {
 .dropdown-content a {
   width: 100%;
   height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: 20px !important;
   border-right: none !important;
   border-bottom: 4px solid black;
@@ -104,7 +97,7 @@ body {
 }
 
 /* =========================
-   SCROLL MENU / SIDE MENU
+   SIDE MENU
 ========================= */
 
 #navbar.scrolled {
@@ -146,7 +139,7 @@ body {
 #navbar.open .dropdown-content {
   position: static;
   width: 260px;
-  max-height: 260px;
+  max-height: 230px;
   overflow-y: auto;
   box-shadow: none;
   border-left: none;
@@ -188,6 +181,7 @@ body {
   display: grid;
   grid-template-columns: 280px 1fr;
   gap: 35px;
+  align-items: start;
 }
 
 .history {
@@ -196,6 +190,9 @@ body {
   box-shadow: 7px 7px 0 black;
   padding: 20px;
   transform: rotate(-1deg);
+  max-height: 520px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .history-top {
@@ -221,7 +218,47 @@ body {
 #historyList {
   list-style: none;
   font-size: 18px;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
+
+.history-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: start;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid black;
+}
+
+.history-text {
+  font-size: 18px;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.history-copy-btn {
+  border: 4px solid black;
+  background: #ffd3d3;
+  padding: 6px 10px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 black;
+}
+
+.history-copy-btn:hover {
+  background: #ffe66d;
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 black;
+}
+
+/* =========================
+   CALCULATOR BOX
+========================= */
 
 .calculator {
   background: white;
@@ -255,6 +292,35 @@ body {
   box-shadow: inset 4px 4px 0 #ddd;
 }
 
+/* DISPLAY + ANS BUTTON */
+
+.display-row {
+  display: grid;
+  grid-template-columns: 1fr 180px;
+  gap: 0;
+  margin-bottom: 25px;
+}
+
+.display-row #display {
+  margin-bottom: 0;
+}
+
+.ans-btn {
+  height: 75px;
+  border: 5px solid black;
+  background: #b8ffb8;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 5px 5px 0 black;
+}
+
+.ans-btn:hover {
+  background: #ffe66d;
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0 black;
+}
+
 /* =========================
    BUTTONS
 ========================= */
@@ -270,29 +336,15 @@ body {
   transition: 0.15s;
 }
 
-.buttons button:hover {
+.buttons button:hover,
+.buttons button.keyboard-active {
   transform: translate(-3px, -3px) rotate(-2deg);
   box-shadow: 7px 7px 0 black;
-  background: #ffe66d;
+  background: #ffe66d !important;
 }
 
 .equal {
   background: #b8ffb8 !important;
-}
-
-/* SCIENTIFIC CALCULATOR GRID */
-
-.scientific-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 14px;
-}
-
-.scientific-grid button:nth-child(7n),
-.scientific-grid button:nth-child(14n),
-.scientific-grid button:nth-child(21n),
-.scientific-grid button:nth-child(28n) {
-  background: #ffd3d3;
 }
 
 /* BASIC CALCULATOR GRID */
@@ -315,22 +367,35 @@ body {
 .basic-grid button:nth-child(8),
 .basic-grid button:nth-child(12),
 .basic-grid button:nth-child(16),
-.basic-grid button:nth-child(19) {
+.basic-grid .ac-btn {
   background: #ffd3d3;
 }
 
-/* Keep 0 blue */
-.basic-grid button:nth-child(17) {
+.basic-grid .zero-btn {
   background: #d9f7ff !important;
 }
 
-/* Keep equal green */
 .basic-grid button.equal {
   background: #b8ffb8 !important;
 }
 
+/* SCIENTIFIC CALCULATOR GRID */
+
+.scientific-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 14px;
+}
+
+.scientific-grid button:nth-child(7n),
+.scientific-grid button:nth-child(14n),
+.scientific-grid button:nth-child(21n),
+.scientific-grid button:nth-child(28n) {
+  background: #ffd3d3;
+}
+
 /* =========================
-   INDEX PAGE CARDS
+   INDEX PAGE
 ========================= */
 
 .calculator-box {
@@ -438,6 +503,77 @@ body {
   margin-top: 25px;
   text-align: center;
   font-size: 28px;
+  white-space: pre-line;
+}
+
+/* AGE DATE INPUT SIZE */
+
+#birthdate {
+  width: 50%;
+  min-width: 300px;
+  max-width: 450px;
+  display: block;
+}
+
+#birthdate::-webkit-calendar-picker-indicator {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+}
+
+/* =========================
+   AGE CALCULATOR HISTORY
+========================= */
+
+.age-calculator-container {
+  max-width: 1180px;
+  margin: 130px auto 80px;
+  padding: 30px;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 35px;
+  align-items: start;
+}
+
+.age-history-box {
+  background: #fff4b8;
+  border: 5px solid black;
+  box-shadow: 7px 7px 0 black;
+  padding: 20px;
+  transform: rotate(-1deg);
+  min-height: 450px;
+  max-height: 520px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.age-history-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.age-history-top h3 {
+  font-size: 24px;
+}
+
+#ageHistoryList {
+  list-style: none;
+  font-size: 17px;
+  line-height: 1.4;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+#ageHistoryList li {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 3px solid black;
 }
 
 /* =========================
@@ -506,6 +642,68 @@ body {
 }
 
 /* =========================
+   LEFT / RIGHT HAND MODE
+========================= */
+
+#handToggleBtn {
+  position: fixed;
+  right: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 65px;
+  height: 65px;
+  border: 5px solid black;
+  background: white;
+  color: black;
+  font-size: 30px;
+  font-weight: bold;
+  box-shadow: 5px 5px 0 black;
+  cursor: pointer;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.left-hand #handToggleBtn,
+body.left-hand #menuIcon,
+body.left-hand #scrollTopBtn,
+body.left-hand .scroll-top {
+  left: 30px;
+  right: auto;
+}
+
+body.left-hand #navbar.open {
+  left: 20px;
+  right: auto;
+}
+
+body.left-hand .calculator-container {
+  grid-template-columns: 1fr 280px;
+}
+
+body.left-hand .calculator {
+  order: 1;
+}
+
+body.left-hand .history {
+  order: 2;
+}
+
+body.right-hand #handToggleBtn,
+body.right-hand #menuIcon,
+body.right-hand #scrollTopBtn,
+body.right-hand .scroll-top {
+  right: 30px;
+  left: auto;
+}
+
+body.right-hand #navbar.open {
+  right: 20px;
+  left: auto;
+}
+
+/* =========================
    MOBILE
 ========================= */
 
@@ -567,7 +765,8 @@ body {
     overflow-y: auto;
   }
 
-  .calculator-container {
+  .calculator-container,
+  .age-calculator-container {
     grid-template-columns: 1fr;
     margin-top: 110px;
     padding: 20px;
@@ -577,6 +776,12 @@ body {
   .about-container {
     margin-top: 110px;
     padding: 20px;
+  }
+
+  .history,
+  .age-history-box {
+    max-height: 300px;
+    min-height: auto;
   }
 
   .scientific-grid,
@@ -592,6 +797,20 @@ body {
   .buttons button {
     height: 58px;
     font-size: 18px;
+  }
+
+  .display-row {
+    grid-template-columns: 1fr 100px;
+  }
+
+  .ans-btn {
+    height: 65px;
+    font-size: 20px;
+  }
+
+  #birthdate {
+    width: 100%;
+    min-width: 0;
   }
 
   .calculator-box {
@@ -614,105 +833,11 @@ body {
   .about-card p {
     font-size: 18px;
   }
-}
-/* =========================
-   LEFT / RIGHT HAND MODE
-========================= */
 
-#handToggleBtn {
-  position: fixed;
-  right: 30px;
-  top: 50%;
-  transform: translateY(-50%);
-
-  width: 65px;
-  height: 65px;
-
-  border: 5px solid black;
-  background: white;
-  color: black;
-
-  font-size: 30px;
-  font-weight: bold;
-
-  box-shadow: 5px 5px 0 black;
-
-  cursor: pointer;
-
-  z-index: 999999;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* LEFT HAND MODE */
-
-body.left-hand #handToggleBtn {
-  left: 30px;
-  right: auto;
-}
-
-body.left-hand #menuIcon {
-  left: 30px;
-  right: auto;
-}
-
-body.left-hand #scrollTopBtn,
-body.left-hand .scroll-top {
-  left: 30px;
-  right: auto;
-}
-
-body.left-hand #navbar.open {
-  left: 20px;
-  right: auto;
-}
-
-/* Move calculator closer to left side */
-body.left-hand .calculator-container {
-  grid-template-columns: 1fr 280px;
-}
-
-body.left-hand .calculator {
-  order: 1;
-}
-
-body.left-hand .history {
-  order: 2;
-}
-
-/* RIGHT HAND MODE */
-
-body.right-hand #handToggleBtn {
-  right: 30px;
-  left: auto;
-}
-
-body.right-hand #menuIcon {
-  right: 30px;
-  left: auto;
-}
-
-body.right-hand #scrollTopBtn,
-body.right-hand .scroll-top {
-  right: 30px;
-  left: auto;
-}
-
-body.right-hand #navbar.open {
-  right: 20px;
-  left: auto;
-}
-
-/* MOBILE */
-
-@media (max-width: 850px) {
   #handToggleBtn {
     width: 55px;
     height: 55px;
     font-size: 24px;
-    top: 50%;
   }
 
   body.left-hand .calculator-container {
@@ -724,242 +849,3 @@ body.right-hand #navbar.open {
     order: initial;
   }
 }
-
-/* KEYBOARD PRESS EFFECT */
-
-.buttons button.keyboard-active {
-  background: #ffe66d !important;
-  transform: translate(-3px, -3px) rotate(-2deg);
-  box-shadow: 7px 7px 0 black;
-}
-
-/* =========================
-   AGE CALCULATOR HISTORY
-========================= */
-
-.age-calculator-container {
-  max-width: 1180px;
-  margin: 130px auto 80px;
-  padding: 30px;
-
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 35px;
-}
-
-.age-history-box {
-  background: #fff4b8;
-  border: 5px solid black;
-  box-shadow: 7px 7px 0 black;
-  padding: 20px;
-  transform: rotate(-1deg);
-
-  min-height: 450px;
-}
-
-.age-history-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 18px;
-}
-
-.age-history-top h3 {
-  font-size: 24px;
-}
-
-#ageHistoryList {
-  list-style: none;
-  font-size: 17px;
-  line-height: 1.4;
-}
-
-#ageHistoryList li {
-  margin-bottom: 12px;
-  border-bottom: 3px solid black;
-  padding-bottom: 8px;
-}
-
-@media (max-width: 850px) {
-  .age-calculator-container {
-    grid-template-columns: 1fr;
-    margin-top: 110px;
-    padding: 20px;
-  }
-
-  .age-history-box {
-    min-height: auto;
-  }
-}
-/* =========================
-   FIX HISTORY / RESULT BOX OVERFLOW
-========================= */
-
-/* Basic calculator history box */
-.history {
-  max-height: 520px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-/* Age calculator result history box */
-.age-history-box {
-  max-height: 520px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-/* Make long history text wrap instead of going outside */
-#historyList,
-#ageHistoryList {
-  max-width: 100%;
-  overflow-wrap: break-word;
-  word-break: break-word;
-}
-
-/* Each history item stays inside the box */
-#historyList li,
-#ageHistoryList li {
-  max-width: 100%;
-  overflow-wrap: break-word;
-  word-break: break-word;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 3px solid black;
-}
-
-/* Keep calculator and history aligned nicely */
-.calculator-container,
-.age-calculator-container {
-  align-items: start;
-}
-
-/* Mobile fix */
-@media (max-width: 850px) {
-  .history,
-  .age-history-box {
-    max-height: 300px;
-  }
-}
-
-/* DISPLAY + ANS BUTTON */
-
-.display-row {
-  display: grid;
-  grid-template-columns: 1fr 180px;
-  gap: 0;
-  margin-bottom: 25px;
-}
-
-.display-row #display {
-  margin-bottom: 0;
-}
-
-.ans-btn {
-  height: 75px;
-  border: 5px solid black;
-  background: #b8ffb8;
-  font-size: 24px;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 5px 5px 0 black;
-}
-
-.ans-btn:hover {
-  background: #ffe66d;
-  transform: translate(-3px, -3px);
-  box-shadow: 8px 8px 0 black;
-}
-
-/* BASIC CALCULATOR FINAL COLORS */
-
-.basic-grid button {
-  background: #d9f7ff;
-}
-
-/* Pink buttons */
-.basic-grid button:nth-child(1),
-.basic-grid button:nth-child(2),
-.basic-grid button:nth-child(3),
-.basic-grid button:nth-child(4),
-.basic-grid button:nth-child(8),
-.basic-grid button:nth-child(12),
-.basic-grid button:nth-child(16),
-.basic-grid button:nth-child(19) {
-  background: #ffd3d3;
-}
-
-/* Zero blue */
-.basic-grid .zero-btn {
-  background: #d9f7ff !important;
-}
-
-/* AC pink */
-.basic-grid .ac-btn {
-  background: #ffd3d3 !important;
-}
-
-/* Equal green */
-.basic-grid button.equal {
-  background: #b8ffb8 !important;
-}
-
-@media (max-width: 850px) {
-  .display-row {
-    grid-template-columns: 1fr 100px;
-  }
-
-  .ans-btn {
-    height: 65px;
-    font-size: 20px;
-  }
-}
-
-/* AGE RESULT LINE BREAK */
-
-#result {
-  white-space: pre-line;
-}
-
-/* BASIC CALCULATOR HISTORY COPY BUTTON */
-
-.history-item {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
-  align-items: start;
-
-  margin-bottom: 12px;
-  padding-bottom: 10px;
-
-  border-bottom: 3px solid black;
-}
-
-.history-text {
-  font-size: 18px;
-  line-height: 1.4;
-
-  overflow-wrap: break-word;
-  word-break: break-word;
-}
-
-.history-copy-btn {
-  border: 4px solid black;
-  background: #ffd3d3;
-
-  padding: 6px 10px;
-
-  font-size: 14px;
-  font-weight: bold;
-
-  cursor: pointer;
-
-  box-shadow: 3px 3px 0 black;
-}
-
-.history-copy-btn:hover {
-  background: #ffe66d;
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0 black;
-}
-
