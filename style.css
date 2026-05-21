@@ -1848,3 +1848,673 @@ body.left-hand .scroll-top {
     right: auto;
   }
 }
+
+/* =====================================================
+   FINAL REPAIR OVERRIDE
+   Paste this at the VERY BOTTOM of style.css
+===================================================== */
+
+/* ---------- Same calculator layout for all calculator pages ---------- */
+
+.calculator-container,
+.age-calculator-container,
+.bmi-calculator-container,
+.discount-calculator-container {
+  max-width: 1180px !important;
+  margin: 130px auto 80px !important;
+  padding: 30px !important;
+
+  display: grid !important;
+  grid-template-columns: 280px 1fr !important;
+  gap: 35px !important;
+  align-items: start !important;
+}
+
+.single-calculator-container {
+  max-width: 820px !important;
+  margin: 130px auto 80px !important;
+  padding: 30px !important;
+}
+
+/* ---------- Same calculator box size ---------- */
+
+.calculator {
+  width: 100% !important;
+  max-width: 780px !important;
+  margin: 0 auto !important;
+
+  background: white !important;
+  border: 5px solid black !important;
+  box-shadow: 9px 9px 0 black !important;
+
+  padding: 30px !important;
+}
+
+/* ---------- Same title/text sizes ---------- */
+
+.calculator h1 {
+  text-align: center !important;
+  font-size: 48px !important;
+  line-height: 1.1 !important;
+  margin-bottom: 12px !important;
+}
+
+.subtitle {
+  text-align: center !important;
+  font-size: 20px !important;
+  line-height: 1.4 !important;
+  margin-bottom: 28px !important;
+}
+
+.calculator label {
+  display: block !important;
+  max-width: 720px !important;
+
+  margin: 0 auto 12px !important;
+
+  font-size: 24px !important;
+  font-weight: bold !important;
+}
+
+/* ---------- Same input bar size ---------- */
+
+.calculator input[type="date"],
+.calculator input[type="number"],
+.calculator input[type="text"],
+#display {
+  width: 100% !important;
+  max-width: 720px !important;
+  height: 70px !important;
+
+  display: block !important;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-bottom: 22px !important;
+
+  padding: 10px 18px !important;
+
+  border: 5px solid black !important;
+  background: #f8f8f8 !important;
+
+  font-size: 28px !important;
+  font-weight: bold !important;
+
+  box-shadow: inset 4px 4px 0 #ddd !important;
+}
+
+/* ---------- Basic calculator display + ANS ---------- */
+
+.display-row {
+  width: 100% !important;
+  max-width: 720px !important;
+
+  margin: 0 auto 28px !important;
+
+  display: grid !important;
+  grid-template-columns: 1fr 170px !important;
+}
+
+.display-row #display {
+  max-width: none !important;
+  margin-bottom: 0 !important;
+}
+
+.ans-btn {
+  height: 70px !important;
+
+  border: 5px solid black !important;
+  background: #b8ffb8 !important;
+
+  font-size: 26px !important;
+  font-weight: bold !important;
+
+  cursor: pointer !important;
+
+  box-shadow: 5px 5px 0 black !important;
+}
+
+/* ---------- Same calculate button size ---------- */
+
+.main-btn,
+.calculator > button {
+  width: 100% !important;
+  max-width: 720px !important;
+  height: 70px !important;
+
+  display: block !important;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
+
+  border: 5px solid black !important;
+  background: #b8ffb8 !important;
+
+  font-size: 26px !important;
+  font-weight: bold !important;
+
+  cursor: pointer !important;
+
+  box-shadow: 5px 5px 0 black !important;
+}
+
+.main-btn:hover,
+.calculator > button:hover,
+.ans-btn:hover {
+  background: #ffe66d !important;
+  transform: translate(-3px, -3px) !important;
+  box-shadow: 8px 8px 0 black !important;
+}
+
+/* ---------- Same result size ---------- */
+
+#result,
+#bmiResult,
+#loanResult,
+#discountResult,
+#percentageResult {
+  margin-top: 28px !important;
+  text-align: center !important;
+
+  font-size: 32px !important;
+  line-height: 1.35 !important;
+
+  white-space: pre-line !important;
+}
+
+/* ---------- Same calculator number/button size ---------- */
+
+.basic-grid,
+.scientific-grid {
+  width: 100% !important;
+  max-width: 720px !important;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
+
+  gap: 14px !important;
+}
+
+.basic-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+}
+
+.scientific-grid {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important;
+}
+
+.buttons button {
+  height: 65px !important;
+
+  border: 4px solid black !important;
+
+  font-size: 24px !important;
+  font-weight: bold !important;
+
+  cursor: pointer !important;
+
+  box-shadow: 4px 4px 0 black !important;
+}
+
+/* ---------- Button colors ---------- */
+
+.basic-grid button {
+  background: #d9f7ff !important;
+}
+
+.basic-grid button:nth-child(1),
+.basic-grid button:nth-child(2),
+.basic-grid button:nth-child(3),
+.basic-grid button:nth-child(4),
+.basic-grid button:nth-child(8),
+.basic-grid button:nth-child(12),
+.basic-grid button:nth-child(16),
+.basic-grid .ac-btn {
+  background: #ffd3d3 !important;
+}
+
+.basic-grid .zero-btn {
+  background: #d9f7ff !important;
+}
+
+.basic-grid button.equal,
+.equal {
+  background: #b8ffb8 !important;
+}
+
+.buttons button:hover,
+.buttons button.keyboard-active {
+  background: #ffe66d !important;
+  transform: translate(-3px, -3px) rotate(-2deg) !important;
+  box-shadow: 7px 7px 0 black !important;
+}
+
+/* ---------- Side history/result boxes same size ---------- */
+
+.history,
+.age-history-box,
+.bmi-history-box,
+.discount-history-box {
+  width: 280px !important;
+  min-height: 450px !important;
+  max-height: 520px !important;
+
+  background: #fff4b8 !important;
+  border: 5px solid black !important;
+  box-shadow: 7px 7px 0 black !important;
+
+  padding: 20px !important;
+
+  transform: rotate(-1deg) !important;
+
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+.history-top,
+.age-history-top,
+.bmi-history-top,
+.discount-history-top {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+
+  margin-bottom: 18px !important;
+}
+
+.history h3,
+.age-history-top h3,
+.bmi-history-top h3,
+.discount-history-top h3 {
+  font-size: 24px !important;
+}
+
+#historyList,
+#ageHistoryList,
+#bmiHistoryList,
+#discountHistoryList {
+  list-style: none !important;
+  font-size: 17px !important;
+  line-height: 1.4 !important;
+
+  max-width: 100% !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+}
+
+/* ---------- Copy buttons only show on hover ---------- */
+
+.history-item {
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  gap: 10px !important;
+  align-items: start !important;
+
+  margin-bottom: 12px !important;
+  padding-bottom: 10px !important;
+
+  border-bottom: 3px solid black !important;
+}
+
+.history-text {
+  font-size: 18px !important;
+  line-height: 1.4 !important;
+
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+}
+
+.history-copy-btn,
+.result-copy-btn {
+  opacity: 0 !important;
+  pointer-events: none !important;
+
+  border: 4px solid black !important;
+  background: #ffd3d3 !important;
+
+  padding: 6px 10px !important;
+
+  font-size: 14px !important;
+  font-weight: bold !important;
+
+  cursor: pointer !important;
+
+  box-shadow: 3px 3px 0 black !important;
+}
+
+.history-item:hover .history-copy-btn,
+.result-copy-wrap:hover .result-copy-btn {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+.history-copy-btn:hover,
+.result-copy-btn:hover {
+  background: #ffe66d !important;
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 5px 5px 0 black !important;
+}
+
+/* ---------- Age date input centered ---------- */
+
+#birthdate {
+  width: 50% !important;
+  min-width: 300px !important;
+  max-width: 450px !important;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
+
+  text-align: center !important;
+}
+
+.calculator label[for="birthdate"] {
+  text-align: center !important;
+}
+
+/* ---------- BMI unit toggle ---------- */
+
+.bmi-title-row {
+  display: grid !important;
+  grid-template-columns: 120px 1fr 120px !important;
+  align-items: start !important;
+  gap: 10px !important;
+}
+
+#unitToggleBtn {
+  border: 5px solid black !important;
+  background: #fff4b8 !important;
+  color: black !important;
+
+  height: 55px !important;
+
+  font-size: 20px !important;
+  font-weight: bold !important;
+
+  cursor: pointer !important;
+
+  box-shadow: 5px 5px 0 black !important;
+}
+
+#unitToggleBtn:hover {
+  background: #ffe66d !important;
+  transform: translate(-3px, -3px) !important;
+  box-shadow: 8px 8px 0 black !important;
+}
+
+/* ---------- Side buttons new position ---------- */
+
+#menuIcon {
+  display: none;
+  position: fixed !important;
+  top: 18px !important;
+  right: 22px !important;
+  z-index: 999999 !important;
+
+  width: 50px !important;
+  height: 48px !important;
+
+  border: 5px solid black !important;
+  background: white !important;
+  color: black !important;
+
+  font-size: 26px !important;
+  font-weight: bold !important;
+
+  box-shadow: 5px 5px 0 black !important;
+  cursor: pointer !important;
+}
+
+#menuIcon.show {
+  display: block !important;
+}
+
+#resizeNavigator {
+  position: fixed !important;
+  right: 22px !important;
+  top: 240px !important;
+
+  z-index: 999999 !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+#resizeNavigator button {
+  width: 50px !important;
+  height: 46px !important;
+
+  border: 5px solid black !important;
+  background: white !important;
+  color: black !important;
+
+  font-size: 18px !important;
+  font-weight: bold !important;
+
+  cursor: pointer !important;
+
+  box-shadow: 5px 5px 0 black !important;
+}
+
+#handToggleBtn {
+  position: fixed !important;
+  right: 22px !important;
+  top: auto !important;
+  bottom: 120px !important;
+  transform: none !important;
+
+  width: 58px !important;
+  height: 50px !important;
+
+  border: 5px solid black !important;
+  background: white !important;
+  color: black !important;
+
+  font-size: 24px !important;
+  font-weight: bold !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  box-shadow: 5px 5px 0 black !important;
+  cursor: pointer !important;
+  z-index: 999999 !important;
+}
+
+#scrollTopBtn,
+.scroll-top {
+  position: fixed !important;
+  right: 22px !important;
+  bottom: 28px !important;
+
+  width: 58px !important;
+  height: 50px !important;
+
+  border: 5px solid black !important;
+  background: white !important;
+  color: black !important;
+
+  font-size: 28px !important;
+  font-weight: bold !important;
+
+  display: none;
+  align-items: center !important;
+  justify-content: center !important;
+
+  box-shadow: 5px 5px 0 black !important;
+  cursor: pointer !important;
+  z-index: 999999 !important;
+}
+
+/* ---------- Left-hand mode ---------- */
+
+body.left-hand #menuIcon,
+body.left-hand #resizeNavigator,
+body.left-hand #handToggleBtn,
+body.left-hand #scrollTopBtn,
+body.left-hand .scroll-top {
+  left: 22px !important;
+  right: auto !important;
+}
+
+body.left-hand #navbar.open {
+  left: 20px !important;
+  right: auto !important;
+}
+
+body.right-hand #menuIcon,
+body.right-hand #resizeNavigator,
+body.right-hand #handToggleBtn,
+body.right-hand #scrollTopBtn,
+body.right-hand .scroll-top {
+  right: 22px !important;
+  left: auto !important;
+}
+
+/* ---------- Mobile repair ---------- */
+
+@media (max-width: 850px) {
+  .calculator-container,
+  .age-calculator-container,
+  .bmi-calculator-container,
+  .discount-calculator-container {
+    grid-template-columns: 1fr !important;
+    margin-top: 110px !important;
+    padding: 20px !important;
+  }
+
+  .single-calculator-container {
+    max-width: 100% !important;
+    margin-top: 110px !important;
+    padding: 20px !important;
+  }
+
+  .calculator {
+    max-width: 100% !important;
+    padding: 22px !important;
+  }
+
+  .calculator h1 {
+    font-size: 36px !important;
+  }
+
+  .subtitle {
+    font-size: 18px !important;
+  }
+
+  .calculator label {
+    font-size: 22px !important;
+  }
+
+  .calculator input[type="date"],
+  .calculator input[type="number"],
+  .calculator input[type="text"],
+  #display {
+    height: 62px !important;
+    font-size: 24px !important;
+  }
+
+  .main-btn,
+  .calculator > button {
+    height: 62px !important;
+    font-size: 22px !important;
+  }
+
+  .display-row {
+    grid-template-columns: 1fr 100px !important;
+  }
+
+  .ans-btn {
+    height: 62px !important;
+    font-size: 20px !important;
+  }
+
+  .buttons button {
+    height: 58px !important;
+    font-size: 20px !important;
+  }
+
+  .scientific-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+
+  .history,
+  .age-history-box,
+  .bmi-history-box,
+  .discount-history-box {
+    width: 100% !important;
+    min-height: auto !important;
+    max-height: 300px !important;
+  }
+
+  #birthdate {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .bmi-title-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  #unitToggleBtn {
+    width: 140px !important;
+    margin: 0 auto 15px !important;
+    order: -1 !important;
+  }
+
+  #menuIcon {
+    top: 16px !important;
+    right: 16px !important;
+    width: 46px !important;
+    height: 44px !important;
+    font-size: 24px !important;
+  }
+
+  #resizeNavigator {
+    right: 16px !important;
+    top: 210px !important;
+    gap: 8px !important;
+  }
+
+  #resizeNavigator button {
+    width: 46px !important;
+    height: 42px !important;
+    font-size: 17px !important;
+  }
+
+  #handToggleBtn {
+    right: 16px !important;
+    bottom: 100px !important;
+    width: 52px !important;
+    height: 46px !important;
+    font-size: 21px !important;
+  }
+
+  #scrollTopBtn,
+  .scroll-top {
+    right: 16px !important;
+    bottom: 22px !important;
+    width: 52px !important;
+    height: 46px !important;
+    font-size: 24px !important;
+  }
+
+  body.left-hand #menuIcon,
+  body.left-hand #resizeNavigator,
+  body.left-hand #handToggleBtn,
+  body.left-hand #scrollTopBtn,
+  body.left-hand .scroll-top {
+    left: 16px !important;
+    right: auto !important;
+  }
+
+  .history-copy-btn,
+  .result-copy-btn {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+}
