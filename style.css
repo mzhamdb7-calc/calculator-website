@@ -4083,3 +4083,175 @@ body.menu-scrolled #menuIcon {
     font-size: 18px !important;
   }
 }
+/* =====================================================
+   PHONE: SIDE MENU EXPANDS SIDEWAYS TO THE LEFT
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+@media (max-width: 850px) {
+  /* House button stays bottom-right, beside Go Up */
+  #menuIcon {
+    top: auto !important;
+    left: auto !important;
+    right: 70px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+
+    width: 46px !important;
+    height: 44px !important;
+  }
+
+  /* Go Up button stays on the far right */
+  #scrollTopBtn,
+  .scroll-top {
+    top: auto !important;
+    left: auto !important;
+    right: 14px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+
+    width: 46px !important;
+    height: 44px !important;
+  }
+
+  /* Opened menu expands sideways to the LEFT of the house button */
+  body.menu-scrolled #navbar.open,
+  #navbar.scrolled.open {
+    display: flex !important;
+    position: fixed !important;
+
+    top: auto !important;
+    left: auto !important;
+    right: 126px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+
+    width: auto !important;
+    height: 44px !important;
+
+    flex-direction: row !important;
+    align-items: stretch !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    transform: none !important;
+    overflow: visible !important;
+
+    z-index: 999999998 !important;
+  }
+
+  /* Home / Calculator / About become horizontal boxes */
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open > .dropdown,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open > .dropdown {
+    width: 105px !important;
+    height: 44px !important;
+
+    flex: 0 0 105px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open .dropbtn,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open .dropbtn {
+    width: 105px !important;
+    height: 44px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 3px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    font-size: 16px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  /* Overlap borders neatly between horizontal buttons */
+  body.menu-scrolled #navbar.open > a + a,
+  body.menu-scrolled #navbar.open > a + .dropdown,
+  body.menu-scrolled #navbar.open > .dropdown + a,
+  #navbar.scrolled.open > a + a,
+  #navbar.scrolled.open > a + .dropdown,
+  #navbar.scrolled.open > .dropdown + a {
+    margin-left: -3px !important;
+  }
+
+  /* Hover color */
+  body.menu-scrolled #navbar.open > a:hover,
+  body.menu-scrolled #navbar.open .dropdown:hover > .dropbtn,
+  #navbar.scrolled.open > a:hover,
+  #navbar.scrolled.open .dropdown:hover > .dropbtn {
+    background: var(--yellow) !important;
+  }
+
+  /* Calculator dropdown opens upward from the horizontal side menu */
+  body.menu-scrolled #navbar.open .dropdown-content,
+  #navbar.scrolled.open .dropdown-content {
+    display: none !important;
+
+    position: absolute !important;
+    left: 0 !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: 47px !important;
+
+    width: 180px !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 999999999 !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown:hover > .dropdown-content,
+  body.menu-scrolled #navbar.open .dropdown:focus-within > .dropdown-content,
+  #navbar.scrolled.open .dropdown:hover > .dropdown-content,
+  #navbar.scrolled.open .dropdown:focus-within > .dropdown-content {
+    display: block !important;
+  }
+
+  /* Dropdown rows */
+  body.menu-scrolled #navbar.open .dropdown-content > a,
+  body.menu-scrolled #navbar.open .dropdown-content > .nav-group > summary,
+  #navbar.scrolled.open .dropdown-content > a,
+  #navbar.scrolled.open .dropdown-content > .nav-group > summary {
+    width: 100% !important;
+    height: 42px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    border-bottom: 3px solid var(--black) !important;
+
+    font-size: 15px !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown-content > *:last-child,
+  body.menu-scrolled #navbar.open .dropdown-content > *:last-child > summary,
+  #navbar.scrolled.open .dropdown-content > *:last-child,
+  #navbar.scrolled.open .dropdown-content > *:last-child > summary {
+    border-bottom: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown-content > a:hover,
+  body.menu-scrolled #navbar.open .nav-group:hover > summary,
+  #navbar.scrolled.open .dropdown-content > a:hover,
+  #navbar.scrolled.open .nav-group:hover > summary {
+    background: var(--yellow) !important;
+  }
+}
