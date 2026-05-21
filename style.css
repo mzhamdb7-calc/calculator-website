@@ -724,3 +724,11 @@ body.right-hand #navbar.open {
     order: initial;
   }
 }
+
+/* KEYBOARD PRESS EFFECT */
+
+.buttons button.keyboard-active {
+  background: #ffe66d !important;
+  transform: translate(-3px, -3px) rotate(-2deg);
+  box-shadow: 7px 7px 0 black;
+}
