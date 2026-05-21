@@ -5791,3 +5791,98 @@ body.menu-scrolled #menuIcon {
 .group-links a:hover {
   background: var(--yellow) !important;
 }
+/* PHONE: remove MENU button and keep top menu inside screen */
+@media (max-width: 850px) {
+  /* Remove MENU button on phone only */
+  #menuIcon,
+  #menuIcon.show {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  /* Keep top navbar visible on phone */
+  body.menu-scrolled #navbar:not(.open),
+  #navbar.scrolled:not(.open),
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open {
+    display: flex !important;
+
+    position: fixed !important;
+    top: 78px !important;
+    left: 10px !important;
+    right: 10px !important;
+
+    width: auto !important;
+    max-width: calc(100vw - 20px) !important;
+    height: 58px !important;
+
+    flex-direction: row !important;
+    align-items: stretch !important;
+
+    transform: none !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  /* 3 top menu buttons fit evenly */
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 33.333% !important;
+    min-width: 0 !important;
+    height: 58px !important;
+
+    flex: 1 1 33.333% !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn,
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    width: 100% !important;
+    height: 58px !important;
+
+    font-size: 16px !important;
+    font-weight: bold !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+
+    box-sizing: border-box !important;
+  }
+
+  /* Dropdown must not go beyond phone screen */
+  #navbar .dropdown-content,
+  #navbar.open .dropdown-content {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+
+    width: 220px !important;
+    max-width: calc(100vw - 20px) !important;
+
+    box-sizing: border-box !important;
+  }
+
+  /* Phone submenus stay inside dropdown */
+  #navbar .nav-group-links,
+  #navbar.open .nav-group-links {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+
+    transform: none !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Keep Go Up button only */
+  #scrollTopBtn,
+  .scroll-top {
+    right: 14px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+  }
+}
