@@ -5404,3 +5404,309 @@ body.menu-scrolled #menuIcon {
     background: var(--yellow) !important;
   }
 }
+/* PHONE: make sizing, font, and color consistent with PC mode */
+@media (max-width: 850px) {
+  /* top navbar */
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+    height: 58px !important;
+
+    left: 12px !important;
+    right: 12px !important;
+    transform: none !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    box-sizing: border-box !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 33.333% !important;
+    height: 58px !important;
+    flex: 1 1 33.333% !important;
+    min-width: 0 !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn,
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    height: 58px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-right: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 17px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  #navbar > a:last-child,
+  #navbar.open > a:last-child {
+    border-right: none !important;
+  }
+
+  #navbar > a:hover,
+  #navbar > .dropdown:hover > .dropbtn,
+  #navbar.open > a:hover,
+  #navbar.open > .dropdown:hover > .dropbtn {
+    background: var(--yellow) !important;
+  }
+
+  /* dropdown box */
+  #navbar .dropdown-content,
+  #navbar.open .dropdown-content {
+    width: 210px !important;
+    max-width: calc(100vw - 24px) !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    color: var(--black) !important;
+  }
+
+  #navbar .dropdown-content > a,
+  #navbar .dropdown-content > .nav-group,
+  #navbar .dropdown-content > .nav-group > summary,
+  #navbar.open .dropdown-content > a,
+  #navbar.open .dropdown-content > .nav-group,
+  #navbar.open .dropdown-content > .nav-group > summary {
+    height: 44px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 16px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+  }
+
+  #navbar .dropdown-content > a:hover,
+  #navbar .dropdown-content > .nav-group:hover > summary,
+  #navbar.open .dropdown-content > a:hover,
+  #navbar.open .dropdown-content > .nav-group:hover > summary {
+    background: var(--yellow) !important;
+  }
+
+  /* health / finance submenu */
+  #navbar .nav-group-links,
+  #navbar.open .nav-group-links {
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+  }
+
+  #navbar .nav-group-links a,
+  #navbar.open .nav-group-links a {
+    height: 42px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border-bottom: 3px solid var(--black) !important;
+
+    font-size: 15px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+  }
+
+  #navbar .nav-group-links a:hover,
+  #navbar.open .nav-group-links a:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* MENU and Go Up buttons */
+  #menuIcon,
+  #scrollTopBtn,
+  .scroll-top {
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    font-weight: bold !important;
+  }
+
+  #menuIcon:hover,
+  #scrollTopBtn:hover,
+  .scroll-top:hover {
+    background: var(--yellow) !important;
+  }
+
+  #menuIcon {
+    width: 62px !important;
+    height: 44px !important;
+  }
+
+  #menuIcon::before {
+    font-size: 14px !important;
+    font-weight: bold !important;
+    color: var(--black) !important;
+  }
+
+  #scrollTopBtn,
+  .scroll-top {
+    width: 46px !important;
+    height: 44px !important;
+    font-size: 24px !important;
+  }
+}
+/* PHONE: make symbols and text match PC mode */
+@media (max-width: 850px) {
+  /* MENU button text same as PC */
+  #menuIcon {
+    width: 78px !important;
+    height: 50px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    font-size: 0 !important;
+    font-weight: bold !important;
+  }
+
+  #menuIcon::before {
+    content: "MENU" !important;
+
+    position: static !important;
+
+    display: block !important;
+
+    width: auto !important;
+    height: auto !important;
+
+    background: transparent !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    box-shadow: none !important;
+    clip-path: none !important;
+    transform: none !important;
+
+    font-size: 18px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    letter-spacing: 1px !important;
+  }
+
+  #menuIcon::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* Go Up button style same as PC */
+  #scrollTopBtn,
+  .scroll-top {
+    width: 58px !important;
+    height: 50px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    font-size: 28px !important;
+    font-weight: bold !important;
+  }
+
+  /* Keep buttons side by side */
+  #menuIcon {
+    right: 84px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+  }
+
+  #scrollTopBtn,
+  .scroll-top {
+    right: 14px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+  }
+
+  /* Navbar text same style as PC */
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn,
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    color: var(--black) !important;
+    font-weight: bold !important;
+    text-transform: lowercase !important;
+  }
+
+  /* Dropdown text same style */
+  #navbar .dropdown-content > a,
+  #navbar .dropdown-content > .nav-group > summary,
+  #navbar.open .dropdown-content > a,
+  #navbar.open .dropdown-content > .nav-group > summary {
+    color: var(--black) !important;
+    font-weight: bold !important;
+    text-transform: lowercase !important;
+  }
+
+  /* Submenu text same style */
+  #navbar .nav-group-links a,
+  #navbar.open .nav-group-links a {
+    color: var(--black) !important;
+    font-weight: bold !important;
+    text-transform: lowercase !important;
+  }
+
+  /* Arrow symbol same as PC */
+  #navbar .nav-group > summary::after,
+  #navbar.open .nav-group > summary::after {
+    content: "◀" !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: 24px !important;
+    height: 24px !important;
+
+    margin-left: 8px !important;
+
+    background: transparent !important;
+    color: var(--black) !important;
+
+    border: 2px solid transparent !important;
+    box-shadow: none !important;
+
+    font-size: 15px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+  }
+
+  #navbar .nav-group:hover > summary::after,
+  #navbar.open .nav-group:hover > summary::after,
+  #navbar .nav-group[open] > summary::after,
+  #navbar.open .nav-group[open] > summary::after {
+    background: var(--black) !important;
+    color: var(--yellow) !important;
+    border-color: var(--black) !important;
+    box-shadow: 3px 3px 0 var(--black) !important;
+    transform: translateX(-4px) scale(1.08) !important;
+  }
+}
