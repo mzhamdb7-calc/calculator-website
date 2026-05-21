@@ -1012,3 +1012,118 @@ body.right-hand .scroll-top {
     pointer-events: auto;
   }
 }
+
+/* =========================
+   PERCENTAGE CALCULATOR HISTORY
+========================= */
+
+.percentage-calculator-container {
+  max-width: 1180px;
+  margin: 130px auto 80px;
+  padding: 30px;
+
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 35px;
+  align-items: start;
+}
+
+.percentage-history-box {
+  width: 280px;
+  min-height: 450px;
+  max-height: 520px;
+
+  background: #fff4b8;
+  border: 5px solid black;
+  box-shadow: 7px 7px 0 black;
+
+  padding: 20px;
+
+  transform: rotate(-1deg);
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.percentage-history-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 18px;
+}
+
+.percentage-history-top h3 {
+  font-size: 24px;
+}
+
+#percentageHistoryList {
+  list-style: none;
+  font-size: 17px;
+  line-height: 1.4;
+
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+#percentageHistoryList li {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+
+  border-bottom: 3px solid black;
+}
+
+/* Include percentage page in same layout repair */
+.calculator-container,
+.age-calculator-container,
+.bmi-calculator-container,
+.discount-calculator-container,
+.loan-calculator-container,
+.percentage-calculator-container {
+  max-width: 1180px;
+  margin: 130px auto 80px;
+  padding: 30px;
+
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 35px;
+  align-items: start;
+}
+
+.history,
+.age-history-box,
+.bmi-history-box,
+.discount-history-box,
+.loan-history-box,
+.percentage-history-box {
+  width: 280px;
+  min-height: 450px;
+  max-height: 520px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#percentageResult {
+  white-space: pre-line;
+}
+
+/* Mobile */
+@media (max-width: 850px) {
+  .percentage-calculator-container {
+    grid-template-columns: 1fr;
+    margin-top: 110px;
+    padding: 20px;
+  }
+
+  .percentage-history-box {
+    width: 100%;
+    min-height: auto;
+    max-height: 300px;
+  }
+}

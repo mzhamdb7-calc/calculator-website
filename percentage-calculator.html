@@ -3,26 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <title>Percentage Calculator</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="favicon.ico">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Free percentage calculator to calculate percentages quickly online.">
 </head>
 
 <body>
 
-  <button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()">↑</button>
 
   <nav id="navbar">
 
     <a href="index.html">home</a>
 
     <div class="dropdown">
-
-      <button type="button" class="dropbtn">
-        calculator
-      </button>
+      <button type="button" class="dropbtn">calculator</button>
 
       <div class="dropdown-content">
         <a href="basic-calculator.html">basic</a>
@@ -32,16 +31,29 @@
         <a href="loan-calculator.html">loan</a>
         <a href="percentage-calculator.html">percentage</a>
       </div>
-
     </div>
 
     <a href="about.html">about</a>
 
   </nav>
 
-  <button id="menuIcon" onclick="toggleMenu()">☰</button>
+  <button id="menuIcon" type="button" onclick="toggleMenu()">☰</button>
 
-  <main class="single-calculator-container">
+  <main class="percentage-calculator-container">
+
+    <section class="percentage-history-box">
+
+      <div class="percentage-history-top">
+        <h3>Result</h3>
+
+        <button type="button" onclick="clearPercentageHistory()" class="clear-btn">
+          Clear
+        </button>
+      </div>
+
+      <ul id="percentageHistoryList"></ul>
+
+    </section>
 
     <section class="calculator">
 
@@ -61,7 +73,13 @@
         calculate percentage
       </button>
 
-      <h2 id="result"></h2>
+      <div class="result-copy-wrap">
+        <h2 id="percentageResult"></h2>
+
+        <button type="button" class="result-copy-btn" onclick="copyPercentageResult(this)">
+          copy
+        </button>
+      </div>
 
     </section>
 
@@ -69,22 +87,126 @@
 
   <script src="script.js"></script>
 
-<script>
-  function calculatePercentage() {
-    const percent = Number(document.getElementById("percent").value);
-    const number = Number(document.getElementById("number").value);
-    const resultBox = document.getElementById("result");
+  <script>
+    let percentageHistory = JSON.parse(localStorage.getItem("percentageHistory")) || [];
 
-    if (isNaN(percent) || isNaN(number)) {
-      resultBox.innerText = "Please enter valid numbers.";
-      return;
+    function calculatePercentage() {
+      const percentInput = document.getElementById("percent").value;
+      const numberInput = document.getElementById("number").value;
+      const resultBox = document.getElementById("percentageResult");
+
+      if (percentInput === "" || numberInput === "") {
+        resultBox.innerText = "Please enter both numbers.";
+        return;
+      }
+
+      const percent = Number(percentInput);
+      const number = Number(numberInput);
+
+      if (isNaN(percent) || isNaN(number)) {
+        resultBox.innerText = "Please enter valid numbers.";
+        return;
+      }
+
+      const result = (percent / 100) * number;
+
+      const answer =
+        "Percentage: " + percent + "%\n" +
+        "Number: " + number + "\n" +
+        "Result: " + result.toFixed(2);
+
+      resultBox.innerText = answer;
+
+      savePercentageHistory(answer);
     }
 
-    const result = (percent / 100) * number;
+    function savePercentageHistory(answer) {
+      const item = answer.replace(/\n/g, " | ");
 
-    resultBox.innerText =
-      percent + "% of " + number + " is " + result.toFixed(2);
-  }
-</script>
+      percentageHistory.push(item);
+
+      if (percentageHistory.length > 50) {
+        percentageHistory.shift();
+      }
+
+      localStorage.setItem("percentageHistory", JSON.stringify(percentageHistory));
+
+      showPercentageHistory();
+    }
+
+    function showPercentageHistory() {
+      const list = document.getElementById("percentageHistoryList");
+
+      if (!list) return;
+
+      list.innerHTML = "";
+
+      percentageHistory.slice().reverse().forEach(function(item) {
+        const li = document.createElement("li");
+        li.className = "history-item";
+
+        const text = document.createElement("span");
+        text.className = "history-text";
+        text.textContent = item;
+
+        const copyBtn = document.createElement("button");
+        copyBtn.type = "button";
+        copyBtn.className = "history-copy-btn";
+        copyBtn.textContent = "copy";
+
+        copyBtn.onclick = function() {
+          copyText(item, copyBtn);
+        };
+
+        li.appendChild(text);
+        li.appendChild(copyBtn);
+
+        list.appendChild(li);
+      });
+    }
+
+    function copyPercentageResult(button) {
+      const resultText = document.getElementById("percentageResult").innerText;
+
+      if (resultText.trim() === "") return;
+
+      copyText(resultText, button);
+    }
+
+    function copyText(text, button) {
+      const tempInput = document.createElement("textarea");
+
+      tempInput.value = text;
+      tempInput.style.position = "fixed";
+      tempInput.style.left = "-9999px";
+      tempInput.style.top = "-9999px";
+
+      document.body.appendChild(tempInput);
+      tempInput.focus();
+      tempInput.select();
+
+      document.execCommand("copy");
+
+      document.body.removeChild(tempInput);
+
+      button.textContent = "copied";
+
+      setTimeout(function() {
+        button.textContent = "copy";
+      }, 1000);
+    }
+
+    function clearPercentageHistory() {
+      percentageHistory = [];
+      localStorage.removeItem("percentageHistory");
+
+      showPercentageHistory();
+
+      document.getElementById("percentageResult").innerText = "";
+    }
+
+    document.addEventListener("DOMContentLoaded", showPercentageHistory);
+  </script>
+
 </body>
 </html>
