@@ -5,7 +5,7 @@
   <title>BMI Calculator</title>
   <link rel="stylesheet" href="style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Calculate BMI and waist-to-height health ratio with this free online BMI calculator.">
+  <meta name="description" content="Calculate BMI and waist-to-height ratio with this free online BMI calculator.">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
@@ -61,7 +61,7 @@
       <h1>BMI Calculator</h1>
 
       <p class="subtitle">
-        Check your Body Mass Index and waist-to-height health ratio.
+        Check your Body Mass Index and W/H ratio.
       </p>
 
       <label for="weight">Weight in kg:</label>
@@ -101,7 +101,7 @@
 
       const heightM = heightCm / 100;
       const bmi = weight / (heightM * heightM);
-      const waistHeightRatio = waistCm / heightCm;
+      const whRatio = waistCm / heightCm;
 
       let bmiCategory = "";
 
@@ -115,19 +115,19 @@
         bmiCategory = "Obese";
       }
 
-      let waistStatus = "";
+      let condition = "";
 
-      if (waistHeightRatio < 0.5) {
-        waistStatus = "Healthy waist-to-height ratio";
+      if (whRatio < 0.5) {
+        condition = "Healthy";
       } else {
-        waistStatus = "High waist-to-height ratio";
+        condition = "Unhealthy";
       }
 
       const answer =
         "BMI: " + bmi.toFixed(2) + "\n" +
         "BMI status: " + bmiCategory + "\n" +
-        "Waist / Height: " + waistHeightRatio.toFixed(2) + "\n" +
-        "Waist status: " + waistStatus;
+        "W/H ratio: " + whRatio.toFixed(2) + "\n" +
+        "Condition: " + condition;
 
       result.innerText = answer;
 
@@ -139,7 +139,7 @@
         "Weight: " + weight + "kg | " +
         "Height: " + height + "cm | " +
         "Waist: " + waist + "cm → " +
-        answer.replaceAll("\n", " | ");
+        answer.replace(/\n/g, " | ");
 
       bmiHistory.push(item);
 
@@ -185,6 +185,7 @@
 
     function copyBMIText(text, button) {
       const tempInput = document.createElement("textarea");
+
       tempInput.value = text;
       tempInput.style.position = "fixed";
       tempInput.style.left = "-9999px";
