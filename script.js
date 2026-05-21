@@ -1,10 +1,10 @@
 /* =====================================================
-   REPAIRED + CLEAN SCRIPT.JS
-   - Removed duplicate menu handlers
-   - Fixed phone health/finance open + close
-   - Kept calculator functions
-   - Kept history/copy functions
-   - Kept old HTML onclick names working
+   REPAIRED + OPTIMIZED CALCULATOR SCRIPT
+   - Removed duplicate functions
+   - Fixed history copy button conflicts
+   - Fixed left/right hand mode initialization
+   - Fixed dropdown auto-close for <details> and class-based menus
+   - Kept old global function names for existing HTML onclick="..."
 ===================================================== */
 
 (function () {
@@ -27,7 +27,7 @@
     try {
       localStorage.setItem(key, value);
     } catch {
-      /* ignore */
+      // Ignore storage errors, for example private browsing restrictions.
     }
   }
 
@@ -35,7 +35,7 @@
     try {
       localStorage.removeItem(key);
     } catch {
-      /* ignore */
+      // Ignore storage errors.
     }
   }
 
@@ -80,7 +80,6 @@
 
   function setButtonState(button, text) {
     if (!button) return;
-
     const original = button.dataset.originalText || button.textContent || "Copy";
     button.dataset.originalText = original;
     button.textContent = text;
@@ -91,7 +90,7 @@
   }
 
   /* =========================
-     BASIC CALCULATOR
+     DISPLAY FUNCTIONS
   ========================= */
 
   function add(value) {
@@ -113,6 +112,7 @@
       return;
     }
 
+    // Replace repeated operators, but still allow a negative number after another operator.
     if (
       operators.includes(value) &&
       operators.includes(lastChar) &&
@@ -141,6 +141,10 @@
 
     display.value = display.value.slice(0, -1);
   }
+
+  /* =========================
+     MATH FUNCTIONS
+  ========================= */
 
   const functionMap = {
     sin: "Math.sin(",
@@ -173,33 +177,16 @@
   function closeOpenBrackets(expression) {
     const open = (expression.match(/\(/g) || []).length;
     const close = (expression.match(/\)/g) || []).length;
-
-    if (open > close) {
-      return expression + ")".repeat(open - close);
-    }
-
-    return expression;
+    return open > close ? expression + ")".repeat(open - close) : expression;
   }
 
   function isSafeExpression(expression) {
+    // Allow calculator expressions only. This prevents typed JavaScript like alert(), document, window, etc.
     const allowedCharacters = /^[0-9+\-*/().,\sA-Za-z]+$/;
-
-    if (!allowedCharacters.test(expression)) {
-      return false;
-    }
+    if (!allowedCharacters.test(expression)) return false;
 
     const words = expression.match(/[A-Za-z]+/g) || [];
-    const allowedWords = new Set([
-      "Math",
-      "sin",
-      "cos",
-      "tan",
-      "log",
-      "log10",
-      "sqrt",
-      "PI",
-      "E"
-    ]);
+    const allowedWords = new Set(["Math", "sin", "cos", "tan", "log", "log10", "sqrt", "PI", "E"]);
 
     return words.every(function (word) {
       return allowedWords.has(word);
@@ -229,15 +216,11 @@
         return;
       }
 
-      const cleanResult = Number.isInteger(result)
-        ? result
-        : Number(result.toPrecision(12));
+      const cleanResult = Number.isInteger(result) ? result : Number(result.toPrecision(12));
 
       display.value = String(cleanResult);
-
       lastAnswer = cleanResult;
       safeSet("lastAnswer", String(lastAnswer));
-
       saveHistory(expression, cleanResult);
     } catch {
       display.value = "Error";
@@ -245,7 +228,7 @@
   }
 
   /* =========================
-     HISTORY + COPY
+     HISTORY + COPY BUTTONS
   ========================= */
 
   function saveHistory(expression, result) {
@@ -321,7 +304,6 @@
 
   function fallbackCopy(text) {
     const tempInput = document.createElement("textarea");
-
     tempInput.value = text;
     tempInput.setAttribute("readonly", "");
     tempInput.style.position = "fixed";
@@ -334,7 +316,6 @@
     tempInput.setSelectionRange(0, tempInput.value.length);
 
     const copied = document.execCommand("copy");
-
     document.body.removeChild(tempInput);
 
     if (!copied) {
@@ -345,10 +326,6 @@
   function copyHistoryItem(text, button) {
     copyText(text, button);
   }
-
-  /* =========================
-     RESULT COPY BUTTONS
-  ========================= */
 
   const resultIds = [
     "result",
@@ -361,7 +338,6 @@
   function setupResultCopyButtons() {
     resultIds.forEach(function (id) {
       const resultElement = document.getElementById(id);
-
       if (!resultElement) return;
       if (resultElement.closest(".result-copy-wrap")) return;
 
@@ -392,7 +368,7 @@
     lists.forEach(function (list) {
       if (!list) return;
 
-      $$("li", list).forEach(function (li) {
+      $$('li', list).forEach(function (li) {
         if (li.querySelector(".history-copy-btn")) return;
 
         const originalText = li.innerText.trim();
@@ -443,8 +419,52 @@
   }
 
   /* =========================
-     NAVBAR + MENU
+     NAVBAR + SCROLL
   ========================= */
+
+  function closeNavbar() {
+    const navbar = document.getElementById("navbar");
+    if (!navbar) return;
+
+    navbar.classList.remove("open");
+
+    if (window.scrollY > 80) {
+      navbar.classList.add("scrolled");
+    }
+  }
+
+  function updateNavbarOnScroll() {
+    const navbar = document.getElementById("navbar");
+    const menuIcon = document.getElementById("menuIcon");
+    const scrollBtn = document.getElementById("scrollTopBtn");
+
+    if (navbar) {
+      if (window.scrollY > 80) {
+        navbar.classList.add("scrolled");
+        if (menuIcon) menuIcon.classList.add("show");
+      } else {
+        navbar.classList.remove("scrolled", "open");
+        if (menuIcon) menuIcon.classList.remove("show");
+      }
+    }
+
+    if (scrollBtn) {
+      scrollBtn.style.display = window.scrollY > 200 ? "flex" : "none";
+    }
+  }
+
+  function toggleMenu() {
+    const navbar = document.getElementById("navbar");
+    if (!navbar) return;
+
+    const isOpen = navbar.classList.toggle("open");
+
+    if (isOpen) {
+      navbar.classList.remove("scrolled");
+    } else if (window.scrollY > 80) {
+      navbar.classList.add("scrolled");
+    }
+  }
 
   function scrollToTop() {
     window.scrollTo({
@@ -453,228 +473,24 @@
     });
   }
 
-  function setupMenuSystem() {
-    const navbar = document.getElementById("navbar");
-    const menuIcon = document.getElementById("menuIcon");
+  function setupNavbarEvents() {
+    window.addEventListener("scroll", updateNavbarOnScroll, { passive: true });
 
-    if (!navbar) return;
+    document.addEventListener("click", function (event) {
+      const navbar = document.getElementById("navbar");
+      const menuIcon = document.getElementById("menuIcon");
 
-    const calculatorDropdown = navbar.querySelector(":scope > .dropdown");
-    const calculatorButton = calculatorDropdown
-      ? calculatorDropdown.querySelector(".dropbtn")
-      : null;
+      if (!navbar) return;
 
-    const navGroups = navbar.querySelectorAll(
-      ".dropdown-content details.nav-group"
-    );
+      const clickedNavbar = navbar.contains(event.target);
+      const clickedMenuIcon = menuIcon && menuIcon.contains(event.target);
 
-    let closeTimer;
-
-    function isPhone() {
-      return window.matchMedia("(max-width: 850px)").matches;
-    }
-
-    function isPc() {
-      return window.matchMedia("(min-width: 851px)").matches;
-    }
-
-    function isPastTopMenu() {
-      return window.scrollY > 90;
-    }
-
-    function closeNavGroups() {
-      navGroups.forEach(function (group) {
-        group.open = false;
-        group.classList.remove("open", "active");
-      });
-    }
-
-    function closeCalculatorMenus() {
-      if (calculatorDropdown) {
-        calculatorDropdown.classList.remove("menu-open", "phone-open");
+      if (!clickedNavbar && !clickedMenuIcon) {
+        closeNavbar();
       }
-
-      closeNavGroups();
-    }
-
-    function updateNavbarOnScroll() {
-      const scrollBtn = document.getElementById("scrollTopBtn");
-
-      if (scrollBtn) {
-        scrollBtn.style.display = window.scrollY > 200 ? "flex" : "none";
-      }
-
-      if (isPhone()) {
-        document.body.classList.remove("menu-scrolled");
-        navbar.classList.remove("scrolled");
-
-        if (menuIcon) {
-          menuIcon.classList.remove("show");
-        }
-
-        return;
-      }
-
-      if (isPastTopMenu()) {
-        document.body.classList.add("menu-scrolled");
-        navbar.classList.add("scrolled");
-
-        if (menuIcon) {
-          menuIcon.classList.add("show");
-        }
-      } else {
-        document.body.classList.remove("menu-scrolled");
-        navbar.classList.remove("scrolled", "open");
-
-        if (menuIcon) {
-          menuIcon.classList.remove("show");
-        }
-
-        closeCalculatorMenus();
-      }
-    }
-
-    function openPcSideMenu() {
-      if (!isPc() || !isPastTopMenu()) return;
-
-      clearTimeout(closeTimer);
-
-      document.body.classList.add("menu-scrolled");
-      navbar.classList.add("scrolled", "open");
-
-      if (menuIcon) {
-        menuIcon.classList.add("show");
-      }
-    }
-
-    function closePcSideMenuSoon() {
-      if (!isPc()) return;
-
-      clearTimeout(closeTimer);
-
-      closeTimer = setTimeout(function () {
-        const menuHover = menuIcon && menuIcon.matches(":hover");
-        const navbarHover = navbar.matches(":hover");
-
-        if (!menuHover && !navbarHover) {
-          navbar.classList.remove("open");
-          closeCalculatorMenus();
-        }
-      }, 180);
-    }
-
-    if (menuIcon) {
-      menuIcon.addEventListener("mouseenter", openPcSideMenu);
-      menuIcon.addEventListener("mouseleave", closePcSideMenuSoon);
-
-      menuIcon.addEventListener("click", function (event) {
-        if (!isPc() || !isPastTopMenu()) return;
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        navbar.classList.toggle("open");
-      });
-    }
-
-    navbar.addEventListener("mouseenter", function () {
-      clearTimeout(closeTimer);
-    });
-
-    navbar.addEventListener("mouseleave", closePcSideMenuSoon);
-
-    if (calculatorButton && calculatorDropdown) {
-      calculatorButton.addEventListener(
-        "click",
-        function (event) {
-          if (isPhone()) {
-            event.preventDefault();
-            event.stopPropagation();
-
-            const wasOpen = calculatorDropdown.classList.contains("phone-open");
-
-            calculatorDropdown.classList.toggle("phone-open", !wasOpen);
-
-            if (!wasOpen) {
-              navbar.classList.add("phone-menu-open");
-            } else {
-              navbar.classList.remove("phone-menu-open");
-              closeNavGroups();
-            }
-
-            return;
-          }
-
-          if (isPc() && navbar.classList.contains("open")) {
-            event.preventDefault();
-            event.stopPropagation();
-
-            calculatorDropdown.classList.toggle("menu-open");
-          }
-        },
-        true
-      );
-    }
-
-    navGroups.forEach(function (group) {
-      const summary = group.querySelector(":scope > summary");
-
-      if (!summary) return;
-
-      summary.addEventListener(
-        "click",
-        function (event) {
-          if (!isPhone()) return;
-
-          event.preventDefault();
-          event.stopPropagation();
-          event.stopImmediatePropagation();
-
-          const wasOpen = group.open;
-
-          closeNavGroups();
-
-          if (!wasOpen) {
-            group.open = true;
-            group.classList.add("open", "active");
-          }
-        },
-        true
-      );
-    });
-
-    document.addEventListener(
-      "click",
-      function (event) {
-        const clickedNavbar = navbar.contains(event.target);
-        const clickedMenuIcon = menuIcon && menuIcon.contains(event.target);
-
-        if (!clickedNavbar && !clickedMenuIcon) {
-          navbar.classList.remove("open", "phone-menu-open");
-          closeCalculatorMenus();
-        }
-      },
-      true
-    );
-
-    window.addEventListener("scroll", updateNavbarOnScroll, {
-      passive: true
-    });
-
-    window.addEventListener("resize", function () {
-      navbar.classList.remove("open", "phone-menu-open");
-      closeCalculatorMenus();
-      updateNavbarOnScroll();
     });
 
     updateNavbarOnScroll();
-  }
-
-  function toggleMenu() {
-    const navbar = document.getElementById("navbar");
-    if (!navbar) return;
-
-    navbar.classList.toggle("open");
   }
 
   /* =========================
@@ -692,7 +508,6 @@
     button.setAttribute("aria-label", "Switch left hand or right hand mode");
 
     button.addEventListener("click", toggleHandMode);
-
     document.body.appendChild(button);
   }
 
@@ -704,10 +519,7 @@
   }
 
   function toggleHandMode() {
-    const nextMode = document.body.classList.contains("left-hand")
-      ? "right"
-      : "left";
-
+    const nextMode = document.body.classList.contains("left-hand") ? "right" : "left";
     safeSet("handMode", nextMode);
     applyHandMode();
   }
@@ -750,23 +562,19 @@
     box.appendChild(plusBtn);
 
     document.body.appendChild(box);
-
     applyPageZoom();
   }
 
   function applyPageZoom() {
     pageZoom = clamp(Number(pageZoom) || 1, 0.6, 1);
 
-    const pageParts = $$(
-      "main, .calculator-box, .calculator-container, .about-container"
-    );
+    const pageParts = $$("#navbar, main, .calculator-box, .about-container");
 
     pageParts.forEach(function (part) {
       part.style.zoom = String(pageZoom);
     });
 
     const resetBtn = $("#resizeNavigator button:nth-child(2)");
-
     if (resetBtn) {
       resetBtn.textContent = String(Math.round(pageZoom * 100));
     }
@@ -790,66 +598,88 @@
   }
 
   /* =========================
-     NUMBER INPUT RESTRICTION
+     DROPDOWNS
+     Supports both:
+     1) <details class="nav-group">
+     2) class-based menus using .open or .active
   ========================= */
 
-  function restrictNumberInputs() {
-    const numberInputs = document.querySelectorAll('input[type="number"]');
+  function isDetails(element) {
+    return element && element.tagName && element.tagName.toLowerCase() === "details";
+  }
 
-    numberInputs.forEach(function (input) {
-      input.setAttribute("inputmode", "decimal");
+  function closeDropdown(group) {
+    if (!group) return;
 
-      input.addEventListener("keydown", function (event) {
-        const allowedKeys = [
-          "Backspace",
-          "Delete",
-          "ArrowLeft",
-          "ArrowRight",
-          "ArrowUp",
-          "ArrowDown",
-          "Tab",
-          "Home",
-          "End"
-        ];
+    if (isDetails(group)) {
+      group.open = false;
+    }
 
-        if (allowedKeys.includes(event.key)) return;
-        if (event.ctrlKey || event.metaKey) return;
-        if (/^[0-9]$/.test(event.key)) return;
-        if (event.key === "." && !input.value.includes(".")) return;
+    group.classList.remove("open", "active");
+  }
+
+  function openDropdown(group) {
+    if (!group) return;
+
+    const groups = $$(".nav-group, .group-card");
+
+    groups.forEach(function (otherGroup) {
+      if (otherGroup !== group) closeDropdown(otherGroup);
+    });
+
+    if (isDetails(group)) {
+      group.open = true;
+    }
+
+    group.classList.add("open", "active");
+  }
+
+  function toggleDropdown(group) {
+    if (!group) return;
+
+    const isOpen = isDetails(group)
+      ? group.open
+      : group.classList.contains("open") || group.classList.contains("active");
+
+    if (isOpen) {
+      closeDropdown(group);
+    } else {
+      openDropdown(group);
+    }
+  }
+
+  function setupDropdowns() {
+    const groups = $$(".nav-group, .group-card");
+
+    groups.forEach(function (group) {
+      if (group.dataset.dropdownReady === "true") return;
+      group.dataset.dropdownReady = "true";
+
+      if (isDetails(group)) {
+        group.addEventListener("toggle", function () {
+          if (group.open) openDropdown(group);
+        });
+        return;
+      }
+
+      const trigger = $("summary, button, .nav-link, a", group) || group;
+
+      trigger.addEventListener("click", function (event) {
+        // Let normal links work when the group has no submenu.
+        const hasSubmenu = !!$(".dropdown, .dropdown-menu, .submenu, ul", group);
+        if (!hasSubmenu) return;
 
         event.preventDefault();
+        event.stopPropagation();
+        toggleDropdown(group);
       });
+    });
 
-      input.addEventListener("input", function () {
-        let value = input.value;
-
-        value = value.replace(/[^0-9.]/g, "");
-
-        const parts = value.split(".");
-
-        if (parts.length > 2) {
-          value = parts[0] + "." + parts.slice(1).join("");
+    document.addEventListener("click", function (event) {
+      groups.forEach(function (group) {
+        if (!group.contains(event.target)) {
+          closeDropdown(group);
         }
-
-        input.value = value;
-      });
-
-      input.addEventListener("paste", function (event) {
-        event.preventDefault();
-
-        const pastedText = (event.clipboardData || window.clipboardData)
-          .getData("text");
-
-        let cleanedText = pastedText.replace(/[^0-9.]/g, "");
-
-        const parts = cleanedText.split(".");
-
-        if (parts.length > 2) {
-          cleanedText = parts[0] + "." + parts.slice(1).join("");
-        }
-
-        input.value = cleanedText;
-        input.dispatchEvent(new Event("input"));
       });
     });
   }
@@ -860,7 +690,6 @@
 
   function flashButton(buttonText) {
     const wanted = String(buttonText).trim().toUpperCase();
-
     const aliases = {
       "-": ["-", "−"],
       "*": ["*", "×", "X"],
@@ -873,13 +702,7 @@
     $$(".buttons button, .ans-btn").forEach(function (button) {
       const actual = button.textContent.trim().toUpperCase();
 
-      const match = allowedTexts
-        .map(function (text) {
-          return text.toUpperCase();
-        })
-        .includes(actual);
-
-      if (match) {
+      if (allowedTexts.map(function (text) { return text.toUpperCase(); }).includes(actual)) {
         button.classList.add("keyboard-active");
 
         setTimeout(function () {
@@ -909,7 +732,7 @@
         return;
       }
 
-      if (key === "+" || key === "-") {
+      if (["+", "-"].includes(key)) {
         add(key);
         flashButton(key);
         return;
@@ -943,6 +766,7 @@
       }
 
       if (key === "Delete" || key === "Escape") {
+        event.preventDefault();
         clearDisplay();
         flashButton("AC");
         return;
@@ -979,9 +803,9 @@
     setupHistoryCopyButtons();
     watchCopyButtons();
     createResizeNavigator();
-    setupMenuSystem();
+    setupDropdowns();
+    setupNavbarEvents();
     setupKeyboardSupport();
-    restrictNumberInputs();
   }
 
   if (document.readyState === "loading") {
@@ -992,6 +816,7 @@
 
   /* =========================
      GLOBAL EXPORTS
+     Keeps existing HTML onclick="functionName()" working.
   ========================= */
 
   window.add = add;
@@ -1021,4 +846,725 @@
   window.zoomInPage = zoomInPage;
   window.zoomOutPage = zoomOutPage;
   window.resetPageZoom = resetPageZoom;
+  window.setupDropdowns = setupDropdowns;
 })();
+
+
+/* =========================
+   PC SIDE MENU CLICK EXPAND
+   Click the Calculator button to open/close its side submenu.
+   Hover still works from CSS.
+========================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  if (!navbar) return;
+
+  const calculatorDropdown = navbar.querySelector(":scope > .dropdown");
+  if (!calculatorDropdown) return;
+
+  const calculatorButton = calculatorDropdown.querySelector(".dropbtn");
+  if (!calculatorButton) return;
+
+  function isPcSideMenu() {
+    return window.matchMedia("(min-width: 851px)").matches &&
+      navbar.classList.contains("open");
+  }
+
+  calculatorButton.addEventListener("click", function (event) {
+    if (!isPcSideMenu()) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    calculatorDropdown.classList.toggle("menu-open");
+  });
+
+  document.addEventListener("click", function (event) {
+    if (!calculatorDropdown.contains(event.target)) {
+      calculatorDropdown.classList.remove("menu-open");
+    }
+  });
+
+  window.addEventListener("resize", function () {
+    calculatorDropdown.classList.remove("menu-open");
+  });
+});
+
+/* =========================
+   PC SIDE MENU CLICK EXPAND
+========================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  if (!navbar) return;
+
+  const calculatorDropdown = navbar.querySelector(":scope > .dropdown");
+  if (!calculatorDropdown) return;
+
+  const calculatorButton = calculatorDropdown.querySelector(".dropbtn");
+  if (!calculatorButton) return;
+
+  function isPcSideMenu() {
+    return window.matchMedia("(min-width: 851px)").matches &&
+      navbar.classList.contains("open");
+  }
+
+  calculatorButton.addEventListener("click", function (event) {
+    if (!isPcSideMenu()) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    calculatorDropdown.classList.toggle("menu-open");
+  });
+
+  document.addEventListener("click", function (event) {
+    if (!calculatorDropdown.contains(event.target)) {
+      calculatorDropdown.classList.remove("menu-open");
+    }
+  });
+
+  window.addEventListener("resize", function () {
+    calculatorDropdown.classList.remove("menu-open");
+  });
+});
+
+/* =====================================================
+   TOP NAVBAR CHANGES TO MENU ICON ON SCROLL
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!navbar || !menuIcon) return;
+
+  function updateScrolledMenu() {
+    if (window.scrollY > 90) {
+      document.body.classList.add("menu-scrolled");
+      navbar.classList.add("scrolled");
+      menuIcon.classList.add("show");
+    } else {
+      document.body.classList.remove("menu-scrolled");
+      navbar.classList.remove("scrolled");
+      navbar.classList.remove("open");
+      menuIcon.classList.remove("show");
+    }
+  }
+
+  window.toggleMenu = function () {
+    if (!document.body.classList.contains("menu-scrolled")) return;
+    navbar.classList.toggle("open");
+  };
+
+  menuIcon.addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+    window.toggleMenu();
+  });
+
+  document.addEventListener("click", function (event) {
+    if (
+      document.body.classList.contains("menu-scrolled") &&
+      !navbar.contains(event.target) &&
+      !menuIcon.contains(event.target)
+    ) {
+      navbar.classList.remove("open");
+    }
+  });
+
+  window.addEventListener("scroll", updateScrolledMenu);
+  updateScrolledMenu();
+});
+
+/* =====================================================
+   OPEN ALL DETAILS DROPDOWNS ON HOVER
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const hoverDropdowns = document.querySelectorAll(".nav-group, .group-card");
+
+  hoverDropdowns.forEach(function (dropdown) {
+    dropdown.addEventListener("mouseenter", function () {
+      dropdown.open = true;
+    });
+
+    dropdown.addEventListener("mouseleave", function () {
+      dropdown.open = false;
+    });
+
+    dropdown.addEventListener("focusin", function () {
+      dropdown.open = true;
+    });
+
+    dropdown.addEventListener("focusout", function () {
+      setTimeout(function () {
+        if (!dropdown.contains(document.activeElement)) {
+          dropdown.open = false;
+        }
+      }, 100);
+    });
+  });
+});
+/* =====================================================
+   HOUSE ICON HOVER EXPANDS MENU
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!navbar || !menuIcon) return;
+
+  let closeTimer;
+
+  function isPastTopMenu() {
+    return window.scrollY > 90;
+  }
+
+  function openMenu() {
+    if (!isPastTopMenu()) return;
+
+    document.body.classList.add("menu-scrolled");
+    navbar.classList.add("scrolled");
+    navbar.classList.add("open");
+    menuIcon.classList.add("show");
+  }
+
+  function closeMenuSoon() {
+    clearTimeout(closeTimer);
+
+    closeTimer = setTimeout(function () {
+      if (!navbar.matches(":hover") && !menuIcon.matches(":hover")) {
+        navbar.classList.remove("open");
+      }
+    }, 180);
+  }
+
+  function updateScrollMenu() {
+    if (isPastTopMenu()) {
+      document.body.classList.add("menu-scrolled");
+      navbar.classList.add("scrolled");
+      menuIcon.classList.add("show");
+    } else {
+      document.body.classList.remove("menu-scrolled");
+      navbar.classList.remove("scrolled");
+      navbar.classList.remove("open");
+      menuIcon.classList.remove("show");
+    }
+  }
+
+  menuIcon.addEventListener("mouseenter", openMenu);
+  menuIcon.addEventListener("mouseleave", closeMenuSoon);
+
+  navbar.addEventListener("mouseenter", function () {
+    clearTimeout(closeTimer);
+  });
+
+  navbar.addEventListener("mouseleave", closeMenuSoon);
+
+  menuIcon.addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!isPastTopMenu()) return;
+
+    document.body.classList.add("menu-scrolled");
+    navbar.classList.add("scrolled");
+    menuIcon.classList.add("show");
+    navbar.classList.toggle("open");
+  });
+
+  document.addEventListener("click", function (event) {
+    if (!navbar.contains(event.target) && !menuIcon.contains(event.target)) {
+      navbar.classList.remove("open");
+    }
+  });
+
+  window.addEventListener("scroll", updateScrollMenu);
+  updateScrollMenu();
+});
+/* =====================================================
+   PC: HOME ICON HOVER OPENS LEFT SIDE MENU
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!navbar || !menuIcon) return;
+
+  let closeTimer;
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function isPastTopMenu() {
+    return window.scrollY > 90;
+  }
+
+  function showIconAfterScroll() {
+    if (isPastTopMenu()) {
+      document.body.classList.add("menu-scrolled");
+      navbar.classList.add("scrolled");
+      menuIcon.classList.add("show");
+    } else {
+      document.body.classList.remove("menu-scrolled");
+      navbar.classList.remove("scrolled");
+      navbar.classList.remove("open");
+      menuIcon.classList.remove("show");
+    }
+  }
+
+  function openSideMenu() {
+    if (!isPc() || !isPastTopMenu()) return;
+
+    clearTimeout(closeTimer);
+
+    document.body.classList.add("menu-scrolled");
+    navbar.classList.add("scrolled");
+    navbar.classList.add("open");
+    menuIcon.classList.add("show");
+  }
+
+  function closeSideMenuSoon() {
+    clearTimeout(closeTimer);
+
+    closeTimer = setTimeout(function () {
+      if (!navbar.matches(":hover") && !menuIcon.matches(":hover")) {
+        navbar.classList.remove("open");
+      }
+    }, 180);
+  }
+
+  menuIcon.addEventListener("mouseenter", openSideMenu);
+  navbar.addEventListener("mouseenter", function () {
+    clearTimeout(closeTimer);
+  });
+
+  menuIcon.addEventListener("mouseleave", closeSideMenuSoon);
+  navbar.addEventListener("mouseleave", closeSideMenuSoon);
+
+  menuIcon.addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!isPastTopMenu()) return;
+
+    navbar.classList.toggle("open");
+  });
+
+  window.addEventListener("scroll", showIconAfterScroll);
+  showIconAfterScroll();
+});
+/* =====================================================
+   PC: MENU BUTTON HOVER OPENS LEFT SIDE MENU
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!navbar || !menuIcon) return;
+
+  let closeTimer;
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function isPastTopMenu() {
+    return window.scrollY > 90;
+  }
+
+  function updateMenuIcon() {
+    if (isPastTopMenu()) {
+      document.body.classList.add("menu-scrolled");
+      navbar.classList.add("scrolled");
+      menuIcon.classList.add("show");
+    } else {
+      document.body.classList.remove("menu-scrolled");
+      navbar.classList.remove("scrolled");
+      navbar.classList.remove("open");
+      menuIcon.classList.remove("show");
+    }
+  }
+
+  function openMenu() {
+    if (!isPc() || !isPastTopMenu()) return;
+
+    clearTimeout(closeTimer);
+
+    document.body.classList.add("menu-scrolled");
+    navbar.classList.add("scrolled");
+    navbar.classList.add("open");
+    menuIcon.classList.add("show");
+  }
+
+  function closeMenuSoon() {
+    clearTimeout(closeTimer);
+
+    closeTimer = setTimeout(function () {
+      if (!navbar.matches(":hover") && !menuIcon.matches(":hover")) {
+        navbar.classList.remove("open");
+      }
+    }, 180);
+  }
+
+  menuIcon.addEventListener("mouseenter", openMenu);
+  menuIcon.addEventListener("mouseleave", closeMenuSoon);
+
+  navbar.addEventListener("mouseenter", function () {
+    clearTimeout(closeTimer);
+  });
+
+  navbar.addEventListener("mouseleave", closeMenuSoon);
+
+  menuIcon.addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!isPastTopMenu()) return;
+
+    navbar.classList.toggle("open");
+  });
+
+  window.addEventListener("scroll", updateMenuIcon);
+  updateMenuIcon();
+});
+
+/* =====================================================
+   FINAL MENU SCROLL + HOVER SYSTEM
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!navbar || !menuIcon) return;
+
+  let closeTimer;
+
+  function isPastTopMenu() {
+    return window.scrollY > 90;
+  }
+
+  function updateMenuIcon() {
+    if (isPastTopMenu()) {
+      document.body.classList.add("menu-scrolled");
+      navbar.classList.add("scrolled");
+      menuIcon.classList.add("show");
+    } else {
+      document.body.classList.remove("menu-scrolled");
+      navbar.classList.remove("scrolled");
+      navbar.classList.remove("open");
+      menuIcon.classList.remove("show");
+    }
+  }
+
+  function openMenu() {
+    if (!isPastTopMenu()) return;
+
+    clearTimeout(closeTimer);
+
+    document.body.classList.add("menu-scrolled");
+    navbar.classList.add("scrolled");
+    navbar.classList.add("open");
+    menuIcon.classList.add("show");
+  }
+
+  function closeMenuSoon() {
+    clearTimeout(closeTimer);
+
+    closeTimer = setTimeout(function () {
+      if (!navbar.matches(":hover") && !menuIcon.matches(":hover")) {
+        navbar.classList.remove("open");
+      }
+    }, 180);
+  }
+
+  menuIcon.addEventListener("mouseenter", openMenu);
+  menuIcon.addEventListener("mouseleave", closeMenuSoon);
+
+  navbar.addEventListener("mouseenter", function () {
+    clearTimeout(closeTimer);
+  });
+
+  navbar.addEventListener("mouseleave", closeMenuSoon);
+
+  menuIcon.addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!isPastTopMenu()) return;
+
+    navbar.classList.toggle("open");
+  });
+
+  document.addEventListener("click", function (event) {
+    if (!navbar.contains(event.target) && !menuIcon.contains(event.target)) {
+      navbar.classList.remove("open");
+    }
+  });
+
+  window.addEventListener("scroll", updateMenuIcon);
+  updateMenuIcon();
+});
+
+/* PHONE CLICK MENU SYSTEM */
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!navbar || !menuIcon) return;
+
+  const calculatorDropdown = navbar.querySelector(":scope > .dropdown");
+  const calculatorButton = calculatorDropdown
+    ? calculatorDropdown.querySelector(".dropbtn")
+    : null;
+
+  function isPhone() {
+    return window.matchMedia("(max-width: 850px)").matches;
+  }
+
+  function closePhoneSubmenus() {
+    if (calculatorDropdown) {
+      calculatorDropdown.classList.remove("phone-open");
+    }
+
+    navbar.querySelectorAll(".nav-group").forEach(function (group) {
+      group.open = false;
+    });
+  }
+
+  function togglePhoneMenu(event) {
+    if (!isPhone()) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    document.body.classList.add("menu-scrolled");
+    navbar.classList.add("scrolled");
+    navbar.classList.toggle("open");
+    navbar.classList.toggle("phone-menu-open");
+
+    if (!navbar.classList.contains("open")) {
+      closePhoneSubmenus();
+    }
+  }
+
+  menuIcon.addEventListener("click", togglePhoneMenu);
+
+  if (calculatorButton && calculatorDropdown) {
+    calculatorButton.addEventListener("click", function (event) {
+      if (!isPhone() || !navbar.classList.contains("open")) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      calculatorDropdown.classList.toggle("phone-open");
+
+      navbar.querySelectorAll(".nav-group").forEach(function (group) {
+        group.open = false;
+      });
+    });
+  }
+
+  navbar.querySelectorAll(".nav-group > summary").forEach(function (summary) {
+    summary.addEventListener("click", function (event) {
+      if (!isPhone() || !navbar.classList.contains("open")) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const group = summary.parentElement;
+      const isOpen = group.open;
+
+      navbar.querySelectorAll(".nav-group").forEach(function (otherGroup) {
+        otherGroup.open = false;
+      });
+
+      group.open = !isOpen;
+    });
+  });
+
+  document.addEventListener("click", function (event) {
+    if (!isPhone()) return;
+
+    if (!navbar.contains(event.target) && !menuIcon.contains(event.target)) {
+      navbar.classList.remove("open", "phone-menu-open");
+      closePhoneSubmenus();
+    }
+  });
+});
+/* Restrict all calculator number inputs to numbers only */
+document.addEventListener("DOMContentLoaded", function () {
+  const numberInputs = document.querySelectorAll('input[type="number"]');
+
+  numberInputs.forEach(function (input) {
+    input.setAttribute("inputmode", "decimal");
+
+    input.addEventListener("keydown", function (event) {
+      const allowedKeys = [
+        "Backspace",
+        "Delete",
+        "ArrowLeft",
+        "ArrowRight",
+        "ArrowUp",
+        "ArrowDown",
+        "Tab",
+        "Home",
+        "End"
+      ];
+
+      if (allowedKeys.includes(event.key)) return;
+
+      if (event.ctrlKey || event.metaKey) return;
+
+      if (/^[0-9]$/.test(event.key)) return;
+
+      if (event.key === "." && !input.value.includes(".")) return;
+
+      event.preventDefault();
+    });
+
+    input.addEventListener("input", function () {
+      let value = input.value;
+
+      value = value.replace(/[^0-9.]/g, "");
+
+      const parts = value.split(".");
+      if (parts.length > 2) {
+        value = parts[0] + "." + parts.slice(1).join("");
+      }
+
+      input.value = value;
+    });
+
+    input.addEventListener("paste", function (event) {
+      event.preventDefault();
+
+      const pastedText = (event.clipboardData || window.clipboardData).getData("text");
+      let cleanedText = pastedText.replace(/[^0-9.]/g, "");
+
+      const parts = cleanedText.split(".");
+      if (parts.length > 2) {
+        cleanedText = parts[0] + "." + parts.slice(1).join("");
+      }
+
+      input.value = cleanedText;
+      input.dispatchEvent(new Event("input"));
+    });
+  });
+});
+/* Remove emoji arrow text from phone side menu health/finance */
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("#navbar .dropdown-content details.nav-group > summary")
+    .forEach(function (summary) {
+      summary.childNodes.forEach(function (node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          node.textContent = node.textContent
+            .replace(/[▼▲◀▶⬅️🔽🔼]/g, "")
+            .trim();
+        }
+      });
+    });
+});
+/* PHONE SIDE MENU: remove real emoji arrows from health/finance text */
+document.addEventListener("DOMContentLoaded", function () {
+  function cleanSideMenuArrows() {
+    document
+      .querySelectorAll("#navbar .dropdown-content details.nav-group > summary")
+      .forEach(function (summary) {
+        summary.childNodes.forEach(function (node) {
+          if (node.nodeType === Node.TEXT_NODE) {
+            node.textContent = node.textContent
+              .replace(/[\u25BC\u25B2\u25C0\u25B6\u2B05\uFE0F]/g, "")
+              .replace(/[▼▲◀▶⬅]/g, "")
+              .trim();
+          }
+        });
+      });
+  }
+
+  cleanSideMenuArrows();
+
+  document.addEventListener("click", function () {
+    setTimeout(cleanSideMenuArrows, 0);
+  });
+
+  document.querySelectorAll("#navbar .dropdown-content details.nav-group").forEach(function (detail) {
+    detail.addEventListener("toggle", function () {
+      setTimeout(cleanSideMenuArrows, 0);
+    });
+  });
+});
+/* PHONE BOTTOM MENU: allow health/finance to open AND close */
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  if (!navbar) return;
+
+  function isPhone() {
+    return window.matchMedia("(max-width: 850px)").matches;
+  }
+
+  navbar
+    .querySelectorAll(".dropdown-content details.nav-group > summary")
+    .forEach(function (summary) {
+      summary.addEventListener(
+        "click",
+        function (event) {
+          if (!isPhone()) return;
+
+          event.preventDefault();
+          event.stopPropagation();
+          event.stopImmediatePropagation();
+
+          const currentGroup = summary.parentElement;
+          const wasOpen = currentGroup.open;
+
+          navbar
+            .querySelectorAll(".dropdown-content details.nav-group")
+            .forEach(function (group) {
+              group.open = false;
+            });
+
+          currentGroup.open = !wasOpen;
+        },
+        true
+      );
+    });
+});
+/* PHONE: make health/finance open and close correctly in bottom menu */
+document.addEventListener(
+  "click",
+  function (event) {
+    if (!window.matchMedia("(max-width: 850px)").matches) return;
+
+    const summary = event.target.closest(
+      "#navbar .dropdown-content details.nav-group > summary"
+    );
+
+    if (!summary) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    const clickedGroup = summary.parentElement;
+    const wasOpen = clickedGroup.open;
+
+    /* close all health/finance groups first */
+    document
+      .querySelectorAll("#navbar .dropdown-content details.nav-group")
+      .forEach(function (group) {
+        group.open = false;
+      });
+
+    /* if it was closed, open it. if it was open, keep it closed */
+    clickedGroup.open = !wasOpen;
+  },
+  true
+);
