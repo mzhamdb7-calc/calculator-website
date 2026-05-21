@@ -3111,3 +3111,204 @@ body.right-hand #navbar.open {
     left: auto !important;
   }
 }
+
+/* =====================================================
+   PHONE MENU: DROPDOWN LIST LEFT, MAIN MENU RIGHT
+===================================================== */
+
+@media (max-width: 850px) {
+
+  /* show hamburger on phone */
+  #menuIcon {
+    display: block !important;
+
+    position: fixed !important;
+    top: auto !important;
+    bottom: calc(150px + env(safe-area-inset-bottom)) !important;
+
+    right: 14px !important;
+    left: auto !important;
+
+    width: 46px !important;
+    height: 44px !important;
+
+    z-index: 99999999 !important;
+  }
+
+  /* opened main menu on right */
+  #navbar.open {
+    display: flex !important;
+    flex-direction: column !important;
+
+    position: fixed !important;
+    top: auto !important;
+    bottom: calc(150px + env(safe-area-inset-bottom)) !important;
+
+    right: 70px !important;
+    left: auto !important;
+
+    width: 120px !important;
+    height: auto !important;
+
+    max-height: none !important;
+
+    margin: 0 !important;
+    transform: none !important;
+
+    overflow: visible !important;
+
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    z-index: 99999998 !important;
+  }
+
+  /* home / calculator / about */
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 120px !important;
+    height: 34px !important;
+    flex: none !important;
+  }
+
+  #navbar.open a,
+  #navbar.open .dropbtn {
+    width: 120px !important;
+    height: 34px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    font-size: 18px !important;
+
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* calculator dropdown list appears on the LEFT */
+  #navbar.open .dropdown {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  #navbar.open .dropdown-content {
+    display: block !important;
+
+    position: absolute !important;
+
+    top: 0 !important;
+    right: 120px !important;
+    left: auto !important;
+    bottom: auto !important;
+
+    width: 155px !important;
+
+    background: white !important;
+
+    border: none !important;
+    box-shadow: none !important;
+
+    overflow: visible !important;
+
+    z-index: 99999999 !important;
+  }
+
+  /* basic / percentage */
+  #navbar.open .dropdown-content > a {
+    width: 155px !important;
+    height: 34px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    padding-left: 8px !important;
+
+    font-size: 18px !important;
+
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* health / finance */
+  #navbar.open .nav-group {
+    width: 155px !important;
+    height: auto !important;
+
+    position: relative !important;
+
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  #navbar.open .nav-group summary {
+    width: 155px !important;
+    height: 34px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    padding-left: 8px !important;
+
+    font-size: 18px !important;
+
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  #navbar.open .nav-group summary::after {
+    content: " ▼" !important;
+    font-size: 14px !important;
+    margin-left: 5px !important;
+  }
+
+  #navbar.open .nav-group[open] summary::after {
+    content: " ▲" !important;
+  }
+
+  /* health/finance subitems go downward */
+  #navbar.open .nav-group-links {
+    position: static !important;
+
+    width: 155px !important;
+
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  #navbar.open .nav-group-links a {
+    width: 155px !important;
+    height: 30px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    padding-left: 22px !important;
+
+    font-size: 16px !important;
+
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* keep phone layout same in left-hand mode */
+  body.left-hand #menuIcon {
+    right: 14px !important;
+    left: auto !important;
+  }
+
+  body.left-hand #navbar.open {
+    right: 70px !important;
+    left: auto !important;
+  }
+}
