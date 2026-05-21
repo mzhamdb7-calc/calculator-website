@@ -211,3 +211,50 @@ function scrollToTop() {
     behavior: "smooth"
   });
 }
+
+/* LEFT / RIGHT HAND MODE */
+
+function createHandToggleButton() {
+  if (document.getElementById("handToggleBtn")) return;
+
+  const button = document.createElement("button");
+
+  button.id = "handToggleBtn";
+  button.type = "button";
+  button.innerText = "↔";
+  button.title = "Switch left hand / right hand mode";
+  button.onclick = toggleHandMode;
+
+  document.body.appendChild(button);
+}
+
+function loadHandMode() {
+  const savedMode = localStorage.getItem("handMode");
+
+  document.body.classList.remove("left-hand", "right-hand");
+
+  if (savedMode === "left") {
+    document.body.classList.add("left-hand");
+  } else {
+    document.body.classList.add("right-hand");
+  }
+}
+
+function toggleHandMode() {
+  const isLeft = document.body.classList.contains("left-hand");
+
+  document.body.classList.remove("left-hand", "right-hand");
+
+  if (isLeft) {
+    document.body.classList.add("right-hand");
+    localStorage.setItem("handMode", "right");
+  } else {
+    document.body.classList.add("left-hand");
+    localStorage.setItem("handMode", "left");
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  createHandToggleButton();
+  loadHandMode();
+});

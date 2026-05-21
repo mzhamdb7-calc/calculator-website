@@ -615,3 +615,111 @@ body {
     font-size: 18px;
   }
 }
+/* =========================
+   LEFT / RIGHT HAND MODE
+========================= */
+
+#handToggleBtn {
+  position: fixed;
+  right: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 65px;
+  height: 65px;
+
+  border: 5px solid black;
+  background: #ffe66d;
+
+  font-size: 30px;
+  font-weight: bold;
+
+  box-shadow: 5px 5px 0 black;
+
+  cursor: pointer;
+
+  z-index: 999999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* LEFT HAND MODE */
+
+body.left-hand #handToggleBtn {
+  left: 30px;
+  right: auto;
+}
+
+body.left-hand #menuIcon {
+  left: 30px;
+  right: auto;
+}
+
+body.left-hand #scrollTopBtn,
+body.left-hand .scroll-top {
+  left: 30px;
+  right: auto;
+}
+
+body.left-hand #navbar.open {
+  left: 20px;
+  right: auto;
+}
+
+/* Move calculator closer to left side */
+body.left-hand .calculator-container {
+  grid-template-columns: 1fr 280px;
+}
+
+body.left-hand .calculator {
+  order: 1;
+}
+
+body.left-hand .history {
+  order: 2;
+}
+
+/* RIGHT HAND MODE */
+
+body.right-hand #handToggleBtn {
+  right: 30px;
+  left: auto;
+}
+
+body.right-hand #menuIcon {
+  right: 30px;
+  left: auto;
+}
+
+body.right-hand #scrollTopBtn,
+body.right-hand .scroll-top {
+  right: 30px;
+  left: auto;
+}
+
+body.right-hand #navbar.open {
+  right: 20px;
+  left: auto;
+}
+
+/* MOBILE */
+
+@media (max-width: 850px) {
+  #handToggleBtn {
+    width: 55px;
+    height: 55px;
+    font-size: 24px;
+    top: 50%;
+  }
+
+  body.left-hand .calculator-container {
+    grid-template-columns: 1fr;
+  }
+
+  body.left-hand .calculator,
+  body.left-hand .history {
+    order: initial;
+  }
+}
