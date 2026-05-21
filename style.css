@@ -3312,3 +3312,184 @@ body.right-hand #navbar.open {
     left: auto !important;
   }
 }
+
+/* =====================================================
+   PC: SIDE MENU OPEN STYLE LIKE PHONE
+   Applies when page is scrolled and hamburger menu opens
+===================================================== */
+
+@media (min-width: 851px) {
+
+  /* Opened side menu main column */
+  #navbar.open {
+    display: flex !important;
+    flex-direction: column !important;
+
+    position: fixed !important;
+    top: 90px !important;
+    right: 35px !important;
+    left: auto !important;
+
+    width: 150px !important;
+    height: auto !important;
+
+    margin: 0 !important;
+    transform: none !important;
+
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    overflow: visible !important;
+
+    z-index: 99999998 !important;
+  }
+
+  /* home / calculator / about */
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 150px !important;
+    height: 38px !important;
+    flex: none !important;
+  }
+
+  #navbar.open a,
+  #navbar.open .dropbtn {
+    width: 150px !important;
+    height: 38px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    font-size: 22px !important;
+
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Calculator dropdown list opens to the LEFT */
+  #navbar.open .dropdown {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  #navbar.open .dropdown-content {
+    display: block !important;
+
+    position: absolute !important;
+
+    top: 0 !important;
+    right: 150px !important;
+    left: auto !important;
+    bottom: auto !important;
+
+    width: 180px !important;
+
+    background: white !important;
+
+    border: none !important;
+    box-shadow: none !important;
+
+    overflow: visible !important;
+
+    z-index: 99999999 !important;
+  }
+
+  /* basic / percentage */
+  #navbar.open .dropdown-content > a {
+    width: 180px !important;
+    height: 38px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    padding-left: 10px !important;
+
+    font-size: 22px !important;
+
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* health / finance */
+  #navbar.open .nav-group {
+    width: 180px !important;
+    height: auto !important;
+
+    position: relative !important;
+
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  #navbar.open .nav-group summary {
+    width: 180px !important;
+    height: 38px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    padding-left: 10px !important;
+
+    font-size: 22px !important;
+
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  #navbar.open .nav-group summary::after {
+    content: " ▼" !important;
+    font-size: 16px !important;
+    margin-left: 6px !important;
+  }
+
+  #navbar.open .nav-group[open] summary::after {
+    content: " ▲" !important;
+  }
+
+  /* age / bmi / loan / discount open downward */
+  #navbar.open .nav-group-links {
+    position: static !important;
+
+    width: 180px !important;
+
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  #navbar.open .nav-group-links a {
+    width: 180px !important;
+    height: 34px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    padding-left: 26px !important;
+
+    font-size: 19px !important;
+
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Left-hand mode: open menu from left side */
+  body.left-hand #navbar.open {
+    left: 35px !important;
+    right: auto !important;
+  }
+
+  body.left-hand #navbar.open .dropdown-content {
+    left: 150px !important;
+    right: auto !important;
+  }
+}
