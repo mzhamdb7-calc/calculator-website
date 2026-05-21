@@ -1364,33 +1364,17 @@ body.right-hand #resizeNavigator {
 }
 
 /* =========================
-   KEEP CALCULATOR SAME HEIGHT AS HISTORY / RESULT BAR
+   RESIZE BASIC CALCULATOR ONLY
 ========================= */
 
-/* Side boxes */
-.history,
-.age-history-box,
-.bmi-history-box,
-.discount-history-box {
-  height: 520px;
-  max-height: 520px;
-  overflow-y: auto;
-  overflow-x: hidden;
+.calculator-container {
+  max-width: 1000px;
+  grid-template-columns: 280px 1fr;
 }
 
-/* Calculator boxes beside history/result */
-.calculator-container > .calculator,
-.age-calculator-container > .calculator,
-.bmi-calculator-container > .calculator,
-.discount-calculator-container > .calculator {
-  height: 520px;
-  max-height: 520px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-/* Make basic calculator more compact so it fits better */
 .calculator-container .calculator {
+  max-width: 720px;
+  width: 100%;
   padding: 24px;
 }
 
@@ -1399,41 +1383,48 @@ body.right-hand #resizeNavigator {
 }
 
 .calculator-container .subtitle {
+  font-size: 17px;
   margin-bottom: 18px;
 }
 
 .calculator-container .display-row {
   margin-bottom: 18px;
+  grid-template-columns: 1fr 150px;
 }
 
 .calculator-container #display,
 .calculator-container .ans-btn {
-  height: 65px;
+  height: 62px;
 }
 
-.calculator-container .buttons button {
-  height: 58px;
+.calculator-container #display {
+  font-size: 28px;
+}
+
+.calculator-container .ans-btn {
+  font-size: 22px;
 }
 
 .calculator-container .basic-grid {
   gap: 12px;
 }
 
-/* Mobile: let it fit screen better */
+.calculator-container .buttons button {
+  height: 55px;
+  font-size: 20px;
+}
+
+/* mobile */
 @media (max-width: 850px) {
-  .history,
-  .age-history-box,
-  .bmi-history-box,
-  .discount-history-box {
-    height: auto;
-    max-height: 300px;
+  .calculator-container .calculator {
+    max-width: 100%;
   }
 
-  .calculator-container > .calculator,
-  .age-calculator-container > .calculator,
-  .bmi-calculator-container > .calculator,
-  .discount-calculator-container > .calculator {
-    height: auto;
-    max-height: none;
+  .calculator-container .display-row {
+    grid-template-columns: 1fr 95px;
+  }
+
+  .calculator-container .buttons button {
+    height: 55px;
   }
 }
