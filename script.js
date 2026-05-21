@@ -1537,3 +1537,34 @@ document.addEventListener("DOMContentLoaded", function () {
       );
     });
 });
+/* PHONE: make health/finance open and close correctly in bottom menu */
+document.addEventListener(
+  "click",
+  function (event) {
+    if (!window.matchMedia("(max-width: 850px)").matches) return;
+
+    const summary = event.target.closest(
+      "#navbar .dropdown-content details.nav-group > summary"
+    );
+
+    if (!summary) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    const clickedGroup = summary.parentElement;
+    const wasOpen = clickedGroup.open;
+
+    /* close all health/finance groups first */
+    document
+      .querySelectorAll("#navbar .dropdown-content details.nav-group")
+      .forEach(function (group) {
+        group.open = false;
+      });
+
+    /* if it was closed, open it. if it was open, keep it closed */
+    clickedGroup.open = !wasOpen;
+  },
+  true
+);
