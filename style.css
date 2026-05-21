@@ -7022,3 +7022,97 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group[open] > summary::af
     flex: 1 1 33.333% !important;
   }
 }
+/* PHONE BOTTOM MENU: health/finance submenu opens upward + PC-style arrow */
+@media (max-width: 850px) {
+  /* make health/finance row able to hold upward submenu */
+  #navbar .dropdown-content .nav-group,
+  #navbar.open .dropdown-content .nav-group,
+  body.menu-scrolled #navbar.open .dropdown-content .nav-group {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  /* hide submenu until health/finance is opened */
+  #navbar .dropdown-content .nav-group-links,
+  #navbar.open .dropdown-content .nav-group-links,
+  body.menu-scrolled #navbar.open .dropdown-content .nav-group-links {
+    display: none !important;
+
+    position: absolute !important;
+    left: 0 !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: 100% !important;
+
+    width: 100% !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    z-index: 999999999 !important;
+  }
+
+  /* show age/bmi or loan/discount upward when clicked/opened */
+  #navbar .dropdown-content .nav-group[open] > .nav-group-links,
+  #navbar.open .dropdown-content .nav-group[open] > .nav-group-links,
+  body.menu-scrolled #navbar.open .dropdown-content .nav-group[open] > .nav-group-links {
+    display: block !important;
+  }
+
+  /* submenu link style */
+  #navbar .dropdown-content .nav-group-links a,
+  #navbar.open .dropdown-content .nav-group-links a,
+  body.menu-scrolled #navbar.open .dropdown-content .nav-group-links a {
+    width: 100% !important;
+    height: 42px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border-bottom: 3px solid var(--black) !important;
+
+    font-size: 15px !important;
+    font-weight: bold !important;
+    text-decoration: none !important;
+  }
+
+  #navbar .dropdown-content .nav-group-links a:last-child,
+  #navbar.open .dropdown-content .nav-group-links a:last-child {
+    border-bottom: none !important;
+  }
+
+  /* arrow same as PC mode: down normally */
+  #navbar .dropdown-content .nav-group > summary::after,
+  #navbar.open .dropdown-content .nav-group > summary::after,
+  body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after {
+    content: "▼" !important;
+
+    display: inline-block !important;
+    margin-left: 8px !important;
+
+    color: var(--black) !important;
+    background: transparent !important;
+
+    border: none !important;
+    box-shadow: none !important;
+
+    font-family: Arial, sans-serif !important;
+    font-size: 15px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    transform: none !important;
+  }
+
+  /* arrow changes left when opened */
+  #navbar .dropdown-content .nav-group[open] > summary::after,
+  #navbar.open .dropdown-content .nav-group[open] > summary::after,
+  body.menu-scrolled #navbar.open .dropdown-content .nav-group[open] > summary::after {
+    content: "◀" !important;
+  }
+}
