@@ -5710,3 +5710,84 @@ body.menu-scrolled #menuIcon {
     transform: translateX(-4px) scale(1.08) !important;
   }
 }
+/* INDEX PAGE: stop cards from moving when health/finance expands */
+.calculator-grid {
+  align-items: start !important;
+}
+
+.card,
+.group-card {
+  height: 110px !important;
+  min-height: 110px !important;
+}
+
+/* Keep health/finance card fixed size */
+.group-card {
+  position: relative !important;
+  display: block !important;
+  overflow: visible !important;
+  z-index: 5 !important;
+}
+
+/* Keep only the summary inside the original card size */
+.group-card > summary {
+  height: 110px !important;
+}
+
+/* Dropdown expands outside the card, so it will NOT push other blocks */
+.group-card > .group-links {
+  display: none !important;
+
+  position: absolute !important;
+  top: 100% !important;
+  left: -5px !important;
+  right: auto !important;
+
+  width: calc(100% + 10px) !important;
+
+  background: var(--white) !important;
+  border: 5px solid var(--black) !important;
+  border-top: none !important;
+  box-shadow: 7px 7px 0 var(--black) !important;
+
+  z-index: 9999 !important;
+}
+
+/* Show only the dropdown when health/finance is opened */
+.group-card[open] > .group-links,
+.group-card:hover > .group-links,
+.group-card:focus-within > .group-links {
+  display: block !important;
+}
+
+/* Put opened card above other cards */
+.group-card[open],
+.group-card:hover {
+  z-index: 9999 !important;
+}
+
+/* Dropdown links */
+.group-links a {
+  height: 60px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  border-bottom: 3px solid var(--black) !important;
+
+  font-size: 28px !important;
+  font-weight: bold !important;
+  text-decoration: none !important;
+}
+
+.group-links a:last-child {
+  border-bottom: none !important;
+}
+
+.group-links a:hover {
+  background: var(--yellow) !important;
+}
