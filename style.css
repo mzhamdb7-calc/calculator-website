@@ -2220,3 +2220,82 @@ body.right-hand .scroll-top {
 .nav-group-links a:last-child {
   border-bottom: none !important;
 }
+/* =====================================================
+   PHONE: MOVE BOTTOM CONTROL BAR HIGHER
+===================================================== */
+
+@media (max-width: 850px) {
+
+  /* more space at bottom */
+  body {
+    padding-bottom: 160px !important;
+  }
+
+  /* bottom control bar position */
+  #menuIcon {
+    bottom: 95px !important;
+    top: auto !important;
+    left: 12px !important;
+    right: auto !important;
+  }
+
+  #resizeNavigator {
+    bottom: 95px !important;
+    top: auto !important;
+    left: 68px !important;
+    right: auto !important;
+
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 6px !important;
+  }
+
+  #handToggleBtn {
+    bottom: 95px !important;
+    top: auto !important;
+    right: 64px !important;
+    left: auto !important;
+  }
+
+  #scrollTopBtn,
+  .scroll-top {
+    bottom: 95px !important;
+    top: auto !important;
+    right: 10px !important;
+    left: auto !important;
+  }
+
+  /* keep same position in left-hand mode */
+  body.left-hand #menuIcon {
+    bottom: 95px !important;
+    left: 12px !important;
+    right: auto !important;
+  }
+
+  body.left-hand #resizeNavigator {
+    bottom: 95px !important;
+    left: 68px !important;
+    right: auto !important;
+  }
+
+  body.left-hand #handToggleBtn {
+    bottom: 95px !important;
+    right: 64px !important;
+    left: auto !important;
+  }
+
+  body.left-hand #scrollTopBtn,
+  body.left-hand .scroll-top {
+    bottom: 95px !important;
+    right: 10px !important;
+    left: auto !important;
+  }
+
+  /* hamburger menu opens above the raised bottom bar */
+  #navbar.open {
+    bottom: 150px !important;
+    top: auto !important;
+    left: 12px !important;
+    right: auto !important;
+  }
+}
