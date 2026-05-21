@@ -1546,3 +1546,89 @@ document.addEventListener("DOMContentLoaded", function () {
     true
   );
 })();
+
+/* PHONE FIX: finance closes on second tap */
+(function () {
+  function isPhone() {
+    return window.matchMedia("(max-width: 850px)").matches;
+  }
+
+  function getFinanceGroup() {
+    const groups = document.querySelectorAll(
+      "#navbar .dropdown-content details.nav-group"
+    );
+
+    for (const group of groups) {
+      const summary = group.querySelector(":scope > summary");
+      if (!summary) continue;
+
+      const text = summary.textContent.toLowerCase();
+
+      if (text.includes("finance")) {
+        group.dataset.menu = "finance";
+        return group;
+      }
+    }
+
+    return null;
+  }
+
+  function closeFinance(group) {
+    group.open = false;
+    group.removeAttribute("open");
+    group.dataset.financeOpen = "false";
+    group.classList.remove("open", "active", "phone-sub-open");
+  }
+
+  function openFinance(group) {
+    group.open = true;
+    group.setAttribute("open", "");
+    group.dataset.financeOpen = "true";
+    group.classList.add("open", "active", "phone-sub-open");
+  }
+
+  function toggleFinance(event) {
+    if (!isPhone()) return;
+
+    const summary = event.target.closest(
+      "#navbar .dropdown-content details.nav-group > summary"
+    );
+
+    if (!summary) return;
+
+    const group = summary.parentElement;
+    const text = summary.textContent.toLowerCase();
+
+    if (!text.includes("finance")) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    const isOpen = group.dataset.financeOpen === "true";
+
+    if (isOpen) {
+      closeFinance(group);
+    } else {
+      openFinance(group);
+    }
+
+    setTimeout(function () {
+      if (isOpen) {
+        closeFinance(group);
+      } else {
+        openFinance(group);
+      }
+    }, 50);
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const financeGroup = getFinanceGroup();
+
+    if (financeGroup) {
+      financeGroup.dataset.financeOpen = financeGroup.open ? "true" : "false";
+    }
+  });
+
+  window.addEventListener("click", toggleFinance, true);
+})();
