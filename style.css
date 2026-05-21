@@ -6219,3 +6219,25 @@ body.menu-scrolled #menuIcon {
     zoom: 1 !important;
   }
 }
+/* PHONE: add space between top navbar and page content */
+@media (max-width: 850px) {
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open,
+  body.menu-scrolled #navbar,
+  body.menu-scrolled #navbar.scrolled,
+  body.menu-scrolled #navbar.open {
+    top: 78px !important;
+  }
+
+  .calculator-box,
+  .calculator-container,
+  .age-calculator-container,
+  .bmi-calculator-container,
+  .loan-calculator-container,
+  .discount-calculator-container,
+  .percentage-calculator-container,
+  .about-container {
+    margin-top: 170px !important;
+  }
+}
