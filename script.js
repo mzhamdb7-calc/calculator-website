@@ -1463,47 +1463,27 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
-/* PHONE BOTTOM MENU: allow health/finance to open AND close */
-document.addEventListener("DOMContentLoaded", function () {
-  const navbar = document.getElementById("navbar");
-  if (!navbar) return;
+
+/* PHONE FIX: health/finance dropup opens and closes on second click */
+(function () {
+  let lastHandledSummary = null;
+  let lastHandledTime = 0;
 
   function isPhone() {
     return window.matchMedia("(max-width: 850px)").matches;
   }
 
-  navbar
-    .querySelectorAll(".dropdown-content details.nav-group > summary")
-    .forEach(function (summary) {
-      summary.addEventListener(
-        "click",
-        function (event) {
-          if (!isPhone()) return;
+  function closeAllPhoneGroups() {
+    document
+      .querySelectorAll("#navbar .dropdown-content details.nav-group")
+      .forEach(function (group) {
+        group.open = false;
+        group.classList.remove("open", "active", "phone-sub-open");
+      });
+  }
 
-          event.preventDefault();
-          event.stopPropagation();
-          event.stopImmediatePropagation();
-
-          const currentGroup = summary.parentElement;
-          const wasOpen = currentGroup.open;
-
-          navbar
-            .querySelectorAll(".dropdown-content details.nav-group")
-            .forEach(function (group) {
-              group.open = false;
-            });
-
-          currentGroup.open = !wasOpen;
-        },
-        true
-      );
-    });
-});
-/* PHONE: make health/finance open and close correctly in bottom menu */
-document.addEventListener(
-  "click",
-  function (event) {
-    if (!window.matchMedia("(max-width: 850px)").matches) return;
+  function handlePhoneGroupToggle(event) {
+    if (!isPhone()) return;
 
     const summary = event.target.closest(
       "#navbar .dropdown-content details.nav-group > summary"
@@ -1515,18 +1495,37 @@ document.addEventListener(
     event.stopPropagation();
     event.stopImmediatePropagation();
 
-    const clickedGroup = summary.parentElement;
-    const wasOpen = clickedGroup.open;
+    const group = summary.parentElement;
+    const wasOpen = group.open;
 
-    /* close all health/finance groups first */
-    document
-      .querySelectorAll("#navbar .dropdown-content details.nav-group")
-      .forEach(function (group) {
-        group.open = false;
-      });
+    closeAllPhoneGroups();
 
-    /* if it was closed, open it. if it was open, keep it closed */
-    clickedGroup.open = !wasOpen;
-  },
-  true
-);
+    if (!wasOpen) {
+      group.open = true;
+      group.classList.add("open", "active", "phone-sub-open");
+    }
+
+    lastHandledSummary = summary;
+    lastHandledTime = Date.now();
+  }
+
+  function blockExtraClick(event) {
+    if (!isPhone()) return;
+
+    const summary = event.target.closest(
+      "#navbar .dropdown-content details.nav-group > summary"
+    );
+
+    if (!summary) return;
+
+    if (summary === lastHandledSummary && Date.now() - lastHandledTime < 600) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+    }
+  }
+
+  window.addEventListener("pointerdown", handlePhoneGroupToggle, true);
+  window.addEventListener("touchstart", handlePhoneGroupToggle, true);
+  window.addEventListener("click", blockExtraClick, true);
+})();
