@@ -1,5 +1,5 @@
-let history = [];
-let lastAnswer = 0;
+let calcHistory = JSON.parse(localStorage.getItem("calcHistory")) || [];
+let lastAnswer = Number(localStorage.getItem("lastAnswer")) || 0;
 
 /* ADD VALUE TO DISPLAY */
 
@@ -9,6 +9,10 @@ function add(value) {
 
   const operators = ["+", "-", "*", "/"];
   const lastChar = display.value.slice(-1);
+
+  if (display.value === "Error") {
+    display.value = "";
+  }
 
   if (value === "Ans") {
     display.value += lastAnswer;
@@ -40,9 +44,14 @@ function clearDisplay() {
 
 function removeLast() {
   const display = document.getElementById("display");
-  if (display) {
-    display.value = display.value.slice(0, -1);
+  if (!display) return;
+
+  if (display.value === "Error") {
+    display.value = "";
+    return;
   }
+
+  display.value = display.value.slice(0, -1);
 }
 
 /* SCIENTIFIC FUNCTIONS */
@@ -50,6 +59,10 @@ function removeLast() {
 function addFunction(func) {
   const display = document.getElementById("display");
   if (!display) return;
+
+  if (display.value === "Error") {
+    display.value = "";
+  }
 
   if (func === "sin") {
     display.value += "Math.sin(";
@@ -70,9 +83,13 @@ function addFunction(func) {
 
 function addPower() {
   const display = document.getElementById("display");
-  if (display) {
-    display.value += "**";
+  if (!display) return;
+
+  if (display.value === "Error") {
+    display.value = "";
   }
+
+  display.value += "**";
 }
 
 /* AUTO CLOSE BRACKETS */
@@ -81,7 +98,11 @@ function closeOpenBrackets(expression) {
   const open = (expression.match(/\(/g) || []).length;
   const close = (expression.match(/\)/g) || []).length;
 
-  return expression + ")".repeat(open - close);
+  if (open > close) {
+    return expression + ")".repeat(open - close);
+  }
+
+  return expression;
 }
 
 /* CALCULATE */
@@ -93,7 +114,7 @@ function calculate() {
   try {
     let expression = display.value;
 
-    if (expression.trim() === "") {
+    if (expression.trim() === "" || expression === "Error") {
       return;
     }
 
@@ -101,13 +122,15 @@ function calculate() {
 
     const result = Function('"use strict"; return (' + expression + ')')();
 
-    if (!isFinite(result)) {
+    if (!Number.isFinite(result)) {
       display.value = "Error";
       return;
     }
 
     display.value = result;
+
     lastAnswer = result;
+    localStorage.setItem("lastAnswer", String(lastAnswer));
 
     saveHistory(expression, result);
 
@@ -121,13 +144,28 @@ function calculate() {
 function saveHistory(expression, result) {
   const historyList = document.getElementById("historyList");
 
-  if (!historyList) return;
+  const item = expression + " = " + result;
 
-  history.push(expression + " = " + result);
+  calcHistory.push(item);
+
+  if (calcHistory.length > 50) {
+    calcHistory.shift();
+  }
+
+  localStorage.setItem("calcHistory", JSON.stringify(calcHistory));
+
+  if (historyList) {
+    showHistory();
+  }
+}
+
+function showHistory() {
+  const historyList = document.getElementById("historyList");
+  if (!historyList) return;
 
   historyList.innerHTML = "";
 
-  history.slice().reverse().forEach(function (item) {
+  calcHistory.slice().reverse().forEach(function (item) {
     const li = document.createElement("li");
     li.textContent = item;
     historyList.appendChild(li);
@@ -135,7 +173,8 @@ function saveHistory(expression, result) {
 }
 
 function clearHistory() {
-  history = [];
+  calcHistory = [];
+  localStorage.removeItem("calcHistory");
 
   const historyList = document.getElementById("historyList");
 
@@ -171,7 +210,6 @@ window.addEventListener("scroll", function () {
 
 function toggleMenu() {
   const navbar = document.getElementById("navbar");
-
   if (!navbar) return;
 
   navbar.classList.toggle("open");
@@ -254,10 +292,6 @@ function toggleHandMode() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  createHandToggleButton();
-  loadHandMode();
-});
 /* KEYBOARD SUPPORT FOR BASIC CALCULATOR */
 
 document.addEventListener("keydown", function (event) {
@@ -267,7 +301,7 @@ document.addEventListener("keydown", function (event) {
 
   const key = event.key;
 
-  if (!isNaN(key)) {
+  if (/^[0-9]$/.test(key)) {
     add(key);
     flashButton(key);
     return;
@@ -312,6 +346,7 @@ document.addEventListener("keydown", function (event) {
   }
 
   if (key === "Backspace") {
+    event.preventDefault();
     removeLast();
     flashButton("←");
     return;
@@ -334,15 +369,21 @@ document.addEventListener("keydown", function (event) {
     flashButton("√");
     return;
   }
+
+  if (key.toLowerCase() === "a") {
+    add("Ans");
+    flashButton("ANS");
+    return;
+  }
 });
 
 /* BUTTON FLASH EFFECT */
 
 function flashButton(buttonText) {
-  const buttons = document.querySelectorAll(".buttons button");
+  const buttons = document.querySelectorAll(".buttons button, .ans-btn");
 
   buttons.forEach(function (button) {
-    if (button.textContent.trim() === buttonText) {
+    if (button.textContent.trim().toUpperCase() === buttonText.toUpperCase()) {
       button.classList.add("keyboard-active");
 
       setTimeout(function () {
@@ -351,3 +392,11 @@ function flashButton(buttonText) {
     }
   });
 }
+
+/* PAGE LOAD */
+
+document.addEventListener("DOMContentLoaded", function () {
+  createHandToggleButton();
+  loadHandMode();
+  showHistory();
+});
