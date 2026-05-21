@@ -1107,3 +1107,45 @@ body.right-hand #navbar.open {
     max-height: 300px;
   }
 }
+
+/* BMI UNIT TOGGLE BUTTON */
+
+.bmi-title-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 120px;
+  align-items: start;
+  gap: 10px;
+}
+
+#unitToggleBtn {
+  border: 5px solid black;
+  background: #fff4b8;
+  color: black;
+
+  height: 55px;
+
+  font-size: 20px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  box-shadow: 5px 5px 0 black;
+}
+
+#unitToggleBtn:hover {
+  background: #ffe66d;
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0 black;
+}
+
+@media (max-width: 850px) {
+  .bmi-title-row {
+    grid-template-columns: 1fr;
+  }
+
+  #unitToggleBtn {
+    width: 140px;
+    margin: 0 auto 15px;
+    order: -1;
+  }
+}
