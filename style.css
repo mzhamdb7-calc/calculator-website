@@ -5108,3 +5108,42 @@ body.menu-scrolled #menuIcon {
     background: var(--yellow) !important;
   }
 }
+
+/* PHONE: keep top menu bar inside screen */
+@media (max-width: 850px) {
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open {
+    left: 12px !important;
+    right: 12px !important;
+    width: auto !important;
+    max-width: calc(100vw - 24px) !important;
+
+    transform: none !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 33.333% !important;
+    min-width: 0 !important;
+    flex: 1 1 33.333% !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn,
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    font-size: 16px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .dropdown-content {
+    max-width: calc(100vw - 24px) !important;
+  }
+}
