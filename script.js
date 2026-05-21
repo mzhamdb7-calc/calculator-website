@@ -147,7 +147,7 @@ function calculate() {
 
 
 /* =========================
-   HISTORY
+   HISTORY WITH COPY BUTTON
 ========================= */
 
 function saveHistory(expression, result) {
@@ -171,8 +171,47 @@ function showHistory() {
 
   calcHistory.slice().reverse().forEach(function (item) {
     const li = document.createElement("li");
-    li.textContent = item;
+    li.className = "history-item";
+
+    const text = document.createElement("span");
+    text.className = "history-text";
+    text.textContent = item;
+
+    const copyBtn = document.createElement("button");
+    copyBtn.type = "button";
+    copyBtn.className = "history-copy-btn";
+    copyBtn.textContent = "copy";
+
+    copyBtn.onclick = function () {
+      copyHistoryItem(item, copyBtn);
+    };
+
+    li.appendChild(text);
+    li.appendChild(copyBtn);
     historyList.appendChild(li);
+  });
+}
+
+function copyHistoryItem(text, button) {
+  navigator.clipboard.writeText(text).then(function () {
+    button.textContent = "copied";
+
+    setTimeout(function () {
+      button.textContent = "copy";
+    }, 1000);
+  }).catch(function () {
+    const tempInput = document.createElement("textarea");
+    tempInput.value = text;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempInput);
+
+    button.textContent = "copied";
+
+    setTimeout(function () {
+      button.textContent = "copy";
+    }, 1000);
   });
 }
 
@@ -181,7 +220,10 @@ function clearHistory() {
   localStorage.removeItem("calcHistory");
 
   const historyList = document.getElementById("historyList");
-  if (historyList) historyList.innerHTML = "";
+
+  if (historyList) {
+    historyList.innerHTML = "";
+  }
 }
 
 
