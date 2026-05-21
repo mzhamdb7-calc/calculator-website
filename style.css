@@ -6241,3 +6241,36 @@ body.menu-scrolled #menuIcon {
     margin-top: 170px !important;
   }
 }
+
+/* Make expanded side menu boxes closer side-by-side */
+#navbar.open .dropdown-content,
+body.menu-scrolled #navbar.open .dropdown-content,
+#navbar.scrolled.open .dropdown-content {
+  right: calc(100% - 3px) !important;
+  left: auto !important;
+}
+
+/* Make health / finance expanded box closer */
+#navbar.open .nav-group-links,
+body.menu-scrolled #navbar.open .nav-group-links,
+#navbar.scrolled.open .nav-group-links {
+  right: calc(100% - 3px) !important;
+  left: auto !important;
+}
+
+/* Phone side menu closer too */
+@media (max-width: 850px) {
+  #navbar.open .dropdown-content,
+  body.menu-scrolled #navbar.open .dropdown-content,
+  #navbar.scrolled.open .dropdown-content {
+    right: calc(100% - 3px) !important;
+    left: auto !important;
+  }
+
+  #navbar.open .nav-group-links,
+  body.menu-scrolled #navbar.open .nav-group-links,
+  #navbar.scrolled.open .nav-group-links {
+    right: calc(100% - 3px) !important;
+    left: auto !important;
+  }
+}
