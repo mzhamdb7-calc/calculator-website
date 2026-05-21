@@ -2773,3 +2773,90 @@ body.right-hand .scroll-top {
     right: auto !important;
   }
 }
+/* =====================================================
+   REMOVE SIDE NAVIGATION BUTTONS
+   Keep only the Go Up button on PC and phone
+===================================================== */
+
+/* Hide hamburger/menu button */
+#menuIcon,
+#menuIcon.show {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Hide resize buttons */
+#resizeNavigator {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Hide left/right hand toggle */
+#handToggleBtn {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Keep Go Up button */
+#scrollTopBtn,
+.scroll-top {
+  display: none;
+  position: fixed;
+  right: 22px;
+  bottom: 28px;
+
+  width: 58px;
+  height: 50px;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 5px solid var(--black);
+  background: var(--white);
+  color: var(--black);
+  box-shadow: 5px 5px 0 var(--black);
+
+  font-size: 28px;
+  font-weight: bold;
+
+  cursor: pointer;
+  opacity: 0.7;
+  z-index: 9999999;
+}
+
+#scrollTopBtn:hover,
+.scroll-top:hover {
+  opacity: 1;
+  background: var(--yellow);
+}
+
+/* Phone Go Up button */
+@media (max-width: 850px) {
+  #menuIcon,
+  #menuIcon.show,
+  #resizeNavigator,
+  #handToggleBtn {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  #scrollTopBtn,
+  .scroll-top {
+    right: 14px !important;
+    left: auto !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+
+    width: 46px;
+    height: 44px;
+
+    font-size: 24px;
+  }
+}
+/* Keep normal navbar visible after scroll */
+#navbar.scrolled {
+  display: flex !important;
+}
