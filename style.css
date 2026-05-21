@@ -1735,3 +1735,259 @@ body.right-hand .scroll-top {
 #navbar.open .nav-group[open] > summary {
   border: 2px solid #333;
 }
+
+
+
+/* =========================
+   SCROLLED MENU MATCH 2ND IMAGE
+   Right-side scrolled menu uses the same outlined cartoon boxes
+   as the normal top menu, and the hamburger matches the resize buttons.
+========================= */
+
+@media (min-width: 851px) {
+  /* smaller hamburger, same size family as resize buttons */
+  #menuIcon {
+    top: 22px;
+    right: 22px;
+    width: 52px;
+    height: 48px;
+    border: 4px solid var(--black);
+    box-shadow: 5px 5px 0 var(--black);
+  }
+
+  #menuIcon::before {
+    width: 24px;
+    height: 4px;
+    border-width: 2px;
+    box-shadow:
+      0 -10px 0 #6f7c87,
+      0 -10px 0 2px var(--black),
+      0 10px 0 #6f7c87,
+      0 10px 0 2px var(--black);
+  }
+
+  #menuIcon::after {
+    inset: -4px;
+    box-shadow: none;
+  }
+
+  #menuIcon:hover {
+    transform: translate(2px, 2px);
+    box-shadow:
+      3px 0 0 var(--black),
+      0 3px 0 var(--black),
+      3px 3px 0 var(--black),
+      inset 4px 4px 0 #dfeeff,
+      inset -4px -4px 0 #9fb3c8;
+  }
+
+  /* remove the big black background panel */
+  #navbar.open::before {
+    display: none;
+  }
+
+  /* right-side main menu */
+  #navbar.open {
+    top: 22px;
+    right: 88px;
+    width: 210px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    gap: 0;
+    align-items: stretch;
+  }
+
+  body.left-hand #navbar.open {
+    left: 88px;
+    right: auto;
+  }
+
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 210px;
+    height: 58px;
+    margin: 0;
+  }
+
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    width: 210px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--white);
+    border: 3px solid var(--black);
+    box-shadow: 5px 5px 0 var(--black);
+    color: var(--black);
+    font-size: 28px;
+    font-weight: bold;
+    line-height: 1;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  /* stack items tightly like the reference */
+  #navbar.open > a + a,
+  #navbar.open > a + .dropdown,
+  #navbar.open > .dropdown + a,
+  #navbar.open > .dropdown + .dropdown {
+    margin-top: -1px;
+  }
+
+  /* active calculator box while submenu is visible */
+  #navbar.open > .dropdown > .dropbtn {
+    position: relative;
+    z-index: 3;
+  }
+
+  /* left submenu block */
+  #navbar.open .dropdown {
+    position: relative;
+    overflow: visible;
+  }
+
+  #navbar.open .dropdown-content {
+    display: block;
+    position: absolute;
+    top: 43px;
+    right: 207px;
+    left: auto;
+    width: 245px;
+    background: var(--white);
+    border: 3px solid var(--black);
+    box-shadow: 5px 5px 0 var(--black);
+    overflow: visible;
+    z-index: 5;
+  }
+
+  body.left-hand #navbar.open .dropdown-content {
+    left: 207px;
+    right: auto;
+  }
+
+  #navbar.open .dropdown-content > a,
+  #navbar.open .nav-group,
+  #navbar.open .nav-group > summary {
+    width: 100%;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px;
+    background: var(--white);
+    border: none;
+    border-bottom: 3px solid var(--black);
+    box-shadow: none;
+    color: var(--black);
+    font-size: 22px;
+    font-weight: bold;
+    line-height: 1;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  /* basic = active yellow row */
+  #navbar.open .dropdown-content > a:first-child {
+    background: var(--yellow);
+  }
+
+  #navbar.open .dropdown-content > a:last-child,
+  #navbar.open .nav-group:last-child,
+  #navbar.open .nav-group:last-child > summary {
+    border-bottom: none;
+  }
+
+  #navbar.open .nav-group {
+    position: relative;
+    height: auto;
+    background: var(--white);
+    overflow: visible;
+  }
+
+  #navbar.open .nav-group > summary {
+    cursor: pointer;
+    list-style: none;
+  }
+
+  #navbar.open .nav-group > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  #navbar.open .nav-group > summary::after {
+    content: " ▶";
+    margin-left: 8px;
+    font-size: 16px;
+  }
+
+  #navbar.open .nav-group[open] > summary::after {
+    content: " ▼";
+  }
+
+  #navbar.open .nav-group[open] > summary {
+    border: none;
+    border-bottom: 3px solid var(--black);
+    border-radius: 0;
+  }
+
+  /* finance nested submenu opens to the left with same design language */
+  #navbar.open .nav-group-links {
+    display: none;
+    position: absolute;
+    top: -3px;
+    right: calc(100% + 3px);
+    left: auto;
+    width: 230px;
+    background: var(--white);
+    border: 3px solid var(--black);
+    box-shadow: 5px 5px 0 var(--black);
+    overflow: visible;
+    z-index: 6;
+  }
+
+  body.left-hand #navbar.open .nav-group-links {
+    left: calc(100% + 3px);
+    right: auto;
+  }
+
+  #navbar.open .nav-group[open] .nav-group-links {
+    display: block;
+  }
+
+  #navbar.open .nav-group-links a {
+    width: 100%;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px;
+    background: var(--white);
+    border: none;
+    border-bottom: 3px solid var(--black);
+    box-shadow: none;
+    color: var(--black);
+    font-size: 21px;
+    font-weight: bold;
+    line-height: 1;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  #navbar.open .nav-group-links a:last-child {
+    border-bottom: none;
+  }
+
+  /* keep hover clean */
+  #navbar.open > a:hover,
+  #navbar.open > .dropdown > .dropbtn:hover,
+  #navbar.open .dropdown-content > a:hover,
+  #navbar.open .nav-group > summary:hover,
+  #navbar.open .nav-group-links a:hover {
+    background: var(--soft-yellow);
+  }
+
+  #navbar.open .dropdown-content > a:first-child:hover {
+    background: var(--yellow);
+  }
+}
