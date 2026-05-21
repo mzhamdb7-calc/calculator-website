@@ -2747,3 +2747,173 @@ body.left-hand .scroll-top {
     max-height: 300px;
   }
 }
+
+/* =====================================================
+   FINAL LOAN + RESULT BAR REPAIR
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+/* Include loan page in same calculator layout */
+.calculator-container,
+.age-calculator-container,
+.bmi-calculator-container,
+.discount-calculator-container,
+.loan-calculator-container {
+  max-width: 1180px !important;
+  margin: 130px auto 80px !important;
+  padding: 30px !important;
+
+  display: grid !important;
+  grid-template-columns: 280px 1fr !important;
+  gap: 35px !important;
+  align-items: start !important;
+}
+
+/* Include loan history box with all result/history side boxes */
+.history,
+.age-history-box,
+.bmi-history-box,
+.discount-history-box,
+.loan-history-box {
+  width: 280px !important;
+  min-height: 450px !important;
+  max-height: 520px !important;
+
+  background: #fff4b8 !important;
+  border: 5px solid black !important;
+  box-shadow: 7px 7px 0 black !important;
+
+  padding: 20px !important;
+
+  transform: rotate(-1deg) !important;
+
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Loan history top row */
+.loan-history-top {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 18px !important;
+}
+
+.loan-history-top h3 {
+  font-size: 24px !important;
+}
+
+/* Loan history list */
+#loanHistoryList {
+  list-style: none !important;
+  font-size: 17px !important;
+  line-height: 1.4 !important;
+
+  max-width: 100% !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+}
+
+#loanHistoryList li {
+  max-width: 100% !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+
+  margin-bottom: 12px !important;
+  padding-bottom: 8px !important;
+
+  border-bottom: 3px solid black !important;
+}
+
+/* Loan result same as other result text */
+#loanResult {
+  margin-top: 28px !important;
+  text-align: center !important;
+
+  font-size: 32px !important;
+  line-height: 1.35 !important;
+
+  white-space: pre-line !important;
+}
+
+/* Copy buttons hidden until hover */
+.history-copy-btn,
+.result-copy-btn {
+  opacity: 0 !important;
+  pointer-events: none !important;
+
+  border: 4px solid black !important;
+  background: #ffd3d3 !important;
+
+  padding: 6px 10px !important;
+
+  font-size: 14px !important;
+  font-weight: bold !important;
+
+  cursor: pointer !important;
+
+  box-shadow: 3px 3px 0 black !important;
+}
+
+.history-item:hover .history-copy-btn,
+.result-copy-wrap:hover .result-copy-btn {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+.history-copy-btn:hover,
+.result-copy-btn:hover {
+  background: #ffe66d !important;
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 5px 5px 0 black !important;
+}
+
+/* Make history item layout consistent */
+.history-item {
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  gap: 10px !important;
+  align-items: start !important;
+
+  margin-bottom: 12px !important;
+  padding-bottom: 10px !important;
+
+  border-bottom: 3px solid black !important;
+}
+
+.history-text {
+  font-size: 18px !important;
+  line-height: 1.4 !important;
+
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+}
+
+/* Mobile repair for loan page too */
+@media (max-width: 850px) {
+  .calculator-container,
+  .age-calculator-container,
+  .bmi-calculator-container,
+  .discount-calculator-container,
+  .loan-calculator-container {
+    grid-template-columns: 1fr !important;
+    margin-top: 110px !important;
+    padding: 20px !important;
+  }
+
+  .history,
+  .age-history-box,
+  .bmi-history-box,
+  .discount-history-box,
+  .loan-history-box {
+    width: 100% !important;
+    min-height: auto !important;
+    max-height: 300px !important;
+  }
+
+  .history-copy-btn,
+  .result-copy-btn {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+}
