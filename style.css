@@ -3477,3 +3477,17 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after, #
     background: var(--yellow) !important;
   }
 }
+/* PHONE: finance submenu follows JS open/close state */
+@media (max-width: 850px) {
+  #navbar .dropdown-content details.nav-group[data-menu="finance"] > .nav-group-links {
+    display: none !important;
+  }
+
+  #navbar .dropdown-content details.nav-group[data-menu="finance"][data-finance-open="true"] > .nav-group-links {
+    display: block !important;
+  }
+
+  #navbar .dropdown-content details.nav-group[data-menu="finance"][data-finance-open="true"] > summary {
+    background: var(--yellow) !important;
+  }
+}
