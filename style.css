@@ -2806,3 +2806,183 @@ body.right-hand .scroll-top {
     width: 255px !important;
   }
 }
+
+/* =====================================================
+   FINAL PHONE BUTTON FIX
+   Only show menu button + go-up button.
+   Move them higher above phone browser bar.
+===================================================== */
+
+@media (max-width: 850px) {
+
+  /* Extra bottom space so content is not hidden */
+  body {
+    padding-bottom: 230px !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Hide resize bar: + 100 - */
+  #resizeNavigator {
+    display: none !important;
+  }
+
+  /* Hide orientation button */
+  #handToggleBtn {
+    display: none !important;
+  }
+
+  /* Same height for bottom buttons */
+  :root {
+    --phone-control-bottom: calc(150px + env(safe-area-inset-bottom));
+    --phone-menu-open-bottom: calc(210px + env(safe-area-inset-bottom));
+  }
+
+  /* MENU BUTTON - left side */
+  #menuIcon {
+    position: fixed !important;
+
+    top: auto !important;
+    bottom: var(--phone-control-bottom) !important;
+
+    left: 14px !important;
+    right: auto !important;
+
+    width: 46px !important;
+    height: 44px !important;
+
+    border: 5px solid black !important;
+    background: white !important;
+    color: black !important;
+
+    font-size: 22px !important;
+    font-weight: bold !important;
+
+    display: none;
+    align-items: center !important;
+    justify-content: center !important;
+
+    box-shadow: 5px 5px 0 black !important;
+
+    opacity: 0.55 !important;
+    z-index: 99999999 !important;
+
+    transform: none !important;
+  }
+
+  #menuIcon.show {
+    display: flex !important;
+  }
+
+  /* GO UP BUTTON - right side */
+  #scrollTopBtn,
+  .scroll-top {
+    position: fixed !important;
+
+    top: auto !important;
+    bottom: var(--phone-control-bottom) !important;
+
+    right: 14px !important;
+    left: auto !important;
+
+    width: 46px !important;
+    height: 44px !important;
+
+    border: 5px solid black !important;
+    background: white !important;
+    color: black !important;
+
+    font-size: 24px !important;
+    font-weight: bold !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    box-shadow: 5px 5px 0 black !important;
+
+    opacity: 0.55 !important;
+    z-index: 99999999 !important;
+
+    transform: none !important;
+  }
+
+  #menuIcon:hover,
+  #scrollTopBtn:hover,
+  .scroll-top:hover {
+    opacity: 1 !important;
+  }
+
+  /* Left-hand mode should NOT move phone buttons */
+  body.left-hand #menuIcon {
+    left: 14px !important;
+    right: auto !important;
+    bottom: var(--phone-control-bottom) !important;
+  }
+
+  body.left-hand #scrollTopBtn,
+  body.left-hand .scroll-top {
+    right: 14px !important;
+    left: auto !important;
+    bottom: var(--phone-control-bottom) !important;
+  }
+
+  /* Dropup menu opens above the bottom buttons */
+  #navbar.open {
+    display: flex !important;
+    position: fixed !important;
+
+    top: auto !important;
+    bottom: var(--phone-menu-open-bottom) !important;
+
+    left: 14px !important;
+    right: auto !important;
+
+    width: 255px !important;
+    height: auto !important;
+    max-height: calc(100vh - 260px) !important;
+
+    margin: 0 !important;
+    transform: none !important;
+
+    flex-direction: column !important;
+    overflow-y: auto !important;
+
+    z-index: 99999998 !important;
+  }
+
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 255px !important;
+    height: auto !important;
+    flex: none !important;
+  }
+
+  #navbar.open a,
+  #navbar.open .dropbtn {
+    width: 255px !important;
+    height: 52px !important;
+
+    font-size: 21px !important;
+
+    border-right: none !important;
+    border-bottom: 5px solid black !important;
+  }
+
+  #navbar.open .dropdown-content {
+    position: static !important;
+
+    width: 255px !important;
+    max-height: 220px !important;
+
+    overflow-y: auto !important;
+
+    box-shadow: none !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  body.left-hand #navbar.open {
+    left: 14px !important;
+    right: auto !important;
+    bottom: var(--phone-menu-open-bottom) !important;
+  }
+}
