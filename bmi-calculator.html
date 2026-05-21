@@ -5,7 +5,7 @@
   <title>BMI Calculator</title>
   <link rel="stylesheet" href="style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Calculate your BMI with this free online Body Mass Index calculator.">
+  <meta name="description" content="Calculate BMI and waist-to-height health ratio with this free online BMI calculator.">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
@@ -40,14 +40,28 @@
 
   <button id="menuIcon" onclick="toggleMenu()">☰</button>
 
-  <main class="single-calculator-container">
+  <main class="bmi-calculator-container">
+
+    <section class="bmi-history-box">
+
+      <div class="bmi-history-top">
+        <h3>Result</h3>
+
+        <button type="button" onclick="clearBMIHistory()" class="clear-btn">
+          Clear
+        </button>
+      </div>
+
+      <ul id="bmiHistoryList"></ul>
+
+    </section>
 
     <section class="calculator">
 
       <h1>BMI Calculator</h1>
 
       <p class="subtitle">
-        Check your Body Mass Index.
+        Check your Body Mass Index and waist-to-height health ratio.
       </p>
 
       <label for="weight">Weight in kg:</label>
@@ -55,6 +69,9 @@
 
       <label for="height">Height in cm:</label>
       <input type="number" id="height" placeholder="Example: 170">
+
+      <label for="waist">Waist circumference in cm:</label>
+      <input type="number" id="waist" placeholder="Example: 80">
 
       <button type="button" onclick="calculateBMI()" class="main-btn">
         calculate bmi
@@ -67,37 +84,137 @@
   </main>
 
   <script src="script.js"></script>
-  
+
   <script>
-   
+    let bmiHistory = JSON.parse(localStorage.getItem("bmiHistory")) || [];
 
     function calculateBMI() {
       const weight = Number(document.getElementById("weight").value);
       const heightCm = Number(document.getElementById("height").value);
+      const waistCm = Number(document.getElementById("waist").value);
       const result = document.getElementById("bmiResult");
 
-      if (weight <= 0 || heightCm <= 0) {
-        result.innerText = "Please enter a valid weight and height.";
+      if (weight <= 0 || heightCm <= 0 || waistCm <= 0) {
+        result.innerText = "Please enter valid weight, height, and waist values.";
         return;
       }
 
       const heightM = heightCm / 100;
       const bmi = weight / (heightM * heightM);
+      const waistHeightRatio = waistCm / heightCm;
 
-      let category = "";
+      let bmiCategory = "";
 
       if (bmi < 18.5) {
-        category = "Underweight";
+        bmiCategory = "Underweight";
       } else if (bmi < 25) {
-        category = "Normal weight";
+        bmiCategory = "Healthy BMI";
       } else if (bmi < 30) {
-        category = "Overweight";
+        bmiCategory = "Overweight";
       } else {
-        category = "Obese";
+        bmiCategory = "Obese";
       }
 
-      result.innerText = "Your BMI is " + bmi.toFixed(2) + " — " + category;
+      let waistStatus = "";
+
+      if (waistHeightRatio < 0.5) {
+        waistStatus = "Healthy waist-to-height ratio";
+      } else {
+        waistStatus = "High waist-to-height ratio";
+      }
+
+      const answer =
+        "BMI: " + bmi.toFixed(2) + "\n" +
+        "BMI status: " + bmiCategory + "\n" +
+        "Waist / Height: " + waistHeightRatio.toFixed(2) + "\n" +
+        "Waist status: " + waistStatus;
+
+      result.innerText = answer;
+
+      saveBMIHistory(weight, heightCm, waistCm, answer);
     }
+
+    function saveBMIHistory(weight, height, waist, answer) {
+      const item =
+        "Weight: " + weight + "kg | " +
+        "Height: " + height + "cm | " +
+        "Waist: " + waist + "cm → " +
+        answer.replaceAll("\n", " | ");
+
+      bmiHistory.push(item);
+
+      if (bmiHistory.length > 50) {
+        bmiHistory.shift();
+      }
+
+      localStorage.setItem("bmiHistory", JSON.stringify(bmiHistory));
+
+      showBMIHistory();
+    }
+
+    function showBMIHistory() {
+      const list = document.getElementById("bmiHistoryList");
+
+      if (!list) return;
+
+      list.innerHTML = "";
+
+      bmiHistory.slice().reverse().forEach(function(item) {
+        const li = document.createElement("li");
+        li.className = "history-item";
+
+        const text = document.createElement("span");
+        text.className = "history-text";
+        text.textContent = item;
+
+        const copyBtn = document.createElement("button");
+        copyBtn.type = "button";
+        copyBtn.className = "history-copy-btn";
+        copyBtn.textContent = "copy";
+
+        copyBtn.onclick = function () {
+          copyBMIText(item, copyBtn);
+        };
+
+        li.appendChild(text);
+        li.appendChild(copyBtn);
+
+        list.appendChild(li);
+      });
+    }
+
+    function copyBMIText(text, button) {
+      const tempInput = document.createElement("textarea");
+      tempInput.value = text;
+      tempInput.style.position = "fixed";
+      tempInput.style.left = "-9999px";
+      tempInput.style.top = "-9999px";
+
+      document.body.appendChild(tempInput);
+      tempInput.focus();
+      tempInput.select();
+
+      document.execCommand("copy");
+
+      document.body.removeChild(tempInput);
+
+      button.textContent = "copied";
+
+      setTimeout(function () {
+        button.textContent = "copy";
+      }, 1000);
+    }
+
+    function clearBMIHistory() {
+      bmiHistory = [];
+      localStorage.removeItem("bmiHistory");
+      showBMIHistory();
+
+      const result = document.getElementById("bmiResult");
+      result.innerText = "";
+    }
+
+    document.addEventListener("DOMContentLoaded", showBMIHistory);
   </script>
 
 </body>
