@@ -5108,3 +5108,84 @@ body.menu-scrolled #menuIcon {
     background: var(--yellow) !important;
   }
 }
+/* =====================================================
+   INTERACTIVE DROPDOWN ARROW ON HOVER
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+/* Arrow style */
+#navbar .nav-group > summary::after,
+#navbar.open .nav-group > summary::after,
+body.menu-scrolled #navbar.open .nav-group > summary::after,
+#navbar.scrolled.open .nav-group > summary::after {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: 24px !important;
+  height: 24px !important;
+
+  margin-left: 8px !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  border: 2px solid transparent !important;
+  border-radius: 0 !important;
+
+  font-size: 16px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease,
+    border 0.15s ease,
+    box-shadow 0.15s ease !important;
+}
+
+/* PC side menu arrow points left */
+@media (min-width: 851px) {
+  body.menu-scrolled #navbar.open .nav-group > summary::after,
+  #navbar.scrolled.open .nav-group > summary::after {
+    content: "◀" !important;
+  }
+}
+
+/* Normal top navbar arrow points right */
+#navbar:not(.open) .nav-group > summary::after {
+  content: "▶" !important;
+}
+
+/* Hover effect */
+#navbar .nav-group:hover > summary::after,
+#navbar.open .nav-group:hover > summary::after,
+body.menu-scrolled #navbar.open .nav-group:hover > summary::after,
+#navbar.scrolled.open .nav-group:hover > summary::after {
+  background: var(--black) !important;
+  color: var(--yellow) !important;
+
+  border: 2px solid var(--black) !important;
+  box-shadow: 3px 3px 0 var(--black) !important;
+
+  transform: translateX(-4px) scale(1.1) !important;
+}
+
+/* When opened */
+#navbar .nav-group[open] > summary::after,
+#navbar.open .nav-group[open] > summary::after,
+body.menu-scrolled #navbar.open .nav-group[open] > summary::after,
+#navbar.scrolled.open .nav-group[open] > summary::after {
+  background: var(--black) !important;
+  color: var(--yellow) !important;
+  border: 2px solid var(--black) !important;
+}
+
+/* Make the whole row feel clickable */
+#navbar .nav-group > summary,
+#navbar.open .nav-group > summary,
+body.menu-scrolled #navbar.open .nav-group > summary,
+#navbar.scrolled.open .nav-group > summary {
+  cursor: pointer !important;
+}
