@@ -1149,3 +1149,58 @@ body.right-hand #navbar.open {
     order: -1;
   }
 }
+/* =========================
+   BASIC HISTORY BOX SAME AS RESULT BOXES
+========================= */
+
+.history {
+  min-height: 450px;
+  max-height: 520px;
+
+  background: #fff4b8;
+  border: 5px solid black;
+  box-shadow: 7px 7px 0 black;
+
+  padding: 20px;
+
+  transform: rotate(-1deg);
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.history-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 18px;
+}
+
+.history h3 {
+  font-size: 24px;
+}
+
+#historyList {
+  list-style: none;
+  font-size: 17px;
+  line-height: 1.4;
+
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+#historyList li {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Mobile */
+@media (max-width: 850px) {
+  .history {
+    min-height: auto;
+    max-height: 300px;
+  }
+}
