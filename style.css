@@ -6826,3 +6826,133 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group[open] > summary::af
     transform: none !important;
   }
 }
+/* PHONE: force visible gap between bottom menu and Go Up button */
+@media (max-width: 850px) {
+  /* remove MENU button */
+  #menuIcon,
+  #menuIcon.show,
+  body.menu-scrolled #menuIcon,
+  body.menu-scrolled #menuIcon.show {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  /* Go Up button */
+  #scrollTopBtn,
+  .scroll-top {
+    display: flex !important;
+
+    position: fixed !important;
+    right: 12px !important;
+    left: auto !important;
+    bottom: calc(18px + env(safe-area-inset-bottom)) !important;
+
+    width: 54px !important;
+    height: 54px !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    font-size: 32px !important;
+    font-weight: bold !important;
+
+    opacity: 1 !important;
+    z-index: 9999999 !important;
+  }
+
+  /* Bottom menu bar with real gap before Go Up button */
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open,
+  body.menu-scrolled #navbar,
+  body.menu-scrolled #navbar.scrolled,
+  body.menu-scrolled #navbar.open,
+  body.menu-scrolled #navbar:not(.open) {
+    display: flex !important;
+
+    position: fixed !important;
+    top: auto !important;
+    left: 8px !important;
+    right: auto !important;
+    bottom: calc(18px + env(safe-area-inset-bottom)) !important;
+
+    /* 8px left + 24px gap + 54px GoUp + 12px right = 98px */
+    width: calc(100dvw - 98px) !important;
+    min-width: 0 !important;
+    max-width: calc(100dvw - 98px) !important;
+
+    height: 54px !important;
+
+    flex-direction: row !important;
+    align-items: stretch !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    transform: none !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+
+    z-index: 999999 !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 33.333% !important;
+    min-width: 0 !important;
+    max-width: 33.333% !important;
+
+    height: 54px !important;
+    flex: 1 1 33.333% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn,
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    width: 100% !important;
+    height: 54px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-right: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 15px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+
+    box-sizing: border-box !important;
+  }
+
+  #navbar > a:last-child,
+  #navbar.open > a:last-child {
+    border-right: none !important;
+  }
+}
