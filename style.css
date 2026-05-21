@@ -4255,3 +4255,66 @@ body.menu-scrolled #menuIcon {
     background: var(--yellow) !important;
   }
 }
+/* =====================================================
+   REAL BLACK HOME ICON FOR SIDE MENU BUTTON
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+#menuIcon {
+  background: var(--white) !important;
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
+/* Real black home icon */
+#menuIcon::before {
+  content: "" !important;
+
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+
+  width: 30px !important;
+  height: 30px !important;
+
+  transform: translate(-50%, -50%) !important;
+
+  background: var(--black) !important;
+
+  clip-path: polygon(
+    50% 0%,
+    100% 38%,
+    88% 38%,
+    88% 100%,
+    62% 100%,
+    62% 66%,
+    38% 66%,
+    38% 100%,
+    12% 100%,
+    12% 38%,
+    0% 38%
+  ) !important;
+
+  border: none !important;
+  box-shadow: none !important;
+  z-index: 5 !important;
+}
+
+/* Remove old pixel house body */
+#menuIcon::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Hover */
+#menuIcon:hover {
+  background: var(--yellow) !important;
+}
+
+/* Phone size */
+@media (max-width: 850px) {
+  #menuIcon::before {
+    width: 25px !important;
+    height: 25px !important;
+  }
+}
