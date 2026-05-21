@@ -1464,68 +1464,52 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-/* PHONE FIX: health/finance dropup opens and closes on second click */
+/* PHONE FIX: health/finance click once open, second click close */
 (function () {
-  let lastHandledSummary = null;
-  let lastHandledTime = 0;
-
   function isPhone() {
     return window.matchMedia("(max-width: 850px)").matches;
   }
 
-  function closeAllPhoneGroups() {
+  function closeAllGroups() {
     document
       .querySelectorAll("#navbar .dropdown-content details.nav-group")
       .forEach(function (group) {
         group.open = false;
+        group.removeAttribute("open");
         group.classList.remove("open", "active", "phone-sub-open");
       });
   }
 
-  function handlePhoneGroupToggle(event) {
-    if (!isPhone()) return;
+  window.addEventListener(
+    "click",
+    function (event) {
+      if (!isPhone()) return;
 
-    const summary = event.target.closest(
-      "#navbar .dropdown-content details.nav-group > summary"
-    );
+      const summary = event.target.closest(
+        "#navbar .dropdown-content details.nav-group > summary"
+      );
 
-    if (!summary) return;
+      if (!summary) return;
 
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-
-    const group = summary.parentElement;
-    const wasOpen = group.open;
-
-    closeAllPhoneGroups();
-
-    if (!wasOpen) {
-      group.open = true;
-      group.classList.add("open", "active", "phone-sub-open");
-    }
-
-    lastHandledSummary = summary;
-    lastHandledTime = Date.now();
-  }
-
-  function blockExtraClick(event) {
-    if (!isPhone()) return;
-
-    const summary = event.target.closest(
-      "#navbar .dropdown-content details.nav-group > summary"
-    );
-
-    if (!summary) return;
-
-    if (summary === lastHandledSummary && Date.now() - lastHandledTime < 600) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
-    }
-  }
 
-  window.addEventListener("pointerdown", handlePhoneGroupToggle, true);
-  window.addEventListener("touchstart", handlePhoneGroupToggle, true);
-  window.addEventListener("click", blockExtraClick, true);
+      const group = summary.parentElement;
+      const shouldOpen = !group.open;
+
+      closeAllGroups();
+
+      if (shouldOpen) {
+        group.open = true;
+        group.setAttribute("open", "");
+        group.classList.add("open", "active", "phone-sub-open");
+      } else {
+        group.open = false;
+        group.removeAttribute("open");
+        group.classList.remove("open", "active", "phone-sub-open");
+      }
+    },
+    true
+  );
 })();
