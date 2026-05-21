@@ -3462,3 +3462,18 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after, #
     content: " ◀" !important;
   }
 }
+
+/* PHONE: show health/finance submenu only when JS says open */
+@media (max-width: 850px) {
+  #navbar .dropdown-content details.nav-group > .nav-group-links {
+    display: none !important;
+  }
+
+  #navbar .dropdown-content details.nav-group[data-phone-open="true"] > .nav-group-links {
+    display: block !important;
+  }
+
+  #navbar .dropdown-content details.nav-group[data-phone-open="true"] > summary {
+    background: var(--yellow) !important;
+  }
+}
