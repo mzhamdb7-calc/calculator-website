@@ -841,3 +841,76 @@ body.right-hand #navbar.open {
     max-height: 300px;
   }
 }
+
+/* DISPLAY + ANS BUTTON */
+
+.display-row {
+  display: grid;
+  grid-template-columns: 1fr 180px;
+  gap: 0;
+  margin-bottom: 25px;
+}
+
+.display-row #display {
+  margin-bottom: 0;
+}
+
+.ans-btn {
+  height: 75px;
+  border: 5px solid black;
+  background: #b8ffb8;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 5px 5px 0 black;
+}
+
+.ans-btn:hover {
+  background: #ffe66d;
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0 black;
+}
+
+/* BASIC CALCULATOR FINAL COLORS */
+
+.basic-grid button {
+  background: #d9f7ff;
+}
+
+/* Pink buttons */
+.basic-grid button:nth-child(1),
+.basic-grid button:nth-child(2),
+.basic-grid button:nth-child(3),
+.basic-grid button:nth-child(4),
+.basic-grid button:nth-child(8),
+.basic-grid button:nth-child(12),
+.basic-grid button:nth-child(16),
+.basic-grid button:nth-child(19) {
+  background: #ffd3d3;
+}
+
+/* Zero blue */
+.basic-grid .zero-btn {
+  background: #d9f7ff !important;
+}
+
+/* AC pink */
+.basic-grid .ac-btn {
+  background: #ffd3d3 !important;
+}
+
+/* Equal green */
+.basic-grid button.equal {
+  background: #b8ffb8 !important;
+}
+
+@media (max-width: 850px) {
+  .display-row {
+    grid-template-columns: 1fr 100px;
+  }
+
+  .ans-btn {
+    height: 65px;
+    font-size: 20px;
+  }
+}
