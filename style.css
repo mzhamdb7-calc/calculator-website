@@ -4732,3 +4732,379 @@ body.menu-scrolled #menuIcon {
     right: 140px !important;
   }
 }
+/* =====================================================
+   PC SIDE MENU:
+   MENU button hover -> menu expands left
+   home/calculator/about stack vertically
+   calculator hover -> basic/health/finance/percentage opens left
+   health hover -> age/bmi opens further left
+===================================================== */
+
+@media (min-width: 851px) {
+  /* MENU button */
+  #menuIcon {
+    position: fixed !important;
+    top: 24px !important;
+    right: 24px !important;
+    left: auto !important;
+    bottom: auto !important;
+
+    width: 78px !important;
+    height: 50px !important;
+
+    display: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    border-radius: 0 !important;
+
+    box-shadow:
+      5px 0 0 var(--black),
+      0 5px 0 var(--black),
+      5px 5px 0 var(--black) !important;
+
+    font-size: 0 !important;
+    cursor: pointer !important;
+    opacity: 1 !important;
+
+    z-index: 999999999 !important;
+  }
+
+  #menuIcon::before {
+    content: "MENU" !important;
+
+    position: static !important;
+
+    width: auto !important;
+    height: auto !important;
+
+    display: block !important;
+
+    background: transparent !important;
+    color: var(--black) !important;
+
+    clip-path: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+
+    font-size: 18px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    letter-spacing: 1px !important;
+  }
+
+  #menuIcon::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  #menuIcon:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* Show MENU button only after scroll */
+  #menuIcon.show,
+  body.menu-scrolled #menuIcon {
+    display: flex !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  /* Hide normal top navbar after scroll */
+  body.menu-scrolled #navbar:not(.open),
+  #navbar.scrolled:not(.open) {
+    display: none !important;
+  }
+
+  /* Main menu opens to the LEFT of MENU button */
+  body.menu-scrolled #navbar.open,
+  #navbar.scrolled.open {
+    display: flex !important;
+    position: fixed !important;
+
+    top: 24px !important;
+    right: 116px !important;
+    left: auto !important;
+    bottom: auto !important;
+
+    width: 190px !important;
+    height: auto !important;
+
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+
+    overflow: visible !important;
+    z-index: 999999998 !important;
+  }
+
+  /* home / calculator / about stacked vertically */
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open > .dropdown,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open > .dropdown {
+    width: 190px !important;
+    height: 55px !important;
+
+    flex: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open > .dropdown > .dropbtn,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open > .dropdown > .dropbtn {
+    width: 190px !important;
+    height: 55px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    font-size: 24px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  body.menu-scrolled #navbar.open > a + a,
+  body.menu-scrolled #navbar.open > a + .dropdown,
+  body.menu-scrolled #navbar.open > .dropdown + a,
+  #navbar.scrolled.open > a + a,
+  #navbar.scrolled.open > a + .dropdown,
+  #navbar.scrolled.open > .dropdown + a {
+    margin-top: -3px !important;
+  }
+
+  body.menu-scrolled #navbar.open > a:hover,
+  body.menu-scrolled #navbar.open > .dropdown:hover > .dropbtn,
+  #navbar.scrolled.open > a:hover,
+  #navbar.scrolled.open > .dropdown:hover > .dropbtn {
+    background: var(--yellow) !important;
+  }
+
+  /* Calculator submenu opens to the LEFT, beside the stacked menu */
+  body.menu-scrolled #navbar.open .dropdown-content,
+  #navbar.scrolled.open .dropdown-content {
+    display: none !important;
+
+    position: absolute !important;
+
+    top: 0 !important;
+    right: 190px !important;
+    left: auto !important;
+
+    width: 230px !important;
+    height: auto !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 999999999 !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown:hover > .dropdown-content,
+  body.menu-scrolled #navbar.open .dropdown:focus-within > .dropdown-content,
+  body.menu-scrolled #navbar.open .dropdown.menu-open > .dropdown-content,
+  #navbar.scrolled.open .dropdown:hover > .dropdown-content,
+  #navbar.scrolled.open .dropdown:focus-within > .dropdown-content,
+  #navbar.scrolled.open .dropdown.menu-open > .dropdown-content {
+    display: block !important;
+  }
+
+  /* basic / health / finance / percentage rows */
+  body.menu-scrolled #navbar.open .dropdown-content > a,
+  body.menu-scrolled #navbar.open .dropdown-content > .nav-group,
+  body.menu-scrolled #navbar.open .dropdown-content > .nav-group > summary,
+  #navbar.scrolled.open .dropdown-content > a,
+  #navbar.scrolled.open .dropdown-content > .nav-group,
+  #navbar.scrolled.open .dropdown-content > .nav-group > summary {
+    width: 100% !important;
+    height: 50px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 12px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    font-size: 18px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown-content > *:last-child,
+  body.menu-scrolled #navbar.open .dropdown-content > *:last-child > summary,
+  #navbar.scrolled.open .dropdown-content > *:last-child,
+  #navbar.scrolled.open .dropdown-content > *:last-child > summary {
+    border-bottom: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown-content > a:hover,
+  body.menu-scrolled #navbar.open .dropdown-content > .nav-group:hover > summary,
+  #navbar.scrolled.open .dropdown-content > a:hover,
+  #navbar.scrolled.open .dropdown-content > .nav-group:hover > summary {
+    background: var(--yellow) !important;
+  }
+
+  /* health / finance groups */
+  body.menu-scrolled #navbar.open .nav-group,
+  #navbar.scrolled.open .nav-group {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary,
+  #navbar.scrolled.open .nav-group > summary {
+    cursor: pointer !important;
+    list-style: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary::-webkit-details-marker,
+  #navbar.scrolled.open .nav-group > summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary::marker,
+  #navbar.scrolled.open .nav-group > summary::marker {
+    content: "" !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary::before,
+  #navbar.scrolled.open .nav-group > summary::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary::after,
+  #navbar.scrolled.open .nav-group > summary::after {
+    content: " ◀" !important;
+
+    position: static !important;
+
+    width: auto !important;
+    height: auto !important;
+
+    margin-left: 8px !important;
+
+    background: transparent !important;
+    color: var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 14px !important;
+    line-height: 1 !important;
+  }
+
+  /* age / bmi opens further LEFT beside health */
+  body.menu-scrolled #navbar.open .nav-group-links,
+  #navbar.scrolled.open .nav-group-links {
+    display: none !important;
+
+    position: absolute !important;
+
+    top: -3px !important;
+    right: calc(100% + 3px) !important;
+    left: auto !important;
+
+    width: 170px !important;
+    height: auto !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 999999999 !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group:hover > .nav-group-links,
+  body.menu-scrolled #navbar.open .nav-group:focus-within > .nav-group-links,
+  body.menu-scrolled #navbar.open .nav-group[open] > .nav-group-links,
+  #navbar.scrolled.open .nav-group:hover > .nav-group-links,
+  #navbar.scrolled.open .nav-group:focus-within > .nav-group-links,
+  #navbar.scrolled.open .nav-group[open] > .nav-group-links {
+    display: block !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group-links a,
+  #navbar.scrolled.open .nav-group-links a {
+    width: 100% !important;
+    height: 47px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 10px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 17px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group-links a:last-child,
+  #navbar.scrolled.open .nav-group-links a:last-child {
+    border-bottom: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group-links a:hover,
+  #navbar.scrolled.open .nav-group-links a:hover {
+    background: var(--yellow) !important;
+  }
+}
