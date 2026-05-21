@@ -677,7 +677,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 let pageZoom = Number(localStorage.getItem("pageZoom")) || 1;
 
-/* Do not allow bigger than 100% */
 if (pageZoom > 1) {
   pageZoom = 1;
 }
@@ -713,15 +712,16 @@ function createResizeNavigator() {
 }
 
 function applyPageZoom() {
-  if (pageZoom > 1) {
-    pageZoom = 1;
-  }
+  if (pageZoom > 1) pageZoom = 1;
+  if (pageZoom < 0.6) pageZoom = 0.6;
 
-  if (pageZoom < 0.6) {
-    pageZoom = 0.6;
-  }
+  const pageParts = document.querySelectorAll(
+    "#navbar, main, .calculator-box, .about-container"
+  );
 
-  document.body.style.zoom = pageZoom;
+  pageParts.forEach(function (part) {
+    part.style.zoom = pageZoom;
+  });
 
   const resetBtn = document.querySelector("#resizeNavigator button:nth-child(2)");
 

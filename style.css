@@ -2518,3 +2518,143 @@ body.right-hand .scroll-top {
     pointer-events: auto !important;
   }
 }
+/* =========================
+   FINAL SIDE BUTTON POSITION FIX
+========================= */
+
+#menuIcon {
+  position: fixed !important;
+  top: 18px !important;
+  right: 22px !important;
+
+  width: 50px !important;
+  height: 48px !important;
+
+  z-index: 9999999 !important;
+}
+
+#resizeNavigator {
+  position: fixed !important;
+  right: 22px !important;
+  top: 235px !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+
+  z-index: 9999999 !important;
+
+  zoom: 1 !important;
+  transform: none !important;
+}
+
+#resizeNavigator button {
+  width: 52px !important;
+  height: 48px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  border: 5px solid black !important;
+  background: white !important;
+  color: black !important;
+
+  font-size: 18px !important;
+  font-weight: bold !important;
+
+  box-shadow: 5px 5px 0 black !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  transform: none !important;
+}
+
+#handToggleBtn {
+  position: fixed !important;
+  right: 22px !important;
+  bottom: 120px !important;
+  top: auto !important;
+
+  width: 58px !important;
+  height: 50px !important;
+
+  zoom: 1 !important;
+  transform: none !important;
+
+  z-index: 9999999 !important;
+}
+
+#scrollTopBtn,
+.scroll-top {
+  position: fixed !important;
+  right: 22px !important;
+  bottom: 28px !important;
+
+  width: 58px !important;
+  height: 50px !important;
+
+  zoom: 1 !important;
+  transform: none !important;
+
+  z-index: 9999999 !important;
+}
+
+/* LEFT HAND MODE */
+
+body.left-hand #menuIcon,
+body.left-hand #resizeNavigator,
+body.left-hand #handToggleBtn,
+body.left-hand #scrollTopBtn,
+body.left-hand .scroll-top {
+  left: 22px !important;
+  right: auto !important;
+}
+
+/* MOBILE */
+
+@media (max-width: 850px) {
+  #menuIcon {
+    top: 16px !important;
+    right: 16px !important;
+    width: 46px !important;
+    height: 44px !important;
+  }
+
+  #resizeNavigator {
+    right: 16px !important;
+    top: 210px !important;
+    gap: 12px !important;
+  }
+
+  #resizeNavigator button {
+    width: 48px !important;
+    height: 44px !important;
+    font-size: 17px !important;
+  }
+
+  #handToggleBtn {
+    right: 16px !important;
+    bottom: 100px !important;
+    width: 52px !important;
+    height: 46px !important;
+  }
+
+  #scrollTopBtn,
+  .scroll-top {
+    right: 16px !important;
+    bottom: 22px !important;
+    width: 52px !important;
+    height: 46px !important;
+  }
+
+  body.left-hand #menuIcon,
+  body.left-hand #resizeNavigator,
+  body.left-hand #handToggleBtn,
+  body.left-hand #scrollTopBtn,
+  body.left-hand .scroll-top {
+    left: 16px !important;
+    right: auto !important;
+  }
+}
