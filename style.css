@@ -2987,3 +2987,525 @@ body.right-hand .scroll-top {
     box-shadow: none !important;
   }
 }
+
+/* =====================================================
+   FINAL NAVBAR REPAIR
+   1. Remove side buttons except Go Up
+   2. Keep normal navbar visible after scroll
+   3. Force lines between every dropdown menu row
+   4. Fix missing line between basic and health
+===================================================== */
+
+/* =========================
+   REMOVE SIDE NAV BUTTONS
+========================= */
+
+#menuIcon,
+#menuIcon.show,
+#resizeNavigator,
+#handToggleBtn {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Keep only Go Up button */
+#scrollTopBtn,
+.scroll-top {
+  display: none;
+  position: fixed !important;
+  right: 22px !important;
+  left: auto !important;
+  bottom: 28px !important;
+
+  width: 58px !important;
+  height: 50px !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+
+  border: 5px solid var(--black) !important;
+  background: var(--white) !important;
+  color: var(--black) !important;
+  box-shadow: 5px 5px 0 var(--black) !important;
+
+  font-size: 28px !important;
+  font-weight: bold !important;
+
+  cursor: pointer !important;
+  opacity: 0.7 !important;
+  z-index: 9999999 !important;
+}
+
+#scrollTopBtn:hover,
+.scroll-top:hover {
+  opacity: 1 !important;
+  background: var(--yellow) !important;
+}
+
+/* =========================
+   KEEP NORMAL NAVBAR
+========================= */
+
+#navbar,
+#navbar.scrolled,
+#navbar.open {
+  display: flex !important;
+  position: fixed !important;
+
+  top: 25px !important;
+  left: 50% !important;
+  right: auto !important;
+
+  width: 720px !important;
+  height: 65px !important;
+
+  flex-direction: row !important;
+  align-items: stretch !important;
+
+  background: var(--white) !important;
+  border: 3px solid var(--black) !important;
+  box-shadow: var(--shadow) !important;
+
+  overflow: visible !important;
+  transform: translateX(-50%) rotate(-1deg) !important;
+
+  z-index: 999999 !important;
+}
+
+#navbar::before,
+#navbar.open::before {
+  display: none !important;
+  content: none !important;
+}
+
+#navbar > a,
+#navbar > .dropdown,
+#navbar.open > a,
+#navbar.open > .dropdown {
+  width: 240px !important;
+  height: 65px !important;
+  flex: 0 0 240px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#navbar > a,
+#navbar .dropbtn,
+#navbar.open > a,
+#navbar.open .dropbtn {
+  width: 100% !important;
+  height: 65px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 0 !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  border: none !important;
+  border-right: 3px solid var(--black) !important;
+  box-shadow: none !important;
+
+  font-size: 26px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+
+  text-align: center !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+}
+
+#navbar > a:last-child,
+#navbar.open > a:last-child {
+  border-right: none !important;
+}
+
+#navbar > a:hover,
+#navbar .dropbtn:hover,
+#navbar .dropdown:hover > .dropbtn {
+  background: var(--yellow) !important;
+}
+
+/* =========================
+   MAIN DROPDOWN BOX
+========================= */
+
+#navbar .dropdown,
+#navbar.open .dropdown {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+#navbar .dropdown-content,
+#navbar.open .dropdown-content {
+  display: none !important;
+
+  position: absolute !important;
+  top: 62px !important;
+  left: -3px !important;
+  right: auto !important;
+
+  width: 250px !important;
+  max-height: none !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  background: var(--white) !important;
+  border: 3px solid var(--black) !important;
+  border-radius: 0 !important;
+  box-shadow: 5px 5px 0 var(--black) !important;
+
+  overflow: visible !important;
+  z-index: 9999999 !important;
+}
+
+#navbar .dropdown:hover > .dropdown-content,
+#navbar .dropdown:focus-within > .dropdown-content,
+#navbar.open .dropdown:hover > .dropdown-content,
+#navbar.open .dropdown:focus-within > .dropdown-content {
+  display: block !important;
+}
+
+/* =========================
+   FORCE LINE ON EVERY DROPDOWN ROW
+========================= */
+
+#navbar .dropdown-content > *,
+#navbar.open .dropdown-content > * {
+  position: relative !important;
+  width: 100% !important;
+  height: 50px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  background: var(--white) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Every row content */
+#navbar .dropdown-content > a,
+#navbar .dropdown-content > .nav-group > summary,
+#navbar.open .dropdown-content > a,
+#navbar.open .dropdown-content > .nav-group > summary {
+  width: 100% !important;
+  height: 50px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  margin: 0 !important;
+  padding: 0 10px !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  border: none !important;
+  box-shadow: none !important;
+
+  font-size: 20px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+
+  text-align: center !important;
+  text-decoration: none !important;
+}
+
+/* THIS is the important part:
+   creates the line between basic and health, and every row after */
+#navbar .dropdown-content > *:not(:last-child)::after,
+#navbar.open .dropdown-content > *:not(:last-child)::after {
+  content: "" !important;
+
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+
+  height: 3px !important;
+  background: var(--black) !important;
+
+  z-index: 99999999 !important;
+  pointer-events: none !important;
+}
+
+/* Hover yellow for all main dropdown rows */
+#navbar .dropdown-content > a:hover,
+#navbar .dropdown-content > .nav-group:hover > summary,
+#navbar.open .dropdown-content > a:hover,
+#navbar.open .dropdown-content > .nav-group:hover > summary {
+  background: var(--yellow) !important;
+}
+
+/* =========================
+   HEALTH / FINANCE GROUPS
+========================= */
+
+#navbar .nav-group,
+#navbar.open .nav-group {
+  position: relative !important;
+  height: 50px !important;
+  overflow: visible !important;
+
+  background: var(--white) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#navbar .nav-group > summary,
+#navbar.open .nav-group > summary {
+  cursor: pointer !important;
+  list-style: none !important;
+}
+
+#navbar .nav-group > summary::-webkit-details-marker,
+#navbar.open .nav-group > summary::-webkit-details-marker {
+  display: none !important;
+}
+
+#navbar .nav-group > summary::marker,
+#navbar.open .nav-group > summary::marker {
+  content: "" !important;
+}
+
+/* Remove broken extra pseudo lines */
+#navbar .nav-group > summary::before,
+#navbar.open .nav-group > summary::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* Arrow */
+#navbar .nav-group > summary::after,
+#navbar.open .nav-group > summary::after {
+  content: " ▶" !important;
+  position: static !important;
+
+  width: auto !important;
+  height: auto !important;
+
+  margin-left: 6px !important;
+
+  background: transparent !important;
+  color: var(--black) !important;
+  box-shadow: none !important;
+
+  font-size: 14px !important;
+  line-height: 1 !important;
+}
+
+#navbar .nav-group[open] > summary::after,
+#navbar.open .nav-group[open] > summary::after {
+  content: " ▼" !important;
+}
+
+/* =========================
+   SIDE SUBMENUS: AGE/BMI, LOAN/DISCOUNT
+========================= */
+
+#navbar .nav-group-links,
+#navbar.open .nav-group-links {
+  display: none !important;
+
+  position: absolute !important;
+  top: -3px !important;
+  left: 100% !important;
+  right: auto !important;
+
+  width: 180px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  background: var(--white) !important;
+  border: 3px solid var(--black) !important;
+  border-radius: 0 !important;
+  box-shadow: 5px 5px 0 var(--black) !important;
+
+  overflow: visible !important;
+  z-index: 99999999 !important;
+}
+
+#navbar .nav-group[open] .nav-group-links,
+#navbar.open .nav-group[open] .nav-group-links {
+  display: block !important;
+}
+
+#navbar .nav-group-links a,
+#navbar.open .nav-group-links a {
+  position: relative !important;
+
+  width: 100% !important;
+  height: 50px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  margin: 0 !important;
+  padding: 0 10px !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  border: none !important;
+  box-shadow: none !important;
+
+  font-size: 18px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+
+  text-align: center !important;
+  text-decoration: none !important;
+}
+
+/* Lines inside age/bmi or loan/discount submenu */
+#navbar .nav-group-links a:not(:last-child)::after,
+#navbar.open .nav-group-links a:not(:last-child)::after {
+  content: "" !important;
+
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+
+  height: 3px !important;
+  background: var(--black) !important;
+
+  z-index: 99999999 !important;
+  pointer-events: none !important;
+}
+
+#navbar .nav-group-links a:hover,
+#navbar.open .nav-group-links a:hover {
+  background: var(--yellow) !important;
+}
+
+/* =========================
+   INDEX PAGE CARD DROPDOWN LINES
+========================= */
+
+.group-links {
+  border-top: 3px solid var(--black) !important;
+}
+
+.group-links a {
+  position: relative !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+.group-links a:not(:last-child)::after {
+  content: "" !important;
+
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+
+  height: 3px !important;
+  background: var(--black) !important;
+
+  pointer-events: none !important;
+}
+
+/* =========================
+   PHONE VERSION
+========================= */
+
+@media (max-width: 850px) {
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open {
+    top: 78px !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+
+    width: 95% !important;
+    height: 58px !important;
+
+    flex-direction: row !important;
+
+    transform: translateX(-50%) rotate(-1deg) !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 33.33% !important;
+    height: 58px !important;
+    flex: 0 0 33.33% !important;
+  }
+
+  #navbar > a,
+  #navbar .dropbtn,
+  #navbar.open > a,
+  #navbar.open .dropbtn {
+    height: 58px !important;
+    font-size: 18px !important;
+  }
+
+  #navbar .dropdown-content,
+  #navbar.open .dropdown-content {
+    top: 55px !important;
+    left: -3px !important;
+    right: auto !important;
+
+    width: 220px !important;
+  }
+
+  #navbar .dropdown-content > *,
+  #navbar.open .dropdown-content > * {
+    height: 46px !important;
+  }
+
+  #navbar .dropdown-content > a,
+  #navbar .dropdown-content > .nav-group > summary,
+  #navbar.open .dropdown-content > a,
+  #navbar.open .dropdown-content > .nav-group > summary {
+    height: 46px !important;
+    font-size: 17px !important;
+  }
+
+  #navbar .nav-group,
+  #navbar.open .nav-group {
+    height: auto !important;
+  }
+
+  #navbar .nav-group-links,
+  #navbar.open .nav-group-links {
+    position: static !important;
+    width: 100% !important;
+
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    box-shadow: none !important;
+  }
+
+  #navbar .nav-group-links a,
+  #navbar.open .nav-group-links a {
+    height: 42px !important;
+    font-size: 16px !important;
+  }
+
+  #scrollTopBtn,
+  .scroll-top {
+    right: 14px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+
+    width: 46px !important;
+    height: 44px !important;
+
+    font-size: 24px !important;
+  }
+}
