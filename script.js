@@ -540,3 +540,133 @@ function copyHistoryItem(text, button) {
 document.addEventListener("DOMContentLoaded", function () {
   showHistory();
 });
+
+/* =========================
+   COPY BUTTONS FOR ALL RESULTS + HISTORY
+========================= */
+
+const resultIds = [
+  "result",
+  "bmiResult",
+  "loanResult",
+  "discountResult",
+  "percentageResult"
+];
+
+function copyText(text, button) {
+  if (!text || text.trim() === "") return;
+
+  const tempInput = document.createElement("textarea");
+  tempInput.value = text;
+  tempInput.style.position = "fixed";
+  tempInput.style.left = "-9999px";
+  tempInput.style.top = "-9999px";
+
+  document.body.appendChild(tempInput);
+  tempInput.focus();
+  tempInput.select();
+
+  try {
+    document.execCommand("copy");
+    button.textContent = "Copied";
+  } catch {
+    button.textContent = "Failed";
+  }
+
+  document.body.removeChild(tempInput);
+
+  setTimeout(function () {
+    button.textContent = "Copy";
+  }, 1000);
+}
+
+/* Add copy button beside result text */
+function setupResultCopyButtons() {
+  resultIds.forEach(function (id) {
+    const resultElement = document.getElementById(id);
+
+    if (!resultElement) return;
+    if (resultElement.parentElement.classList.contains("result-copy-wrap")) return;
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "result-copy-wrap";
+
+    resultElement.parentNode.insertBefore(wrapper, resultElement);
+    wrapper.appendChild(resultElement);
+
+    const copyBtn = document.createElement("button");
+    copyBtn.type = "button";
+    copyBtn.className = "result-copy-btn";
+    copyBtn.textContent = "Copy";
+
+    copyBtn.onclick = function () {
+      copyText(resultElement.innerText, copyBtn);
+    };
+
+    wrapper.appendChild(copyBtn);
+  });
+}
+
+/* Add copy button to history/result list items */
+function setupHistoryCopyButtons() {
+  const lists = [
+    document.getElementById("historyList"),
+    document.getElementById("ageHistoryList")
+  ];
+
+  lists.forEach(function (list) {
+    if (!list) return;
+
+    list.querySelectorAll("li").forEach(function (li) {
+      if (li.querySelector(".history-copy-btn")) return;
+
+      const originalText = li.innerText;
+
+      li.innerHTML = "";
+      li.classList.add("history-item");
+
+      const textSpan = document.createElement("span");
+      textSpan.className = "history-text";
+      textSpan.textContent = originalText;
+
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "history-copy-btn";
+      copyBtn.textContent = "Copy";
+
+      copyBtn.onclick = function () {
+        copyText(textSpan.innerText, copyBtn);
+      };
+
+      li.appendChild(textSpan);
+      li.appendChild(copyBtn);
+    });
+  });
+}
+
+/* Watch history lists because new results are added after calculation */
+function watchCopyButtons() {
+  const targets = [
+    document.getElementById("historyList"),
+    document.getElementById("ageHistoryList")
+  ];
+
+  targets.forEach(function (target) {
+    if (!target) return;
+
+    const observer = new MutationObserver(function () {
+      setupHistoryCopyButtons();
+    });
+
+    observer.observe(target, {
+      childList: true,
+      subtree: true
+    });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  setupResultCopyButtons();
+  setupHistoryCopyButtons();
+  watchCopyButtons();
+});
