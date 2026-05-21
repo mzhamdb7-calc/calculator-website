@@ -428,8 +428,7 @@
 
     navbar.classList.remove("open");
 
-    if (window.scrollY > 90) {
-      document.body.classList.add("menu-scrolled");
+    if (window.scrollY > 80) {
       navbar.classList.add("scrolled");
     }
   }
@@ -439,15 +438,11 @@
     const menuIcon = document.getElementById("menuIcon");
     const scrollBtn = document.getElementById("scrollTopBtn");
 
-    const isScrolled = window.scrollY > 90;
-
     if (navbar) {
-      if (isScrolled) {
-        document.body.classList.add("menu-scrolled");
+      if (window.scrollY > 80) {
         navbar.classList.add("scrolled");
         if (menuIcon) menuIcon.classList.add("show");
       } else {
-        document.body.classList.remove("menu-scrolled");
         navbar.classList.remove("scrolled", "open");
         if (menuIcon) menuIcon.classList.remove("show");
       }
@@ -458,28 +453,17 @@
     }
   }
 
-  function openMenu() {
-    const navbar = document.getElementById("navbar");
-    const menuIcon = document.getElementById("menuIcon");
-
-    if (!navbar || window.scrollY <= 90) return;
-
-    document.body.classList.add("menu-scrolled");
-    navbar.classList.add("scrolled", "open");
-    if (menuIcon) menuIcon.classList.add("show");
-  }
-
   function toggleMenu() {
     const navbar = document.getElementById("navbar");
-    const menuIcon = document.getElementById("menuIcon");
+    if (!navbar) return;
 
-    if (!navbar || window.scrollY <= 90) return;
+    const isOpen = navbar.classList.toggle("open");
 
-    document.body.classList.add("menu-scrolled");
-    navbar.classList.add("scrolled");
-    if (menuIcon) menuIcon.classList.add("show");
-
-    navbar.classList.toggle("open");
+    if (isOpen) {
+      navbar.classList.remove("scrolled");
+    } else if (window.scrollY > 80) {
+      navbar.classList.add("scrolled");
+    }
   }
 
   function scrollToTop() {
@@ -490,55 +474,16 @@
   }
 
   function setupNavbarEvents() {
-    const navbar = document.getElementById("navbar");
-    const menuIcon = document.getElementById("menuIcon");
-    let closeTimer;
-
     window.addEventListener("scroll", updateNavbarOnScroll, { passive: true });
 
-    if (navbar && menuIcon) {
-      menuIcon.addEventListener("mouseenter", function () {
-        clearTimeout(closeTimer);
-        openMenu();
-      });
-
-      menuIcon.addEventListener("mouseleave", function () {
-        clearTimeout(closeTimer);
-        closeTimer = setTimeout(function () {
-          if (!navbar.matches(":hover") && !menuIcon.matches(":hover")) {
-            navbar.classList.remove("open");
-          }
-        }, 180);
-      });
-
-      navbar.addEventListener("mouseenter", function () {
-        clearTimeout(closeTimer);
-      });
-
-      navbar.addEventListener("mouseleave", function () {
-        clearTimeout(closeTimer);
-        closeTimer = setTimeout(function () {
-          if (!navbar.matches(":hover") && !menuIcon.matches(":hover")) {
-            navbar.classList.remove("open");
-          }
-        }, 180);
-      });
-
-      menuIcon.addEventListener("click", function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        toggleMenu();
-      });
-    }
-
     document.addEventListener("click", function (event) {
-      const currentNavbar = document.getElementById("navbar");
-      const currentMenuIcon = document.getElementById("menuIcon");
+      const navbar = document.getElementById("navbar");
+      const menuIcon = document.getElementById("menuIcon");
 
-      if (!currentNavbar) return;
+      if (!navbar) return;
 
-      const clickedNavbar = currentNavbar.contains(event.target);
-      const clickedMenuIcon = currentMenuIcon && currentMenuIcon.contains(event.target);
+      const clickedNavbar = navbar.contains(event.target);
+      const clickedMenuIcon = menuIcon && menuIcon.contains(event.target);
 
       if (!clickedNavbar && !clickedMenuIcon) {
         closeNavbar();
@@ -710,26 +655,6 @@
       if (group.dataset.dropdownReady === "true") return;
       group.dataset.dropdownReady = "true";
 
-      group.addEventListener("mouseenter", function () {
-        openDropdown(group);
-      });
-
-      group.addEventListener("mouseleave", function () {
-        closeDropdown(group);
-      });
-
-      group.addEventListener("focusin", function () {
-        openDropdown(group);
-      });
-
-      group.addEventListener("focusout", function () {
-        setTimeout(function () {
-          if (!group.contains(document.activeElement)) {
-            closeDropdown(group);
-          }
-        }, 100);
-      });
-
       if (isDetails(group)) {
         group.addEventListener("toggle", function () {
           if (group.open) openDropdown(group);
@@ -740,7 +665,8 @@
       const trigger = $("summary, button, .nav-link, a", group) || group;
 
       trigger.addEventListener("click", function (event) {
-        const hasSubmenu = !!$(".nav-group-links, .group-links, .dropdown, .dropdown-menu, .submenu, ul", group);
+        // Let normal links work when the group has no submenu.
+        const hasSubmenu = !!$(".dropdown, .dropdown-menu, .submenu, ul", group);
         if (!hasSubmenu) return;
 
         event.preventDefault();
@@ -870,11 +796,13 @@
   ========================= */
 
   function init() {
+    createHandToggleButton();
     applyHandMode();
     showHistory();
     setupResultCopyButtons();
     setupHistoryCopyButtons();
     watchCopyButtons();
+    createResizeNavigator();
     setupDropdowns();
     setupNavbarEvents();
     setupKeyboardSupport();
@@ -904,7 +832,6 @@
   window.copyText = copyText;
   window.clearHistory = clearHistory;
   window.toggleMenu = toggleMenu;
-  window.openMenu = openMenu;
   window.scrollToTop = scrollToTop;
   window.createHandToggleButton = createHandToggleButton;
   window.loadHandMode = loadHandMode;
@@ -921,3 +848,467 @@
   window.resetPageZoom = resetPageZoom;
   window.setupDropdowns = setupDropdowns;
 })();
+
+
+/* =========================
+   PC SIDE MENU CLICK EXPAND
+   Click the Calculator button to open/close its side submenu.
+   Hover still works from CSS.
+========================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  if (!navbar) return;
+
+  const calculatorDropdown = navbar.querySelector(":scope > .dropdown");
+  if (!calculatorDropdown) return;
+
+  const calculatorButton = calculatorDropdown.querySelector(".dropbtn");
+  if (!calculatorButton) return;
+
+  function isPcSideMenu() {
+    return window.matchMedia("(min-width: 851px)").matches &&
+      navbar.classList.contains("open");
+  }
+
+  calculatorButton.addEventListener("click", function (event) {
+    if (!isPcSideMenu()) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    calculatorDropdown.classList.toggle("menu-open");
+  });
+
+  document.addEventListener("click", function (event) {
+    if (!calculatorDropdown.contains(event.target)) {
+      calculatorDropdown.classList.remove("menu-open");
+    }
+  });
+
+  window.addEventListener("resize", function () {
+    calculatorDropdown.classList.remove("menu-open");
+  });
+});
+
+/* =========================
+   PC SIDE MENU CLICK EXPAND
+========================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  if (!navbar) return;
+
+  const calculatorDropdown = navbar.querySelector(":scope > .dropdown");
+  if (!calculatorDropdown) return;
+
+  const calculatorButton = calculatorDropdown.querySelector(".dropbtn");
+  if (!calculatorButton) return;
+
+  function isPcSideMenu() {
+    return window.matchMedia("(min-width: 851px)").matches &&
+      navbar.classList.contains("open");
+  }
+
+  calculatorButton.addEventListener("click", function (event) {
+    if (!isPcSideMenu()) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    calculatorDropdown.classList.toggle("menu-open");
+  });
+
+  document.addEventListener("click", function (event) {
+    if (!calculatorDropdown.contains(event.target)) {
+      calculatorDropdown.classList.remove("menu-open");
+    }
+  });
+
+  window.addEventListener("resize", function () {
+    calculatorDropdown.classList.remove("menu-open");
+  });
+});
+
+/* =====================================================
+   TOP NAVBAR CHANGES TO MENU ICON ON SCROLL
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!navbar || !menuIcon) return;
+
+  function updateScrolledMenu() {
+    if (window.scrollY > 90) {
+      document.body.classList.add("menu-scrolled");
+      navbar.classList.add("scrolled");
+      menuIcon.classList.add("show");
+    } else {
+      document.body.classList.remove("menu-scrolled");
+      navbar.classList.remove("scrolled");
+      navbar.classList.remove("open");
+      menuIcon.classList.remove("show");
+    }
+  }
+
+  window.toggleMenu = function () {
+    if (!document.body.classList.contains("menu-scrolled")) return;
+    navbar.classList.toggle("open");
+  };
+
+  menuIcon.addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+    window.toggleMenu();
+  });
+
+  document.addEventListener("click", function (event) {
+    if (
+      document.body.classList.contains("menu-scrolled") &&
+      !navbar.contains(event.target) &&
+      !menuIcon.contains(event.target)
+    ) {
+      navbar.classList.remove("open");
+    }
+  });
+
+  window.addEventListener("scroll", updateScrolledMenu);
+  updateScrolledMenu();
+});
+
+/* =====================================================
+   OPEN ALL DETAILS DROPDOWNS ON HOVER
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const hoverDropdowns = document.querySelectorAll(".nav-group, .group-card");
+
+  hoverDropdowns.forEach(function (dropdown) {
+    dropdown.addEventListener("mouseenter", function () {
+      dropdown.open = true;
+    });
+
+    dropdown.addEventListener("mouseleave", function () {
+      dropdown.open = false;
+    });
+
+    dropdown.addEventListener("focusin", function () {
+      dropdown.open = true;
+    });
+
+    dropdown.addEventListener("focusout", function () {
+      setTimeout(function () {
+        if (!dropdown.contains(document.activeElement)) {
+          dropdown.open = false;
+        }
+      }, 100);
+    });
+  });
+});
+/* =====================================================
+   HOUSE ICON HOVER EXPANDS MENU
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!navbar || !menuIcon) return;
+
+  let closeTimer;
+
+  function isPastTopMenu() {
+    return window.scrollY > 90;
+  }
+
+  function openMenu() {
+    if (!isPastTopMenu()) return;
+
+    document.body.classList.add("menu-scrolled");
+    navbar.classList.add("scrolled");
+    navbar.classList.add("open");
+    menuIcon.classList.add("show");
+  }
+
+  function closeMenuSoon() {
+    clearTimeout(closeTimer);
+
+    closeTimer = setTimeout(function () {
+      if (!navbar.matches(":hover") && !menuIcon.matches(":hover")) {
+        navbar.classList.remove("open");
+      }
+    }, 180);
+  }
+
+  function updateScrollMenu() {
+    if (isPastTopMenu()) {
+      document.body.classList.add("menu-scrolled");
+      navbar.classList.add("scrolled");
+      menuIcon.classList.add("show");
+    } else {
+      document.body.classList.remove("menu-scrolled");
+      navbar.classList.remove("scrolled");
+      navbar.classList.remove("open");
+      menuIcon.classList.remove("show");
+    }
+  }
+
+  menuIcon.addEventListener("mouseenter", openMenu);
+  menuIcon.addEventListener("mouseleave", closeMenuSoon);
+
+  navbar.addEventListener("mouseenter", function () {
+    clearTimeout(closeTimer);
+  });
+
+  navbar.addEventListener("mouseleave", closeMenuSoon);
+
+  menuIcon.addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!isPastTopMenu()) return;
+
+    document.body.classList.add("menu-scrolled");
+    navbar.classList.add("scrolled");
+    menuIcon.classList.add("show");
+    navbar.classList.toggle("open");
+  });
+
+  document.addEventListener("click", function (event) {
+    if (!navbar.contains(event.target) && !menuIcon.contains(event.target)) {
+      navbar.classList.remove("open");
+    }
+  });
+
+  window.addEventListener("scroll", updateScrollMenu);
+  updateScrollMenu();
+});
+/* =====================================================
+   PC: HOME ICON HOVER OPENS LEFT SIDE MENU
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!navbar || !menuIcon) return;
+
+  let closeTimer;
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function isPastTopMenu() {
+    return window.scrollY > 90;
+  }
+
+  function showIconAfterScroll() {
+    if (isPastTopMenu()) {
+      document.body.classList.add("menu-scrolled");
+      navbar.classList.add("scrolled");
+      menuIcon.classList.add("show");
+    } else {
+      document.body.classList.remove("menu-scrolled");
+      navbar.classList.remove("scrolled");
+      navbar.classList.remove("open");
+      menuIcon.classList.remove("show");
+    }
+  }
+
+  function openSideMenu() {
+    if (!isPc() || !isPastTopMenu()) return;
+
+    clearTimeout(closeTimer);
+
+    document.body.classList.add("menu-scrolled");
+    navbar.classList.add("scrolled");
+    navbar.classList.add("open");
+    menuIcon.classList.add("show");
+  }
+
+  function closeSideMenuSoon() {
+    clearTimeout(closeTimer);
+
+    closeTimer = setTimeout(function () {
+      if (!navbar.matches(":hover") && !menuIcon.matches(":hover")) {
+        navbar.classList.remove("open");
+      }
+    }, 180);
+  }
+
+  menuIcon.addEventListener("mouseenter", openSideMenu);
+  navbar.addEventListener("mouseenter", function () {
+    clearTimeout(closeTimer);
+  });
+
+  menuIcon.addEventListener("mouseleave", closeSideMenuSoon);
+  navbar.addEventListener("mouseleave", closeSideMenuSoon);
+
+  menuIcon.addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!isPastTopMenu()) return;
+
+    navbar.classList.toggle("open");
+  });
+
+  window.addEventListener("scroll", showIconAfterScroll);
+  showIconAfterScroll();
+});
+/* =====================================================
+   PC: MENU BUTTON HOVER OPENS LEFT SIDE MENU
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!navbar || !menuIcon) return;
+
+  let closeTimer;
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function isPastTopMenu() {
+    return window.scrollY > 90;
+  }
+
+  function updateMenuIcon() {
+    if (isPastTopMenu()) {
+      document.body.classList.add("menu-scrolled");
+      navbar.classList.add("scrolled");
+      menuIcon.classList.add("show");
+    } else {
+      document.body.classList.remove("menu-scrolled");
+      navbar.classList.remove("scrolled");
+      navbar.classList.remove("open");
+      menuIcon.classList.remove("show");
+    }
+  }
+
+  function openMenu() {
+    if (!isPc() || !isPastTopMenu()) return;
+
+    clearTimeout(closeTimer);
+
+    document.body.classList.add("menu-scrolled");
+    navbar.classList.add("scrolled");
+    navbar.classList.add("open");
+    menuIcon.classList.add("show");
+  }
+
+  function closeMenuSoon() {
+    clearTimeout(closeTimer);
+
+    closeTimer = setTimeout(function () {
+      if (!navbar.matches(":hover") && !menuIcon.matches(":hover")) {
+        navbar.classList.remove("open");
+      }
+    }, 180);
+  }
+
+  menuIcon.addEventListener("mouseenter", openMenu);
+  menuIcon.addEventListener("mouseleave", closeMenuSoon);
+
+  navbar.addEventListener("mouseenter", function () {
+    clearTimeout(closeTimer);
+  });
+
+  navbar.addEventListener("mouseleave", closeMenuSoon);
+
+  menuIcon.addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!isPastTopMenu()) return;
+
+    navbar.classList.toggle("open");
+  });
+
+  window.addEventListener("scroll", updateMenuIcon);
+  updateMenuIcon();
+});
+
+/* =====================================================
+   FINAL MENU SCROLL + HOVER SYSTEM
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!navbar || !menuIcon) return;
+
+  let closeTimer;
+
+  function isPastTopMenu() {
+    return window.scrollY > 90;
+  }
+
+  function updateMenuIcon() {
+    if (isPastTopMenu()) {
+      document.body.classList.add("menu-scrolled");
+      navbar.classList.add("scrolled");
+      menuIcon.classList.add("show");
+    } else {
+      document.body.classList.remove("menu-scrolled");
+      navbar.classList.remove("scrolled");
+      navbar.classList.remove("open");
+      menuIcon.classList.remove("show");
+    }
+  }
+
+  function openMenu() {
+    if (!isPastTopMenu()) return;
+
+    clearTimeout(closeTimer);
+
+    document.body.classList.add("menu-scrolled");
+    navbar.classList.add("scrolled");
+    navbar.classList.add("open");
+    menuIcon.classList.add("show");
+  }
+
+  function closeMenuSoon() {
+    clearTimeout(closeTimer);
+
+    closeTimer = setTimeout(function () {
+      if (!navbar.matches(":hover") && !menuIcon.matches(":hover")) {
+        navbar.classList.remove("open");
+      }
+    }, 180);
+  }
+
+  menuIcon.addEventListener("mouseenter", openMenu);
+  menuIcon.addEventListener("mouseleave", closeMenuSoon);
+
+  navbar.addEventListener("mouseenter", function () {
+    clearTimeout(closeTimer);
+  });
+
+  navbar.addEventListener("mouseleave", closeMenuSoon);
+
+  menuIcon.addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!isPastTopMenu()) return;
+
+    navbar.classList.toggle("open");
+  });
+
+  document.addEventListener("click", function (event) {
+    if (!navbar.contains(event.target) && !menuIcon.contains(event.target)) {
+      navbar.classList.remove("open");
+    }
+  });
+
+  window.addEventListener("scroll", updateMenuIcon);
+  updateMenuIcon();
+});

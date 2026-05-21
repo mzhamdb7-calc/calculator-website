@@ -1,401 +1,2027 @@
 /* =====================================================
-   FINAL CLEAN NAVBAR + MENU SYSTEM
-   PC:
-   - MENU button appears after scroll
-   - Hover MENU button opens stacked menu to the left
-   - Hover calculator opens basic/health/finance/percentage to the left
-   - Hover health opens age/bmi further left
-   Phone:
-   - MENU and Go Up stay bottom-right side by side
+   CLEAN STYLE.CSS - Cartoon Calculator Website
+   Replace the whole old style.css with this file.
 ===================================================== */
 
-/* Hide old side buttons except Go Up */
-#resizeNavigator,
-#handToggleBtn {
-  display: none !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Comic Neue", "Comic Sans MS", cursive, sans-serif;
+}
+
+:root {
+  --bg: #dfeeff;
+  --black: #000;
+  --white: #fff;
+  --yellow: #ffe66d;
+  --soft-yellow: #fff4b8;
+  --pink: #ffd3d3;
+  --blue: #d9f7ff;
+  --green: #b8ffb8;
+  --shadow: 7px 7px 0 var(--black);
+}
+
+body {
+  min-height: 120vh;
+  background: var(--bg);
+  color: #111;
+  overflow-x: hidden;
 }
 
 /* =========================
-   NORMAL TOP NAVBAR
+   NAVBAR
 ========================= */
 
 #navbar {
-  display: flex !important;
-  position: fixed !important;
+  position: fixed;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1deg);
+  z-index: 999999;
 
-  top: 25px !important;
-  left: 50% !important;
-  right: auto !important;
-  bottom: auto !important;
+  width: 720px;
+  height: 65px;
 
-  width: 720px !important;
-  height: 65px !important;
+  display: flex;
 
-  flex-direction: row !important;
-  align-items: stretch !important;
-
-  background: var(--white) !important;
-  border: 3px solid var(--black) !important;
-  box-shadow: 5px 5px 0 var(--black) !important;
-
-  transform: translateX(-50%) rotate(-1deg) !important;
-  overflow: visible !important;
-
-  z-index: 999999 !important;
-}
-
-#navbar::before,
-#navbar.open::before {
-  display: none !important;
-  content: none !important;
+  background: var(--white);
+  border: 3px solid var(--black);
+  box-shadow: var(--shadow);
 }
 
 #navbar > a,
 #navbar > .dropdown {
-  width: 240px !important;
-  height: 65px !important;
-  flex: 0 0 240px !important;
-
-  margin: 0 !important;
-  padding: 0 !important;
+  width: 240px;
+  height: 65px;
+  flex: 0 0 240px;
 }
 
-#navbar > a,
-#navbar > .dropdown > .dropbtn {
-  width: 100% !important;
-  height: 65px !important;
+#navbar a,
+.dropbtn {
+  width: 100%;
+  height: 65px;
 
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  margin: 0 !important;
-  padding: 0 !important;
+  padding: 0;
 
-  background: var(--white) !important;
-  color: var(--black) !important;
+  color: var(--black);
+  text-decoration: none;
 
-  border: none !important;
-  border-right: 3px solid var(--black) !important;
-  box-shadow: none !important;
+  background: var(--white);
+  border: none;
+  border-right: 3px solid var(--black);
 
-  font-size: 26px !important;
-  font-weight: bold !important;
-  line-height: 1 !important;
+  font-size: 26px;
+  font-weight: bold;
 
-  text-align: center !important;
-  text-decoration: none !important;
-
-  cursor: pointer !important;
+  cursor: pointer;
 }
 
 #navbar > a:last-child {
-  border-right: none !important;
+  border-right: none;
 }
 
-#navbar > a:hover,
-#navbar > .dropdown:hover > .dropbtn,
-#navbar > .dropdown > .dropbtn:hover {
-  background: var(--yellow) !important;
+#navbar a:hover,
+.dropbtn:hover {
+  background: var(--yellow);
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  display: none;
+
+  position: absolute;
+  top: 60px;
+  left: -5px;
+
+  width: 250px;
+
+  background: var(--white);
+  border: 3px solid var(--black);
+  box-shadow: 4px 4px 0 var(--black);
+
+  overflow: visible;
+  z-index: 9999999;
+}
+
+.dropdown:hover .dropdown-content,
+.dropdown:focus-within .dropdown-content {
+  display: block;
+}
+
+.dropdown-content > a,
+.nav-group summary {
+  width: 100%;
+  height: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--black);
+  text-decoration: none;
+
+  background: var(--white);
+  border-right: none;
+  border-bottom: 3px solid var(--black);
+
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.dropdown-content > a:last-child {
+  border-bottom: none;
+}
+
+.dropdown-content > a:first-child {
+  border-bottom: 3px solid var(--black);
+}
+
+.dropdown-content > a + .nav-group {
+  border-top: 0;
+}
+
+
+/* grouped dropdown: desktop opens sideways */
+.nav-group {
+  position: relative;
+
+  width: 100%;
+  height: 50px;
+
+  background: var(--white);
+  border-bottom: 3px solid var(--black);
+
+  overflow: visible;
+}
+
+.nav-group summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.nav-group summary::-webkit-details-marker {
+  display: none;
+}
+
+.nav-group summary::after {
+  content: " ▶";
+  margin-left: 6px;
+  font-size: 14px;
+}
+
+.nav-group-links {
+  display: none;
+
+  position: absolute;
+  top: -5px;
+  left: 100%;
+
+  width: 180px;
+
+  background: var(--white);
+  border: 3px solid var(--black);
+  box-shadow: 4px 4px 0 var(--black);
+
+  z-index: 99999999;
+}
+
+.nav-group[open] .nav-group-links {
+  display: block;
+}
+
+.nav-group-links a {
+  width: 100%;
+  height: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--black);
+  text-decoration: none;
+
+  background: var(--white);
+  border-bottom: 3px solid var(--black);
+
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.nav-group-links a:last-child {
+  border-bottom: none;
+}
+
+.nav-group summary:hover,
+.nav-group-links a:hover {
+  background: var(--yellow);
 }
 
 /* =========================
-   NORMAL TOP DROPDOWN
+   SCROLLED DESKTOP SIDE MENU
 ========================= */
 
-#navbar .dropdown {
-  position: relative !important;
-  overflow: visible !important;
+/* When the page is scrolled, hide the normal top navbar.
+   JavaScript will add .open when the hamburger is clicked. */
+#navbar.scrolled {
+  display: none;
 }
 
-#navbar .dropdown-content {
-  display: none !important;
+@media (min-width: 851px) {
+  #navbar.open {
+    display: flex;
+    position: fixed;
 
-  position: absolute !important;
-  top: 62px !important;
-  left: -3px !important;
-  right: auto !important;
+    top: 14px;
+    right: 135px;
+    left: auto;
 
-  width: 245px !important;
+    width: 260px;
+    height: auto;
 
-  margin: 0 !important;
-  padding: 0 !important;
+    margin: 0;
+    transform: none;
 
-  background: var(--white) !important;
-  border: 3px solid var(--black) !important;
-  box-shadow: 5px 5px 0 var(--black) !important;
+    flex-direction: column;
+    align-items: stretch;
 
-  overflow: visible !important;
-  z-index: 99999999 !important;
-}
+    background: var(--white);
+    border: none;
+    box-shadow: none;
 
-#navbar .dropdown:hover > .dropdown-content,
-#navbar .dropdown:focus-within > .dropdown-content {
-  display: block !important;
-}
+    overflow: visible;
+    z-index: 99999998;
+  }
 
-#navbar .dropdown-content > a,
-#navbar .dropdown-content > .nav-group,
-#navbar .dropdown-content > .nav-group > summary {
-  width: 100% !important;
-  height: 50px !important;
+  /* Black panel behind the scrolled menu, like the reference image */
+  #navbar.open::before {
+    content: "";
+    position: fixed;
+    top: 95px;
+    right: 28px;
 
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+    width: 740px;
+    height: 225px;
 
-  margin: 0 !important;
-  padding: 0 12px !important;
+    background: var(--black);
+    z-index: 1;
+    pointer-events: none;
+  }
 
-  background: var(--white) !important;
-  color: var(--black) !important;
+  #navbar.open > * {
+    position: relative;
+    z-index: 2;
+  }
 
-  border: none !important;
-  border-bottom: 3px solid var(--black) !important;
-  box-shadow: none !important;
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 260px;
+    height: 60px;
+    flex: none;
+  }
 
-  font-size: 20px !important;
-  font-weight: bold !important;
-  line-height: 1 !important;
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    width: 260px;
+    height: 60px;
 
-  text-align: center !important;
-  text-decoration: none !important;
-}
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-#navbar .dropdown-content > *:last-child,
-#navbar .dropdown-content > *:last-child > summary {
-  border-bottom: none !important;
-}
+    border: none;
+    box-shadow: none;
+    background: var(--white);
 
-#navbar .dropdown-content > a:hover,
-#navbar .dropdown-content > .nav-group:hover > summary {
-  background: var(--yellow) !important;
+    color: var(--black);
+    font-size: 34px;
+    font-weight: bold;
+    line-height: 1;
+
+    text-decoration: none;
+  }
+
+  #navbar.open > a:hover,
+  #navbar.open > .dropdown > .dropbtn:hover {
+    background: var(--white);
+  }
+
+  #navbar.open .dropdown {
+    position: relative;
+    overflow: visible;
+  }
+
+  /* The calculator submenu opens to the left of the vertical menu */
+  #navbar.open .dropdown-content {
+    display: block;
+
+    position: absolute;
+    top: 0;
+    right: 260px;
+    left: auto;
+
+    width: 345px;
+    max-height: none;
+
+    background: var(--white);
+    border: none;
+    box-shadow: none;
+
+    overflow: visible;
+    z-index: 99999999;
+  }
+
+  #navbar.open .dropdown-content > a,
+  #navbar.open .nav-group,
+  #navbar.open .nav-group > summary {
+    width: 345px;
+    height: 64px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    padding: 0 18px;
+
+    border: none;
+    box-shadow: none;
+    background: var(--white);
+
+    color: var(--black);
+    font-size: 34px;
+    font-weight: bold;
+    line-height: 1;
+
+    text-align: left;
+    text-decoration: none;
+  }
+
+  #navbar.open .dropdown-content > a:hover,
+  #navbar.open .nav-group > summary:hover {
+    background: var(--white);
+  }
+
+  #navbar.open .nav-group {
+    position: relative;
+    overflow: visible;
+  }
+
+  #navbar.open .nav-group > summary {
+    cursor: pointer;
+    list-style: none;
+  }
+
+  #navbar.open .nav-group > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  #navbar.open .nav-group > summary::after {
+    content: " ▼";
+    margin-left: 12px;
+    font-size: 18px;
+  }
+
+  #navbar.open .nav-group[open] > summary::after {
+    content: " ▲";
+  }
+
+  /* Border around the active dropdown title */
+  #navbar.open .nav-group[open] > summary {
+    border: 2px solid #333;
+    border-radius: 4px;
+  }
+
+  /* Nested submenu, e.g. loan / discount / percentage */
+  #navbar.open .nav-group-links {
+    display: none;
+
+    position: absolute;
+    top: 0;
+    right: 100%;
+    left: auto;
+
+    width: 330px;
+
+    background: var(--white);
+    border: none;
+    box-shadow: none;
+
+    overflow: visible;
+    z-index: 999999999;
+  }
+
+  #navbar.open .nav-group[open] .nav-group-links {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #navbar.open .nav-group-links a {
+    width: 330px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    padding: 0 48px;
+
+    border: none;
+    box-shadow: none;
+    background: var(--white);
+
+    color: var(--black);
+    font-size: 30px;
+    font-weight: bold;
+
+    text-align: left;
+    text-decoration: none;
+  }
+
+  #navbar.open .nav-group-links a:hover {
+    background: var(--white);
+  }
+
+  body.left-hand #navbar.open {
+    left: 135px;
+    right: auto;
+  }
+
+  body.left-hand #navbar.open::before {
+    left: 28px;
+    right: auto;
+  }
+
+  body.left-hand #navbar.open .dropdown-content {
+    left: 260px;
+    right: auto;
+  }
+
+  body.left-hand #navbar.open .nav-group-links {
+    left: 100%;
+    right: auto;
+  }
 }
 
 /* =========================
-   HEALTH / FINANCE SUBMENU
+   PAGE LAYOUTS
 ========================= */
 
-#navbar .nav-group {
-  position: relative !important;
-  overflow: visible !important;
+.calculator-container,
+.age-calculator-container,
+.bmi-calculator-container,
+.discount-calculator-container,
+.loan-calculator-container,
+.percentage-calculator-container {
+  max-width: 1180px;
+  margin: 130px auto 80px;
+  padding: 30px;
+
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 35px;
+  align-items: start;
 }
 
-#navbar .nav-group > summary {
-  list-style: none !important;
-  cursor: pointer !important;
-}
-
-#navbar .nav-group > summary::-webkit-details-marker {
-  display: none !important;
-}
-
-#navbar .nav-group > summary::marker {
-  content: "" !important;
-}
-
-#navbar .nav-group > summary::before {
-  display: none !important;
-  content: none !important;
-}
-
-#navbar .nav-group > summary::after {
-  content: "◀" !important;
-
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-
-  width: 24px !important;
-  height: 24px !important;
-
-  margin-left: 8px !important;
-
-  background: transparent !important;
-  color: var(--black) !important;
-
-  border: 2px solid transparent !important;
-  box-shadow: none !important;
-
-  font-size: 15px !important;
-  font-weight: bold !important;
-  line-height: 1 !important;
-
-  transition: 0.15s ease !important;
-}
-
-#navbar .nav-group:hover > summary::after {
-  background: var(--black) !important;
-  color: var(--yellow) !important;
-  border-color: var(--black) !important;
-  box-shadow: 3px 3px 0 var(--black) !important;
-  transform: translateX(-4px) scale(1.08) !important;
-}
-
-#navbar .nav-group-links {
-  display: none !important;
-
-  position: absolute !important;
-  top: -3px !important;
-  right: calc(100% + 3px) !important;
-  left: auto !important;
-
-  width: 175px !important;
-
-  margin: 0 !important;
-  padding: 0 !important;
-
-  background: var(--white) !important;
-  border: 3px solid var(--black) !important;
-  box-shadow: 5px 5px 0 var(--black) !important;
-
-  overflow: visible !important;
-  z-index: 999999999 !important;
-}
-
-#navbar .nav-group:hover > .nav-group-links,
-#navbar .nav-group:focus-within > .nav-group-links,
-#navbar .nav-group[open] > .nav-group-links {
-  display: block !important;
-}
-
-#navbar .nav-group-links a {
-  width: 100% !important;
-  height: 48px !important;
-
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-
-  margin: 0 !important;
-  padding: 0 10px !important;
-
-  background: var(--white) !important;
-  color: var(--black) !important;
-
-  border: none !important;
-  border-bottom: 3px solid var(--black) !important;
-  box-shadow: none !important;
-
-  font-size: 17px !important;
-  font-weight: bold !important;
-  line-height: 1 !important;
-
-  text-align: center !important;
-  text-decoration: none !important;
-}
-
-#navbar .nav-group-links a:last-child {
-  border-bottom: none !important;
-}
-
-#navbar .nav-group-links a:hover {
-  background: var(--yellow) !important;
+.single-calculator-container {
+  max-width: 820px;
+  margin: 130px auto 80px;
+  padding: 30px;
 }
 
 /* =========================
-   MENU BUTTON AFTER SCROLL
+   HISTORY / RESULT SIDE BOXES
+========================= */
+
+.history,
+.age-history-box,
+.bmi-history-box,
+.discount-history-box,
+.loan-history-box,
+.percentage-history-box {
+  width: 280px;
+  min-height: 450px;
+  max-height: 520px;
+
+  padding: 20px;
+
+  background: var(--soft-yellow);
+  border: 5px solid var(--black);
+  box-shadow: var(--shadow);
+
+  transform: rotate(-1deg);
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.history-top,
+.age-history-top,
+.bmi-history-top,
+.discount-history-top,
+.loan-history-top,
+.percentage-history-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 18px;
+}
+
+.history h3,
+.age-history-top h3,
+.bmi-history-top h3,
+.discount-history-top h3,
+.loan-history-top h3,
+.percentage-history-top h3 {
+  font-size: 24px;
+}
+
+.clear-btn {
+  padding: 8px 12px;
+
+  border: 4px solid var(--black);
+  background: #ffb3b3;
+  box-shadow: 3px 3px 0 var(--black);
+
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#historyList,
+#ageHistoryList,
+#bmiHistoryList,
+#discountHistoryList,
+#loanHistoryList,
+#percentageHistoryList {
+  list-style: none;
+  max-width: 100%;
+
+  font-size: 17px;
+  line-height: 1.4;
+
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.history-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: start;
+
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+
+  border-bottom: 3px solid var(--black);
+}
+
+.history-text {
+  font-size: 20px;
+  line-height: 1.4;
+
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.history-copy-btn,
+.result-copy-btn {
+  opacity: 0;
+  pointer-events: none;
+
+  padding: 6px 10px;
+
+  border: 4px solid var(--black);
+  background: var(--pink);
+  box-shadow: 3px 3px 0 var(--black);
+
+  font-size: 14px;
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.history-item:hover .history-copy-btn,
+.result-copy-wrap:hover .result-copy-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.history-copy-btn:hover,
+.result-copy-btn:hover {
+  background: var(--yellow);
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--black);
+}
+
+.result-copy-wrap {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+
+  margin-top: 28px;
+}
+
+.result-copy-wrap h2 {
+  margin-top: 0;
+  white-space: pre-line;
+}
+
+/* =========================
+   CALCULATOR BOX
+========================= */
+
+.calculator {
+  width: 100%;
+  max-width: 780px;
+
+  margin: 0 auto;
+  padding: 30px;
+
+  background: var(--white);
+  border: 5px solid var(--black);
+  box-shadow: 9px 9px 0 var(--black);
+}
+
+.calculator h1 {
+  text-align: center;
+
+  font-size: 48px;
+  line-height: 1.1;
+
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  text-align: center;
+
+  font-size: 20px;
+  line-height: 1.4;
+
+  margin-bottom: 28px;
+}
+
+.calculator label {
+  display: block;
+
+  width: 50%;
+  min-width: 300px;
+  max-width: 450px;
+
+  margin: 0 auto 12px;
+
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.calculator input[type="date"],
+.calculator input[type="number"],
+.calculator input[type="text"],
+#display {
+  width: 50%;
+  min-width: 300px;
+  max-width: 450px;
+  height: 70px;
+
+  display: block;
+
+  margin: 0 auto 22px;
+  padding: 10px 18px;
+
+  border: 5px solid var(--black);
+  background: #f8f8f8;
+  box-shadow: inset 4px 4px 0 #ddd;
+
+  font-size: 28px;
+  font-weight: bold;
+}
+
+#display {
+  text-align: right;
+}
+
+#birthdate {
+  text-align: center;
+}
+
+#birthdate::-webkit-calendar-picker-indicator {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+}
+
+.main-btn,
+.calculator > button {
+  width: 50%;
+  min-width: 300px;
+  max-width: 450px;
+  height: 70px;
+
+  display: block;
+
+  margin: 0 auto;
+
+  border: 5px solid var(--black);
+  background: var(--green);
+  box-shadow: 5px 5px 0 var(--black);
+
+  font-size: 26px;
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.main-btn:hover,
+.calculator > button:hover,
+.ans-btn:hover {
+  background: var(--yellow);
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0 var(--black);
+}
+
+#result,
+#bmiResult,
+#loanResult,
+#discountResult,
+#percentageResult {
+  margin-top: 28px;
+
+  text-align: center;
+  white-space: pre-line;
+
+  font-size: 32px;
+  line-height: 1.35;
+}
+
+/* =========================
+   BASIC CALCULATOR
+========================= */
+
+.display-row {
+  width: 100%;
+  max-width: 720px;
+
+  margin: 0 auto 28px;
+
+  display: grid;
+  grid-template-columns: 1fr 170px;
+}
+
+.display-row #display {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+
+  margin-bottom: 0;
+}
+
+.ans-btn {
+  height: 70px;
+
+  border: 5px solid var(--black);
+  background: var(--green);
+  box-shadow: 5px 5px 0 var(--black);
+
+  font-size: 26px;
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.basic-grid,
+.scientific-grid {
+  width: 100%;
+  max-width: 720px;
+
+  margin: 0 auto;
+
+  display: grid;
+  gap: 14px;
+}
+
+.basic-grid {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.scientific-grid {
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.buttons button {
+  height: 65px;
+
+  border: 4px solid var(--black);
+  background: var(--blue);
+  box-shadow: 4px 4px 0 var(--black);
+
+  font-size: 24px;
+  font-weight: bold;
+
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.buttons button:hover,
+.buttons button.keyboard-active {
+  background: var(--yellow) !important;
+  transform: translate(-3px, -3px) rotate(-2deg);
+  box-shadow: 7px 7px 0 var(--black);
+}
+
+.basic-grid button:nth-child(1),
+.basic-grid button:nth-child(2),
+.basic-grid button:nth-child(3),
+.basic-grid button:nth-child(4),
+.basic-grid button:nth-child(8),
+.basic-grid button:nth-child(12),
+.basic-grid button:nth-child(16),
+.basic-grid .ac-btn,
+.scientific-grid button:nth-child(7n),
+.scientific-grid button:nth-child(14n),
+.scientific-grid button:nth-child(21n),
+.scientific-grid button:nth-child(28n) {
+  background: var(--pink);
+}
+
+.basic-grid .zero-btn {
+  background: var(--blue) !important;
+}
+
+.basic-grid button.equal,
+.equal {
+  background: var(--green) !important;
+}
+
+/* =========================
+   INDEX PAGE
+========================= */
+
+.calculator-box {
+  width: 620px;
+
+  margin: 130px auto 80px;
+  padding: 30px;
+
+  background: var(--white);
+  border: 5px solid var(--black);
+  box-shadow: 8px 8px 0 var(--black);
+}
+
+.calculator-box h1 {
+  text-align: center;
+
+  font-size: 45px;
+
+  margin-bottom: 25px;
+}
+
+.calculator-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 35px;
+}
+
+.card,
+.group-card {
+  min-height: 110px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--black);
+  text-decoration: none;
+
+  border: 5px solid var(--black);
+  background: var(--white);
+  box-shadow: 5px 5px 0 var(--black);
+
+  font-size: 35px;
+  font-weight: bold;
+
+  transition: 0.2s;
+}
+
+.card:hover,
+.group-card:hover {
+  transform: translate(-3px, -3px) rotate(-1deg);
+  box-shadow: 9px 9px 0 var(--black);
+}
+
+.card:nth-child(1) {
+  background: var(--pink);
+}
+
+.card:nth-child(4) {
+  background: #d3fff9;
+}
+
+.group-card {
+  display: block;
+  position: relative;
+  z-index: 2;
+}
+
+.health-card {
+  background: #d3ffd9;
+}
+
+.finance-card {
+  background: #fff1b8;
+}
+
+.group-card summary {
+  height: 110px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 35px;
+  font-weight: bold;
+
+  cursor: pointer;
+  list-style: none;
+}
+
+.group-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.group-card summary::after {
+  content: " ▼";
+  margin-left: 8px;
+  font-size: 22px;
+}
+
+.group-card[open] summary::after {
+  content: " ▲";
+}
+
+.group-links {
+  background: var(--white);
+  border-top: 5px solid var(--black);
+}
+
+.group-links a {
+  height: 60px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--black);
+  text-decoration: none;
+
+  border-bottom: 3px solid var(--black);
+
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.group-links a:last-child {
+  border-bottom: none;
+}
+
+.group-links a:hover {
+  background: var(--yellow);
+}
+
+/* =========================
+   BMI UNIT TOGGLE
+========================= */
+
+.bmi-title-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 120px;
+  align-items: start;
+  gap: 10px;
+}
+
+#unitToggleBtn {
+  height: 55px;
+
+  border: 5px solid var(--black);
+  background: var(--soft-yellow);
+  color: var(--black);
+  box-shadow: 5px 5px 0 var(--black);
+
+  font-size: 20px;
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+#unitToggleBtn:hover {
+  background: var(--yellow);
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0 var(--black);
+}
+
+/* =========================
+   ABOUT PAGE
+========================= */
+
+.about-container {
+  max-width: 900px;
+  margin: 130px auto 80px;
+  padding: 30px;
+}
+
+.about-box {
+  padding: 30px;
+
+  background: var(--white);
+  border: 5px solid var(--black);
+  box-shadow: 9px 9px 0 var(--black);
+}
+
+.about-box h1 {
+  text-align: center;
+
+  font-size: 48px;
+
+  margin-bottom: 25px;
+}
+
+.about-card {
+  padding: 22px;
+  margin-bottom: 25px;
+
+  background: var(--soft-yellow);
+  border: 5px solid var(--black);
+  box-shadow: 5px 5px 0 var(--black);
+}
+
+.about-card h2 {
+  font-size: 30px;
+  margin-bottom: 12px;
+}
+
+.about-card p {
+  font-size: 20px;
+  line-height: 1.5;
+
+  margin-bottom: 10px;
+}
+
+/* =========================
+   DESKTOP SIDE BUTTONS
 ========================= */
 
 #menuIcon {
-  display: none !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
+  display: none;
 
-  position: fixed !important;
-  top: 24px !important;
-  right: 24px !important;
-  left: auto !important;
-  bottom: auto !important;
+  position: fixed;
+  top: 10px;
+  right: 14px;
 
-  width: 78px !important;
-  height: 50px !important;
+  width: 92px;
+  height: 92px;
 
-  align-items: center !important;
-  justify-content: center !important;
+  align-items: center;
+  justify-content: center;
 
-  background: var(--white) !important;
-  color: var(--black) !important;
-
-  border: 4px solid var(--black) !important;
+  border: 6px solid var(--black);
+  border-radius: 0;
+  background: var(--white);
+  color: transparent;
   box-shadow:
-    5px 0 0 var(--black),
-    0 5px 0 var(--black),
-    5px 5px 0 var(--black) !important;
+    8px 0 0 var(--black),
+    0 8px 0 var(--black),
+    8px 8px 0 var(--black),
+    inset 6px 6px 0 #dfeeff,
+    inset -6px -6px 0 #9fb3c8;
 
-  font-size: 0 !important;
-  font-weight: bold !important;
-  cursor: pointer !important;
+  font-size: 0;
+  line-height: 1;
 
-  z-index: 999999999 !important;
+  cursor: pointer;
+  opacity: 1;
+  image-rendering: pixelated;
+
+  z-index: 999999999;
 }
 
 #menuIcon::before {
-  content: "MENU" !important;
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
 
-  position: static !important;
+  width: 48px;
+  height: 8px;
 
-  width: auto !important;
-  height: auto !important;
+  transform: translate(-50%, -50%);
 
-  display: block !important;
+  background: #6f7c87;
+  border: 4px solid var(--black);
+  border-radius: 0;
 
-  background: transparent !important;
-  color: var(--black) !important;
-
-  clip-path: none !important;
-  border: none !important;
-  box-shadow: none !important;
-  transform: none !important;
-
-  font-size: 18px !important;
-  font-weight: bold !important;
-  line-height: 1 !important;
-  letter-spacing: 1px !important;
+  box-shadow:
+    0 -20px 0 #6f7c87,
+    0 -20px 0 4px var(--black),
+    0 20px 0 #6f7c87,
+    0 20px 0 4px var(--black);
 }
 
 #menuIcon::after {
-  display: none !important;
-  content: none !important;
+  content: "";
+  position: absolute;
+  inset: -6px;
+
+  border: 4px solid transparent;
+  box-shadow:
+    -4px -4px 0 var(--white),
+    4px 4px 0 #6f7c87;
+
+  pointer-events: none;
 }
 
+/* Pixel press effect */
 #menuIcon:hover {
-  background: var(--yellow) !important;
+  transform: translate(2px, 2px);
+  box-shadow:
+    4px 0 0 var(--black),
+    0 4px 0 var(--black),
+    4px 4px 0 var(--black),
+    inset 6px 6px 0 #dfeeff,
+    inset -6px -6px 0 #9fb3c8;
 }
 
-/* Show MENU button after scroll */
-#menuIcon.show,
-body.menu-scrolled #menuIcon {
-  display: flex !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
+#menuIcon.show {
+  display: flex;
 }
 
-/* Hide top navbar after scroll unless menu is open */
-body.menu-scrolled #navbar:not(.open),
-#navbar.scrolled:not(.open) {
-  display: none !important;
+#resizeNavigator {
+  position: fixed;
+  top: 235px;
+  right: 22px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  opacity: 0.5;
+  z-index: 9999999;
+}
+
+#resizeNavigator button,
+#handToggleBtn,
+#scrollTopBtn,
+.scroll-top {
+  border: 5px solid var(--black);
+  background: var(--white);
+  color: var(--black);
+  box-shadow: 5px 5px 0 var(--black);
+
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#resizeNavigator button {
+  width: 52px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+}
+
+#handToggleBtn {
+  position: fixed;
+  right: 22px;
+  bottom: 120px;
+
+  width: 58px;
+  height: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 24px;
+
+  opacity: 0.5;
+  z-index: 9999999;
+}
+
+#scrollTopBtn,
+.scroll-top {
+  display: none;
+
+  position: fixed;
+  right: 22px;
+  bottom: 28px;
+
+  width: 58px;
+  height: 50px;
+
+  align-items: center;
+  justify-content: center;
+
+  font-size: 28px;
+
+  opacity: 0.5;
+  z-index: 9999999;
+}
+
+#menuIcon:hover,
+#resizeNavigator:hover,
+#handToggleBtn:hover,
+#scrollTopBtn:hover,
+.scroll-top:hover {
+  opacity: 1;
+}
+
+body.left-hand #menuIcon,
+body.left-hand #resizeNavigator,
+body.left-hand #handToggleBtn,
+body.left-hand #scrollTopBtn,
+body.left-hand .scroll-top {
+  left: 22px;
+  right: auto;
+}
+
+body.right-hand #menuIcon,
+body.right-hand #resizeNavigator,
+body.right-hand #handToggleBtn,
+body.right-hand #scrollTopBtn,
+body.right-hand .scroll-top {
+  right: 22px;
+  left: auto;
 }
 
 /* =========================
-   PC SCROLLED SIDE MENU
+   MOBILE
+========================= */
+
+@media (max-width: 850px) {
+  body {
+    padding-bottom: 230px;
+  }
+
+  #navbar {
+    top: 78px;
+
+    width: 95%;
+    height: 58px;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown {
+    width: 33.33%;
+    height: 58px;
+    flex: 0 0 33.33%;
+  }
+
+  #navbar a,
+  .dropbtn {
+    height: 58px;
+    font-size: 18px;
+  }
+
+  .dropdown-content {
+    top: 53px;
+    left: -5px;
+
+    width: 220px;
+  }
+
+  .dropdown-content > a,
+  .nav-group summary {
+    height: 46px;
+    font-size: 17px;
+  }
+
+  /* phone dropdown groups open downward */
+  .nav-group {
+    height: auto;
+  }
+
+  .nav-group summary::after {
+    content: " ▼";
+  }
+
+  .nav-group[open] summary::after {
+    content: " ▲";
+  }
+
+  .nav-group-links {
+    position: static;
+
+    width: 100%;
+
+    border: none;
+    border-top: 3px solid var(--black);
+    box-shadow: none;
+  }
+
+  .nav-group-links a {
+    width: 100%;
+    height: 42px;
+
+    font-size: 16px;
+  }
+
+  .calculator-container,
+  .age-calculator-container,
+  .bmi-calculator-container,
+  .discount-calculator-container,
+  .loan-calculator-container,
+  .percentage-calculator-container {
+    width: 100%;
+    max-width: 100%;
+
+    margin-top: 175px;
+    padding: 16px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .single-calculator-container,
+  .about-container,
+  .calculator-box {
+    margin-top: 175px;
+  }
+
+  .history,
+  .age-history-box,
+  .bmi-history-box,
+  .discount-history-box,
+  .loan-history-box,
+  .percentage-history-box {
+    order: 1;
+
+    width: 100%;
+    max-width: 100%;
+
+    min-height: 170px;
+    max-height: 300px;
+
+    margin: 0 auto;
+  }
+
+  .calculator {
+    order: 2;
+
+    width: 100%;
+    max-width: 100%;
+
+    margin: 0 auto;
+    padding: 22px;
+  }
+
+  .calculator h1 {
+    font-size: 36px;
+  }
+
+  .subtitle {
+    font-size: 20px;
+  }
+
+  .calculator label,
+  .calculator input[type="date"],
+  .calculator input[type="number"],
+  .calculator input[type="text"],
+  .main-btn,
+  .calculator > button {
+    width: 100%;
+    min-width: 0;
+    max-width: 450px;
+  }
+
+  .calculator label {
+    font-size: 22px;
+  }
+
+  .calculator input[type="date"],
+  .calculator input[type="number"],
+  .calculator input[type="text"],
+  #display {
+    height: 62px;
+    font-size: 24px;
+  }
+
+  .main-btn,
+  .calculator > button {
+    height: 62px;
+    font-size: 22px;
+  }
+
+  .display-row {
+    grid-template-columns: 1fr 100px;
+  }
+
+  .ans-btn {
+    height: 62px;
+    font-size: 20px;
+  }
+
+  .buttons button {
+    height: 58px;
+    font-size: 20px;
+  }
+
+  .scientific-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .calculator-box {
+    width: 95%;
+  }
+
+  .calculator-box h1 {
+    margin-top: 20px;
+  }
+
+  .calculator-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card,
+  .group-card summary {
+    font-size: 28px;
+  }
+
+  .bmi-title-row {
+    grid-template-columns: 1fr;
+  }
+
+  #unitToggleBtn {
+    width: 140px;
+    margin: 0 auto 15px;
+    order: -1;
+  }
+
+  .about-box h1 {
+    font-size: 36px;
+  }
+
+  .about-card h2 {
+    font-size: 26px;
+  }
+
+  .about-card p {
+    font-size: 18px;
+  }
+
+  .history-copy-btn,
+  .result-copy-btn {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* hide phone resize + orientation */
+  #resizeNavigator,
+  #handToggleBtn {
+    display: none;
+  }
+
+  /* phone menu and go-up buttons */
+  #menuIcon {
+    top: auto;
+    bottom: calc(150px + env(safe-area-inset-bottom));
+    right: 14px;
+    left: auto;
+
+    width: 58px;
+    height: 56px;
+
+    font-size: 0;
+    border-width: 4px;
+    box-shadow:
+      5px 0 0 var(--black),
+      0 5px 0 var(--black),
+      5px 5px 0 var(--black),
+      inset 4px 4px 0 #dfeeff,
+      inset -4px -4px 0 #9fb3c8;
+  }
+
+  #menuIcon::before {
+    width: 28px;
+    height: 5px;
+    border-width: 3px;
+    box-shadow:
+      0 -12px 0 #6f7c87,
+      0 -12px 0 3px var(--black),
+      0 12px 0 #6f7c87,
+      0 12px 0 3px var(--black);
+  }
+
+  #menuIcon::after {
+    inset: -4px;
+    border-width: 0;
+  }
+
+  #menuIcon.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #scrollTopBtn,
+  .scroll-top {
+    right: 14px;
+    left: auto;
+    bottom: calc(150px + env(safe-area-inset-bottom));
+
+    width: 46px;
+    height: 44px;
+
+    font-size: 24px;
+  }
+
+  /* compact opened phone menu */
+  #navbar.open {
+    display: flex;
+
+    position: fixed;
+    top: auto;
+    bottom: calc(150px + env(safe-area-inset-bottom));
+    right: 70px;
+    left: auto;
+
+    width: 120px;
+    height: auto;
+
+    flex-direction: column;
+
+    background: var(--white);
+    border: none;
+    box-shadow: none;
+
+    overflow: visible;
+    transform: none;
+
+    z-index: 99999998;
+  }
+
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 120px;
+    height: 34px;
+    flex: none;
+  }
+
+  #navbar.open a,
+  #navbar.open .dropbtn {
+    width: 120px;
+    height: 34px;
+
+    border: none;
+    box-shadow: none;
+
+    font-size: 18px;
+  }
+
+  #navbar.open .dropdown {
+    overflow: visible;
+  }
+
+  #navbar.open .dropdown-content {
+    display: block;
+
+    position: absolute;
+    top: 0;
+    right: 120px;
+    left: auto;
+
+    width: 155px;
+    max-height: none;
+
+    background: var(--white);
+    border: none;
+    box-shadow: none;
+
+    overflow: visible;
+  }
+
+  #navbar.open .dropdown-content > a,
+  #navbar.open .nav-group,
+  #navbar.open .nav-group summary {
+    width: 155px;
+    height: 34px;
+
+    justify-content: flex-start;
+    padding-left: 8px;
+
+    border: none;
+
+    font-size: 18px;
+  }
+
+  #navbar.open .nav-group {
+    height: auto;
+  }
+
+  #navbar.open .nav-group-links {
+    position: static;
+
+    width: 155px;
+
+    border: none;
+    box-shadow: none;
+  }
+
+  #navbar.open .nav-group-links a {
+    width: 155px;
+    height: 30px;
+
+    justify-content: flex-start;
+    padding-left: 22px;
+
+    border: none;
+
+    font-size: 16px;
+  }
+
+  body.left-hand #navbar.open,
+  body.right-hand #navbar.open {
+    right: 70px;
+    left: auto;
+  }
+
+  body.left-hand #menuIcon,
+  body.right-hand #menuIcon {
+    right: 14px;
+    left: auto;
+  }
+
+  body.left-hand #scrollTopBtn,
+  body.left-hand .scroll-top,
+  body.right-hand #scrollTopBtn,
+  body.right-hand .scroll-top {
+    right: 14px;
+    left: auto;
+  }
+}
+
+/* =========================
+   NAVBAR DROPDOWN THIN-LINE FIX
+   Keeps text sizes consistent and restores the line between Basic and Health.
+========================= */
+
+#navbar {
+  border-width: 3px;
+}
+
+#navbar a,
+.dropbtn {
+  border-right-width: 3px;
+}
+
+.dropdown-content {
+  border-width: 3px;
+  box-shadow: 4px 4px 0 var(--black);
+}
+
+.dropdown-content > a,
+.nav-group summary {
+  height: 50px;
+  border-bottom: 3px solid var(--black);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.dropdown-content > a:first-child {
+  border-bottom: 3px solid var(--black);
+}
+
+.nav-group {
+  border-bottom: 3px solid var(--black);
+}
+
+.nav-group:last-child {
+  border-bottom: none;
+}
+
+.nav-group-links {
+  border-width: 3px;
+  box-shadow: 4px 4px 0 var(--black);
+}
+
+.nav-group-links a {
+  height: 50px;
+  border-bottom: 3px solid var(--black);
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* Keep the opened scrolled side menu clean */
+#navbar.open,
+#navbar.open a,
+#navbar.open .dropbtn,
+#navbar.open .dropdown-content,
+#navbar.open .dropdown-content > a,
+#navbar.open .nav-group,
+#navbar.open .nav-group summary,
+#navbar.open .nav-group-links,
+#navbar.open .nav-group-links a {
+  border-width: 0;
+}
+
+#navbar.open .nav-group[open] > summary {
+  border: 2px solid #333;
+}
+
+
+
+/* =========================
+   SCROLLED MENU MATCH 2ND IMAGE
+   Right-side scrolled menu uses the same outlined cartoon boxes
+   as the normal top menu, and the hamburger matches the resize buttons.
 ========================= */
 
 @media (min-width: 851px) {
-  body.menu-scrolled #navbar.open,
-  #navbar.scrolled.open {
+  /* smaller hamburger, same size family as resize buttons */
+  #menuIcon {
+    top: 22px;
+    right: 22px;
+    width: 52px;
+    height: 48px;
+    border: 4px solid var(--black);
+    box-shadow: 5px 5px 0 var(--black);
+  }
+
+  #menuIcon::before {
+    width: 24px;
+    height: 4px;
+    border-width: 2px;
+    box-shadow:
+      0 -10px 0 #6f7c87,
+      0 -10px 0 2px var(--black),
+      0 10px 0 #6f7c87,
+      0 10px 0 2px var(--black);
+  }
+
+  #menuIcon::after {
+    inset: -4px;
+    box-shadow: none;
+  }
+
+  #menuIcon:hover {
+    transform: translate(2px, 2px);
+    box-shadow:
+      3px 0 0 var(--black),
+      0 3px 0 var(--black),
+      3px 3px 0 var(--black),
+      inset 4px 4px 0 #dfeeff,
+      inset -4px -4px 0 #9fb3c8;
+  }
+
+  /* remove the big black background panel */
+  #navbar.open::before {
+    display: none;
+  }
+
+  /* right-side main menu */
+  #navbar.open {
+    top: 22px;
+    right: 88px;
+    width: 210px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    gap: 0;
+    align-items: stretch;
+  }
+
+  body.left-hand #navbar.open {
+    left: 88px;
+    right: auto;
+  }
+
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 210px;
+    height: 58px;
+    margin: 0;
+  }
+
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    width: 210px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--white);
+    border: 3px solid var(--black);
+    box-shadow: 5px 5px 0 var(--black);
+    color: var(--black);
+    font-size: 28px;
+    font-weight: bold;
+    line-height: 1;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  /* stack items tightly like the reference */
+  #navbar.open > a + a,
+  #navbar.open > a + .dropdown,
+  #navbar.open > .dropdown + a,
+  #navbar.open > .dropdown + .dropdown {
+    margin-top: -1px;
+  }
+
+  /* active calculator box while submenu is visible */
+  #navbar.open > .dropdown > .dropbtn {
+    position: relative;
+    z-index: 3;
+  }
+
+  /* left submenu block */
+  #navbar.open .dropdown {
+    position: relative;
+    overflow: visible;
+  }
+
+  #navbar.open .dropdown-content {
+    display: block;
+    position: absolute;
+    top: 43px;
+    right: 207px;
+    left: auto;
+    width: 245px;
+    background: var(--white);
+    border: 3px solid var(--black);
+    box-shadow: 5px 5px 0 var(--black);
+    overflow: visible;
+    z-index: 5;
+  }
+
+  body.left-hand #navbar.open .dropdown-content {
+    left: 207px;
+    right: auto;
+  }
+
+  #navbar.open .dropdown-content > a,
+  #navbar.open .nav-group,
+  #navbar.open .nav-group > summary {
+    width: 100%;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px;
+    background: var(--white);
+    border: none;
+    border-bottom: 3px solid var(--black);
+    box-shadow: none;
+    color: var(--black);
+    font-size: 22px;
+    font-weight: bold;
+    line-height: 1;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  /* basic = active yellow row */
+  #navbar.open .dropdown-content > a:first-child {
+    background: var(--yellow);
+  }
+
+  #navbar.open .dropdown-content > a:last-child,
+  #navbar.open .nav-group:last-child,
+  #navbar.open .nav-group:last-child > summary {
+    border-bottom: none;
+  }
+
+  #navbar.open .nav-group {
+    position: relative;
+    height: auto;
+    background: var(--white);
+    overflow: visible;
+  }
+
+  #navbar.open .nav-group > summary {
+    cursor: pointer;
+    list-style: none;
+  }
+
+  #navbar.open .nav-group > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  #navbar.open .nav-group > summary::after {
+    content: " ▶";
+    margin-left: 8px;
+    font-size: 16px;
+  }
+
+  #navbar.open .nav-group[open] > summary::after {
+    content: " ▼";
+  }
+
+  #navbar.open .nav-group[open] > summary {
+    border: none;
+    border-bottom: 3px solid var(--black);
+    border-radius: 0;
+  }
+
+  /* finance nested submenu opens to the left with same design language */
+  #navbar.open .nav-group-links {
+    display: none;
+    position: absolute;
+    top: -3px;
+    right: calc(100% + 3px);
+    left: auto;
+    width: 230px;
+    background: var(--white);
+    border: 3px solid var(--black);
+    box-shadow: 5px 5px 0 var(--black);
+    overflow: visible;
+    z-index: 6;
+  }
+
+  body.left-hand #navbar.open .nav-group-links {
+    left: calc(100% + 3px);
+    right: auto;
+  }
+
+  #navbar.open .nav-group[open] .nav-group-links {
+    display: block;
+  }
+
+  #navbar.open .nav-group-links a {
+    width: 100%;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px;
+    background: var(--white);
+    border: none;
+    border-bottom: 3px solid var(--black);
+    box-shadow: none;
+    color: var(--black);
+    font-size: 21px;
+    font-weight: bold;
+    line-height: 1;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  #navbar.open .nav-group-links a:last-child {
+    border-bottom: none;
+  }
+
+  /* keep hover clean */
+  #navbar.open > a:hover,
+  #navbar.open > .dropdown > .dropbtn:hover,
+  #navbar.open .dropdown-content > a:hover,
+  #navbar.open .nav-group > summary:hover,
+  #navbar.open .nav-group-links a:hover {
+    background: var(--soft-yellow);
+  }
+
+  #navbar.open .dropdown-content > a:first-child:hover {
+    background: var(--yellow);
+  }
+}
+
+
+
+/* =========================
+   FINAL SCROLLED SIDE BAR STYLE
+   Matches the reference image:
+   - vertical boxed menu on the right
+   - submenu box on the left
+   - thinner cartoon lines
+   - yellow hover color
+   - smaller hamburger button
+========================= */
+
+@media (min-width: 851px) {
+  #navbar.open::before {
+    display: none !important;
+  }
+
+  #navbar.open {
     display: flex !important;
     position: fixed !important;
 
-    top: 24px !important;
-    right: 116px !important;
+    top: 86px !important;
+    right: 150px !important;
     left: auto !important;
-    bottom: auto !important;
 
-    width: 190px !important;
+    width: 265px !important;
     height: auto !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
 
     flex-direction: column !important;
     align-items: stretch !important;
@@ -404,32 +2030,438 @@ body.menu-scrolled #navbar:not(.open),
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-
     transform: none !important;
-    overflow: visible !important;
 
-    z-index: 999999998 !important;
+    overflow: visible !important;
+    z-index: 99999998 !important;
   }
 
-  body.menu-scrolled #navbar.open > a,
-  body.menu-scrolled #navbar.open > .dropdown,
-  #navbar.scrolled.open > a,
-  #navbar.scrolled.open > .dropdown {
-    width: 190px !important;
-    height: 55px !important;
+  body.left-hand #navbar.open {
+    left: 150px !important;
+    right: auto !important;
+  }
 
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 265px !important;
+    height: 74px !important;
     flex: none !important;
     margin: 0 !important;
     padding: 0 !important;
+  }
 
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    width: 265px !important;
+    height: 74px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 7px 7px 0 var(--black) !important;
+
+    font-size: 30px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  #navbar.open > a + a,
+  #navbar.open > a + .dropdown,
+  #navbar.open > .dropdown + a,
+  #navbar.open > .dropdown + .dropdown {
+    margin-top: -4px !important;
+  }
+
+  #navbar.open > a:hover,
+  #navbar.open > .dropdown:hover > .dropbtn,
+  #navbar.open > .dropdown > .dropbtn:hover {
+    background: var(--yellow) !important;
+  }
+
+  #navbar.open .dropdown {
     position: relative !important;
     overflow: visible !important;
   }
 
-  body.menu-scrolled #navbar.open > a,
-  body.menu-scrolled #navbar.open > .dropdown > .dropbtn,
-  #navbar.scrolled.open > a,
-  #navbar.scrolled.open > .dropdown > .dropbtn {
+  /* Big submenu to the left of the right-side menu */
+  #navbar.open .dropdown-content {
+    display: block !important;
+
+    position: absolute !important;
+    top: 130px !important;
+    right: 265px !important;
+    left: auto !important;
+
+    width: 310px !important;
+    max-height: none !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: var(--white) !important;
+    border: 4px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 7px 7px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 99999999 !important;
+  }
+
+  body.left-hand #navbar.open .dropdown-content {
+    left: 265px !important;
+    right: auto !important;
+  }
+
+  #navbar.open .dropdown-content > a,
+  #navbar.open .nav-group,
+  #navbar.open .nav-group > summary {
+    width: 100% !important;
+    height: 76px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 18px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 4px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    font-size: 25px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  #navbar.open .dropdown-content > a:first-child {
+    background: var(--white) !important;
+  }
+
+  #navbar.open .dropdown-content > a:last-child,
+  #navbar.open .nav-group:last-child,
+  #navbar.open .nav-group:last-child > summary {
+    border-bottom: none !important;
+  }
+
+  #navbar.open .dropdown-content > a:hover,
+  #navbar.open .nav-group:hover,
+  #navbar.open .nav-group > summary:hover {
+    background: var(--yellow) !important;
+  }
+
+  #navbar.open .nav-group {
+    position: relative !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  #navbar.open .nav-group > summary {
+    cursor: pointer !important;
+    list-style: none !important;
+  }
+
+  #navbar.open .nav-group > summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  #navbar.open .nav-group > summary::marker {
+    content: "" !important;
+  }
+
+  #navbar.open .nav-group > summary::after {
+    content: "▼" !important;
+    display: inline-block !important;
+    margin-left: 12px !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+  }
+
+  #navbar.open .nav-group[open] > summary::after {
+    content: "▲" !important;
+  }
+
+  #navbar.open .nav-group[open] > summary {
+    border: none !important;
+    border-bottom: 4px solid var(--black) !important;
+    border-radius: 0 !important;
+  }
+
+  /* Nested menu, if health or finance is opened */
+  #navbar.open .nav-group-links {
+    display: none !important;
+
+    position: absolute !important;
+    top: -4px !important;
+    right: calc(100% + 4px) !important;
+    left: auto !important;
+
+    width: 260px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: var(--white) !important;
+    border: 4px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 7px 7px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 999999999 !important;
+  }
+
+  body.left-hand #navbar.open .nav-group-links {
+    left: calc(100% + 4px) !important;
+    right: auto !important;
+  }
+
+  #navbar.open .nav-group[open] .nav-group-links {
+    display: block !important;
+  }
+
+  #navbar.open .nav-group-links a {
+    width: 100% !important;
+    height: 64px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 16px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 4px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 23px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  #navbar.open .nav-group-links a:last-child {
+    border-bottom: none !important;
+  }
+
+  #navbar.open .nav-group-links a:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* Smaller pixel hamburger beside the menu */
+  #menuIcon {
+    top: 94px !important;
+    right: 88px !important;
+
+    width: 52px !important;
+    height: 48px !important;
+
+    border: 4px solid var(--black) !important;
+    border-radius: 0 !important;
+    background: var(--white) !important;
+    color: transparent !important;
+
+    box-shadow:
+      5px 0 0 var(--black),
+      0 5px 0 var(--black),
+      5px 5px 0 var(--black),
+      inset 4px 4px 0 #dfeeff,
+      inset -4px -4px 0 #9fb3c8 !important;
+
+    font-size: 0 !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  body.left-hand #menuIcon {
+    left: 88px !important;
+    right: auto !important;
+  }
+
+  #menuIcon::before {
+    width: 24px !important;
+    height: 4px !important;
+    border: 2px solid var(--black) !important;
+    background: #6f7c87 !important;
+
+    box-shadow:
+      0 -10px 0 #6f7c87,
+      0 -10px 0 2px var(--black),
+      0 10px 0 #6f7c87,
+      0 10px 0 2px var(--black) !important;
+  }
+
+  #menuIcon::after {
+    inset: -4px !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  #menuIcon:hover {
+    background: var(--yellow) !important;
+    transform: translate(2px, 2px) !important;
+    box-shadow:
+      3px 0 0 var(--black),
+      0 3px 0 var(--black),
+      3px 3px 0 var(--black),
+      inset 4px 4px 0 #fff4b8,
+      inset -4px -4px 0 #d4b84f !important;
+  }
+}
+
+
+
+/* =========================
+   PC SIDE MENU: CALCULATOR EXPANDS ONLY ON HOVER / CLICK
+   This stops the calculator submenu from always showing.
+========================= */
+
+@media (min-width: 851px) {
+  #navbar.open .dropdown-content {
+    display: none !important;
+  }
+
+  #navbar.open .dropdown:hover > .dropdown-content,
+  #navbar.open .dropdown:focus-within > .dropdown-content,
+  #navbar.open .dropdown.menu-open > .dropdown-content {
+    display: block !important;
+  }
+
+  #navbar.open .dropdown:hover > .dropbtn,
+  #navbar.open .dropdown:focus-within > .dropbtn,
+  #navbar.open .dropdown.menu-open > .dropbtn {
+    background: var(--yellow) !important;
+  }
+}
+
+/* =========================
+   FIX LINE BETWEEN BASIC AND HEALTH
+========================= */
+
+@media (min-width: 851px) {
+  #navbar.open .dropdown-content > a,
+  #navbar.open .dropdown-content > .nav-group,
+  #navbar.open .dropdown-content > .nav-group > summary {
+    border-bottom: 4px solid var(--black) !important;
+  }
+
+  /* Remove line only from the last row */
+  #navbar.open .dropdown-content > *:last-child,
+  #navbar.open .dropdown-content > *:last-child > summary {
+    border-bottom: none !important;
+  }
+
+  /* Extra forced line under BASIC */
+  #navbar.open .dropdown-content > a:first-child {
+    position: relative !important;
+  }
+
+  #navbar.open .dropdown-content > a:first-child::after {
+    content: "" !important;
+    position: absolute !important;
+
+    left: 0 !important;
+    right: 0 !important;
+    bottom: -4px !important;
+
+    height: 4px !important;
+    background: var(--black) !important;
+
+    z-index: 20 !important;
+    pointer-events: none !important;
+  }
+
+  /* Keep arrow normal */
+  #navbar.open .nav-group > summary::after {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    background: transparent !important;
+  }
+}
+/* =====================================================
+   FINAL PC SIDE MENU DESIGN
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+@media (min-width: 851px) {
+  /* Hide submenu by default */
+  #navbar.open .dropdown-content {
+    display: none !important;
+  }
+
+  /* Show calculator submenu only on hover or click */
+  #navbar.open .dropdown:hover > .dropdown-content,
+  #navbar.open .dropdown:focus-within > .dropdown-content,
+  #navbar.open .dropdown.menu-open > .dropdown-content {
+    display: block !important;
+  }
+
+  /* Remove old black background panel */
+  #navbar.open::before {
+    display: none !important;
+  }
+
+  /* Main right side menu */
+  #navbar.open {
+    display: flex !important;
+    position: fixed !important;
+
+    top: 55px !important;
+    right: 120px !important;
+    left: auto !important;
+
+    width: 190px !important;
+    height: auto !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    flex-direction: column !important;
+    gap: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+
+    overflow: visible !important;
+    z-index: 99999998 !important;
+  }
+
+  /* Main menu rows: home, calculator, about */
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 190px !important;
+    height: 55px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex: none !important;
+  }
+
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
     width: 190px !important;
     height: 55px !important;
 
@@ -441,81 +2473,546 @@ body.menu-scrolled #navbar:not(.open),
     color: var(--black) !important;
 
     border: 3px solid var(--black) !important;
+    border-radius: 0 !important;
     box-shadow: 5px 5px 0 var(--black) !important;
 
     font-size: 24px !important;
     font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
     text-decoration: none !important;
   }
 
-  body.menu-scrolled #navbar.open > a + a,
-  body.menu-scrolled #navbar.open > a + .dropdown,
-  body.menu-scrolled #navbar.open > .dropdown + a,
-  #navbar.scrolled.open > a + a,
-  #navbar.scrolled.open > a + .dropdown,
-  #navbar.scrolled.open > .dropdown + a {
+  /* Overlap borders nicely */
+  #navbar.open > a + a,
+  #navbar.open > a + .dropdown,
+  #navbar.open > .dropdown + a,
+  #navbar.open > .dropdown + .dropdown {
     margin-top: -3px !important;
   }
 
-  body.menu-scrolled #navbar.open > a:hover,
-  body.menu-scrolled #navbar.open > .dropdown:hover > .dropbtn,
-  #navbar.scrolled.open > a:hover,
-  #navbar.scrolled.open > .dropdown:hover > .dropbtn {
+  /* Yellow hover for main menu */
+  #navbar.open > a:hover,
+  #navbar.open > .dropdown:hover > .dropbtn,
+  #navbar.open > .dropdown.menu-open > .dropbtn,
+  #navbar.open > .dropdown > .dropbtn:hover {
     background: var(--yellow) !important;
   }
 
-  /* Calculator menu opens side-by-side to the LEFT */
-  body.menu-scrolled #navbar.open .dropdown-content,
-  #navbar.scrolled.open .dropdown-content {
-    display: none !important;
+  /* Calculator submenu box on the left */
+  #navbar.open .dropdown {
+    position: relative !important;
+    overflow: visible !important;
+  }
 
+  #navbar.open .dropdown-content {
     position: absolute !important;
-    top: 0 !important;
+
+    top: 52px !important;
     right: 190px !important;
     left: auto !important;
 
-    width: 230px !important;
+    width: 235px !important;
+    max-height: none !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
 
     background: var(--white) !important;
     border: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 99999999 !important;
+  }
+
+  /* Calculator submenu rows */
+  #navbar.open .dropdown-content > a,
+  #navbar.open .dropdown-content > .nav-group,
+  #navbar.open .dropdown-content > .nav-group > summary {
+    width: 100% !important;
+    height: 48px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 12px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    font-size: 18px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  /* Remove bottom border only from last row */
+  #navbar.open .dropdown-content > *:last-child,
+  #navbar.open .dropdown-content > *:last-child > summary {
+    border-bottom: none !important;
+  }
+
+  /* Yellow hover for submenu rows */
+  #navbar.open .dropdown-content > a:hover,
+  #navbar.open .dropdown-content > .nav-group:hover,
+  #navbar.open .dropdown-content > .nav-group > summary:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* Details groups: health, finance */
+  #navbar.open .nav-group {
+    position: relative !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  #navbar.open .nav-group > summary {
+    cursor: pointer !important;
+    list-style: none !important;
+  }
+
+  #navbar.open .nav-group > summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  #navbar.open .nav-group > summary::marker {
+    content: "" !important;
+  }
+
+  /* Remove old broken pseudo-line */
+  #navbar.open .nav-group > summary::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* Arrow design */
+  #navbar.open .nav-group > summary::after {
+    content: "▶" !important;
+    display: inline-block !important;
+
+    position: static !important;
+
+    width: auto !important;
+    height: auto !important;
+
+    margin-left: 8px !important;
+
+    background: transparent !important;
+    color: var(--black) !important;
+
+    font-size: 14px !important;
+    line-height: 1 !important;
+  }
+
+  #navbar.open .nav-group[open] > summary::after {
+    content: "▼" !important;
+  }
+
+  #navbar.open .nav-group[open] > summary {
+    background: var(--yellow) !important;
+  }
+
+  /* Nested submenu: age/bmi or loan/discount */
+  #navbar.open .nav-group-links {
+    display: none !important;
+
+    position: absolute !important;
+
+    top: -3px !important;
+    right: calc(100% + 3px) !important;
+    left: auto !important;
+
+    width: 185px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    border-radius: 0 !important;
     box-shadow: 5px 5px 0 var(--black) !important;
 
     overflow: visible !important;
     z-index: 999999999 !important;
   }
 
-  body.menu-scrolled #navbar.open .dropdown:hover > .dropdown-content,
-  body.menu-scrolled #navbar.open .dropdown:focus-within > .dropdown-content,
-  #navbar.scrolled.open .dropdown:hover > .dropdown-content,
-  #navbar.scrolled.open .dropdown:focus-within > .dropdown-content {
+  #navbar.open .nav-group[open] .nav-group-links {
     display: block !important;
   }
 
-  body.menu-scrolled #navbar.open .dropdown-content > a,
-  body.menu-scrolled #navbar.open .dropdown-content > .nav-group,
-  body.menu-scrolled #navbar.open .dropdown-content > .nav-group > summary,
-  #navbar.scrolled.open .dropdown-content > a,
-  #navbar.scrolled.open .dropdown-content > .nav-group,
-  #navbar.scrolled.open .dropdown-content > .nav-group > summary {
-    height: 50px !important;
-    font-size: 18px !important;
+  #navbar.open .nav-group-links a {
+    width: 100% !important;
+    height: 47px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 10px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 17px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
   }
 
-  body.menu-scrolled #navbar.open .nav-group-links,
-  #navbar.scrolled.open .nav-group-links {
-    right: calc(100% + 3px) !important;
-    left: auto !important;
+  #navbar.open .nav-group-links a:last-child {
+    border-bottom: none !important;
+  }
+
+  #navbar.open .nav-group-links a:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* Small hamburger beside menu */
+  #menuIcon {
+    top: 58px !important;
+    right: 62px !important;
+
+    width: 52px !important;
+    height: 48px !important;
+
+    border: 4px solid var(--black) !important;
+    border-radius: 0 !important;
+
+    background: var(--white) !important;
+    color: transparent !important;
+
+    box-shadow:
+      5px 0 0 var(--black),
+      0 5px 0 var(--black),
+      5px 5px 0 var(--black),
+      inset 4px 4px 0 #dfeeff,
+      inset -4px -4px 0 #9fb3c8 !important;
+
+    font-size: 0 !important;
+    opacity: 1 !important;
+    transform: none !important;
+
+    z-index: 999999999 !important;
+  }
+
+  #menuIcon::before {
+    content: "" !important;
+
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+
+    width: 24px !important;
+    height: 4px !important;
+
+    transform: translate(-50%, -50%) !important;
+
+    background: #6f7c87 !important;
+    border: 2px solid var(--black) !important;
+    border-radius: 0 !important;
+
+    box-shadow:
+      0 -10px 0 #6f7c87,
+      0 -10px 0 2px var(--black),
+      0 10px 0 #6f7c87,
+      0 10px 0 2px var(--black) !important;
+  }
+
+  #menuIcon::after {
+    display: none !important;
+  }
+
+  #menuIcon:hover {
+    background: var(--yellow) !important;
+    transform: translate(2px, 2px) !important;
+    box-shadow:
+      3px 0 0 var(--black),
+      0 3px 0 var(--black),
+      3px 3px 0 var(--black),
+      inset 4px 4px 0 #fff4b8,
+      inset -4px -4px 0 #d4b84f !important;
+  }
+
+  /* Left-hand mode support */
+  body.left-hand #navbar.open {
+    left: 120px !important;
+    right: auto !important;
+  }
+
+  body.left-hand #menuIcon {
+    left: 62px !important;
+    right: auto !important;
+  }
+
+  body.left-hand #navbar.open .dropdown-content {
+    left: 190px !important;
+    right: auto !important;
+  }
+
+  body.left-hand #navbar.open .nav-group-links {
+    left: calc(100% + 3px) !important;
+    right: auto !important;
   }
 }
+/* =====================================================
+   REMOVE SIDE NAVIGATION BUTTONS
+   Keep only the Go Up button on PC and phone
+===================================================== */
 
-/* =========================
-   GO UP BUTTON
-========================= */
+/* Hide hamburger/menu button */
+#menuIcon,
+#menuIcon.show {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
 
+/* Hide resize buttons */
+#resizeNavigator {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Hide left/right hand toggle */
+#handToggleBtn {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Keep Go Up button */
 #scrollTopBtn,
 .scroll-top {
   display: none;
+  position: fixed;
+  right: 22px;
+  bottom: 28px;
 
+  width: 58px;
+  height: 50px;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 5px solid var(--black);
+  background: var(--white);
+  color: var(--black);
+  box-shadow: 5px 5px 0 var(--black);
+
+  font-size: 28px;
+  font-weight: bold;
+
+  cursor: pointer;
+  opacity: 0.7;
+  z-index: 9999999;
+}
+
+#scrollTopBtn:hover,
+.scroll-top:hover {
+  opacity: 1;
+  background: var(--yellow);
+}
+
+/* Phone Go Up button */
+@media (max-width: 850px) {
+  #menuIcon,
+  #menuIcon.show,
+  #resizeNavigator,
+  #handToggleBtn {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  #scrollTopBtn,
+  .scroll-top {
+    right: 14px !important;
+    left: auto !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+
+    width: 46px;
+    height: 44px;
+
+    font-size: 24px;
+  }
+}
+/* Keep normal navbar visible after scroll */
+#navbar.scrolled {
+  display: flex !important;
+}
+/* =====================================================
+   FORCE MENU ROW LINES ON EVERY PAGE
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+/* Main top navbar boxes */
+#navbar > a,
+#navbar > .dropdown > .dropbtn {
+  border: 3px solid var(--black) !important;
+}
+
+/* Calculator dropdown box */
+.dropdown-content {
+  border: 3px solid var(--black) !important;
+  overflow: visible !important;
+}
+
+/* Every direct dropdown row */
+.dropdown-content > a,
+.dropdown-content > .nav-group > summary {
+  border-bottom: 3px solid var(--black) !important;
+  box-shadow: inset 0 -3px 0 var(--black) !important;
+}
+
+/* Remove line only from the very last dropdown row */
+.dropdown-content > *:last-child,
+.dropdown-content > *:last-child > summary {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* Health / finance rows */
+.nav-group {
+  border-bottom: none !important;
+}
+
+.nav-group > summary {
+  border-bottom: 3px solid var(--black) !important;
+  box-shadow: inset 0 -3px 0 var(--black) !important;
+}
+
+/* Side submenu rows, example: age, bmi, loan, discount */
+.nav-group-links {
+  border: 3px solid var(--black) !important;
+}
+
+.nav-group-links a {
+  border-bottom: 3px solid var(--black) !important;
+  box-shadow: inset 0 -3px 0 var(--black) !important;
+}
+
+.nav-group-links a:last-child {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* PC side menu version */
+@media (min-width: 851px) {
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    border: 3px solid var(--black) !important;
+  }
+
+  #navbar.open .dropdown-content {
+    border: 3px solid var(--black) !important;
+  }
+
+  #navbar.open .dropdown-content > a,
+  #navbar.open .dropdown-content > .nav-group > summary {
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: inset 0 -3px 0 var(--black) !important;
+  }
+
+  #navbar.open .dropdown-content > *:last-child,
+  #navbar.open .dropdown-content > *:last-child > summary {
+    border-bottom: none !important;
+    box-shadow: none !important;
+  }
+
+  #navbar.open .nav-group-links {
+    border: 3px solid var(--black) !important;
+  }
+
+  #navbar.open .nav-group-links a {
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: inset 0 -3px 0 var(--black) !important;
+  }
+
+  #navbar.open .nav-group-links a:last-child {
+    border-bottom: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Fix broken arrow/line overlap */
+  #navbar.open .nav-group > summary::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  #navbar.open .nav-group > summary::after {
+    position: static !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Phone menu version */
+@media (max-width: 850px) {
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn {
+    border: 3px solid var(--black) !important;
+  }
+
+  .dropdown-content > a,
+  .dropdown-content > .nav-group > summary,
+  .nav-group-links a {
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: inset 0 -3px 0 var(--black) !important;
+  }
+
+  .dropdown-content > *:last-child,
+  .dropdown-content > *:last-child > summary,
+  .nav-group-links a:last-child {
+    border-bottom: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* =====================================================
+   FINAL NAVBAR REPAIR
+   1. Remove side buttons except Go Up
+   2. Keep normal navbar visible after scroll
+   3. Force lines between every dropdown menu row
+   4. Fix missing line between basic and health
+===================================================== */
+
+/* =========================
+   REMOVE SIDE NAV BUTTONS
+========================= */
+
+#menuIcon,
+#menuIcon.show,
+#resizeNavigator,
+#handToggleBtn {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Keep only Go Up button */
+#scrollTopBtn,
+.scroll-top {
+  display: none;
   position: fixed !important;
   right: 22px !important;
   left: auto !important;
@@ -547,6 +3044,379 @@ body.menu-scrolled #navbar:not(.open),
 }
 
 /* =========================
+   KEEP NORMAL NAVBAR
+========================= */
+
+#navbar,
+#navbar.scrolled,
+#navbar.open {
+  display: flex !important;
+  position: fixed !important;
+
+  top: 25px !important;
+  left: 50% !important;
+  right: auto !important;
+
+  width: 720px !important;
+  height: 65px !important;
+
+  flex-direction: row !important;
+  align-items: stretch !important;
+
+  background: var(--white) !important;
+  border: 3px solid var(--black) !important;
+  box-shadow: var(--shadow) !important;
+
+  overflow: visible !important;
+  transform: translateX(-50%) rotate(-1deg) !important;
+
+  z-index: 999999 !important;
+}
+
+#navbar::before,
+#navbar.open::before {
+  display: none !important;
+  content: none !important;
+}
+
+#navbar > a,
+#navbar > .dropdown,
+#navbar.open > a,
+#navbar.open > .dropdown {
+  width: 240px !important;
+  height: 65px !important;
+  flex: 0 0 240px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#navbar > a,
+#navbar .dropbtn,
+#navbar.open > a,
+#navbar.open .dropbtn {
+  width: 100% !important;
+  height: 65px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 0 !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  border: none !important;
+  border-right: 3px solid var(--black) !important;
+  box-shadow: none !important;
+
+  font-size: 26px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+
+  text-align: center !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+}
+
+#navbar > a:last-child,
+#navbar.open > a:last-child {
+  border-right: none !important;
+}
+
+#navbar > a:hover,
+#navbar .dropbtn:hover,
+#navbar .dropdown:hover > .dropbtn {
+  background: var(--yellow) !important;
+}
+
+/* =========================
+   MAIN DROPDOWN BOX
+========================= */
+
+#navbar .dropdown,
+#navbar.open .dropdown {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+#navbar .dropdown-content,
+#navbar.open .dropdown-content {
+  display: none !important;
+
+  position: absolute !important;
+  top: 62px !important;
+  left: -3px !important;
+  right: auto !important;
+
+  width: 250px !important;
+  max-height: none !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  background: var(--white) !important;
+  border: 3px solid var(--black) !important;
+  border-radius: 0 !important;
+  box-shadow: 5px 5px 0 var(--black) !important;
+
+  overflow: visible !important;
+  z-index: 9999999 !important;
+}
+
+#navbar .dropdown:hover > .dropdown-content,
+#navbar .dropdown:focus-within > .dropdown-content,
+#navbar.open .dropdown:hover > .dropdown-content,
+#navbar.open .dropdown:focus-within > .dropdown-content {
+  display: block !important;
+}
+
+/* =========================
+   FORCE LINE ON EVERY DROPDOWN ROW
+========================= */
+
+#navbar .dropdown-content > *,
+#navbar.open .dropdown-content > * {
+  position: relative !important;
+  width: 100% !important;
+  height: 50px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  background: var(--white) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Every row content */
+#navbar .dropdown-content > a,
+#navbar .dropdown-content > .nav-group > summary,
+#navbar.open .dropdown-content > a,
+#navbar.open .dropdown-content > .nav-group > summary {
+  width: 100% !important;
+  height: 50px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  margin: 0 !important;
+  padding: 0 10px !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  border: none !important;
+  box-shadow: none !important;
+
+  font-size: 20px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+
+  text-align: center !important;
+  text-decoration: none !important;
+}
+
+/* THIS is the important part:
+   creates the line between basic and health, and every row after */
+#navbar .dropdown-content > *:not(:last-child)::after,
+#navbar.open .dropdown-content > *:not(:last-child)::after {
+  content: "" !important;
+
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+
+  height: 3px !important;
+  background: var(--black) !important;
+
+  z-index: 99999999 !important;
+  pointer-events: none !important;
+}
+
+/* Hover yellow for all main dropdown rows */
+#navbar .dropdown-content > a:hover,
+#navbar .dropdown-content > .nav-group:hover > summary,
+#navbar.open .dropdown-content > a:hover,
+#navbar.open .dropdown-content > .nav-group:hover > summary {
+  background: var(--yellow) !important;
+}
+
+/* =========================
+   HEALTH / FINANCE GROUPS
+========================= */
+
+#navbar .nav-group,
+#navbar.open .nav-group {
+  position: relative !important;
+  height: 50px !important;
+  overflow: visible !important;
+
+  background: var(--white) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#navbar .nav-group > summary,
+#navbar.open .nav-group > summary {
+  cursor: pointer !important;
+  list-style: none !important;
+}
+
+#navbar .nav-group > summary::-webkit-details-marker,
+#navbar.open .nav-group > summary::-webkit-details-marker {
+  display: none !important;
+}
+
+#navbar .nav-group > summary::marker,
+#navbar.open .nav-group > summary::marker {
+  content: "" !important;
+}
+
+/* Remove broken extra pseudo lines */
+#navbar .nav-group > summary::before,
+#navbar.open .nav-group > summary::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* Arrow */
+#navbar .nav-group > summary::after,
+#navbar.open .nav-group > summary::after {
+  content: " ▶" !important;
+  position: static !important;
+
+  width: auto !important;
+  height: auto !important;
+
+  margin-left: 6px !important;
+
+  background: transparent !important;
+  color: var(--black) !important;
+  box-shadow: none !important;
+
+  font-size: 14px !important;
+  line-height: 1 !important;
+}
+
+#navbar .nav-group[open] > summary::after,
+#navbar.open .nav-group[open] > summary::after {
+  content: " ▼" !important;
+}
+
+/* =========================
+   SIDE SUBMENUS: AGE/BMI, LOAN/DISCOUNT
+========================= */
+
+#navbar .nav-group-links,
+#navbar.open .nav-group-links {
+  display: none !important;
+
+  position: absolute !important;
+  top: -3px !important;
+  left: 100% !important;
+  right: auto !important;
+
+  width: 180px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  background: var(--white) !important;
+  border: 3px solid var(--black) !important;
+  border-radius: 0 !important;
+  box-shadow: 5px 5px 0 var(--black) !important;
+
+  overflow: visible !important;
+  z-index: 99999999 !important;
+}
+
+#navbar .nav-group[open] .nav-group-links,
+#navbar.open .nav-group[open] .nav-group-links {
+  display: block !important;
+}
+
+#navbar .nav-group-links a,
+#navbar.open .nav-group-links a {
+  position: relative !important;
+
+  width: 100% !important;
+  height: 50px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  margin: 0 !important;
+  padding: 0 10px !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  border: none !important;
+  box-shadow: none !important;
+
+  font-size: 18px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+
+  text-align: center !important;
+  text-decoration: none !important;
+}
+
+/* Lines inside age/bmi or loan/discount submenu */
+#navbar .nav-group-links a:not(:last-child)::after,
+#navbar.open .nav-group-links a:not(:last-child)::after {
+  content: "" !important;
+
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+
+  height: 3px !important;
+  background: var(--black) !important;
+
+  z-index: 99999999 !important;
+  pointer-events: none !important;
+}
+
+#navbar .nav-group-links a:hover,
+#navbar.open .nav-group-links a:hover {
+  background: var(--yellow) !important;
+}
+
+/* =========================
+   INDEX PAGE CARD DROPDOWN LINES
+========================= */
+
+.group-links {
+  border-top: 3px solid var(--black) !important;
+}
+
+.group-links a {
+  position: relative !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+.group-links a:not(:last-child)::after {
+  content: "" !important;
+
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+
+  height: 3px !important;
+  background: var(--black) !important;
+
+  pointer-events: none !important;
+}
+
+/* =========================
    PHONE VERSION
 ========================= */
 
@@ -563,6 +3433,7 @@ body.menu-scrolled #navbar:not(.open),
     height: 58px !important;
 
     flex-direction: row !important;
+
     transform: translateX(-50%) rotate(-1deg) !important;
   }
 
@@ -576,27 +3447,42 @@ body.menu-scrolled #navbar:not(.open),
   }
 
   #navbar > a,
-  #navbar > .dropdown > .dropbtn,
+  #navbar .dropbtn,
   #navbar.open > a,
-  #navbar.open > .dropdown > .dropbtn {
+  #navbar.open .dropbtn {
     height: 58px !important;
     font-size: 18px !important;
   }
 
-  #navbar .dropdown-content {
+  #navbar .dropdown-content,
+  #navbar.open .dropdown-content {
     top: 55px !important;
     left: -3px !important;
+    right: auto !important;
+
     width: 220px !important;
   }
 
+  #navbar .dropdown-content > *,
+  #navbar.open .dropdown-content > * {
+    height: 46px !important;
+  }
+
   #navbar .dropdown-content > a,
-  #navbar .dropdown-content > .nav-group,
-  #navbar .dropdown-content > .nav-group > summary {
+  #navbar .dropdown-content > .nav-group > summary,
+  #navbar.open .dropdown-content > a,
+  #navbar.open .dropdown-content > .nav-group > summary {
     height: 46px !important;
     font-size: 17px !important;
   }
 
-  #navbar .nav-group-links {
+  #navbar .nav-group,
+  #navbar.open .nav-group {
+    height: auto !important;
+  }
+
+  #navbar .nav-group-links,
+  #navbar.open .nav-group-links {
     position: static !important;
     width: 100% !important;
 
@@ -606,27 +3492,548 @@ body.menu-scrolled #navbar:not(.open),
     box-shadow: none !important;
   }
 
-  #navbar .nav-group-links a {
+  #navbar .nav-group-links a,
+  #navbar.open .nav-group-links a {
     height: 42px !important;
     font-size: 16px !important;
   }
 
-  /* Bottom buttons */
+  #scrollTopBtn,
+  .scroll-top {
+    right: 14px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+
+    width: 46px !important;
+    height: 44px !important;
+
+    font-size: 24px !important;
+  }
+}
+/* =====================================================
+   TOP NAVBAR TURNS INTO MENU ICON ON SCROLL
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+/* Default: hide icon when page is at top */
+#menuIcon {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+
+  position: fixed !important;
+  top: 24px !important;
+  right: 24px !important;
+  left: auto !important;
+  bottom: auto !important;
+
+  width: 54px !important;
+  height: 50px !important;
+
+  border: 4px solid var(--black) !important;
+  border-radius: 0 !important;
+
+  background: var(--white) !important;
+  color: transparent !important;
+
+  box-shadow:
+    5px 0 0 var(--black),
+    0 5px 0 var(--black),
+    5px 5px 0 var(--black),
+    inset 4px 4px 0 #dfeeff,
+    inset -4px -4px 0 #9fb3c8 !important;
+
+  font-size: 0 !important;
+  opacity: 1 !important;
+  transform: none !important;
+  cursor: pointer !important;
+
+  z-index: 999999999 !important;
+}
+
+/* Draw the 3 hamburger lines */
+#menuIcon::before {
+  content: "" !important;
+
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+
+  width: 24px !important;
+  height: 4px !important;
+
+  transform: translate(-50%, -50%) !important;
+
+  background: #6f7c87 !important;
+  border: 2px solid var(--black) !important;
+  border-radius: 0 !important;
+
+  box-shadow:
+    0 -10px 0 #6f7c87,
+    0 -10px 0 2px var(--black),
+    0 10px 0 #6f7c87,
+    0 10px 0 2px var(--black) !important;
+}
+
+#menuIcon::after {
+  display: none !important;
+}
+
+/* Show icon only after scroll */
+#menuIcon.show,
+body.menu-scrolled #menuIcon {
+  display: flex !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#menuIcon:hover {
+  background: var(--yellow) !important;
+  transform: translate(2px, 2px) !important;
+
+  box-shadow:
+    3px 0 0 var(--black),
+    0 3px 0 var(--black),
+    3px 3px 0 var(--black),
+    inset 4px 4px 0 #fff4b8,
+    inset -4px -4px 0 #d4b84f !important;
+}
+
+/* When scrolled, hide the normal top navbar */
+body.menu-scrolled #navbar:not(.open),
+#navbar.scrolled:not(.open) {
+  display: none !important;
+}
+
+/* When menu icon is clicked, show compact menu */
+body.menu-scrolled #navbar.open,
+#navbar.scrolled.open {
+  display: flex !important;
+  position: fixed !important;
+
+  top: 24px !important;
+  right: 92px !important;
+  left: auto !important;
+  bottom: auto !important;
+
+  width: 190px !important;
+  height: auto !important;
+
+  flex-direction: column !important;
+  align-items: stretch !important;
+
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+
+  overflow: visible !important;
+  z-index: 999999998 !important;
+}
+
+/* Compact menu rows */
+body.menu-scrolled #navbar.open > a,
+body.menu-scrolled #navbar.open > .dropdown,
+#navbar.scrolled.open > a,
+#navbar.scrolled.open > .dropdown {
+  width: 190px !important;
+  height: 55px !important;
+
+  flex: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Home / Calculator / About boxes */
+body.menu-scrolled #navbar.open > a,
+body.menu-scrolled #navbar.open .dropbtn,
+#navbar.scrolled.open > a,
+#navbar.scrolled.open .dropbtn {
+  width: 190px !important;
+  height: 55px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  border: 3px solid var(--black) !important;
+  box-shadow: 5px 5px 0 var(--black) !important;
+
+  font-size: 24px !important;
+  font-weight: bold !important;
+  text-decoration: none !important;
+}
+
+/* overlap borders neatly */
+body.menu-scrolled #navbar.open > a + a,
+body.menu-scrolled #navbar.open > a + .dropdown,
+body.menu-scrolled #navbar.open > .dropdown + a,
+#navbar.scrolled.open > a + a,
+#navbar.scrolled.open > a + .dropdown,
+#navbar.scrolled.open > .dropdown + a {
+  margin-top: -3px !important;
+}
+
+body.menu-scrolled #navbar.open > a:hover,
+body.menu-scrolled #navbar.open .dropdown:hover > .dropbtn,
+#navbar.scrolled.open > a:hover,
+#navbar.scrolled.open .dropdown:hover > .dropbtn {
+  background: var(--yellow) !important;
+}
+
+/* Phone version */
+@media (max-width: 850px) {
+  #menuIcon {
+    top: 18px !important;
+    right: 14px !important;
+
+    width: 48px !important;
+    height: 44px !important;
+  }
+
+  #menuIcon::before {
+    width: 20px !important;
+    height: 3px !important;
+
+    box-shadow:
+      0 -8px 0 #6f7c87,
+      0 -8px 0 2px var(--black),
+      0 8px 0 #6f7c87,
+      0 8px 0 2px var(--black) !important;
+  }
+
+  body.menu-scrolled #navbar.open,
+  #navbar.scrolled.open {
+    top: 18px !important;
+    right: 74px !important;
+    left: auto !important;
+
+    width: 135px !important;
+  }
+
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open > .dropdown,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open > .dropdown {
+    width: 135px !important;
+    height: 42px !important;
+  }
+
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open .dropbtn,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open .dropbtn {
+    width: 135px !important;
+    height: 42px !important;
+    font-size: 18px !important;
+  }
+}
+/* =====================================================
+   FIX THICK CALCULATOR NAVBAR LINE
+   Makes all top navbar lines same thickness
+===================================================== */
+
+#navbar {
+  border: 3px solid var(--black) !important;
+  overflow: visible !important;
+}
+
+/* Remove full border from individual menu items */
+#navbar > a,
+#navbar > .dropdown,
+#navbar > .dropdown > .dropbtn,
+#navbar a,
+#navbar .dropbtn {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Same size for all 3 menu sections */
+#navbar > a,
+#navbar > .dropdown {
+  width: 240px !important;
+  height: 65px !important;
+  flex: 0 0 240px !important;
+}
+
+/* Text/button layout */
+#navbar > a,
+#navbar > .dropdown > .dropbtn {
+  width: 100% !important;
+  height: 65px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  font-size: 26px !important;
+  font-weight: bold !important;
+  text-decoration: none !important;
+}
+
+/* Only use ONE separator line between menu items */
+#navbar > a:first-child,
+#navbar > .dropdown {
+  border-right: 3px solid var(--black) !important;
+}
+
+/* Hover color */
+#navbar > a:hover,
+#navbar > .dropdown:hover > .dropbtn,
+#navbar > .dropdown > .dropbtn:hover {
+  background: var(--yellow) !important;
+}
+
+/* Keep dropdown box normal */
+#navbar .dropdown-content {
+  border: 3px solid var(--black) !important;
+  box-shadow: 5px 5px 0 var(--black) !important;
+}
+
+/* =====================================================
+   MAKE EVERY DROPDOWN EXPAND ON HOVER
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+/* Top navbar calculator dropdown */
+#navbar .dropdown:hover > .dropdown-content,
+#navbar .dropdown:focus-within > .dropdown-content {
+  display: block !important;
+}
+
+/* Health / Finance submenu inside navbar dropdown */
+#navbar .nav-group:hover > .nav-group-links,
+#navbar .nav-group:focus-within > .nav-group-links,
+#navbar .nav-group[open] > .nav-group-links {
+  display: block !important;
+}
+
+/* Make health / finance row yellow on hover */
+#navbar .nav-group:hover > summary,
+#navbar .nav-group:focus-within > summary {
+  background: var(--yellow) !important;
+}
+
+/* Index page dropdown cards, like Health and Finance cards */
+.group-card:hover > .group-links,
+.group-card:focus-within > .group-links,
+.group-card[open] > .group-links {
+  display: block !important;
+}
+
+/* Make index card summary yellow on hover */
+.group-card:hover > summary,
+.group-card:focus-within > summary {
+  background: var(--yellow) !important;
+}
+
+/* Make sure hidden details content can appear on hover */
+details.group-card:not([open]):hover > .group-links,
+details.group-card:not([open]):focus-within > .group-links,
+details.nav-group:not([open]):hover > .nav-group-links,
+details.nav-group:not([open]):focus-within > .nav-group-links {
+  display: block !important;
+}
+
+/* Side submenu links hover yellow */
+.nav-group-links a:hover,
+.group-links a:hover {
+  background: var(--yellow) !important;
+}
+
+/* =====================================================
+   CHANGE SCROLL MENU ICON TO HOUSE ICON
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+/* Show only the house menu icon after scroll */
+#menuIcon {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+
+  position: fixed !important;
+  top: 24px !important;
+  right: 24px !important;
+  left: auto !important;
+  bottom: auto !important;
+
+  width: 54px !important;
+  height: 50px !important;
+
+  border: 4px solid var(--black) !important;
+  border-radius: 0 !important;
+
+  background: var(--white) !important;
+  color: transparent !important;
+
+  box-shadow:
+    5px 0 0 var(--black),
+    0 5px 0 var(--black),
+    5px 5px 0 var(--black),
+    inset 4px 4px 0 #dfeeff,
+    inset -4px -4px 0 #9fb3c8 !important;
+
+  font-size: 0 !important;
+  opacity: 1 !important;
+  transform: none !important;
+  cursor: pointer !important;
+
+  z-index: 999999999 !important;
+}
+
+/* Show icon only after scrolling */
+#menuIcon.show,
+body.menu-scrolled #menuIcon {
+  display: flex !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Pixel house roof */
+#menuIcon::before {
+  content: "" !important;
+
+  position: absolute !important;
+  left: 50% !important;
+  top: 16px !important;
+
+  width: 24px !important;
+  height: 24px !important;
+
+  background: #dfeeff !important;
+  border-left: 4px solid var(--black) !important;
+  border-top: 4px solid var(--black) !important;
+  border-right: none !important;
+  border-bottom: none !important;
+
+  transform: translateX(-50%) rotate(45deg) !important;
+
+  box-shadow: none !important;
+  z-index: 2 !important;
+}
+
+/* Pixel house body + door */
+#menuIcon::after {
+  content: "" !important;
+
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 8px !important;
+
+  width: 30px !important;
+  height: 24px !important;
+
+  transform: translateX(-50%) !important;
+
+  background:
+    linear-gradient(
+      to bottom,
+      transparent 0 9px,
+      var(--black) 9px 13px,
+      transparent 13px 100%
+    ),
+    linear-gradient(
+      to right,
+      transparent 0 11px,
+      #7b8791 11px 19px,
+      transparent 19px 100%
+    ),
+    #dfeeff !important;
+
+  border: 4px solid var(--black) !important;
+  border-radius: 0 !important;
+
+  box-shadow: none !important;
+  z-index: 3 !important;
+}
+
+/* Hover effect */
+#menuIcon:hover {
+  background: var(--yellow) !important;
+  transform: translate(2px, 2px) !important;
+
+  box-shadow:
+    3px 0 0 var(--black),
+    0 3px 0 var(--black),
+    3px 3px 0 var(--black),
+    inset 4px 4px 0 #fff4b8,
+    inset -4px -4px 0 #d4b84f !important;
+}
+
+/* Hide other side buttons */
+#resizeNavigator,
+#handToggleBtn {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Phone size */
+@media (max-width: 850px) {
+  #menuIcon {
+    top: 18px !important;
+    right: 14px !important;
+
+    width: 48px !important;
+    height: 44px !important;
+  }
+
+  #menuIcon::before {
+    top: 14px !important;
+    width: 20px !important;
+    height: 20px !important;
+    border-left-width: 3px !important;
+    border-top-width: 3px !important;
+  }
+
+  #menuIcon::after {
+    bottom: 7px !important;
+    width: 26px !important;
+    height: 20px !important;
+    border-width: 3px !important;
+  }
+}
+/* =====================================================
+   PHONE: HOUSE BUTTON + GO UP BUTTON SIDE BY SIDE
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+@media (max-width: 850px) {
+  /* House / side menu button */
   #menuIcon {
     top: auto !important;
     left: auto !important;
     right: 70px !important;
     bottom: calc(28px + env(safe-area-inset-bottom)) !important;
 
-    width: 62px !important;
+    width: 46px !important;
     height: 44px !important;
+
+    z-index: 999999999 !important;
   }
 
-  #menuIcon::before {
-    font-size: 14px !important;
-    letter-spacing: 0.5px !important;
+  #menuIcon.show,
+  body.menu-scrolled #menuIcon {
+    display: flex !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+
+    align-items: center !important;
+    justify-content: center !important;
   }
 
+  /* Go Up button */
   #scrollTopBtn,
   .scroll-top {
     top: auto !important;
@@ -637,10 +4044,75 @@ body.menu-scrolled #navbar:not(.open),
     width: 46px !important;
     height: 44px !important;
 
-    font-size: 24px !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    z-index: 999999998 !important;
   }
 
-  /* Phone side menu expands left */
+  /* When the house button opens the menu, show menu above the buttons */
+  body.menu-scrolled #navbar.open,
+  #navbar.scrolled.open {
+    top: auto !important;
+    left: auto !important;
+    right: 14px !important;
+    bottom: calc(86px + env(safe-area-inset-bottom)) !important;
+
+    width: 135px !important;
+    height: auto !important;
+
+    flex-direction: column !important;
+    transform: none !important;
+  }
+
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open > .dropdown,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open > .dropdown {
+    width: 135px !important;
+    height: 42px !important;
+    flex: none !important;
+  }
+
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open .dropbtn,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open .dropbtn {
+    width: 135px !important;
+    height: 42px !important;
+    font-size: 18px !important;
+  }
+}
+/* =====================================================
+   PHONE: SIDE MENU EXPANDS SIDEWAYS TO THE LEFT
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+@media (max-width: 850px) {
+  /* House button stays bottom-right, beside Go Up */
+  #menuIcon {
+    top: auto !important;
+    left: auto !important;
+    right: 70px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+
+    width: 46px !important;
+    height: 44px !important;
+  }
+
+  /* Go Up button stays on the far right */
+  #scrollTopBtn,
+  .scroll-top {
+    top: auto !important;
+    left: auto !important;
+    right: 14px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+
+    width: 46px !important;
+    height: 44px !important;
+  }
+
+  /* Opened menu expands sideways to the LEFT of the house button */
   body.menu-scrolled #navbar.open,
   #navbar.scrolled.open {
     display: flex !important;
@@ -648,7 +4120,7 @@ body.menu-scrolled #navbar:not(.open),
 
     top: auto !important;
     left: auto !important;
-    right: 140px !important;
+    right: 126px !important;
     bottom: calc(28px + env(safe-area-inset-bottom)) !important;
 
     width: auto !important;
@@ -660,31 +4132,340 @@ body.menu-scrolled #navbar:not(.open),
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-    transform: none !important;
 
+    transform: none !important;
     overflow: visible !important;
+
+    z-index: 999999998 !important;
   }
 
+  /* Home / Calculator / About become horizontal boxes */
   body.menu-scrolled #navbar.open > a,
   body.menu-scrolled #navbar.open > .dropdown,
   #navbar.scrolled.open > a,
   #navbar.scrolled.open > .dropdown {
-    width: 100px !important;
+    width: 105px !important;
     height: 44px !important;
-    flex: 0 0 100px !important;
+
+    flex: 0 0 105px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open .dropbtn,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open .dropbtn {
+    width: 105px !important;
+    height: 44px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 3px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    font-size: 16px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  /* Overlap borders neatly between horizontal buttons */
+  body.menu-scrolled #navbar.open > a + a,
+  body.menu-scrolled #navbar.open > a + .dropdown,
+  body.menu-scrolled #navbar.open > .dropdown + a,
+  #navbar.scrolled.open > a + a,
+  #navbar.scrolled.open > a + .dropdown,
+  #navbar.scrolled.open > .dropdown + a {
+    margin-left: -3px !important;
+  }
+
+  /* Hover color */
+  body.menu-scrolled #navbar.open > a:hover,
+  body.menu-scrolled #navbar.open .dropdown:hover > .dropbtn,
+  #navbar.scrolled.open > a:hover,
+  #navbar.scrolled.open .dropdown:hover > .dropbtn {
+    background: var(--yellow) !important;
+  }
+
+  /* Calculator dropdown opens upward from the horizontal side menu */
+  body.menu-scrolled #navbar.open .dropdown-content,
+  #navbar.scrolled.open .dropdown-content {
+    display: none !important;
+
+    position: absolute !important;
+    left: 0 !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: 47px !important;
+
+    width: 180px !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 999999999 !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown:hover > .dropdown-content,
+  body.menu-scrolled #navbar.open .dropdown:focus-within > .dropdown-content,
+  #navbar.scrolled.open .dropdown:hover > .dropdown-content,
+  #navbar.scrolled.open .dropdown:focus-within > .dropdown-content {
+    display: block !important;
+  }
+
+  /* Dropdown rows */
+  body.menu-scrolled #navbar.open .dropdown-content > a,
+  body.menu-scrolled #navbar.open .dropdown-content > .nav-group > summary,
+  #navbar.scrolled.open .dropdown-content > a,
+  #navbar.scrolled.open .dropdown-content > .nav-group > summary {
+    width: 100% !important;
+    height: 42px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    border-bottom: 3px solid var(--black) !important;
+
+    font-size: 15px !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown-content > *:last-child,
+  body.menu-scrolled #navbar.open .dropdown-content > *:last-child > summary,
+  #navbar.scrolled.open .dropdown-content > *:last-child,
+  #navbar.scrolled.open .dropdown-content > *:last-child > summary {
+    border-bottom: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown-content > a:hover,
+  body.menu-scrolled #navbar.open .nav-group:hover > summary,
+  #navbar.scrolled.open .dropdown-content > a:hover,
+  #navbar.scrolled.open .nav-group:hover > summary {
+    background: var(--yellow) !important;
+  }
+}
+/* =====================================================
+   REAL BLACK HOME ICON FOR SIDE MENU BUTTON
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+#menuIcon {
+  background: var(--white) !important;
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
+/* Real black home icon */
+#menuIcon::before {
+  content: "" !important;
+
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+
+  width: 30px !important;
+  height: 30px !important;
+
+  transform: translate(-50%, -50%) !important;
+
+  background: var(--black) !important;
+
+  clip-path: polygon(
+    50% 0%,
+    100% 38%,
+    88% 38%,
+    88% 100%,
+    62% 100%,
+    62% 66%,
+    38% 66%,
+    38% 100%,
+    12% 100%,
+    12% 38%,
+    0% 38%
+  ) !important;
+
+  border: none !important;
+  box-shadow: none !important;
+  z-index: 5 !important;
+}
+
+/* Remove old pixel house body */
+#menuIcon::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Hover */
+#menuIcon:hover {
+  background: var(--yellow) !important;
+}
+
+/* Phone size */
+@media (max-width: 850px) {
+  #menuIcon::before {
+    width: 25px !important;
+    height: 25px !important;
+  }
+}
+/* =====================================================
+   PC: HOME ICON EXPANDS MENU TO THE LEFT ON HOVER
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+@media (min-width: 851px) {
+  /* Show home/menu button only after scroll */
+  #menuIcon.show,
+  body.menu-scrolled #menuIcon {
+    display: flex !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  /* Black home icon button */
+  #menuIcon {
+    position: fixed !important;
+    top: 24px !important;
+    right: 24px !important;
+    left: auto !important;
+    bottom: auto !important;
+
+    width: 54px !important;
+    height: 50px !important;
+
+    display: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border: 4px solid var(--black) !important;
+    background: var(--white) !important;
+    color: transparent !important;
+
+    box-shadow:
+      5px 0 0 var(--black),
+      0 5px 0 var(--black),
+      5px 5px 0 var(--black) !important;
+
+    font-size: 0 !important;
+    cursor: pointer !important;
+    z-index: 999999999 !important;
+  }
+
+  #menuIcon::before {
+    content: "" !important;
+    position: absolute !important;
+
+    width: 30px !important;
+    height: 30px !important;
+
+    background: var(--black) !important;
+
+    clip-path: polygon(
+      50% 0%,
+      100% 38%,
+      88% 38%,
+      88% 100%,
+      62% 100%,
+      62% 66%,
+      38% 66%,
+      38% 100%,
+      12% 100%,
+      12% 38%,
+      0% 38%
+    ) !important;
+
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  #menuIcon::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  #menuIcon:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* Hide normal navbar after scroll */
+  body.menu-scrolled #navbar:not(.open),
+  #navbar.scrolled:not(.open) {
+    display: none !important;
+  }
+
+  /* Main menu opens to the LEFT of home icon */
+  body.menu-scrolled #navbar.open,
+  #navbar.scrolled.open {
+    display: flex !important;
+    position: fixed !important;
+
+    top: 24px !important;
+    right: 92px !important;
+    left: auto !important;
+    bottom: auto !important;
+
+    width: 190px !important;
+    height: auto !important;
+
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+
+    overflow: visible !important;
+    z-index: 999999998 !important;
+  }
+
+  /* Stack home / calculator / about */
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open > .dropdown,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open > .dropdown {
+    width: 190px !important;
+    height: 55px !important;
+
+    flex: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   body.menu-scrolled #navbar.open > a,
   body.menu-scrolled #navbar.open > .dropdown > .dropbtn,
   #navbar.scrolled.open > a,
   #navbar.scrolled.open > .dropdown > .dropbtn {
-    width: 100px !important;
-    height: 44px !important;
+    width: 190px !important;
+    height: 55px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
 
     border: 3px solid var(--black) !important;
-    box-shadow: 4px 4px 0 var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
 
-    font-size: 15px !important;
+    font-size: 24px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
   }
 
   body.menu-scrolled #navbar.open > a + a,
@@ -693,6 +4474,637 @@ body.menu-scrolled #navbar:not(.open),
   #navbar.scrolled.open > a + a,
   #navbar.scrolled.open > a + .dropdown,
   #navbar.scrolled.open > .dropdown + a {
-    margin-left: -3px !important;
+    margin-top: -3px !important;
+  }
+
+  body.menu-scrolled #navbar.open > a:hover,
+  body.menu-scrolled #navbar.open > .dropdown:hover > .dropbtn,
+  #navbar.scrolled.open > a:hover,
+  #navbar.scrolled.open > .dropdown:hover > .dropbtn {
+    background: var(--yellow) !important;
+  }
+
+  /* Calculator submenu opens to the LEFT */
+  body.menu-scrolled #navbar.open .dropdown,
+  #navbar.scrolled.open .dropdown {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown-content,
+  #navbar.scrolled.open .dropdown-content {
+    display: none !important;
+
+    position: absolute !important;
+    top: 52px !important;
+    right: 190px !important;
+    left: auto !important;
+
+    width: 230px !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 999999999 !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown:hover > .dropdown-content,
+  body.menu-scrolled #navbar.open .dropdown:focus-within > .dropdown-content,
+  #navbar.scrolled.open .dropdown:hover > .dropdown-content,
+  #navbar.scrolled.open .dropdown:focus-within > .dropdown-content {
+    display: block !important;
+  }
+
+  /* Basic / health / finance / percentage rows */
+  body.menu-scrolled #navbar.open .dropdown-content > a,
+  body.menu-scrolled #navbar.open .dropdown-content > .nav-group > summary,
+  #navbar.scrolled.open .dropdown-content > a,
+  #navbar.scrolled.open .dropdown-content > .nav-group > summary {
+    width: 100% !important;
+    height: 48px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 18px !important;
+    font-weight: bold !important;
+    text-decoration: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown-content > *:last-child > summary,
+  body.menu-scrolled #navbar.open .dropdown-content > a:last-child,
+  #navbar.scrolled.open .dropdown-content > *:last-child > summary,
+  #navbar.scrolled.open .dropdown-content > a:last-child {
+    border-bottom: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown-content > a:hover,
+  body.menu-scrolled #navbar.open .nav-group:hover > summary,
+  #navbar.scrolled.open .dropdown-content > a:hover,
+  #navbar.scrolled.open .nav-group:hover > summary {
+    background: var(--yellow) !important;
+  }
+
+  /* Health / finance group setup */
+  body.menu-scrolled #navbar.open .nav-group,
+  #navbar.scrolled.open .nav-group {
+    position: relative !important;
+    width: 100% !important;
+    height: 48px !important;
+    overflow: visible !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary,
+  #navbar.scrolled.open .nav-group > summary {
+    cursor: pointer !important;
+    list-style: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary::-webkit-details-marker,
+  #navbar.scrolled.open .nav-group > summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary::after,
+  #navbar.scrolled.open .nav-group > summary::after {
+    content: " ▶" !important;
+    margin-left: 8px !important;
+    font-size: 14px !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group:hover > summary::after,
+  #navbar.scrolled.open .nav-group:hover > summary::after {
+    content: " ◀" !important;
+  }
+
+  /* Age / BMI submenu opens to the LEFT of health */
+  body.menu-scrolled #navbar.open .nav-group-links,
+  #navbar.scrolled.open .nav-group-links {
+    display: none !important;
+
+    position: absolute !important;
+    top: -3px !important;
+    right: calc(100% + 3px) !important;
+    left: auto !important;
+
+    width: 170px !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 999999999 !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group:hover > .nav-group-links,
+  body.menu-scrolled #navbar.open .nav-group:focus-within > .nav-group-links,
+  body.menu-scrolled #navbar.open .nav-group[open] > .nav-group-links,
+  #navbar.scrolled.open .nav-group:hover > .nav-group-links,
+  #navbar.scrolled.open .nav-group:focus-within > .nav-group-links,
+  #navbar.scrolled.open .nav-group[open] > .nav-group-links {
+    display: block !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group-links a,
+  #navbar.scrolled.open .nav-group-links a {
+    width: 100% !important;
+    height: 45px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+
+    font-size: 17px !important;
+    font-weight: bold !important;
+    text-decoration: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group-links a:last-child,
+  #navbar.scrolled.open .nav-group-links a:last-child {
+    border-bottom: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group-links a:hover,
+  #navbar.scrolled.open .nav-group-links a:hover {
+    background: var(--yellow) !important;
+  }
+}
+/* =====================================================
+   CHANGE HOME ICON BUTTON TO MENU BUTTON
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+#menuIcon {
+  width: 78px !important;
+  height: 50px !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  font-size: 0 !important;
+  font-weight: bold !important;
+
+  border: 4px solid var(--black) !important;
+  box-shadow:
+    5px 0 0 var(--black),
+    0 5px 0 var(--black),
+    5px 5px 0 var(--black) !important;
+}
+
+/* Replace house icon with MENU text */
+#menuIcon::before {
+  content: "MENU" !important;
+
+  position: static !important;
+
+  width: auto !important;
+  height: auto !important;
+
+  display: block !important;
+
+  background: transparent !important;
+  color: var(--black) !important;
+
+  clip-path: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+
+  font-size: 18px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+  letter-spacing: 1px !important;
+}
+
+/* Remove old house body */
+#menuIcon::after {
+  display: none !important;
+  content: none !important;
+}
+
+#menuIcon:hover {
+  background: var(--yellow) !important;
+}
+
+/* Move opened PC menu slightly left so it does not touch MENU button */
+@media (min-width: 851px) {
+  body.menu-scrolled #navbar.open,
+  #navbar.scrolled.open {
+    right: 116px !important;
+  }
+}
+
+/* Phone MENU button */
+@media (max-width: 850px) {
+  #menuIcon {
+    width: 62px !important;
+    height: 44px !important;
+
+    right: 70px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+  }
+
+  #menuIcon::before {
+    font-size: 14px !important;
+    letter-spacing: 0.5px !important;
+  }
+
+  /* If phone menu expands sideways left */
+  body.menu-scrolled #navbar.open,
+  #navbar.scrolled.open {
+    right: 140px !important;
+  }
+}
+/* =====================================================
+   PC SIDE MENU:
+   MENU button hover -> menu expands left
+   home/calculator/about stack vertically
+   calculator hover -> basic/health/finance/percentage opens left
+   health hover -> age/bmi opens further left
+===================================================== */
+
+@media (min-width: 851px) {
+  /* MENU button */
+  #menuIcon {
+    position: fixed !important;
+    top: 24px !important;
+    right: 24px !important;
+    left: auto !important;
+    bottom: auto !important;
+
+    width: 78px !important;
+    height: 50px !important;
+
+    display: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    border-radius: 0 !important;
+
+    box-shadow:
+      5px 0 0 var(--black),
+      0 5px 0 var(--black),
+      5px 5px 0 var(--black) !important;
+
+    font-size: 0 !important;
+    cursor: pointer !important;
+    opacity: 1 !important;
+
+    z-index: 999999999 !important;
+  }
+
+  #menuIcon::before {
+    content: "MENU" !important;
+
+    position: static !important;
+
+    width: auto !important;
+    height: auto !important;
+
+    display: block !important;
+
+    background: transparent !important;
+    color: var(--black) !important;
+
+    clip-path: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+
+    font-size: 18px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    letter-spacing: 1px !important;
+  }
+
+  #menuIcon::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  #menuIcon:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* Show MENU button only after scroll */
+  #menuIcon.show,
+  body.menu-scrolled #menuIcon {
+    display: flex !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  /* Hide normal top navbar after scroll */
+  body.menu-scrolled #navbar:not(.open),
+  #navbar.scrolled:not(.open) {
+    display: none !important;
+  }
+
+  /* Main menu opens to the LEFT of MENU button */
+  body.menu-scrolled #navbar.open,
+  #navbar.scrolled.open {
+    display: flex !important;
+    position: fixed !important;
+
+    top: 24px !important;
+    right: 116px !important;
+    left: auto !important;
+    bottom: auto !important;
+
+    width: 190px !important;
+    height: auto !important;
+
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+
+    overflow: visible !important;
+    z-index: 999999998 !important;
+  }
+
+  /* home / calculator / about stacked vertically */
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open > .dropdown,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open > .dropdown {
+    width: 190px !important;
+    height: 55px !important;
+
+    flex: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open > .dropdown > .dropbtn,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open > .dropdown > .dropbtn {
+    width: 190px !important;
+    height: 55px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    font-size: 24px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  body.menu-scrolled #navbar.open > a + a,
+  body.menu-scrolled #navbar.open > a + .dropdown,
+  body.menu-scrolled #navbar.open > .dropdown + a,
+  #navbar.scrolled.open > a + a,
+  #navbar.scrolled.open > a + .dropdown,
+  #navbar.scrolled.open > .dropdown + a {
+    margin-top: -3px !important;
+  }
+
+  body.menu-scrolled #navbar.open > a:hover,
+  body.menu-scrolled #navbar.open > .dropdown:hover > .dropbtn,
+  #navbar.scrolled.open > a:hover,
+  #navbar.scrolled.open > .dropdown:hover > .dropbtn {
+    background: var(--yellow) !important;
+  }
+
+  /* Calculator submenu opens to the LEFT, beside the stacked menu */
+  body.menu-scrolled #navbar.open .dropdown-content,
+  #navbar.scrolled.open .dropdown-content {
+    display: none !important;
+
+    position: absolute !important;
+
+    top: 0 !important;
+    right: 190px !important;
+    left: auto !important;
+
+    width: 230px !important;
+    height: auto !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 999999999 !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown:hover > .dropdown-content,
+  body.menu-scrolled #navbar.open .dropdown:focus-within > .dropdown-content,
+  body.menu-scrolled #navbar.open .dropdown.menu-open > .dropdown-content,
+  #navbar.scrolled.open .dropdown:hover > .dropdown-content,
+  #navbar.scrolled.open .dropdown:focus-within > .dropdown-content,
+  #navbar.scrolled.open .dropdown.menu-open > .dropdown-content {
+    display: block !important;
+  }
+
+  /* basic / health / finance / percentage rows */
+  body.menu-scrolled #navbar.open .dropdown-content > a,
+  body.menu-scrolled #navbar.open .dropdown-content > .nav-group,
+  body.menu-scrolled #navbar.open .dropdown-content > .nav-group > summary,
+  #navbar.scrolled.open .dropdown-content > a,
+  #navbar.scrolled.open .dropdown-content > .nav-group,
+  #navbar.scrolled.open .dropdown-content > .nav-group > summary {
+    width: 100% !important;
+    height: 50px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 12px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    font-size: 18px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown-content > *:last-child,
+  body.menu-scrolled #navbar.open .dropdown-content > *:last-child > summary,
+  #navbar.scrolled.open .dropdown-content > *:last-child,
+  #navbar.scrolled.open .dropdown-content > *:last-child > summary {
+    border-bottom: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown-content > a:hover,
+  body.menu-scrolled #navbar.open .dropdown-content > .nav-group:hover > summary,
+  #navbar.scrolled.open .dropdown-content > a:hover,
+  #navbar.scrolled.open .dropdown-content > .nav-group:hover > summary {
+    background: var(--yellow) !important;
+  }
+
+  /* health / finance groups */
+  body.menu-scrolled #navbar.open .nav-group,
+  #navbar.scrolled.open .nav-group {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary,
+  #navbar.scrolled.open .nav-group > summary {
+    cursor: pointer !important;
+    list-style: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary::-webkit-details-marker,
+  #navbar.scrolled.open .nav-group > summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary::marker,
+  #navbar.scrolled.open .nav-group > summary::marker {
+    content: "" !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary::before,
+  #navbar.scrolled.open .nav-group > summary::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary::after,
+  #navbar.scrolled.open .nav-group > summary::after {
+    content: " ◀" !important;
+
+    position: static !important;
+
+    width: auto !important;
+    height: auto !important;
+
+    margin-left: 8px !important;
+
+    background: transparent !important;
+    color: var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 14px !important;
+    line-height: 1 !important;
+  }
+
+  /* age / bmi opens further LEFT beside health */
+  body.menu-scrolled #navbar.open .nav-group-links,
+  #navbar.scrolled.open .nav-group-links {
+    display: none !important;
+
+    position: absolute !important;
+
+    top: -3px !important;
+    right: calc(100% + 3px) !important;
+    left: auto !important;
+
+    width: 170px !important;
+    height: auto !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 999999999 !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group:hover > .nav-group-links,
+  body.menu-scrolled #navbar.open .nav-group:focus-within > .nav-group-links,
+  body.menu-scrolled #navbar.open .nav-group[open] > .nav-group-links,
+  #navbar.scrolled.open .nav-group:hover > .nav-group-links,
+  #navbar.scrolled.open .nav-group:focus-within > .nav-group-links,
+  #navbar.scrolled.open .nav-group[open] > .nav-group-links {
+    display: block !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group-links a,
+  #navbar.scrolled.open .nav-group-links a {
+    width: 100% !important;
+    height: 47px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 10px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 17px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group-links a:last-child,
+  #navbar.scrolled.open .nav-group-links a:last-child {
+    border-bottom: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group-links a:hover,
+  #navbar.scrolled.open .nav-group-links a:hover {
+    background: var(--yellow) !important;
   }
 }
