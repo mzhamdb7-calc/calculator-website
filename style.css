@@ -1329,3 +1329,396 @@ body.right-hand .scroll-top {
     left: auto !important;
   }
 }
+/* =========================
+   PHONE: RESULT ON TOP, CALCULATOR BELOW
+========================= */
+
+@media (max-width: 850px) {
+  .calculator-container,
+  .age-calculator-container,
+  .bmi-calculator-container,
+  .discount-calculator-container,
+  .loan-calculator-container,
+  .percentage-calculator-container {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+    align-items: stretch !important;
+  }
+
+  .history,
+  .age-history-box,
+  .bmi-history-box,
+  .discount-history-box,
+  .loan-history-box,
+  .percentage-history-box {
+    order: 1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    max-height: 300px !important;
+    margin: 0 !important;
+  }
+
+  .calculator {
+    order: 2 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* stop left-hand / right-hand mode from changing content order */
+  body.left-hand .calculator-container,
+  body.left-hand .age-calculator-container,
+  body.left-hand .bmi-calculator-container,
+  body.left-hand .discount-calculator-container,
+  body.left-hand .loan-calculator-container,
+  body.left-hand .percentage-calculator-container {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  body.left-hand .history,
+  body.left-hand .age-history-box,
+  body.left-hand .bmi-history-box,
+  body.left-hand .discount-history-box,
+  body.left-hand .loan-history-box,
+  body.left-hand .percentage-history-box,
+  body.left-hand .calculator {
+    order: unset !important;
+  }
+
+  /* force result/history first, calculator second */
+  body.left-hand .history,
+  body.left-hand .age-history-box,
+  body.left-hand .bmi-history-box,
+  body.left-hand .discount-history-box,
+  body.left-hand .loan-history-box,
+  body.left-hand .percentage-history-box {
+    order: 1 !important;
+  }
+
+  body.left-hand .calculator {
+    order: 2 !important;
+  }
+}
+
+/* =====================================================
+   FINAL PHONE FIX
+   Result/History on top, Calculator below,
+   top control buttons horizontal and not overlapping
+===================================================== */
+
+@media (max-width: 850px) {
+
+  /* Give space for phone top buttons + navbar */
+  body {
+    overflow-x: hidden !important;
+  }
+
+  /* Navbar moves below the top control buttons */
+  #navbar {
+    top: 78px !important;
+    width: 95% !important;
+    height: 58px !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown {
+    width: 33.33% !important;
+    height: 58px !important;
+    flex: 0 0 33.33% !important;
+  }
+
+  #navbar a,
+  .dropbtn {
+    height: 58px !important;
+    font-size: 18px !important;
+  }
+
+  .dropdown-content {
+    top: 53px !important;
+    left: -5px !important;
+    width: 210px !important;
+  }
+
+  .dropdown-content a {
+    height: 46px !important;
+    font-size: 17px !important;
+  }
+
+  /* When hamburger opens, menu stays under top controls */
+  #navbar.open {
+    top: 70px !important;
+    right: 14px !important;
+    left: auto !important;
+    width: 250px !important;
+    max-height: calc(100vh - 85px) !important;
+    overflow-y: auto !important;
+  }
+
+  #navbar.open > a,
+  #navbar.open > .dropdown,
+  #navbar.open a,
+  #navbar.open .dropbtn,
+  #navbar.open .dropdown-content {
+    width: 250px !important;
+  }
+
+  /* Main layout: result/history first, calculator second */
+  .calculator-container,
+  .age-calculator-container,
+  .bmi-calculator-container,
+  .discount-calculator-container,
+  .loan-calculator-container,
+  .percentage-calculator-container {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: 1fr !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin-top: 160px !important;
+    padding: 16px !important;
+
+    gap: 22px !important;
+    align-items: stretch !important;
+  }
+
+  /* Result / history box always on top */
+  .history,
+  .age-history-box,
+  .bmi-history-box,
+  .discount-history-box,
+  .loan-history-box,
+  .percentage-history-box {
+    order: 1 !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-height: 170px !important;
+    max-height: 300px !important;
+
+    margin: 0 auto !important;
+
+    transform: rotate(-1deg) !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Calculator always below result/history */
+  .calculator {
+    order: 2 !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 auto !important;
+    padding: 22px !important;
+  }
+
+  /* Stop left-hand/right-hand mode from changing mobile layout */
+  body.left-hand .calculator-container,
+  body.left-hand .age-calculator-container,
+  body.left-hand .bmi-calculator-container,
+  body.left-hand .discount-calculator-container,
+  body.left-hand .loan-calculator-container,
+  body.left-hand .percentage-calculator-container,
+  body.right-hand .calculator-container,
+  body.right-hand .age-calculator-container,
+  body.right-hand .bmi-calculator-container,
+  body.right-hand .discount-calculator-container,
+  body.right-hand .loan-calculator-container,
+  body.right-hand .percentage-calculator-container {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  body.left-hand .history,
+  body.left-hand .age-history-box,
+  body.left-hand .bmi-history-box,
+  body.left-hand .discount-history-box,
+  body.left-hand .loan-history-box,
+  body.left-hand .percentage-history-box,
+  body.right-hand .history,
+  body.right-hand .age-history-box,
+  body.right-hand .bmi-history-box,
+  body.right-hand .discount-history-box,
+  body.right-hand .loan-history-box,
+  body.right-hand .percentage-history-box {
+    order: 1 !important;
+  }
+
+  body.left-hand .calculator,
+  body.right-hand .calculator {
+    order: 2 !important;
+  }
+
+  /* Calculator text/input mobile size */
+  .calculator h1 {
+    font-size: 36px !important;
+  }
+
+  .subtitle {
+    font-size: 18px !important;
+  }
+
+  .calculator label {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 450px !important;
+    font-size: 22px !important;
+  }
+
+  .calculator input[type="date"],
+  .calculator input[type="number"],
+  .calculator input[type="text"],
+  #display {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 450px !important;
+
+    height: 62px !important;
+    font-size: 24px !important;
+  }
+
+  .main-btn,
+  .calculator > button {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 450px !important;
+
+    height: 62px !important;
+    font-size: 22px !important;
+  }
+
+  /* Top phone control bar */
+  #menuIcon {
+    display: none;
+    position: fixed !important;
+
+    top: 10px !important;
+    left: 10px !important;
+    right: auto !important;
+
+    width: 42px !important;
+    height: 40px !important;
+
+    font-size: 22px !important;
+
+    opacity: 0.55 !important;
+    z-index: 99999999 !important;
+  }
+
+  #menuIcon.show {
+    display: block !important;
+  }
+
+  #resizeNavigator {
+    position: fixed !important;
+
+    top: 10px !important;
+    left: 70px !important;
+    right: auto !important;
+
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 6px !important;
+
+    opacity: 0.55 !important;
+
+    zoom: 1 !important;
+    transform: none !important;
+
+    z-index: 99999999 !important;
+  }
+
+  #resizeNavigator button {
+    width: 38px !important;
+    height: 40px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    font-size: 15px !important;
+
+    transform: none !important;
+  }
+
+  #handToggleBtn {
+    position: fixed !important;
+
+    top: 10px !important;
+    right: 66px !important;
+    left: auto !important;
+    bottom: auto !important;
+
+    width: 42px !important;
+    height: 40px !important;
+
+    font-size: 18px !important;
+
+    opacity: 0.55 !important;
+
+    transform: none !important;
+    z-index: 99999999 !important;
+  }
+
+  #scrollTopBtn,
+  .scroll-top {
+    position: fixed !important;
+
+    top: 10px !important;
+    right: 10px !important;
+    left: auto !important;
+    bottom: auto !important;
+
+    width: 42px !important;
+    height: 40px !important;
+
+    font-size: 22px !important;
+
+    opacity: 0.55 !important;
+
+    transform: none !important;
+    z-index: 99999999 !important;
+  }
+
+  /* Keep top bar same even in left-hand mode */
+  body.left-hand #menuIcon {
+    left: 10px !important;
+    right: auto !important;
+  }
+
+  body.left-hand #resizeNavigator {
+    left: 70px !important;
+    right: auto !important;
+  }
+
+  body.left-hand #handToggleBtn {
+    right: 66px !important;
+    left: auto !important;
+  }
+
+  body.left-hand #scrollTopBtn,
+  body.left-hand .scroll-top {
+    right: 10px !important;
+    left: auto !important;
+  }
+
+  #menuIcon:hover,
+  #resizeNavigator:hover,
+  #handToggleBtn:hover,
+  #scrollTopBtn:hover,
+  .scroll-top:hover {
+    opacity: 1 !important;
+  }
+}
