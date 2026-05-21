@@ -732,3 +732,62 @@ body.right-hand #navbar.open {
   transform: translate(-3px, -3px) rotate(-2deg);
   box-shadow: 7px 7px 0 black;
 }
+
+/* =========================
+   AGE CALCULATOR HISTORY
+========================= */
+
+.age-calculator-container {
+  max-width: 1180px;
+  margin: 130px auto 80px;
+  padding: 30px;
+
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 35px;
+}
+
+.age-history-box {
+  background: #fff4b8;
+  border: 5px solid black;
+  box-shadow: 7px 7px 0 black;
+  padding: 20px;
+  transform: rotate(-1deg);
+
+  min-height: 450px;
+}
+
+.age-history-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.age-history-top h3 {
+  font-size: 24px;
+}
+
+#ageHistoryList {
+  list-style: none;
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+#ageHistoryList li {
+  margin-bottom: 12px;
+  border-bottom: 3px solid black;
+  padding-bottom: 8px;
+}
+
+@media (max-width: 850px) {
+  .age-calculator-container {
+    grid-template-columns: 1fr;
+    margin-top: 110px;
+    padding: 20px;
+  }
+
+  .age-history-box {
+    min-height: auto;
+  }
+}
