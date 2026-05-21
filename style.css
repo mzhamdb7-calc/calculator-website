@@ -2354,3 +2354,49 @@ body.right-hand .scroll-top {
     background: var(--yellow) !important;
   }
 }
+
+/* =========================
+   FIX LINE BETWEEN BASIC AND HEALTH
+========================= */
+
+@media (min-width: 851px) {
+  #navbar.open .dropdown-content > a,
+  #navbar.open .dropdown-content > .nav-group,
+  #navbar.open .dropdown-content > .nav-group > summary {
+    border-bottom: 4px solid var(--black) !important;
+  }
+
+  /* Remove line only from the last row */
+  #navbar.open .dropdown-content > *:last-child,
+  #navbar.open .dropdown-content > *:last-child > summary {
+    border-bottom: none !important;
+  }
+
+  /* Extra forced line under BASIC */
+  #navbar.open .dropdown-content > a:first-child {
+    position: relative !important;
+  }
+
+  #navbar.open .dropdown-content > a:first-child::after {
+    content: "" !important;
+    position: absolute !important;
+
+    left: 0 !important;
+    right: 0 !important;
+    bottom: -4px !important;
+
+    height: 4px !important;
+    background: var(--black) !important;
+
+    z-index: 20 !important;
+    pointer-events: none !important;
+  }
+
+  /* Keep arrow normal */
+  #navbar.open .nav-group > summary::after {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    background: transparent !important;
+  }
+}
