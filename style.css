@@ -1276,3 +1276,65 @@ body.right-hand #navbar.open {
     max-height: 300px;
   }
 }
+/* =========================
+   PAGE RESIZE NAVIGATOR
+========================= */
+
+#resizeNavigator {
+  position: fixed;
+  right: 30px;
+  top: calc(50% + 90px);
+
+  z-index: 999999;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#resizeNavigator button {
+  width: 55px;
+  height: 45px;
+
+  border: 5px solid black;
+  background: white;
+  color: black;
+
+  font-size: 22px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  box-shadow: 5px 5px 0 black;
+}
+
+#resizeNavigator button:hover {
+  background: #ffe66d;
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 black;
+}
+
+/* left hand mode */
+body.left-hand #resizeNavigator {
+  left: 30px;
+  right: auto;
+}
+
+/* mobile */
+@media (max-width: 850px) {
+  #resizeNavigator {
+    right: 20px;
+    top: calc(50% + 75px);
+  }
+
+  body.left-hand #resizeNavigator {
+    left: 20px;
+    right: auto;
+  }
+
+  #resizeNavigator button {
+    width: 48px;
+    height: 40px;
+    font-size: 18px;
+  }
+}
