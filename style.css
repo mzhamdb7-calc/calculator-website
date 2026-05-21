@@ -6125,3 +6125,97 @@ body.menu-scrolled #menuIcon {
     bottom: calc(28px + env(safe-area-inset-bottom)) !important;
   }
 }
+/* PHONE: make top navbar same width as calculator box */
+@media (max-width: 850px) {
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open,
+  body.menu-scrolled #navbar,
+  body.menu-scrolled #navbar.scrolled,
+  body.menu-scrolled #navbar.open {
+    display: flex !important;
+
+    position: fixed !important;
+    top: 78px !important;
+    left: 14px !important;
+    right: 14px !important;
+
+    width: calc(100dvw - 28px) !important;
+    min-width: calc(100dvw - 28px) !important;
+    max-width: calc(100dvw - 28px) !important;
+
+    height: 60px !important;
+
+    transform: none !important;
+    scale: 1 !important;
+    zoom: 1 !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    box-sizing: border-box !important;
+    overflow: visible !important;
+
+    z-index: 999999 !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar.open > a,
+  #navbar.open > .dropdown,
+  body.menu-scrolled #navbar > a,
+  body.menu-scrolled #navbar > .dropdown {
+    width: 33.333333% !important;
+    min-width: 0 !important;
+    max-width: 33.333333% !important;
+
+    height: 60px !important;
+    flex: 1 1 33.333333% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn,
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn,
+  body.menu-scrolled #navbar > a,
+  body.menu-scrolled #navbar > .dropdown > .dropbtn {
+    width: 100% !important;
+    height: 60px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-right: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 17px !important;
+    font-weight: bold !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+
+    box-sizing: border-box !important;
+  }
+
+  #navbar > a:last-child,
+  #navbar.open > a:last-child {
+    border-right: none !important;
+  }
+
+  /* stop old JS zoom from making navbar small */
+  #navbar[style] {
+    zoom: 1 !important;
+  }
+}
