@@ -1276,20 +1276,27 @@ body.right-hand #navbar.open {
     max-height: 300px;
   }
 }
+
 /* =========================
-   PAGE RESIZE NAVIGATOR
+   SIDE BUTTONS SPACING
 ========================= */
 
+/* Orientation button */
+#handToggleBtn {
+  top: 45%;
+}
+
+/* Resize navigator */
 #resizeNavigator {
   position: fixed;
   right: 30px;
-  top: calc(50% + 90px);
+  top: calc(45% + 85px);
 
   z-index: 999999;
 
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
 #resizeNavigator button {
@@ -1314,17 +1321,34 @@ body.right-hand #navbar.open {
   box-shadow: 7px 7px 0 black;
 }
 
-/* left hand mode */
+/* Scroll top button lower */
+#scrollTopBtn,
+.scroll-top {
+  bottom: 30px;
+}
+
+/* Left hand mode */
 body.left-hand #resizeNavigator {
   left: 30px;
   right: auto;
 }
 
-/* mobile */
+/* Right hand mode */
+body.right-hand #resizeNavigator {
+  right: 30px;
+  left: auto;
+}
+
+/* Mobile */
 @media (max-width: 850px) {
+  #handToggleBtn {
+    top: 42%;
+  }
+
   #resizeNavigator {
     right: 20px;
-    top: calc(50% + 75px);
+    top: calc(42% + 75px);
+    gap: 10px;
   }
 
   body.left-hand #resizeNavigator {

@@ -670,11 +670,17 @@ document.addEventListener("DOMContentLoaded", function () {
   setupHistoryCopyButtons();
   watchCopyButtons();
 });
+
 /* =========================
    PAGE RESIZE NAVIGATOR
 ========================= */
 
 let pageZoom = Number(localStorage.getItem("pageZoom")) || 1;
+
+/* Do not allow bigger than 100% */
+if (pageZoom > 1) {
+  pageZoom = 1;
+}
 
 function createResizeNavigator() {
   if (document.getElementById("resizeNavigator")) return;
@@ -682,24 +688,24 @@ function createResizeNavigator() {
   const box = document.createElement("div");
   box.id = "resizeNavigator";
 
-  const minusBtn = document.createElement("button");
-  minusBtn.type = "button";
-  minusBtn.textContent = "−";
-  minusBtn.onclick = zoomOutPage;
+  const plusBtn = document.createElement("button");
+  plusBtn.type = "button";
+  plusBtn.textContent = "+";
+  plusBtn.onclick = zoomInPage;
 
   const resetBtn = document.createElement("button");
   resetBtn.type = "button";
   resetBtn.textContent = "100";
   resetBtn.onclick = resetPageZoom;
 
-  const plusBtn = document.createElement("button");
-  plusBtn.type = "button";
-  plusBtn.textContent = "+";
-  plusBtn.onclick = zoomInPage;
+  const minusBtn = document.createElement("button");
+  minusBtn.type = "button";
+  minusBtn.textContent = "−";
+  minusBtn.onclick = zoomOutPage;
 
-  box.appendChild(minusBtn);
-  box.appendChild(resetBtn);
   box.appendChild(plusBtn);
+  box.appendChild(resetBtn);
+  box.appendChild(minusBtn);
 
   document.body.appendChild(box);
 
@@ -707,6 +713,14 @@ function createResizeNavigator() {
 }
 
 function applyPageZoom() {
+  if (pageZoom > 1) {
+    pageZoom = 1;
+  }
+
+  if (pageZoom < 0.6) {
+    pageZoom = 0.6;
+  }
+
   document.body.style.zoom = pageZoom;
 
   const resetBtn = document.querySelector("#resizeNavigator button:nth-child(2)");
@@ -719,7 +733,7 @@ function applyPageZoom() {
 }
 
 function zoomInPage() {
-  if (pageZoom < 1.5) {
+  if (pageZoom < 1) {
     pageZoom += 0.1;
     pageZoom = Number(pageZoom.toFixed(1));
     applyPageZoom();
