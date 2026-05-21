@@ -1,7 +1,22 @@
-let calcHistory = JSON.parse(localStorage.getItem("calcHistory")) || [];
-let lastAnswer = Number(localStorage.getItem("lastAnswer")) || 0;
+/* =========================
+   STORAGE
+========================= */
 
-/* ADD VALUE TO DISPLAY */
+let calcHistory = [];
+let lastAnswer = 0;
+
+try {
+  calcHistory = JSON.parse(localStorage.getItem("calcHistory")) || [];
+} catch {
+  calcHistory = [];
+}
+
+lastAnswer = Number(localStorage.getItem("lastAnswer")) || 0;
+
+
+/* =========================
+   DISPLAY FUNCTIONS
+========================= */
 
 function add(value) {
   const display = document.getElementById("display");
@@ -31,16 +46,10 @@ function add(value) {
   }
 }
 
-/* CLEAR DISPLAY */
-
 function clearDisplay() {
   const display = document.getElementById("display");
-  if (display) {
-    display.value = "";
-  }
+  if (display) display.value = "";
 }
-
-/* REMOVE LAST CHARACTER */
 
 function removeLast() {
   const display = document.getElementById("display");
@@ -54,7 +63,10 @@ function removeLast() {
   display.value = display.value.slice(0, -1);
 }
 
-/* SCIENTIFIC FUNCTIONS */
+
+/* =========================
+   MATH FUNCTIONS
+========================= */
 
 function addFunction(func) {
   const display = document.getElementById("display");
@@ -79,8 +91,6 @@ function addFunction(func) {
   }
 }
 
-/* POWER BUTTON */
-
 function addPower() {
   const display = document.getElementById("display");
   if (!display) return;
@@ -92,8 +102,6 @@ function addPower() {
   display.value += "**";
 }
 
-/* AUTO CLOSE BRACKETS */
-
 function closeOpenBrackets(expression) {
   const open = (expression.match(/\(/g) || []).length;
   const close = (expression.match(/\)/g) || []).length;
@@ -104,8 +112,6 @@ function closeOpenBrackets(expression) {
 
   return expression;
 }
-
-/* CALCULATE */
 
 function calculate() {
   const display = document.getElementById("display");
@@ -134,16 +140,17 @@ function calculate() {
 
     saveHistory(expression, result);
 
-  } catch (error) {
+  } catch {
     display.value = "Error";
   }
 }
 
-/* HISTORY */
+
+/* =========================
+   HISTORY
+========================= */
 
 function saveHistory(expression, result) {
-  const historyList = document.getElementById("historyList");
-
   const item = expression + " = " + result;
 
   calcHistory.push(item);
@@ -153,10 +160,7 @@ function saveHistory(expression, result) {
   }
 
   localStorage.setItem("calcHistory", JSON.stringify(calcHistory));
-
-  if (historyList) {
-    showHistory();
-  }
+  showHistory();
 }
 
 function showHistory() {
@@ -177,13 +181,13 @@ function clearHistory() {
   localStorage.removeItem("calcHistory");
 
   const historyList = document.getElementById("historyList");
-
-  if (historyList) {
-    historyList.innerHTML = "";
-  }
+  if (historyList) historyList.innerHTML = "";
 }
 
-/* NAVBAR SCROLL MENU */
+
+/* =========================
+   NAVBAR + SCROLL
+========================= */
 
 window.addEventListener("scroll", function () {
   const navbar = document.getElementById("navbar");
@@ -206,8 +210,6 @@ window.addEventListener("scroll", function () {
   }
 });
 
-/* TOGGLE HAMBURGER MENU */
-
 function toggleMenu() {
   const navbar = document.getElementById("navbar");
   if (!navbar) return;
@@ -220,8 +222,6 @@ function toggleMenu() {
     navbar.classList.add("scrolled");
   }
 }
-
-/* CLOSE MENU WHEN CLICK OUTSIDE */
 
 document.addEventListener("click", function (event) {
   const navbar = document.getElementById("navbar");
@@ -241,8 +241,6 @@ document.addEventListener("click", function (event) {
   }
 });
 
-/* SCROLL TO TOP */
-
 function scrollToTop() {
   window.scrollTo({
     top: 0,
@@ -250,7 +248,10 @@ function scrollToTop() {
   });
 }
 
-/* LEFT / RIGHT HAND MODE */
+
+/* =========================
+   LEFT / RIGHT HAND MODE
+========================= */
 
 function createHandToggleButton() {
   if (document.getElementById("handToggleBtn")) return;
@@ -292,11 +293,13 @@ function toggleHandMode() {
   }
 }
 
-/* KEYBOARD SUPPORT FOR BASIC CALCULATOR */
+
+/* =========================
+   KEYBOARD SUPPORT
+========================= */
 
 document.addEventListener("keydown", function (event) {
   const display = document.getElementById("display");
-
   if (!display) return;
 
   const key = event.key;
@@ -377,8 +380,6 @@ document.addEventListener("keydown", function (event) {
   }
 });
 
-/* BUTTON FLASH EFFECT */
-
 function flashButton(buttonText) {
   const buttons = document.querySelectorAll(".buttons button, .ans-btn");
 
@@ -393,7 +394,10 @@ function flashButton(buttonText) {
   });
 }
 
-/* PAGE LOAD */
+
+/* =========================
+   PAGE LOAD
+========================= */
 
 document.addEventListener("DOMContentLoaded", function () {
   createHandToggleButton();
