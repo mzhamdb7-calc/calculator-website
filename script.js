@@ -977,3 +977,67 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("scroll", updateScrolledMenu);
   updateScrolledMenu();
 });
+/* =====================================================
+   FIX THICK CALCULATOR NAVBAR LINE
+   Makes all top navbar lines same thickness
+===================================================== */
+
+#navbar {
+  border: 3px solid var(--black) !important;
+  overflow: visible !important;
+}
+
+/* Remove full border from individual menu items */
+#navbar > a,
+#navbar > .dropdown,
+#navbar > .dropdown > .dropbtn,
+#navbar a,
+#navbar .dropbtn {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Same size for all 3 menu sections */
+#navbar > a,
+#navbar > .dropdown {
+  width: 240px !important;
+  height: 65px !important;
+  flex: 0 0 240px !important;
+}
+
+/* Text/button layout */
+#navbar > a,
+#navbar > .dropdown > .dropbtn {
+  width: 100% !important;
+  height: 65px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  font-size: 26px !important;
+  font-weight: bold !important;
+  text-decoration: none !important;
+}
+
+/* Only use ONE separator line between menu items */
+#navbar > a:first-child,
+#navbar > .dropdown {
+  border-right: 3px solid var(--black) !important;
+}
+
+/* Hover color */
+#navbar > a:hover,
+#navbar > .dropdown:hover > .dropbtn,
+#navbar > .dropdown > .dropbtn:hover {
+  background: var(--yellow) !important;
+}
+
+/* Keep dropdown box normal */
+#navbar .dropdown-content {
+  border: 3px solid var(--black) !important;
+  box-shadow: 5px 5px 0 var(--black) !important;
+}
