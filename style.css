@@ -915,26 +915,3 @@ body.right-hand #navbar.open {
   }
 }
 
-/* AGE DATE INPUT SIZE */
-
-#birthdate {
-  width: 50%;
-  min-width: 300px;
-  max-width: 450px;
-  display: block;
-}
-
-/* make calendar icon easier to click */
-#birthdate::-webkit-calendar-picker-indicator {
-  width: 28px;
-  height: 28px;
-  cursor: pointer;
-}
-
-/* mobile */
-@media (max-width: 850px) {
-  #birthdate {
-    width: 100%;
-    min-width: 0;
-  }
-}
