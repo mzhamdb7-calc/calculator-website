@@ -1085,3 +1085,77 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("scroll", updateScrollMenu);
   updateScrollMenu();
 });
+/* =====================================================
+   PC: HOME ICON HOVER OPENS LEFT SIDE MENU
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!navbar || !menuIcon) return;
+
+  let closeTimer;
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function isPastTopMenu() {
+    return window.scrollY > 90;
+  }
+
+  function showIconAfterScroll() {
+    if (isPastTopMenu()) {
+      document.body.classList.add("menu-scrolled");
+      navbar.classList.add("scrolled");
+      menuIcon.classList.add("show");
+    } else {
+      document.body.classList.remove("menu-scrolled");
+      navbar.classList.remove("scrolled");
+      navbar.classList.remove("open");
+      menuIcon.classList.remove("show");
+    }
+  }
+
+  function openSideMenu() {
+    if (!isPc() || !isPastTopMenu()) return;
+
+    clearTimeout(closeTimer);
+
+    document.body.classList.add("menu-scrolled");
+    navbar.classList.add("scrolled");
+    navbar.classList.add("open");
+    menuIcon.classList.add("show");
+  }
+
+  function closeSideMenuSoon() {
+    clearTimeout(closeTimer);
+
+    closeTimer = setTimeout(function () {
+      if (!navbar.matches(":hover") && !menuIcon.matches(":hover")) {
+        navbar.classList.remove("open");
+      }
+    }, 180);
+  }
+
+  menuIcon.addEventListener("mouseenter", openSideMenu);
+  navbar.addEventListener("mouseenter", function () {
+    clearTimeout(closeTimer);
+  });
+
+  menuIcon.addEventListener("mouseleave", closeSideMenuSoon);
+  navbar.addEventListener("mouseleave", closeSideMenuSoon);
+
+  menuIcon.addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!isPastTopMenu()) return;
+
+    navbar.classList.toggle("open");
+  });
+
+  window.addEventListener("scroll", showIconAfterScroll);
+  showIconAfterScroll();
+});
