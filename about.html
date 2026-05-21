@@ -2,62 +2,71 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+
   <title>About</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="About this free online calculator website.">
+
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="favicon.ico">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="About this free online calculator website.">
 </head>
 
 <body>
 
-  <button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
+  <!-- Go Up Button -->
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
+    ↑
+  </button>
 
+  <!-- MENU Button shown after scroll -->
+  <button id="menuIcon" type="button" onclick="toggleMenu()" aria-label="Open menu">
+    MENU
+  </button>
+
+  <!-- Navbar -->
   <nav id="navbar">
 
     <a href="index.html">home</a>
 
     <div class="dropdown">
-
       <button type="button" class="dropbtn">
         calculator
       </button>
 
-    <div class="dropdown-content">
+      <div class="dropdown-content">
 
-  <a href="basic-calculator.html">basic</a>
+        <a href="basic-calculator.html">basic</a>
 
-  <details class="nav-group">
-    <summary>health</summary>
+        <details class="nav-group">
+          <summary>health</summary>
 
-    <div class="nav-group-links">
-      <a href="age-calculator.html">age</a>
-      <a href="bmi-calculator.html">bmi</a>
-    </div>
-  </details>
+          <div class="nav-group-links">
+            <a href="age-calculator.html">age</a>
+            <a href="bmi-calculator.html">bmi</a>
+          </div>
+        </details>
 
-  <details class="nav-group">
-    <summary>finance</summary>
+        <details class="nav-group">
+          <summary>finance</summary>
 
-    <div class="nav-group-links">
-      <a href="loan-calculator.html">loan</a>
-      <a href="discount-calculator.html">discount</a>
-    </div>
-  </details>
+          <div class="nav-group-links">
+            <a href="loan-calculator.html">loan</a>
+            <a href="discount-calculator.html">discount</a>
+          </div>
+        </details>
 
-  <a href="percentage-calculator.html">percentage</a>
+        <a href="percentage-calculator.html">percentage</a>
 
-</div>
-
+      </div>
     </div>
 
     <a href="about.html">about</a>
 
   </nav>
 
-  <button id="menuIcon" onclick="toggleMenu()">☰</button>
-
+  <!-- Main Content -->
   <main class="about-container">
 
     <section class="about-box">
@@ -66,6 +75,7 @@
 
       <div class="about-card">
         <h2>About</h2>
+
         <p>
           This website provides free online calculators for quick and easy calculations.
         </p>

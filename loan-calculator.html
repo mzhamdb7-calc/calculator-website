@@ -2,58 +2,71 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+
   <title>Loan Calculator</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Free loan calculator to estimate monthly loan payments online.">
+
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="favicon.ico">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Free loan calculator to estimate monthly loan payments online.">
 </head>
 
 <body>
 
-  <button id="scrollTopBtn" type="button" onclick="scrollToTop()">↑</button>
+  <!-- Go Up Button -->
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
+    ↑
+  </button>
 
+  <!-- MENU Button shown after scroll -->
+  <button id="menuIcon" type="button" onclick="toggleMenu()" aria-label="Open menu">
+    MENU
+  </button>
+
+  <!-- Navbar -->
   <nav id="navbar">
 
     <a href="index.html">home</a>
 
     <div class="dropdown">
-      <button type="button" class="dropbtn">calculator</button>
+      <button type="button" class="dropbtn">
+        calculator
+      </button>
 
       <div class="dropdown-content">
 
-  <a href="basic-calculator.html">basic</a>
+        <a href="basic-calculator.html">basic</a>
 
-  <details class="nav-group">
-    <summary>health</summary>
+        <details class="nav-group">
+          <summary>health</summary>
 
-    <div class="nav-group-links">
-      <a href="age-calculator.html">age</a>
-      <a href="bmi-calculator.html">bmi</a>
-    </div>
-  </details>
+          <div class="nav-group-links">
+            <a href="age-calculator.html">age</a>
+            <a href="bmi-calculator.html">bmi</a>
+          </div>
+        </details>
 
-  <details class="nav-group">
-    <summary>finance</summary>
+        <details class="nav-group">
+          <summary>finance</summary>
 
-    <div class="nav-group-links">
-      <a href="loan-calculator.html">loan</a>
-      <a href="discount-calculator.html">discount</a>
-    </div>
-  </details>
+          <div class="nav-group-links">
+            <a href="loan-calculator.html">loan</a>
+            <a href="discount-calculator.html">discount</a>
+          </div>
+        </details>
 
-  <a href="percentage-calculator.html">percentage</a>
+        <a href="percentage-calculator.html">percentage</a>
 
-</div>
+      </div>
     </div>
 
     <a href="about.html">about</a>
 
   </nav>
 
-  <button id="menuIcon" type="button" onclick="toggleMenu()">☰</button>
-
+  <!-- Main Content -->
   <main class="loan-calculator-container">
 
     <section class="loan-history-box">
@@ -91,10 +104,7 @@
         calculate loan
       </button>
 
-      
-        <h2 id="loanResult"></h2>
-
-  
+      <h2 id="loanResult"></h2>
 
     </section>
 
@@ -103,7 +113,13 @@
   <script src="script.js"></script>
 
   <script>
-    let loanHistory = JSON.parse(localStorage.getItem("loanHistory")) || [];
+    let loanHistory = [];
+
+    try {
+      loanHistory = JSON.parse(localStorage.getItem("loanHistory")) || [];
+    } catch {
+      loanHistory = [];
+    }
 
     function calculateLoan() {
       const amount = Number(document.getElementById("amount").value);
@@ -170,7 +186,7 @@
 
       list.innerHTML = "";
 
-      loanHistory.slice().reverse().forEach(function(item) {
+      loanHistory.slice().reverse().forEach(function (item) {
         const li = document.createElement("li");
         li.className = "history-item";
 
@@ -183,25 +199,32 @@
         copyBtn.className = "history-copy-btn";
         copyBtn.textContent = "copy";
 
-        copyBtn.onclick = function() {
-          copyText(item, copyBtn);
+        copyBtn.onclick = function () {
+          copyLoanText(item, copyBtn);
         };
 
         li.appendChild(text);
         li.appendChild(copyBtn);
+
         list.appendChild(li);
       });
     }
 
-    function copyLoanResult(button) {
-      const resultText = document.getElementById("loanResult").innerText;
-
-      if (resultText.trim() === "") return;
-
-      copyText(resultText, button);
+    function copyLoanText(text, button) {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text)
+          .then(function () {
+            showLoanCopied(button);
+          })
+          .catch(function () {
+            fallbackLoanCopy(text, button);
+          });
+      } else {
+        fallbackLoanCopy(text, button);
+      }
     }
 
-    function copyText(text, button) {
+    function fallbackLoanCopy(text, button) {
       const tempInput = document.createElement("textarea");
 
       tempInput.value = text;
@@ -213,13 +236,24 @@
       tempInput.focus();
       tempInput.select();
 
-      document.execCommand("copy");
+      try {
+        document.execCommand("copy");
+        showLoanCopied(button);
+      } catch {
+        button.textContent = "failed";
+
+        setTimeout(function () {
+          button.textContent = "copy";
+        }, 1000);
+      }
 
       document.body.removeChild(tempInput);
+    }
 
+    function showLoanCopied(button) {
       button.textContent = "copied";
 
-      setTimeout(function() {
+      setTimeout(function () {
         button.textContent = "copy";
       }, 1000);
     }
@@ -227,9 +261,11 @@
     function clearLoanHistory() {
       loanHistory = [];
       localStorage.removeItem("loanHistory");
+
       showLoanHistory();
 
-      document.getElementById("loanResult").innerText = "";
+      const result = document.getElementById("loanResult");
+      if (result) result.innerText = "";
     }
 
     document.addEventListener("DOMContentLoaded", showLoanHistory);

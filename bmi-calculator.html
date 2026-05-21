@@ -2,18 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+
   <title>BMI Calculator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Calculate BMI and waist-to-height ratio with this free online BMI calculator.">
+
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
 <body>
 
-  <button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
+  <!-- Go Up Button -->
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
+    ↑
+  </button>
 
+  <!-- MENU Button shown after scroll -->
+  <button id="menuIcon" type="button" onclick="toggleMenu()" aria-label="Open menu">
+    MENU
+  </button>
+
+  <!-- Navbar -->
   <nav id="navbar">
 
     <a href="index.html">home</a>
@@ -25,37 +37,36 @@
 
       <div class="dropdown-content">
 
-  <a href="basic-calculator.html">basic</a>
+        <a href="basic-calculator.html">basic</a>
 
-  <details class="nav-group">
-    <summary>health</summary>
+        <details class="nav-group">
+          <summary>health</summary>
 
-    <div class="nav-group-links">
-      <a href="age-calculator.html">age</a>
-      <a href="bmi-calculator.html">bmi</a>
-    </div>
-  </details>
+          <div class="nav-group-links">
+            <a href="age-calculator.html">age</a>
+            <a href="bmi-calculator.html">bmi</a>
+          </div>
+        </details>
 
-  <details class="nav-group">
-    <summary>finance</summary>
+        <details class="nav-group">
+          <summary>finance</summary>
 
-    <div class="nav-group-links">
-      <a href="loan-calculator.html">loan</a>
-      <a href="discount-calculator.html">discount</a>
-    </div>
-  </details>
+          <div class="nav-group-links">
+            <a href="loan-calculator.html">loan</a>
+            <a href="discount-calculator.html">discount</a>
+          </div>
+        </details>
 
-  <a href="percentage-calculator.html">percentage</a>
+        <a href="percentage-calculator.html">percentage</a>
 
-</div>
+      </div>
     </div>
 
     <a href="about.html">about</a>
 
   </nav>
 
-  <button id="menuIcon" onclick="toggleMenu()">☰</button>
-
+  <!-- Main Content -->
   <main class="bmi-calculator-container">
 
     <section class="bmi-history-box">
@@ -79,6 +90,7 @@
 
         <div>
           <h1>BMI Calculator</h1>
+
           <p class="subtitle">
             Check your Body Mass Index.
           </p>
@@ -111,8 +123,20 @@
   <script src="script.js"></script>
 
   <script>
-    let bmiHistory = JSON.parse(localStorage.getItem("bmiHistory")) || [];
-    let bmiUnit = localStorage.getItem("bmiUnit") || "si";
+    let bmiHistory = [];
+    let bmiUnit = "si";
+
+    try {
+      bmiHistory = JSON.parse(localStorage.getItem("bmiHistory")) || [];
+    } catch {
+      bmiHistory = [];
+    }
+
+    try {
+      bmiUnit = localStorage.getItem("bmiUnit") || "si";
+    } catch {
+      bmiUnit = "si";
+    }
 
     function toggleBMIUnit() {
       if (bmiUnit === "si") {
@@ -136,6 +160,10 @@
       const waist = document.getElementById("waist");
 
       const unitBtn = document.getElementById("unitToggleBtn");
+
+      if (!weightLabel || !heightLabel || !waistLabel || !weight || !height || !waist || !unitBtn) {
+        return;
+      }
 
       if (bmiUnit === "si") {
         weightLabel.innerText = "Weight in kg:";
@@ -231,8 +259,8 @@
     }
 
     function saveBMIHistory(weight, height, waist, answer) {
-      let weightUnit = bmiUnit === "si" ? "kg" : "lb";
-      let heightUnit = bmiUnit === "si" ? "cm" : "inch";
+      const weightUnit = bmiUnit === "si" ? "kg" : "lb";
+      const heightUnit = bmiUnit === "si" ? "cm" : "inch";
 
       let item =
         "Unit: " + bmiUnit.toUpperCase() + " | " +
@@ -263,7 +291,7 @@
 
       list.innerHTML = "";
 
-      bmiHistory.slice().reverse().forEach(function(item) {
+      bmiHistory.slice().reverse().forEach(function (item) {
         const li = document.createElement("li");
         li.className = "history-item";
 
@@ -288,6 +316,20 @@
     }
 
     function copyBMIText(text, button) {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text)
+          .then(function () {
+            showBMICopied(button);
+          })
+          .catch(function () {
+            fallbackBMICopy(text, button);
+          });
+      } else {
+        fallbackBMICopy(text, button);
+      }
+    }
+
+    function fallbackBMICopy(text, button) {
       const tempInput = document.createElement("textarea");
 
       tempInput.value = text;
@@ -299,10 +341,21 @@
       tempInput.focus();
       tempInput.select();
 
-      document.execCommand("copy");
+      try {
+        document.execCommand("copy");
+        showBMICopied(button);
+      } catch {
+        button.textContent = "failed";
+
+        setTimeout(function () {
+          button.textContent = "copy";
+        }, 1000);
+      }
 
       document.body.removeChild(tempInput);
+    }
 
+    function showBMICopied(button) {
       button.textContent = "copied";
 
       setTimeout(function () {
@@ -316,7 +369,7 @@
       showBMIHistory();
 
       const result = document.getElementById("bmiResult");
-      result.innerText = "";
+      if (result) result.innerText = "";
     }
 
     document.addEventListener("DOMContentLoaded", function () {

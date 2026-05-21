@@ -2,97 +2,112 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+
   <title>Cartoon Calculator</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Free online calculators for BMI, age, percentages, loans and more.">
+
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="favicon.ico">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Free online calculators for BMI, age, percentages, loans and more.">
+
   <script>
-  if (window.location.pathname.endsWith("/calculator/")) {
-    window.location.replace(
-      window.location.pathname + "index.html" + window.location.search + window.location.hash
-    );
-  }
-</script>
+    if (window.location.pathname.endsWith("/calculator/")) {
+      window.location.replace(
+        window.location.pathname + "index.html" + window.location.search + window.location.hash
+      );
+    }
+  </script>
 </head>
 
 <body>
 
-  <button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
+  <!-- Go Up Button -->
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
+    ↑
+  </button>
 
+  <!-- MENU Button shown after scroll -->
+  <button id="menuIcon" type="button" onclick="toggleMenu()" aria-label="Open menu">
+    MENU
+  </button>
+
+  <!-- Navbar -->
   <nav id="navbar">
 
-  <a href="index.html">home</a>
+    <a href="index.html">home</a>
 
-  <div class="dropdown">
+    <div class="dropdown">
+      <button type="button" class="dropbtn">
+        calculator
+      </button>
 
-    <button type="button" class="dropbtn">
-      calculator
-    </button>
+      <div class="dropdown-content">
 
-    <div class="dropdown-content">
-  <a href="calculator.html">basic</a>
+        <a href="basic-calculator.html">basic</a>
 
-  <details class="nav-group">
-    <summary>health</summary>
-    <div class="nav-group-links">
-      <a href="age.html">age</a>
-      <a href="bmi.html">bmi</a>
+        <details class="nav-group">
+          <summary>health</summary>
+
+          <div class="nav-group-links">
+            <a href="age-calculator.html">age</a>
+            <a href="bmi-calculator.html">bmi</a>
+          </div>
+        </details>
+
+        <details class="nav-group">
+          <summary>finance</summary>
+
+          <div class="nav-group-links">
+            <a href="loan-calculator.html">loan</a>
+            <a href="discount-calculator.html">discount</a>
+          </div>
+        </details>
+
+        <a href="percentage-calculator.html">percentage</a>
+
+      </div>
     </div>
-  </details>
 
-  <details class="nav-group">
-    <summary>finance</summary>
-    <div class="nav-group-links">
-      <a href="loan.html">loan</a>
-      <a href="discount.html">discount</a>
-    </div>
-  </details>
+    <a href="about.html">about</a>
 
-  <a href="percentage.html">percentage</a>
-</div>
+  </nav>
 
-  </div>
-
-  <a href="about.html">about</a>
-
-</nav>
-  <button id="menuIcon" onclick="toggleMenu()">☰</button>
-
+  <!-- Main Content -->
   <main class="calculator-box">
 
     <h1>Calculator</h1>
 
     <div class="calculator-grid">
 
-  <a href="basic-calculator.html" class="card">
-    basic
-  </a>
+      <a href="basic-calculator.html" class="card">
+        basic
+      </a>
 
-  <details class="group-card health-card">
-    <summary>health</summary>
+      <details class="group-card health-card">
+        <summary>health</summary>
 
-    <div class="group-links">
-      <a href="age-calculator.html">age</a>
-      <a href="bmi-calculator.html">bmi</a>
+        <div class="group-links">
+          <a href="age-calculator.html">age</a>
+          <a href="bmi-calculator.html">bmi</a>
+        </div>
+      </details>
+
+      <details class="group-card finance-card">
+        <summary>finance</summary>
+
+        <div class="group-links">
+          <a href="loan-calculator.html">loan</a>
+          <a href="discount-calculator.html">discount</a>
+        </div>
+      </details>
+
+      <a href="percentage-calculator.html" class="card">
+        percentage
+      </a>
+
     </div>
-  </details>
-
-  <details class="group-card finance-card">
-    <summary>finance</summary>
-
-    <div class="group-links">
-      <a href="loan-calculator.html">loan</a>
-      <a href="discount-calculator.html">discount</a>
-    </div>
-  </details>
-
-  <a href="percentage-calculator.html" class="card">
-    percentage
-  </a>
-
-</div>
 
   </main>
 

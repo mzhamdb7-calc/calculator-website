@@ -2,60 +2,71 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+
   <title>Percentage Calculator</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Free percentage calculator to calculate percentages quickly online.">
 
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="favicon.ico">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Free percentage calculator to calculate percentages quickly online.">
 </head>
 
 <body>
 
-  <button id="scrollTopBtn" type="button" onclick="scrollToTop()">↑</button>
+  <!-- Go Up Button -->
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
+    ↑
+  </button>
 
+  <!-- MENU Button shown after scroll -->
+  <button id="menuIcon" type="button" onclick="toggleMenu()" aria-label="Open menu">
+    MENU
+  </button>
+
+  <!-- Navbar -->
   <nav id="navbar">
 
     <a href="index.html">home</a>
 
     <div class="dropdown">
-      <button type="button" class="dropbtn">calculator</button>
+      <button type="button" class="dropbtn">
+        calculator
+      </button>
 
       <div class="dropdown-content">
 
-  <a href="basic-calculator.html">basic</a>
+        <a href="basic-calculator.html">basic</a>
 
-  <details class="nav-group">
-    <summary>health</summary>
+        <details class="nav-group">
+          <summary>health</summary>
 
-    <div class="nav-group-links">
-      <a href="age-calculator.html">age</a>
-      <a href="bmi-calculator.html">bmi</a>
-    </div>
-  </details>
+          <div class="nav-group-links">
+            <a href="age-calculator.html">age</a>
+            <a href="bmi-calculator.html">bmi</a>
+          </div>
+        </details>
 
-  <details class="nav-group">
-    <summary>finance</summary>
+        <details class="nav-group">
+          <summary>finance</summary>
 
-    <div class="nav-group-links">
-      <a href="loan-calculator.html">loan</a>
-      <a href="discount-calculator.html">discount</a>
-    </div>
-  </details>
+          <div class="nav-group-links">
+            <a href="loan-calculator.html">loan</a>
+            <a href="discount-calculator.html">discount</a>
+          </div>
+        </details>
 
-  <a href="percentage-calculator.html">percentage</a>
+        <a href="percentage-calculator.html">percentage</a>
 
-</div>
+      </div>
     </div>
 
     <a href="about.html">about</a>
 
   </nav>
 
-  <button id="menuIcon" type="button" onclick="toggleMenu()">☰</button>
-
+  <!-- Main Content -->
   <main class="percentage-calculator-container">
 
     <section class="percentage-history-box">
@@ -90,10 +101,8 @@
         calculate percentage
       </button>
 
-      
-        <h2 id="percentageResult"></h2>
+      <h2 id="percentageResult"></h2>
 
-        
     </section>
 
   </main>
@@ -101,7 +110,13 @@
   <script src="script.js"></script>
 
   <script>
-    let percentageHistory = JSON.parse(localStorage.getItem("percentageHistory")) || [];
+    let percentageHistory = [];
+
+    try {
+      percentageHistory = JSON.parse(localStorage.getItem("percentageHistory")) || [];
+    } catch {
+      percentageHistory = [];
+    }
 
     function calculatePercentage() {
       const percentInput = document.getElementById("percent").value;
@@ -154,7 +169,7 @@
 
       list.innerHTML = "";
 
-      percentageHistory.slice().reverse().forEach(function(item) {
+      percentageHistory.slice().reverse().forEach(function (item) {
         const li = document.createElement("li");
         li.className = "history-item";
 
@@ -167,8 +182,8 @@
         copyBtn.className = "history-copy-btn";
         copyBtn.textContent = "copy";
 
-        copyBtn.onclick = function() {
-          copyText(item, copyBtn);
+        copyBtn.onclick = function () {
+          copyPercentageText(item, copyBtn);
         };
 
         li.appendChild(text);
@@ -178,15 +193,21 @@
       });
     }
 
-    function copyPercentageResult(button) {
-      const resultText = document.getElementById("percentageResult").innerText;
-
-      if (resultText.trim() === "") return;
-
-      copyText(resultText, button);
+    function copyPercentageText(text, button) {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text)
+          .then(function () {
+            showPercentageCopied(button);
+          })
+          .catch(function () {
+            fallbackPercentageCopy(text, button);
+          });
+      } else {
+        fallbackPercentageCopy(text, button);
+      }
     }
 
-    function copyText(text, button) {
+    function fallbackPercentageCopy(text, button) {
       const tempInput = document.createElement("textarea");
 
       tempInput.value = text;
@@ -198,13 +219,24 @@
       tempInput.focus();
       tempInput.select();
 
-      document.execCommand("copy");
+      try {
+        document.execCommand("copy");
+        showPercentageCopied(button);
+      } catch {
+        button.textContent = "failed";
+
+        setTimeout(function () {
+          button.textContent = "copy";
+        }, 1000);
+      }
 
       document.body.removeChild(tempInput);
+    }
 
+    function showPercentageCopied(button) {
       button.textContent = "copied";
 
-      setTimeout(function() {
+      setTimeout(function () {
         button.textContent = "copy";
       }, 1000);
     }
@@ -215,7 +247,8 @@
 
       showPercentageHistory();
 
-      document.getElementById("percentageResult").innerText = "";
+      const result = document.getElementById("percentageResult");
+      if (result) result.innerText = "";
     }
 
     document.addEventListener("DOMContentLoaded", showPercentageHistory);
