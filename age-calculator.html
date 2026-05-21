@@ -40,7 +40,20 @@
 
   <button id="menuIcon" onclick="toggleMenu()">☰</button>
 
-  <main class="single-calculator-container">
+  <main class="age-calculator-container">
+
+    <section class="age-history-box">
+
+      <div class="age-history-top">
+        <h3>Result</h3>
+        <button type="button" onclick="clearAgeHistory()" class="clear-btn">
+          Clear
+        </button>
+      </div>
+
+      <ul id="ageHistoryList"></ul>
+
+    </section>
 
     <section class="calculator">
 
@@ -65,9 +78,9 @@
   </main>
 
   <script src="script.js"></script>
-  
+
   <script>
-    
+    let ageHistory = JSON.parse(localStorage.getItem("ageHistory")) || [];
 
     function calculateAge() {
       const birthdateInput = document.getElementById("birthdate").value;
@@ -78,7 +91,12 @@
         return;
       }
 
-      const birthdate = new Date(birthdateInput);
+      const parts = birthdateInput.split("-");
+      const birthYear = Number(parts[0]);
+      const birthMonth = Number(parts[1]) - 1;
+      const birthDay = Number(parts[2]);
+
+      const birthdate = new Date(birthYear, birthMonth, birthDay);
       const today = new Date();
 
       if (birthdate > today) {
@@ -87,14 +105,61 @@
       }
 
       let age = today.getFullYear() - birthdate.getFullYear();
-      const month = today.getMonth() - birthdate.getMonth();
+      const monthDiff = today.getMonth() - birthdate.getMonth();
 
-      if (month < 0 || (month === 0 && today.getDate() < birthdate.getDate())) {
+      if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < birthdate.getDate())
+      ) {
         age--;
       }
 
-      result.innerText = "You are " + age + " years old.";
+      const formattedDate =
+        String(birthDay).padStart(2, "0") + "/" +
+        String(birthMonth + 1).padStart(2, "0") + "/" +
+        birthYear;
+
+      const answer = "You are " + age + " years old.";
+
+      result.innerText = answer;
+
+      saveAgeHistory(formattedDate, answer);
     }
+
+    function saveAgeHistory(inputDate, answer) {
+      const item = inputDate + " → " + answer;
+
+      ageHistory.push(item);
+
+      localStorage.setItem("ageHistory", JSON.stringify(ageHistory));
+
+      showAgeHistory();
+    }
+
+    function showAgeHistory() {
+      const list = document.getElementById("ageHistoryList");
+
+      if (!list) return;
+
+      list.innerHTML = "";
+
+      ageHistory.slice().reverse().forEach(function(item) {
+        const li = document.createElement("li");
+        li.textContent = item;
+        list.appendChild(li);
+      });
+    }
+
+    function clearAgeHistory() {
+      ageHistory = [];
+      localStorage.removeItem("ageHistory");
+      showAgeHistory();
+
+      const result = document.getElementById("result");
+      result.innerText = "";
+    }
+
+    document.addEventListener("DOMContentLoaded", showAgeHistory);
   </script>
 
 </body>
