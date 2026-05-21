@@ -1463,132 +1463,47 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+/* PHONE BOTTOM MENU: allow health/finance to open AND close */
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  if (!navbar) return;
 
-/* PHONE FINAL FIX: health/finance open once, close on second tap */
-(function () {
   function isPhone() {
     return window.matchMedia("(max-width: 850px)").matches;
   }
 
-  function allPhoneGroups() {
-    return document.querySelectorAll(
-      "#navbar .dropdown-content details.nav-group"
-    );
-  }
+  navbar
+    .querySelectorAll(".dropdown-content details.nav-group > summary")
+    .forEach(function (summary) {
+      summary.addEventListener(
+        "click",
+        function (event) {
+          if (!isPhone()) return;
 
-  function forceClose(group) {
-    group.open = false;
-    group.removeAttribute("open");
-    group.dataset.phoneOpen = "false";
-    group.classList.remove("open", "active", "phone-sub-open");
-  }
+          event.preventDefault();
+          event.stopPropagation();
+          event.stopImmediatePropagation();
 
-  function forceOpen(group) {
-    group.open = true;
-    group.setAttribute("open", "");
-    group.dataset.phoneOpen = "true";
-    group.classList.add("open", "active", "phone-sub-open");
-  }
+          const currentGroup = summary.parentElement;
+          const wasOpen = currentGroup.open;
 
-  function closeAllExcept(exceptGroup) {
-    allPhoneGroups().forEach(function (group) {
-      if (group !== exceptGroup) {
-        forceClose(group);
-      }
-    });
-  }
+          navbar
+            .querySelectorAll(".dropdown-content details.nav-group")
+            .forEach(function (group) {
+              group.open = false;
+            });
 
-  window.addEventListener(
-    "click",
-    function (event) {
-      if (!isPhone()) return;
-
-      const summary = event.target.closest(
-        "#navbar .dropdown-content details.nav-group > summary"
+          currentGroup.open = !wasOpen;
+        },
+        true
       );
-
-      if (!summary) return;
-
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-
-      const group = summary.parentElement;
-
-      /* use our own state, not browser <details> state */
-      const isAlreadyOpen = group.dataset.phoneOpen === "true";
-
-      closeAllExcept(group);
-
-      if (isAlreadyOpen) {
-        forceClose(group);
-      } else {
-        forceOpen(group);
-      }
-
-      /* override any old script that runs after this */
-      setTimeout(function () {
-        if (isAlreadyOpen) {
-          forceClose(group);
-        } else {
-          forceOpen(group);
-        }
-      }, 0);
-
-      setTimeout(function () {
-        if (isAlreadyOpen) {
-          forceClose(group);
-        } else {
-          forceOpen(group);
-        }
-      }, 50);
-    },
-    true
-  );
-})();
-
-/* PHONE FIX: finance closes on second tap */
-(function () {
-  function isPhone() {
-    return window.matchMedia("(max-width: 850px)").matches;
-  }
-
-  function getFinanceGroup() {
-    const groups = document.querySelectorAll(
-      "#navbar .dropdown-content details.nav-group"
-    );
-
-    for (const group of groups) {
-      const summary = group.querySelector(":scope > summary");
-      if (!summary) continue;
-
-      const text = summary.textContent.toLowerCase();
-
-      if (text.includes("finance")) {
-        group.dataset.menu = "finance";
-        return group;
-      }
-    }
-
-    return null;
-  }
-
-  function closeFinance(group) {
-    group.open = false;
-    group.removeAttribute("open");
-    group.dataset.financeOpen = "false";
-    group.classList.remove("open", "active", "phone-sub-open");
-  }
-
-  function openFinance(group) {
-    group.open = true;
-    group.setAttribute("open", "");
-    group.dataset.financeOpen = "true";
-    group.classList.add("open", "active", "phone-sub-open");
-  }
-
-  function toggleFinance(event) {
-    if (!isPhone()) return;
+    });
+});
+/* PHONE: make health/finance open and close correctly in bottom menu */
+document.addEventListener(
+  "click",
+  function (event) {
+    if (!window.matchMedia("(max-width: 850px)").matches) return;
 
     const summary = event.target.closest(
       "#navbar .dropdown-content details.nav-group > summary"
@@ -1596,62 +1511,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!summary) return;
 
-    const group = summary.parentElement;
-    const text = summary.textContent.toLowerCase();
-
-    if (!text.includes("finance")) return;
-
     event.preventDefault();
     event.stopPropagation();
     event.stopImmediatePropagation();
 
-    const isOpen = group.dataset.financeOpen === "true";
+    const clickedGroup = summary.parentElement;
+    const wasOpen = clickedGroup.open;
 
-    if (isOpen) {
-      closeFinance(group);
-    } else {
-      openFinance(group);
-    }
+    /* close all health/finance groups first */
+    document
+      .querySelectorAll("#navbar .dropdown-content details.nav-group")
+      .forEach(function (group) {
+        group.open = false;
+      });
 
-    setTimeout(function () {
-      if (isOpen) {
-        closeFinance(group);
-      } else {
-        openFinance(group);
-      }
-    }, 50);
-  }
-
-  document.addEventListener("DOMContentLoaded", function () {
-    const financeGroup = getFinanceGroup();
-
-    if (financeGroup) {
-      financeGroup.dataset.financeOpen = financeGroup.open ? "true" : "false";
-    }
-  });
-
-  window.addEventListener("click", toggleFinance, true);
-})();
-/* PHONE NAVBAR: health/finance open and close correctly */
-document.addEventListener("click", function (event) {
-  if (!window.matchMedia("(max-width: 850px)").matches) return;
-
-  const button = event.target.closest("#navbar .nav-summary");
-  if (!button) return;
-
-  event.preventDefault();
-  event.stopPropagation();
-
-  const group = button.closest(".nav-group");
-  const wasOpen = group.classList.contains("is-open");
-
-  document
-    .querySelectorAll("#navbar .dropdown-content .nav-group")
-    .forEach(function (item) {
-      item.classList.remove("is-open");
-    });
-
-  if (!wasOpen) {
-    group.classList.add("is-open");
-  }
-});
+    /* if it was closed, open it. if it was open, keep it closed */
+    clickedGroup.open = !wasOpen;
+  },
+  true
+);
