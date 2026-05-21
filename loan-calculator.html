@@ -18,10 +18,7 @@
     <a href="index.html">home</a>
 
     <div class="dropdown">
-
-      <button type="button" class="dropbtn">
-        calculator
-      </button>
+      <button type="button" class="dropbtn">calculator</button>
 
       <div class="dropdown-content">
         <a href="basic-calculator.html">basic</a>
@@ -31,7 +28,6 @@
         <a href="loan-calculator.html">loan</a>
         <a href="percentage-calculator.html">percentage</a>
       </div>
-
     </div>
 
     <a href="about.html">about</a>
@@ -40,7 +36,21 @@
 
   <button id="menuIcon" onclick="toggleMenu()">☰</button>
 
-  <main class="single-calculator-container">
+  <main class="loan-calculator-container">
+
+    <section class="loan-history-box">
+
+      <div class="loan-history-top">
+        <h3>Result</h3>
+
+        <button type="button" onclick="clearLoanHistory()" class="clear-btn">
+          Clear
+        </button>
+      </div>
+
+      <ul id="loanHistoryList"></ul>
+
+    </section>
 
     <section class="calculator">
 
@@ -57,13 +67,13 @@
       <input type="number" id="interest" placeholder="Example: 5">
 
       <label for="years">Loan years:</label>
-      <input type="number" id="years" placeholder="Example: 3">
+      <input type="number" id="years" placeholder="Example: 2">
 
       <button type="button" onclick="calculateLoan()" class="main-btn">
         calculate loan
       </button>
 
-      <h2 id="result"></h2>
+      <h2 id="loanResult"></h2>
 
     </section>
 
@@ -71,44 +81,128 @@
 
   <script src="script.js"></script>
 
-<script>
-    
+  <script>
+    let loanHistory = JSON.parse(localStorage.getItem("loanHistory")) || [];
+
     function calculateLoan() {
       const amount = Number(document.getElementById("amount").value);
-      const annualInterest = Number(document.getElementById("interest").value);
+      const annualRate = Number(document.getElementById("interest").value);
       const years = Number(document.getElementById("years").value);
-      const result = document.getElementById("result");
+      const result = document.getElementById("loanResult");
 
-      if (amount <= 0) {
-        result.innerText = "Please enter a valid loan amount.";
-        return;
-      }
-
-      if (annualInterest < 0) {
-        result.innerText = "Please enter a valid interest rate.";
-        return;
-      }
-
-      if (years <= 0) {
-        result.innerText = "Please enter valid loan years.";
+      if (amount <= 0 || annualRate < 0 || years <= 0) {
+        result.innerText = "Please enter valid loan details.";
         return;
       }
 
       const months = years * 12;
-      const monthlyInterest = annualInterest / 100 / 12;
+      const monthlyRate = annualRate / 100 / 12;
 
-      let payment;
+      let monthlyPayment;
 
-      if (monthlyInterest === 0) {
-        payment = amount / months;
+      if (monthlyRate === 0) {
+        monthlyPayment = amount / months;
       } else {
-        payment =
-          amount * monthlyInterest * Math.pow(1 + monthlyInterest, months) /
-          (Math.pow(1 + monthlyInterest, months) - 1);
+        monthlyPayment =
+          amount *
+          monthlyRate *
+          Math.pow(1 + monthlyRate, months) /
+          (Math.pow(1 + monthlyRate, months) - 1);
       }
 
-      result.innerText = "Monthly payment: " + payment.toFixed(2);
+      const totalPayment = monthlyPayment * months;
+      const totalInterest = totalPayment - amount;
+
+      const answer =
+        "Monthly payment: " + monthlyPayment.toFixed(2) + "\n" +
+        "Yearly interest: " + annualRate.toFixed(2) + "%\n" +
+        "Total interest: " + totalInterest.toFixed(2) + "\n" +
+        "Total payment: " + totalPayment.toFixed(2);
+
+      result.innerText = answer;
+
+      saveLoanHistory(amount, annualRate, years, answer);
     }
+
+    function saveLoanHistory(amount, annualRate, years, answer) {
+      const item =
+        "Loan: " + amount.toFixed(2) +
+        " | Interest: " + annualRate.toFixed(2) + "%" +
+        " | Years: " + years +
+        " → " + answer.replace(/\n/g, " | ");
+
+      loanHistory.push(item);
+
+      if (loanHistory.length > 50) {
+        loanHistory.shift();
+      }
+
+      localStorage.setItem("loanHistory", JSON.stringify(loanHistory));
+
+      showLoanHistory();
+    }
+
+    function showLoanHistory() {
+      const list = document.getElementById("loanHistoryList");
+
+      if (!list) return;
+
+      list.innerHTML = "";
+
+      loanHistory.slice().reverse().forEach(function(item) {
+        const li = document.createElement("li");
+        li.className = "history-item";
+
+        const text = document.createElement("span");
+        text.className = "history-text";
+        text.textContent = item;
+
+        const copyBtn = document.createElement("button");
+        copyBtn.type = "button";
+        copyBtn.className = "history-copy-btn";
+        copyBtn.textContent = "copy";
+
+        copyBtn.onclick = function() {
+          copyLoanText(item, copyBtn);
+        };
+
+        li.appendChild(text);
+        li.appendChild(copyBtn);
+        list.appendChild(li);
+      });
+    }
+
+    function copyLoanText(text, button) {
+      const tempInput = document.createElement("textarea");
+
+      tempInput.value = text;
+      tempInput.style.position = "fixed";
+      tempInput.style.left = "-9999px";
+      tempInput.style.top = "-9999px";
+
+      document.body.appendChild(tempInput);
+      tempInput.focus();
+      tempInput.select();
+
+      document.execCommand("copy");
+      document.body.removeChild(tempInput);
+
+      button.textContent = "copied";
+
+      setTimeout(function() {
+        button.textContent = "copy";
+      }, 1000);
+    }
+
+    function clearLoanHistory() {
+      loanHistory = [];
+      localStorage.removeItem("loanHistory");
+      showLoanHistory();
+
+      document.getElementById("loanResult").innerText = "";
+    }
+
+    document.addEventListener("DOMContentLoaded", showLoanHistory);
   </script>
 
 </body>
