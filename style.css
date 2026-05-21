@@ -3491,3 +3491,50 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after, #
     background: var(--yellow) !important;
   }
 }
+/* NAVBAR health/finance button behaves like old summary */
+#navbar .nav-summary {
+  width: 100%;
+  height: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--white);
+  color: var(--black);
+
+  border: none;
+  border-bottom: 3px solid var(--black);
+
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+#navbar .nav-summary::after {
+  content: " ▼";
+  margin-left: 8px;
+}
+
+#navbar .nav-group.is-open > .nav-summary::after,
+#navbar .nav-group:hover > .nav-summary::after {
+  content: " ◀";
+}
+
+#navbar .nav-group.is-open > .nav-group-links,
+#navbar .nav-group:hover > .nav-group-links {
+  display: block !important;
+}
+
+@media (max-width: 850px) {
+  #navbar .nav-summary {
+    height: 46px;
+    font-size: 17px;
+  }
+
+  #navbar .nav-group.is-open > .nav-group-links {
+    display: block !important;
+  }
+}

@@ -1632,3 +1632,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
   window.addEventListener("click", toggleFinance, true);
 })();
+/* PHONE NAVBAR: health/finance open and close correctly */
+document.addEventListener("click", function (event) {
+  if (!window.matchMedia("(max-width: 850px)").matches) return;
+
+  const button = event.target.closest("#navbar .nav-summary");
+  if (!button) return;
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  const group = button.closest(".nav-group");
+  const wasOpen = group.classList.contains("is-open");
+
+  document
+    .querySelectorAll("#navbar .dropdown-content .nav-group")
+    .forEach(function (item) {
+      item.classList.remove("is-open");
+    });
+
+  if (!wasOpen) {
+    group.classList.add("is-open");
+  }
+});
