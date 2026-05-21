@@ -6275,3 +6275,40 @@ body.menu-scrolled #navbar.open .nav-group-links,
   }
 }
 
+/* SIDE MENU ONLY: health/finance arrow down normally, left when hover/open */
+
+/* Normal arrow in side menu = down */
+body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after,
+#navbar.scrolled.open .dropdown-content .nav-group > summary::after,
+#navbar.open.phone-menu-open .dropdown-content .nav-group > summary::after {
+  content: " ▼" !important;
+
+  display: inline-block !important;
+  margin-left: 8px !important;
+
+  color: var(--black) !important;
+  background: transparent !important;
+
+  border: none !important;
+  box-shadow: none !important;
+
+  font-size: 16px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+
+  transform: none !important;
+}
+
+/* When hover side menu health/finance = left arrow */
+body.menu-scrolled #navbar.open .dropdown-content .nav-group:hover > summary::after,
+#navbar.scrolled.open .dropdown-content .nav-group:hover > summary::after,
+#navbar.open.phone-menu-open .dropdown-content .nav-group:hover > summary::after {
+  content: " ◀" !important;
+}
+
+/* When opened side menu health/finance = left arrow */
+body.menu-scrolled #navbar.open .dropdown-content .nav-group[open] > summary::after,
+#navbar.scrolled.open .dropdown-content .nav-group[open] > summary::after,
+#navbar.open.phone-menu-open .dropdown-content .nav-group[open] > summary::after {
+  content: " ◀" !important;
+}
