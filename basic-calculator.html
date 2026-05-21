@@ -11,14 +11,12 @@
 
 <body>
 
-  <button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()">↑</button>
 
   <nav id="navbar">
-
     <a href="index.html">home</a>
 
     <div class="dropdown">
-
       <button type="button" class="dropbtn">
         calculator
       </button>
@@ -31,30 +29,25 @@
         <a href="loan-calculator.html">loan</a>
         <a href="percentage-calculator.html">percentage</a>
       </div>
-
     </div>
 
     <a href="about.html">about</a>
-
   </nav>
 
-  <button id="menuIcon" onclick="toggleMenu()">☰</button>
+  <button id="menuIcon" type="button" onclick="toggleMenu()">☰</button>
 
   <main class="calculator-container">
 
     <section class="history">
-
       <div class="history-top">
         <h3>History</h3>
         <button type="button" class="clear-btn" onclick="clearHistory()">Clear</button>
       </div>
 
       <ul id="historyList"></ul>
-
     </section>
 
     <section class="calculator">
-
       <h1>Basic Calculator</h1>
 
       <p class="subtitle">
@@ -94,7 +87,6 @@
         <button type="button" onclick="calculate()" class="equal">=</button>
 
       </div>
-
     </section>
 
   </main>
