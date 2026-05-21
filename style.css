@@ -791,3 +791,53 @@ body.right-hand #navbar.open {
     min-height: auto;
   }
 }
+/* =========================
+   FIX HISTORY / RESULT BOX OVERFLOW
+========================= */
+
+/* Basic calculator history box */
+.history {
+  max-height: 520px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Age calculator result history box */
+.age-history-box {
+  max-height: 520px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Make long history text wrap instead of going outside */
+#historyList,
+#ageHistoryList {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Each history item stays inside the box */
+#historyList li,
+#ageHistoryList li {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 3px solid black;
+}
+
+/* Keep calculator and history aligned nicely */
+.calculator-container,
+.age-calculator-container {
+  align-items: start;
+}
+
+/* Mobile fix */
+@media (max-width: 850px) {
+  .history,
+  .age-history-box {
+    max-height: 300px;
+  }
+}
