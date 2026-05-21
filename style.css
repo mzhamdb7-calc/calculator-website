@@ -1362,3 +1362,78 @@ body.right-hand #resizeNavigator {
     font-size: 18px;
   }
 }
+
+/* =========================
+   KEEP CALCULATOR SAME HEIGHT AS HISTORY / RESULT BAR
+========================= */
+
+/* Side boxes */
+.history,
+.age-history-box,
+.bmi-history-box,
+.discount-history-box {
+  height: 520px;
+  max-height: 520px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Calculator boxes beside history/result */
+.calculator-container > .calculator,
+.age-calculator-container > .calculator,
+.bmi-calculator-container > .calculator,
+.discount-calculator-container > .calculator {
+  height: 520px;
+  max-height: 520px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Make basic calculator more compact so it fits better */
+.calculator-container .calculator {
+  padding: 24px;
+}
+
+.calculator-container .calculator h1 {
+  font-size: 42px;
+}
+
+.calculator-container .subtitle {
+  margin-bottom: 18px;
+}
+
+.calculator-container .display-row {
+  margin-bottom: 18px;
+}
+
+.calculator-container #display,
+.calculator-container .ans-btn {
+  height: 65px;
+}
+
+.calculator-container .buttons button {
+  height: 58px;
+}
+
+.calculator-container .basic-grid {
+  gap: 12px;
+}
+
+/* Mobile: let it fit screen better */
+@media (max-width: 850px) {
+  .history,
+  .age-history-box,
+  .bmi-history-box,
+  .discount-history-box {
+    height: auto;
+    max-height: 300px;
+  }
+
+  .calculator-container > .calculator,
+  .age-calculator-container > .calculator,
+  .bmi-calculator-container > .calculator,
+  .discount-calculator-container > .calculator {
+    height: auto;
+    max-height: none;
+  }
+}
