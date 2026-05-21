@@ -1662,3 +1662,189 @@ body.right-hand #resizeNavigator {
     max-height: 300px;
   }
 }
+
+/* =========================
+   SIDE BUTTONS - NEW POSITION
+========================= */
+
+/* MENU ICON */
+#menuIcon {
+  display: none;
+  position: fixed;
+  top: 18px;
+  right: 22px;
+  z-index: 999999;
+
+  width: 50px;
+  height: 48px;
+
+  border: 5px solid black;
+  background: white;
+
+  font-size: 26px;
+  font-weight: bold;
+
+  box-shadow: 5px 5px 0 black;
+  cursor: pointer;
+}
+
+#menuIcon.show {
+  display: block;
+}
+
+/* RESIZE NAVIGATOR (+ 100 -) */
+#resizeNavigator {
+  position: fixed;
+  right: 22px;
+  top: 240px;
+
+  z-index: 999999;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#resizeNavigator button {
+  width: 50px;
+  height: 46px;
+
+  border: 5px solid black;
+  background: white;
+  color: black;
+
+  font-size: 18px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  box-shadow: 5px 5px 0 black;
+}
+
+#resizeNavigator button:hover {
+  background: #ffe66d;
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 black;
+}
+
+/* ORIENTATION BUTTON */
+#handToggleBtn {
+  position: fixed;
+  right: 22px;
+  bottom: 120px;
+
+  width: 58px;
+  height: 50px;
+
+  border: 5px solid black;
+  background: white;
+  color: black;
+
+  font-size: 24px;
+  font-weight: bold;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 5px 5px 0 black;
+  cursor: pointer;
+  z-index: 999999;
+}
+
+/* SCROLL TOP BUTTON */
+#scrollTopBtn,
+.scroll-top {
+  position: fixed;
+  right: 22px;
+  bottom: 28px;
+
+  width: 58px;
+  height: 50px;
+
+  border: 5px solid black;
+  background: white;
+  color: black;
+
+  font-size: 28px;
+  font-weight: bold;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 5px 5px 0 black;
+  cursor: pointer;
+  z-index: 999999;
+}
+
+/* LEFT HAND MODE */
+body.left-hand #menuIcon {
+  left: 22px;
+  right: auto;
+}
+
+body.left-hand #resizeNavigator {
+  left: 22px;
+  right: auto;
+}
+
+body.left-hand #handToggleBtn {
+  left: 22px;
+  right: auto;
+}
+
+body.left-hand #scrollTopBtn,
+body.left-hand .scroll-top {
+  left: 22px;
+  right: auto;
+}
+
+/* MOBILE */
+@media (max-width: 850px) {
+  #menuIcon {
+    top: 16px;
+    right: 16px;
+    width: 46px;
+    height: 44px;
+    font-size: 24px;
+  }
+
+  #resizeNavigator {
+    right: 16px;
+    top: 210px;
+    gap: 8px;
+  }
+
+  #resizeNavigator button {
+    width: 46px;
+    height: 42px;
+    font-size: 17px;
+  }
+
+  #handToggleBtn {
+    right: 16px;
+    bottom: 100px;
+    width: 52px;
+    height: 46px;
+    font-size: 21px;
+  }
+
+  #scrollTopBtn,
+  .scroll-top {
+    right: 16px;
+    bottom: 22px;
+    width: 52px;
+    height: 46px;
+    font-size: 24px;
+  }
+
+  body.left-hand #menuIcon,
+  body.left-hand #resizeNavigator,
+  body.left-hand #handToggleBtn,
+  body.left-hand #scrollTopBtn,
+  body.left-hand .scroll-top {
+    left: 16px;
+    right: auto;
+  }
+}
