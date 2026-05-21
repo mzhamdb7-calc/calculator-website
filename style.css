@@ -6994,7 +6994,7 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group[open] > summary::af
     bottom: calc(18px + env(safe-area-inset-bottom)) !important;
 
     left: 8px !important;
-    right: 96px !important;
+    right: 110px !important;
 
     width: auto !important;
     min-width: 0 !important;
