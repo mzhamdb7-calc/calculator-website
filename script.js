@@ -1312,3 +1312,90 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("scroll", updateMenuIcon);
   updateMenuIcon();
 });
+
+/* PHONE CLICK MENU SYSTEM */
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!navbar || !menuIcon) return;
+
+  const calculatorDropdown = navbar.querySelector(":scope > .dropdown");
+  const calculatorButton = calculatorDropdown
+    ? calculatorDropdown.querySelector(".dropbtn")
+    : null;
+
+  function isPhone() {
+    return window.matchMedia("(max-width: 850px)").matches;
+  }
+
+  function closePhoneSubmenus() {
+    if (calculatorDropdown) {
+      calculatorDropdown.classList.remove("phone-open");
+    }
+
+    navbar.querySelectorAll(".nav-group").forEach(function (group) {
+      group.open = false;
+    });
+  }
+
+  function togglePhoneMenu(event) {
+    if (!isPhone()) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    document.body.classList.add("menu-scrolled");
+    navbar.classList.add("scrolled");
+    navbar.classList.toggle("open");
+    navbar.classList.toggle("phone-menu-open");
+
+    if (!navbar.classList.contains("open")) {
+      closePhoneSubmenus();
+    }
+  }
+
+  menuIcon.addEventListener("click", togglePhoneMenu);
+
+  if (calculatorButton && calculatorDropdown) {
+    calculatorButton.addEventListener("click", function (event) {
+      if (!isPhone() || !navbar.classList.contains("open")) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      calculatorDropdown.classList.toggle("phone-open");
+
+      navbar.querySelectorAll(".nav-group").forEach(function (group) {
+        group.open = false;
+      });
+    });
+  }
+
+  navbar.querySelectorAll(".nav-group > summary").forEach(function (summary) {
+    summary.addEventListener("click", function (event) {
+      if (!isPhone() || !navbar.classList.contains("open")) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const group = summary.parentElement;
+      const isOpen = group.open;
+
+      navbar.querySelectorAll(".nav-group").forEach(function (otherGroup) {
+        otherGroup.open = false;
+      });
+
+      group.open = !isOpen;
+    });
+  });
+
+  document.addEventListener("click", function (event) {
+    if (!isPhone()) return;
+
+    if (!navbar.contains(event.target) && !menuIcon.contains(event.target)) {
+      navbar.classList.remove("open", "phone-menu-open");
+      closePhoneSubmenus();
+    }
+  });
+});
