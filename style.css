@@ -3493,3 +3493,66 @@ body.right-hand #navbar.open {
     right: auto !important;
   }
 }
+/* =====================================================
+   PHONE FINAL FIX:
+   Add gap between top navbar and title.
+   Remove orientation button on phone.
+===================================================== */
+
+@media (max-width: 850px) {
+
+  /* Give more space under the top navbar */
+  .calculator-box {
+    margin-top: 175px !important;
+  }
+
+  .calculator-box h1 {
+    margin-top: 20px !important;
+  }
+
+  /* For calculator pages with result/history */
+  .calculator-container,
+  .age-calculator-container,
+  .bmi-calculator-container,
+  .discount-calculator-container,
+  .loan-calculator-container,
+  .percentage-calculator-container,
+  .single-calculator-container {
+    margin-top: 175px !important;
+  }
+
+  /* Remove orientation left/right button on phone */
+  #handToggleBtn {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  body.left-hand #handToggleBtn,
+  body.right-hand #handToggleBtn {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  /* Keep go-up button only */
+  #scrollTopBtn,
+  .scroll-top {
+    display: flex !important;
+
+    position: fixed !important;
+    top: auto !important;
+    bottom: calc(150px + env(safe-area-inset-bottom)) !important;
+
+    right: 14px !important;
+    left: auto !important;
+
+    width: 46px !important;
+    height: 44px !important;
+
+    opacity: 0.55 !important;
+    z-index: 99999999 !important;
+  }
+}
