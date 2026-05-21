@@ -5,7 +5,7 @@
   <title>Age Calculator</title>
   <link rel="stylesheet" href="style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Calculate your age instantly with this free online age calculator.">
+  <meta name="description" content="Calculate your normal age and Asian age instantly with this free online age calculator.">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
@@ -46,6 +46,7 @@
 
       <div class="age-history-top">
         <h3>Result</h3>
+
         <button type="button" onclick="clearAgeHistory()" class="clear-btn">
           Clear
         </button>
@@ -60,7 +61,7 @@
       <h1>Age Calculator</h1>
 
       <p class="subtitle">
-        Calculate your age instantly.
+        Calculate your normal age and Asian age instantly.
       </p>
 
       <label for="birthdate">Enter your birth date:</label>
@@ -104,22 +105,26 @@
         return;
       }
 
-      let age = today.getFullYear() - birthdate.getFullYear();
+      let normalAge = today.getFullYear() - birthdate.getFullYear();
       const monthDiff = today.getMonth() - birthdate.getMonth();
 
       if (
         monthDiff < 0 ||
         (monthDiff === 0 && today.getDate() < birthdate.getDate())
       ) {
-        age--;
+        normalAge--;
       }
+
+      const asianAge = today.getFullYear() - birthYear + 1;
 
       const formattedDate =
         String(birthDay).padStart(2, "0") + "/" +
         String(birthMonth + 1).padStart(2, "0") + "/" +
         birthYear;
 
-      const answer = "You are " + age + " years old.";
+      const answer =
+        "Normal age: " + normalAge + " years old.\n" +
+        "Asian age: " + asianAge + " years old.";
 
       result.innerText = answer;
 
@@ -127,9 +132,13 @@
     }
 
     function saveAgeHistory(inputDate, answer) {
-      const item = inputDate + " → " + answer;
+      const item = inputDate + " → " + answer.replace("\n", " | ");
 
       ageHistory.push(item);
+
+      if (ageHistory.length > 50) {
+        ageHistory.shift();
+      }
 
       localStorage.setItem("ageHistory", JSON.stringify(ageHistory));
 
@@ -153,6 +162,7 @@
     function clearAgeHistory() {
       ageHistory = [];
       localStorage.removeItem("ageHistory");
+
       showAgeHistory();
 
       const result = document.getElementById("result");
