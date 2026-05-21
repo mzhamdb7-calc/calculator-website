@@ -650,3 +650,24 @@ body {
   height: 48px;
   font-size: 20px !important;
 }
+
+/* BASIC CALCULATOR GRID */
+
+.basic-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.basic-grid button:nth-child(4),
+.basic-grid button:nth-child(8),
+.basic-grid button:nth-child(12),
+.basic-grid button:nth-child(16) {
+  background: #ffd3d3;
+}
+
+@media (max-width: 850px) {
+  .basic-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

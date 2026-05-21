@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Calculator</title>
+  <title>Basic Calculator</title>
   <link rel="stylesheet" href="style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Free online calculators for BMI, age, percentages, loans and more.">
+  <meta name="description" content="Free basic calculator for quick math calculations.">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
@@ -55,7 +55,7 @@
 
     <section class="calculator">
 
-      <h1>Calculator</h1>
+      <h1>Basic Calculator</h1>
 
       <p class="subtitle">
         Free online calculator for quick math calculations.
@@ -63,39 +63,32 @@
 
       <input type="text" id="display" readonly>
 
-      <div class="buttons scientific-grid">
+      <div class="buttons basic-grid">
 
-        <button type="button" onclick="add('Math.PI')">π</button>
-        <button type="button" onclick="addFunction('sin')">sin</button>
-        <button type="button" onclick="addFunction('ln')">ln</button>
+        <button type="button" onclick="clearDisplay()">AC</button>
+        <button type="button" onclick="removeLast()">←</button>
+        <button type="button" onclick="addFunction('sqrt')">√</button>
+        <button type="button" onclick="add('/')">÷</button>
+
         <button type="button" onclick="add('7')">7</button>
         <button type="button" onclick="add('8')">8</button>
         <button type="button" onclick="add('9')">9</button>
-        <button type="button" onclick="add('/')">÷</button>
+        <button type="button" onclick="add('*')">×</button>
 
-        <button type="button" onclick="add('Math.E')">e</button>
-        <button type="button" onclick="addFunction('cos')">cos</button>
-        <button type="button" onclick="addFunction('log')">log</button>
         <button type="button" onclick="add('4')">4</button>
         <button type="button" onclick="add('5')">5</button>
         <button type="button" onclick="add('6')">6</button>
-        <button type="button" onclick="add('*')">×</button>
+        <button type="button" onclick="add('-')">−</button>
 
-        <button type="button" onclick="add('Ans')">Ans</button>
-        <button type="button" onclick="addFunction('tan')">tan</button>
-        <button type="button" onclick="addFunction('sqrt')">√</button>
         <button type="button" onclick="add('1')">1</button>
         <button type="button" onclick="add('2')">2</button>
         <button type="button" onclick="add('3')">3</button>
-        <button type="button" onclick="add('-')">−</button>
+        <button type="button" onclick="add('+')">+</button>
 
-        <button type="button" onclick="clearDisplay()">AC</button>
         <button type="button" onclick="addPower()">xʸ</button>
-        <button type="button" onclick="add('%')">%</button>
         <button type="button" onclick="add('0')">0</button>
         <button type="button" onclick="add('.')">.</button>
         <button type="button" onclick="calculate()" class="equal">=</button>
-        <button type="button" onclick="add('+')">+</button>
 
       </div>
 
@@ -105,6 +98,5 @@
 
   <script src="script.js"></script>
 
-  
 </body>
 </html>
