@@ -802,3 +802,31 @@ document.addEventListener("DOMContentLoaded", function () {
   createHandToggleButton();
   applyHandMode();
 });
+
+/* =========================
+   AUTO CLOSE OTHER DROPDOWNS
+========================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const dropdownGroups = document.querySelectorAll(".nav-group, .group-card");
+
+  dropdownGroups.forEach(function (group) {
+    group.addEventListener("toggle", function () {
+      if (group.open) {
+        dropdownGroups.forEach(function (otherGroup) {
+          if (otherGroup !== group) {
+            otherGroup.open = false;
+          }
+        });
+      }
+    });
+  });
+
+  document.addEventListener("click", function (event) {
+    dropdownGroups.forEach(function (group) {
+      if (!group.contains(event.target)) {
+        group.open = false;
+      }
+    });
+  });
+});
