@@ -929,3 +929,51 @@ document.addEventListener("DOMContentLoaded", function () {
     calculatorDropdown.classList.remove("menu-open");
   });
 });
+
+/* =====================================================
+   TOP NAVBAR CHANGES TO MENU ICON ON SCROLL
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!navbar || !menuIcon) return;
+
+  function updateScrolledMenu() {
+    if (window.scrollY > 90) {
+      document.body.classList.add("menu-scrolled");
+      navbar.classList.add("scrolled");
+      menuIcon.classList.add("show");
+    } else {
+      document.body.classList.remove("menu-scrolled");
+      navbar.classList.remove("scrolled");
+      navbar.classList.remove("open");
+      menuIcon.classList.remove("show");
+    }
+  }
+
+  window.toggleMenu = function () {
+    if (!document.body.classList.contains("menu-scrolled")) return;
+    navbar.classList.toggle("open");
+  };
+
+  menuIcon.addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+    window.toggleMenu();
+  });
+
+  document.addEventListener("click", function (event) {
+    if (
+      document.body.classList.contains("menu-scrolled") &&
+      !navbar.contains(event.target) &&
+      !menuIcon.contains(event.target)
+    ) {
+      navbar.classList.remove("open");
+    }
+  });
+
+  window.addEventListener("scroll", updateScrolledMenu);
+  updateScrolledMenu();
+});
