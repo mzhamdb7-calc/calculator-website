@@ -6312,3 +6312,41 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group[open] > summary::af
 #navbar.open.phone-menu-open .dropdown-content .nav-group[open] > summary::after {
   content: " ◀" !important;
 }
+
+/* SIDE MENU ONLY:
+   health/finance arrow is ▼ normally,
+   changes to ◀ only when hover/open inside side menu
+*/
+
+body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after,
+#navbar.scrolled.open .dropdown-content .nav-group > summary::after,
+#navbar.open.phone-menu-open .dropdown-content .nav-group > summary::after {
+  content: " ▼" !important;
+  display: inline-block !important;
+  margin-left: 8px !important;
+
+  color: var(--black) !important;
+  background: transparent !important;
+
+  border: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+
+  font-size: 16px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+}
+
+/* Hover side menu health/finance */
+body.menu-scrolled #navbar.open .dropdown-content .nav-group:hover > summary::after,
+#navbar.scrolled.open .dropdown-content .nav-group:hover > summary::after,
+#navbar.open.phone-menu-open .dropdown-content .nav-group:hover > summary::after {
+  content: " ◀" !important;
+}
+
+/* Opened side menu health/finance */
+body.menu-scrolled #navbar.open .dropdown-content .nav-group[open] > summary::after,
+#navbar.scrolled.open .dropdown-content .nav-group[open] > summary::after,
+#navbar.open.phone-menu-open .dropdown-content .nav-group[open] > summary::after {
+  content: " ◀" !important;
+}
