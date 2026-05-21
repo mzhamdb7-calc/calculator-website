@@ -1501,3 +1501,39 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+/* PHONE BOTTOM MENU: allow health/finance to open AND close */
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  if (!navbar) return;
+
+  function isPhone() {
+    return window.matchMedia("(max-width: 850px)").matches;
+  }
+
+  navbar
+    .querySelectorAll(".dropdown-content details.nav-group > summary")
+    .forEach(function (summary) {
+      summary.addEventListener(
+        "click",
+        function (event) {
+          if (!isPhone()) return;
+
+          event.preventDefault();
+          event.stopPropagation();
+          event.stopImmediatePropagation();
+
+          const currentGroup = summary.parentElement;
+          const wasOpen = currentGroup.open;
+
+          navbar
+            .querySelectorAll(".dropdown-content details.nav-group")
+            .forEach(function (group) {
+              group.open = false;
+            });
+
+          currentGroup.open = !wasOpen;
+        },
+        true
+      );
+    });
+});
