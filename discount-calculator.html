@@ -40,7 +40,21 @@
 
   <button id="menuIcon" onclick="toggleMenu()">☰</button>
 
-  <main class="single-calculator-container">
+  <main class="discount-calculator-container">
+
+    <section class="discount-history-box">
+
+      <div class="discount-history-top">
+        <h3>Result</h3>
+
+        <button type="button" onclick="clearDiscountHistory()" class="clear-btn">
+          Clear
+        </button>
+      </div>
+
+      <ul id="discountHistoryList"></ul>
+
+    </section>
 
     <section class="calculator">
 
@@ -67,8 +81,9 @@
   </main>
 
   <script src="script.js"></script>
+
   <script>
-   
+    let discountHistory = JSON.parse(localStorage.getItem("discountHistory")) || [];
 
     function calculateDiscount() {
       const price = Number(document.getElementById("price").value);
@@ -88,10 +103,96 @@
       const savings = price * discount / 100;
       const finalPrice = price - savings;
 
-      result.innerText =
-        "Final price: " + finalPrice.toFixed(2) +
-        " | You save: " + savings.toFixed(2);
+      const answer =
+        "Original price: " + price.toFixed(2) + "\n" +
+        "Discount: " + discount + "%\n" +
+        "Final price: " + finalPrice.toFixed(2) + "\n" +
+        "You save: " + savings.toFixed(2);
+
+      result.innerText = answer;
+
+      saveDiscountHistory(answer);
     }
+
+    function saveDiscountHistory(answer) {
+      const item = answer.replace(/\n/g, " | ");
+
+      discountHistory.push(item);
+
+      if (discountHistory.length > 50) {
+        discountHistory.shift();
+      }
+
+      localStorage.setItem("discountHistory", JSON.stringify(discountHistory));
+
+      showDiscountHistory();
+    }
+
+    function showDiscountHistory() {
+      const list = document.getElementById("discountHistoryList");
+
+      if (!list) return;
+
+      list.innerHTML = "";
+
+      discountHistory.slice().reverse().forEach(function(item) {
+        const li = document.createElement("li");
+        li.className = "history-item";
+
+        const text = document.createElement("span");
+        text.className = "history-text";
+        text.textContent = item;
+
+        const copyBtn = document.createElement("button");
+        copyBtn.type = "button";
+        copyBtn.className = "history-copy-btn";
+        copyBtn.textContent = "copy";
+
+        copyBtn.onclick = function () {
+          copyDiscountText(item, copyBtn);
+        };
+
+        li.appendChild(text);
+        li.appendChild(copyBtn);
+
+        list.appendChild(li);
+      });
+    }
+
+    function copyDiscountText(text, button) {
+      const tempInput = document.createElement("textarea");
+
+      tempInput.value = text;
+      tempInput.style.position = "fixed";
+      tempInput.style.left = "-9999px";
+      tempInput.style.top = "-9999px";
+
+      document.body.appendChild(tempInput);
+      tempInput.focus();
+      tempInput.select();
+
+      document.execCommand("copy");
+
+      document.body.removeChild(tempInput);
+
+      button.textContent = "copied";
+
+      setTimeout(function () {
+        button.textContent = "copy";
+      }, 1000);
+    }
+
+    function clearDiscountHistory() {
+      discountHistory = [];
+      localStorage.removeItem("discountHistory");
+
+      showDiscountHistory();
+
+      const result = document.getElementById("result");
+      result.innerText = "";
+    }
+
+    document.addEventListener("DOMContentLoaded", showDiscountHistory);
   </script>
 
 </body>
