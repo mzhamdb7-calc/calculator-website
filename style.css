@@ -1,12 +1,7 @@
 /* =====================================================
-   REVISED CLEAN STYLE.CSS - Cartoon Calculator Website
-   Replace your whole old style.css with this file.
-   No duplicate menu systems.
+   CLEAN STYLE.CSS - Cartoon Calculator Website
+   Replace the whole old style.css with this file.
 ===================================================== */
-
-/* =========================
-   BASE
-========================= */
 
 * {
   margin: 0;
@@ -27,10 +22,6 @@
   --shadow: 7px 7px 0 var(--black);
 }
 
-html {
-  overflow-x: hidden;
-}
-
 body {
   min-height: 120vh;
   background: var(--bg);
@@ -39,7 +30,7 @@ body {
 }
 
 /* =========================
-   NORMAL TOP NAVBAR
+   NAVBAR
 ========================= */
 
 #navbar {
@@ -53,14 +44,10 @@ body {
   height: 65px;
 
   display: flex;
-  flex-direction: row;
-  align-items: stretch;
 
   background: var(--white);
   border: 3px solid var(--black);
   box-shadow: var(--shadow);
-
-  overflow: visible;
 }
 
 #navbar > a,
@@ -68,16 +55,10 @@ body {
   width: 240px;
   height: 65px;
   flex: 0 0 240px;
-
-  margin: 0;
-  padding: 0;
-
-  position: relative;
-  overflow: visible;
 }
 
-#navbar > a,
-#navbar > .dropdown > .dropbtn {
+#navbar a,
+.dropbtn {
   width: 100%;
   height: 65px;
 
@@ -85,7 +66,6 @@ body {
   align-items: center;
   justify-content: center;
 
-  margin: 0;
   padding: 0;
 
   color: var(--black);
@@ -94,11 +74,9 @@ body {
   background: var(--white);
   border: none;
   border-right: 3px solid var(--black);
-  box-shadow: none;
 
   font-size: 26px;
   font-weight: bold;
-  line-height: 1;
 
   cursor: pointer;
 }
@@ -107,51 +85,39 @@ body {
   border-right: none;
 }
 
-#navbar > a:hover,
-#navbar > .dropdown:hover > .dropbtn,
-#navbar > .dropdown > .dropbtn:hover {
+#navbar a:hover,
+.dropbtn:hover {
   background: var(--yellow);
 }
 
-/* =========================
-   TOP DROPDOWN
-========================= */
-
 .dropdown {
   position: relative;
-  overflow: visible;
 }
 
 .dropdown-content {
   display: none;
 
   position: absolute;
-  top: 62px;
-  left: -3px;
-  right: auto;
+  top: 60px;
+  left: -5px;
 
-  width: 245px;
-
-  margin: 0;
-  padding: 0;
+  width: 250px;
 
   background: var(--white);
   border: 3px solid var(--black);
-  box-shadow: 5px 5px 0 var(--black);
+  box-shadow: 4px 4px 0 var(--black);
 
   overflow: visible;
   z-index: 9999999;
 }
 
-.dropdown:hover > .dropdown-content,
-.dropdown:focus-within > .dropdown-content,
-.dropdown.menu-open > .dropdown-content,
-.dropdown.phone-open > .dropdown-content {
+.dropdown:hover .dropdown-content,
+.dropdown:focus-within .dropdown-content {
   display: block;
 }
 
 .dropdown-content > a,
-.dropdown-content > .nav-group > summary {
+.nav-group summary {
   width: 100%;
   height: 50px;
 
@@ -159,301 +125,192 @@ body {
   align-items: center;
   justify-content: center;
 
-  margin: 0;
-  padding: 0 12px;
-
   color: var(--black);
   text-decoration: none;
 
   background: var(--white);
-  border: none;
+  border-right: none;
   border-bottom: 3px solid var(--black);
-  box-shadow: none;
 
   font-size: 20px;
   font-weight: bold;
-  line-height: 1;
-
-  cursor: pointer;
 }
 
-.dropdown-content > *:last-child > summary,
 .dropdown-content > a:last-child {
   border-bottom: none;
 }
 
-.dropdown-content > a:hover,
-.dropdown-content > .nav-group:hover > summary,
-.dropdown-content > .nav-group[open] > summary {
-  background: var(--yellow);
+.dropdown-content > a:first-child {
+  border-bottom: 3px solid var(--black);
 }
 
-/* =========================
-   HEALTH / FINANCE DROPDOWNS
-========================= */
+.dropdown-content > a + .nav-group {
+  border-top: 0;
+}
 
+
+/* grouped dropdown: desktop opens sideways */
 .nav-group {
   position: relative;
+
   width: 100%;
   height: 50px;
 
   background: var(--white);
+  border-bottom: 3px solid var(--black);
+
   overflow: visible;
 }
 
-.nav-group > summary {
+.nav-group summary {
+  cursor: pointer;
   list-style: none;
 }
 
-.nav-group > summary::-webkit-details-marker {
+.nav-group summary::-webkit-details-marker {
   display: none;
 }
 
-.nav-group > summary::marker {
-  content: "";
-}
-
-/* CSS triangle arrow: down normally */
-.nav-group > summary::after {
-  content: "";
-
-  display: inline-block;
-  width: 0;
-  height: 0;
-
-  margin-left: 8px;
-
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 8px solid var(--black);
-  border-bottom: none;
-
-  background: transparent;
-  box-shadow: none;
-  transform: none;
-}
-
-/* CSS triangle arrow: left on hover/open */
-.nav-group:hover > summary::after,
-.nav-group[open] > summary::after {
-  border-top: 6px solid transparent;
-  border-bottom: 6px solid transparent;
-  border-right: 8px solid var(--black);
-  border-left: none;
+.nav-group summary::after {
+  content: " ▶";
+  margin-left: 6px;
+  font-size: 14px;
 }
 
 .nav-group-links {
   display: none;
 
   position: absolute;
-  top: -3px;
-  right: calc(100% - 3px);
-  left: auto;
+  top: -5px;
+  left: 100%;
 
   width: 180px;
 
-  margin: 0;
-  padding: 0;
-
   background: var(--white);
   border: 3px solid var(--black);
-  box-shadow: 5px 5px 0 var(--black);
+  box-shadow: 4px 4px 0 var(--black);
 
-  overflow: visible;
   z-index: 99999999;
 }
 
-.nav-group:hover > .nav-group-links,
-.nav-group:focus-within > .nav-group-links,
-.nav-group[open] > .nav-group-links {
+.nav-group[open] .nav-group-links {
   display: block;
 }
 
 .nav-group-links a {
   width: 100%;
-  height: 48px;
+  height: 50px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  margin: 0;
-  padding: 0 10px;
-
   color: var(--black);
   text-decoration: none;
 
   background: var(--white);
-  border: none;
   border-bottom: 3px solid var(--black);
 
-  font-size: 17px;
+  font-size: 20px;
   font-weight: bold;
-  line-height: 1;
 }
 
 .nav-group-links a:last-child {
   border-bottom: none;
 }
 
+.nav-group summary:hover,
 .nav-group-links a:hover {
   background: var(--yellow);
 }
 
 /* =========================
-   SCROLLED DESKTOP MENU BUTTON
+   SCROLLED DESKTOP SIDE MENU
 ========================= */
 
-#menuIcon {
+/* When the page is scrolled, hide the normal top navbar.
+   JavaScript will add .open when the hamburger is clicked. */
+#navbar.scrolled {
   display: none;
-  visibility: hidden;
-  pointer-events: none;
-
-  position: fixed;
-  top: 24px;
-  right: 24px;
-  left: auto;
-  bottom: auto;
-
-  width: 78px;
-  height: 50px;
-
-  align-items: center;
-  justify-content: center;
-
-  background: var(--white);
-  color: var(--black);
-
-  border: 4px solid var(--black);
-  box-shadow: 5px 5px 0 var(--black);
-
-  font-size: 0;
-  font-weight: bold;
-
-  cursor: pointer;
-  opacity: 1;
-  z-index: 999999999;
 }
-
-#menuIcon::before {
-  content: "MENU";
-
-  display: block;
-
-  color: var(--black);
-  background: transparent;
-
-  font-size: 18px;
-  font-weight: bold;
-  line-height: 1;
-  letter-spacing: 1px;
-}
-
-#menuIcon::after {
-  display: none;
-  content: none;
-}
-
-#menuIcon:hover {
-  background: var(--yellow);
-}
-
-#menuIcon.show,
-body.menu-scrolled #menuIcon {
-  display: flex;
-  visibility: visible;
-  pointer-events: auto;
-}
-
-/* hide normal navbar after scroll on desktop unless open */
-@media (min-width: 851px) {
-  #navbar.scrolled:not(.open),
-  body.menu-scrolled #navbar:not(.open) {
-    display: none;
-  }
-}
-
-/* =========================
-   DESKTOP SIDE MENU
-========================= */
 
 @media (min-width: 851px) {
   #navbar.open {
-    display: flex !important;
+    display: flex;
     position: fixed;
 
-    top: 24px;
-    right: 116px;
+    top: 14px;
+    right: 135px;
     left: auto;
-    bottom: auto;
 
-    width: 190px;
+    width: 260px;
     height: auto;
+
+    margin: 0;
+    transform: none;
 
     flex-direction: column;
     align-items: stretch;
-    gap: 0;
 
-    background: transparent;
+    background: var(--white);
     border: none;
     box-shadow: none;
-    transform: none;
 
     overflow: visible;
-    z-index: 999999998;
+    z-index: 99999998;
   }
 
+  /* Black panel behind the scrolled menu, like the reference image */
   #navbar.open::before {
-    display: none;
-    content: none;
+    content: "";
+    position: fixed;
+    top: 95px;
+    right: 28px;
+
+    width: 740px;
+    height: 225px;
+
+    background: var(--black);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  #navbar.open > * {
+    position: relative;
+    z-index: 2;
   }
 
   #navbar.open > a,
   #navbar.open > .dropdown {
-    width: 190px;
-    height: 55px;
+    width: 260px;
+    height: 60px;
     flex: none;
-
-    margin: 0;
-    padding: 0;
-
-    position: relative;
-    overflow: visible;
   }
 
   #navbar.open > a,
   #navbar.open > .dropdown > .dropbtn {
-    width: 190px;
-    height: 55px;
+    width: 260px;
+    height: 60px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
+    border: none;
+    box-shadow: none;
     background: var(--white);
+
     color: var(--black);
-
-    border: 3px solid var(--black);
-    box-shadow: 5px 5px 0 var(--black);
-
-    font-size: 24px;
+    font-size: 34px;
     font-weight: bold;
     line-height: 1;
 
-    text-align: center;
     text-decoration: none;
   }
 
-  #navbar.open > a + a,
-  #navbar.open > a + .dropdown,
-  #navbar.open > .dropdown + a {
-    margin-top: -3px;
-  }
-
   #navbar.open > a:hover,
-  #navbar.open > .dropdown:hover > .dropbtn,
-  #navbar.open > .dropdown.menu-open > .dropbtn {
-    background: var(--yellow);
+  #navbar.open > .dropdown > .dropbtn:hover {
+    background: var(--white);
   }
 
   #navbar.open .dropdown {
@@ -461,64 +318,153 @@ body.menu-scrolled #menuIcon {
     overflow: visible;
   }
 
+  /* The calculator submenu opens to the left of the vertical menu */
   #navbar.open .dropdown-content {
+    display: block;
+
+    position: absolute;
+    top: 0;
+    right: 260px;
+    left: auto;
+
+    width: 345px;
+    max-height: none;
+
+    background: var(--white);
+    border: none;
+    box-shadow: none;
+
+    overflow: visible;
+    z-index: 99999999;
+  }
+
+  #navbar.open .dropdown-content > a,
+  #navbar.open .nav-group,
+  #navbar.open .nav-group > summary {
+    width: 345px;
+    height: 64px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    padding: 0 18px;
+
+    border: none;
+    box-shadow: none;
+    background: var(--white);
+
+    color: var(--black);
+    font-size: 34px;
+    font-weight: bold;
+    line-height: 1;
+
+    text-align: left;
+    text-decoration: none;
+  }
+
+  #navbar.open .dropdown-content > a:hover,
+  #navbar.open .nav-group > summary:hover {
+    background: var(--white);
+  }
+
+  #navbar.open .nav-group {
+    position: relative;
+    overflow: visible;
+  }
+
+  #navbar.open .nav-group > summary {
+    cursor: pointer;
+    list-style: none;
+  }
+
+  #navbar.open .nav-group > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  #navbar.open .nav-group > summary::after {
+    content: " ▼";
+    margin-left: 12px;
+    font-size: 18px;
+  }
+
+  #navbar.open .nav-group[open] > summary::after {
+    content: " ▲";
+  }
+
+  /* Border around the active dropdown title */
+  #navbar.open .nav-group[open] > summary {
+    border: 2px solid #333;
+    border-radius: 4px;
+  }
+
+  /* Nested submenu, e.g. loan / discount / percentage */
+  #navbar.open .nav-group-links {
     display: none;
 
     position: absolute;
-    top: 52px;
-    right: calc(100% - 3px);
+    top: 0;
+    right: 100%;
     left: auto;
 
-    width: 235px;
+    width: 330px;
 
     background: var(--white);
-    border: 3px solid var(--black);
-    box-shadow: 5px 5px 0 var(--black);
+    border: none;
+    box-shadow: none;
 
     overflow: visible;
     z-index: 999999999;
   }
 
-  #navbar.open .dropdown:hover > .dropdown-content,
-  #navbar.open .dropdown:focus-within > .dropdown-content,
-  #navbar.open .dropdown.menu-open > .dropdown-content {
-    display: block;
+  #navbar.open .nav-group[open] .nav-group-links {
+    display: flex;
+    flex-direction: column;
   }
 
-  #navbar.open .dropdown-content > a,
-  #navbar.open .dropdown-content > .nav-group > summary {
-    height: 48px;
-    font-size: 18px;
-    border-bottom: 3px solid var(--black);
+  #navbar.open .nav-group-links a {
+    width: 330px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    padding: 0 48px;
+
+    border: none;
+    box-shadow: none;
+    background: var(--white);
+
+    color: var(--black);
+    font-size: 30px;
+    font-weight: bold;
+
+    text-align: left;
+    text-decoration: none;
   }
 
-  #navbar.open .nav-group {
-    height: 48px;
-  }
-
-  #navbar.open .nav-group-links {
-    right: calc(100% - 3px);
-    left: auto;
-    width: 185px;
+  #navbar.open .nav-group-links a:hover {
+    background: var(--white);
   }
 
   body.left-hand #navbar.open {
-    left: 116px;
+    left: 135px;
     right: auto;
   }
 
-  body.left-hand #menuIcon {
-    left: 24px;
+  body.left-hand #navbar.open::before {
+    left: 28px;
     right: auto;
   }
 
   body.left-hand #navbar.open .dropdown-content {
-    left: calc(100% - 3px);
+    left: 260px;
     right: auto;
   }
 
   body.left-hand #navbar.open .nav-group-links {
-    left: calc(100% - 3px);
+    left: 100%;
     right: auto;
   }
 }
@@ -940,7 +886,6 @@ body.menu-scrolled #menuIcon {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 35px;
-  align-items: start;
 }
 
 .card,
@@ -982,7 +927,6 @@ body.menu-scrolled #menuIcon {
   display: block;
   position: relative;
   z-index: 2;
-  overflow: visible;
 }
 
 .health-card {
@@ -1022,31 +966,8 @@ body.menu-scrolled #menuIcon {
 }
 
 .group-links {
-  display: none;
-
-  position: absolute;
-  top: 100%;
-  left: -5px;
-
-  width: calc(100% + 10px);
-
   background: var(--white);
-  border: 5px solid var(--black);
-  border-top: none;
-  box-shadow: 7px 7px 0 var(--black);
-
-  z-index: 9999;
-}
-
-.group-card[open] > .group-links,
-.group-card:hover > .group-links,
-.group-card:focus-within > .group-links {
-  display: block;
-}
-
-.group-card[open],
-.group-card:hover {
-  z-index: 9999;
+  border-top: 5px solid var(--black);
 }
 
 .group-links a {
@@ -1059,7 +980,6 @@ body.menu-scrolled #menuIcon {
   color: var(--black);
   text-decoration: none;
 
-  background: var(--white);
   border-bottom: 3px solid var(--black);
 
   font-size: 28px;
@@ -1153,14 +1073,146 @@ body.menu-scrolled #menuIcon {
 }
 
 /* =========================
-   GO UP + UNUSED SIDE BUTTONS
+   DESKTOP SIDE BUTTONS
 ========================= */
 
-#resizeNavigator,
+#menuIcon {
+  display: none;
+
+  position: fixed;
+  top: 10px;
+  right: 14px;
+
+  width: 92px;
+  height: 92px;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 6px solid var(--black);
+  border-radius: 0;
+  background: var(--white);
+  color: transparent;
+  box-shadow:
+    8px 0 0 var(--black),
+    0 8px 0 var(--black),
+    8px 8px 0 var(--black),
+    inset 6px 6px 0 #dfeeff,
+    inset -6px -6px 0 #9fb3c8;
+
+  font-size: 0;
+  line-height: 1;
+
+  cursor: pointer;
+  opacity: 1;
+  image-rendering: pixelated;
+
+  z-index: 999999999;
+}
+
+#menuIcon::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  width: 48px;
+  height: 8px;
+
+  transform: translate(-50%, -50%);
+
+  background: #6f7c87;
+  border: 4px solid var(--black);
+  border-radius: 0;
+
+  box-shadow:
+    0 -20px 0 #6f7c87,
+    0 -20px 0 4px var(--black),
+    0 20px 0 #6f7c87,
+    0 20px 0 4px var(--black);
+}
+
+#menuIcon::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+
+  border: 4px solid transparent;
+  box-shadow:
+    -4px -4px 0 var(--white),
+    4px 4px 0 #6f7c87;
+
+  pointer-events: none;
+}
+
+/* Pixel press effect */
+#menuIcon:hover {
+  transform: translate(2px, 2px);
+  box-shadow:
+    4px 0 0 var(--black),
+    0 4px 0 var(--black),
+    4px 4px 0 var(--black),
+    inset 6px 6px 0 #dfeeff,
+    inset -6px -6px 0 #9fb3c8;
+}
+
+#menuIcon.show {
+  display: flex;
+}
+
+#resizeNavigator {
+  position: fixed;
+  top: 235px;
+  right: 22px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  opacity: 0.5;
+  z-index: 9999999;
+}
+
+#resizeNavigator button,
+#handToggleBtn,
+#scrollTopBtn,
+.scroll-top {
+  border: 5px solid var(--black);
+  background: var(--white);
+  color: var(--black);
+  box-shadow: 5px 5px 0 var(--black);
+
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#resizeNavigator button {
+  width: 52px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+}
+
 #handToggleBtn {
-  display: none !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
+  position: fixed;
+  right: 22px;
+  bottom: 120px;
+
+  width: 58px;
+  height: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 24px;
+
+  opacity: 0.5;
+  z-index: 9999999;
 }
 
 #scrollTopBtn,
@@ -1177,320 +1229,110 @@ body.menu-scrolled #menuIcon {
   align-items: center;
   justify-content: center;
 
-  border: 5px solid var(--black);
-  background: var(--white);
-  color: var(--black);
-  box-shadow: 5px 5px 0 var(--black);
-
   font-size: 28px;
-  font-weight: bold;
 
-  cursor: pointer;
-  opacity: 0.7;
+  opacity: 0.5;
   z-index: 9999999;
 }
 
+#menuIcon:hover,
+#resizeNavigator:hover,
+#handToggleBtn:hover,
 #scrollTopBtn:hover,
 .scroll-top:hover {
   opacity: 1;
-  background: var(--yellow);
+}
+
+body.left-hand #menuIcon,
+body.left-hand #resizeNavigator,
+body.left-hand #handToggleBtn,
+body.left-hand #scrollTopBtn,
+body.left-hand .scroll-top {
+  left: 22px;
+  right: auto;
+}
+
+body.right-hand #menuIcon,
+body.right-hand #resizeNavigator,
+body.right-hand #handToggleBtn,
+body.right-hand #scrollTopBtn,
+body.right-hand .scroll-top {
+  right: 22px;
+  left: auto;
 }
 
 /* =========================
-   PHONE MODE
+   MOBILE
 ========================= */
 
 @media (max-width: 850px) {
   body {
-    padding-bottom: 95px;
+    padding-bottom: 230px;
   }
 
-  /* No MENU button on phone */
-  #menuIcon,
-  #menuIcon.show,
-  body.menu-scrolled #menuIcon,
-  body.menu-scrolled #menuIcon.show {
-    display: none !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-  }
+  #navbar {
+    top: 78px;
 
-  /* Bottom navbar beside Go Up button */
-  #navbar,
-  #navbar.scrolled,
-  #navbar.open,
-  body.menu-scrolled #navbar,
-  body.menu-scrolled #navbar.scrolled,
-  body.menu-scrolled #navbar.open,
-  body.menu-scrolled #navbar:not(.open) {
-    display: flex !important;
-
-    position: fixed !important;
-    top: auto !important;
-    left: 8px !important;
-    right: 96px !important;
-    bottom: calc(18px + env(safe-area-inset-bottom)) !important;
-
-    width: auto !important;
-    max-width: none !important;
-    height: 54px !important;
-
-    flex-direction: row !important;
-    align-items: stretch !important;
-
-    background: var(--white) !important;
-    border: 3px solid var(--black) !important;
-    box-shadow: none !important;
-
-    transform: none !important;
-    overflow: visible !important;
-    box-sizing: border-box !important;
-
-    z-index: 999999 !important;
+    width: 95%;
+    height: 58px;
   }
 
   #navbar > a,
-  #navbar > .dropdown,
-  #navbar.open > a,
-  #navbar.open > .dropdown {
-    width: 33.333% !important;
-    min-width: 0 !important;
-    max-width: 33.333% !important;
-
-    height: 54px !important;
-    flex: 1 1 33.333% !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
+  #navbar > .dropdown {
+    width: 33.33%;
+    height: 58px;
+    flex: 0 0 33.33%;
   }
 
-  #navbar > a,
-  #navbar > .dropdown > .dropbtn,
-  #navbar.open > a,
-  #navbar.open > .dropdown > .dropbtn {
-    width: 100% !important;
-    height: 54px !important;
-
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    background: var(--white) !important;
-    color: var(--black) !important;
-
-    border: none !important;
-    border-right: 3px solid var(--black) !important;
-    box-shadow: none !important;
-
-    font-size: 15px !important;
-    font-weight: bold !important;
-    line-height: 1 !important;
-
-    text-align: center !important;
-    text-decoration: none !important;
-
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-
-    box-sizing: border-box !important;
+  #navbar a,
+  .dropbtn {
+    height: 58px;
+    font-size: 18px;
   }
 
-  #navbar > a:last-child,
-  #navbar.open > a:last-child {
-    border-right: none !important;
+  .dropdown-content {
+    top: 53px;
+    left: -5px;
+
+    width: 220px;
   }
 
-  #navbar > a:hover,
-  #navbar > .dropdown:hover > .dropbtn {
-    background: var(--yellow) !important;
+  .dropdown-content > a,
+  .nav-group summary {
+    height: 46px;
+    font-size: 17px;
   }
 
-  /* Go Up button with visible gap */
-  #scrollTopBtn,
-  .scroll-top {
-    display: flex !important;
-
-    position: fixed !important;
-    right: 12px !important;
-    left: auto !important;
-    bottom: calc(18px + env(safe-area-inset-bottom)) !important;
-
-    width: 54px !important;
-    height: 54px !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    border: 4px solid var(--black) !important;
-    background: var(--white) !important;
-    color: var(--black) !important;
-    box-shadow: 5px 5px 0 var(--black) !important;
-
-    font-size: 32px !important;
-    font-weight: bold !important;
-    line-height: 1 !important;
-
-    opacity: 1 !important;
-    z-index: 9999999 !important;
+  /* phone dropdown groups open downward */
+  .nav-group {
+    height: auto;
   }
 
-  #scrollTopBtn:hover,
-  .scroll-top:hover {
-    background: var(--yellow) !important;
+  .nav-group summary::after {
+    content: " ▼";
   }
 
-  /* Calculator dropdown opens upward from bottom bar */
-  #navbar .dropdown-content,
-  #navbar.open .dropdown-content {
-    display: none !important;
-
-    position: absolute !important;
-    top: auto !important;
-    bottom: 54px !important;
-    left: 50% !important;
-    right: auto !important;
-
-    width: 210px !important;
-    max-width: calc(100vw - 20px) !important;
-
-    transform: translateX(-50%) !important;
-
-    background: var(--white) !important;
-    border: 3px solid var(--black) !important;
-    box-shadow: 5px 5px 0 var(--black) !important;
-
-    overflow: visible !important;
-    box-sizing: border-box !important;
+  .nav-group[open] summary::after {
+    content: " ▲";
   }
 
-  #navbar .dropdown:hover > .dropdown-content,
-  #navbar .dropdown:focus-within > .dropdown-content,
-  #navbar .dropdown.phone-open > .dropdown-content {
-    display: block !important;
+  .nav-group-links {
+    position: static;
+
+    width: 100%;
+
+    border: none;
+    border-top: 3px solid var(--black);
+    box-shadow: none;
   }
 
-  #navbar .dropdown-content > a,
-  #navbar .dropdown-content > .nav-group > summary,
-  #navbar.open .dropdown-content > a,
-  #navbar.open .dropdown-content > .nav-group > summary {
-    height: 42px !important;
+  .nav-group-links a {
+    width: 100%;
+    height: 42px;
 
-    background: var(--white) !important;
-    color: var(--black) !important;
-
-    border-bottom: 3px solid var(--black) !important;
-
-    font-size: 15px !important;
-    font-weight: bold !important;
-    line-height: 1 !important;
+    font-size: 16px;
   }
 
-  #navbar .dropdown-content > a:last-child,
-  #navbar .dropdown-content > *:last-child > summary {
-    border-bottom: none !important;
-  }
-
-  /* Health / Finance submenus open upward */
-  #navbar .dropdown-content details.nav-group,
-  #navbar.open .dropdown-content details.nav-group {
-    position: relative !important;
-    height: 42px !important;
-    overflow: visible !important;
-  }
-
-  #navbar .dropdown-content details.nav-group > .nav-group-links,
-  #navbar.open .dropdown-content details.nav-group > .nav-group-links {
-    display: none !important;
-
-    position: absolute !important;
-    left: 0 !important;
-    right: auto !important;
-    top: auto !important;
-    bottom: 100% !important;
-
-    width: 100% !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    background: var(--white) !important;
-    border: 3px solid var(--black) !important;
-    box-shadow: 4px 4px 0 var(--black) !important;
-
-    z-index: 999999999 !important;
-  }
-
-  #navbar .dropdown-content details.nav-group[open] > .nav-group-links,
-  #navbar.open .dropdown-content details.nav-group[open] > .nav-group-links {
-    display: block !important;
-  }
-
-  #navbar .dropdown-content details.nav-group > .nav-group-links > a,
-  #navbar.open .dropdown-content details.nav-group > .nav-group-links > a {
-    width: 100% !important;
-    height: 42px !important;
-
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    background: var(--white) !important;
-    color: var(--black) !important;
-
-    border-bottom: 3px solid var(--black) !important;
-
-    font-size: 15px !important;
-    font-weight: bold !important;
-    text-decoration: none !important;
-  }
-
-  #navbar .dropdown-content details.nav-group > .nav-group-links > a:last-child {
-    border-bottom: none !important;
-  }
-
-  /* Phone CSS triangle arrows only; no emoji/text arrows */
-  #navbar .dropdown-content details.nav-group > summary {
-    list-style: none !important;
-    gap: 8px !important;
-  }
-
-  #navbar .dropdown-content details.nav-group > summary::-webkit-details-marker {
-    display: none !important;
-  }
-
-  #navbar .dropdown-content details.nav-group > summary::marker {
-    content: "" !important;
-  }
-
-  #navbar .dropdown-content details.nav-group > summary::after {
-    content: "" !important;
-
-    display: inline-block !important;
-    width: 0 !important;
-    height: 0 !important;
-
-    margin-left: 6px !important;
-
-    background: transparent !important;
-    box-shadow: none !important;
-    transform: none !important;
-
-    border-left: 6px solid transparent !important;
-    border-right: 6px solid transparent !important;
-    border-top: 8px solid var(--black) !important;
-    border-bottom: none !important;
-  }
-
-  #navbar .dropdown-content details.nav-group:hover > summary::after,
-  #navbar .dropdown-content details.nav-group[open] > summary::after {
-    border-top: 6px solid transparent !important;
-    border-bottom: 6px solid transparent !important;
-    border-right: 8px solid var(--black) !important;
-    border-left: none !important;
-  }
-
-  /* Phone page layout */
   .calculator-container,
   .age-calculator-container,
   .bmi-calculator-container,
@@ -1500,8 +1342,7 @@ body.menu-scrolled #menuIcon {
     width: 100%;
     max-width: 100%;
 
-    margin-top: 40px;
-    margin-bottom: 95px;
+    margin-top: 175px;
     padding: 16px;
 
     display: flex;
@@ -1512,8 +1353,7 @@ body.menu-scrolled #menuIcon {
   .single-calculator-container,
   .about-container,
   .calculator-box {
-    margin-top: 40px;
-    margin-bottom: 95px;
+    margin-top: 175px;
   }
 
   .history,
@@ -1641,5 +1481,5919 @@ body.menu-scrolled #menuIcon {
   .result-copy-btn {
     opacity: 1;
     pointer-events: auto;
+  }
+
+  /* hide phone resize + orientation */
+  #resizeNavigator,
+  #handToggleBtn {
+    display: none;
+  }
+
+  /* phone menu and go-up buttons */
+  #menuIcon {
+    top: auto;
+    bottom: calc(150px + env(safe-area-inset-bottom));
+    right: 14px;
+    left: auto;
+
+    width: 58px;
+    height: 56px;
+
+    font-size: 0;
+    border-width: 4px;
+    box-shadow:
+      5px 0 0 var(--black),
+      0 5px 0 var(--black),
+      5px 5px 0 var(--black),
+      inset 4px 4px 0 #dfeeff,
+      inset -4px -4px 0 #9fb3c8;
+  }
+
+  #menuIcon::before {
+    width: 28px;
+    height: 5px;
+    border-width: 3px;
+    box-shadow:
+      0 -12px 0 #6f7c87,
+      0 -12px 0 3px var(--black),
+      0 12px 0 #6f7c87,
+      0 12px 0 3px var(--black);
+  }
+
+  #menuIcon::after {
+    inset: -4px;
+    border-width: 0;
+  }
+
+  #menuIcon.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #scrollTopBtn,
+  .scroll-top {
+    right: 14px;
+    left: auto;
+    bottom: calc(150px + env(safe-area-inset-bottom));
+
+    width: 46px;
+    height: 44px;
+
+    font-size: 24px;
+  }
+
+  /* compact opened phone menu */
+  #navbar.open {
+    display: flex;
+
+    position: fixed;
+    top: auto;
+    bottom: calc(150px + env(safe-area-inset-bottom));
+    right: 70px;
+    left: auto;
+
+    width: 120px;
+    height: auto;
+
+    flex-direction: column;
+
+    background: var(--white);
+    border: none;
+    box-shadow: none;
+
+    overflow: visible;
+    transform: none;
+
+    z-index: 99999998;
+  }
+
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 120px;
+    height: 34px;
+    flex: none;
+  }
+
+  #navbar.open a,
+  #navbar.open .dropbtn {
+    width: 120px;
+    height: 34px;
+
+    border: none;
+    box-shadow: none;
+
+    font-size: 18px;
+  }
+
+  #navbar.open .dropdown {
+    overflow: visible;
+  }
+
+  #navbar.open .dropdown-content {
+    display: block;
+
+    position: absolute;
+    top: 0;
+    right: 120px;
+    left: auto;
+
+    width: 155px;
+    max-height: none;
+
+    background: var(--white);
+    border: none;
+    box-shadow: none;
+
+    overflow: visible;
+  }
+
+  #navbar.open .dropdown-content > a,
+  #navbar.open .nav-group,
+  #navbar.open .nav-group summary {
+    width: 155px;
+    height: 34px;
+
+    justify-content: flex-start;
+    padding-left: 8px;
+
+    border: none;
+
+    font-size: 18px;
+  }
+
+  #navbar.open .nav-group {
+    height: auto;
+  }
+
+  #navbar.open .nav-group-links {
+    position: static;
+
+    width: 155px;
+
+    border: none;
+    box-shadow: none;
+  }
+
+  #navbar.open .nav-group-links a {
+    width: 155px;
+    height: 30px;
+
+    justify-content: flex-start;
+    padding-left: 22px;
+
+    border: none;
+
+    font-size: 16px;
+  }
+
+  body.left-hand #navbar.open,
+  body.right-hand #navbar.open {
+    right: 70px;
+    left: auto;
+  }
+
+  body.left-hand #menuIcon,
+  body.right-hand #menuIcon {
+    right: 14px;
+    left: auto;
+  }
+
+  body.left-hand #scrollTopBtn,
+  body.left-hand .scroll-top,
+  body.right-hand #scrollTopBtn,
+  body.right-hand .scroll-top {
+    right: 14px;
+    left: auto;
+  }
+}
+
+/* =========================
+   NAVBAR DROPDOWN THIN-LINE FIX
+   Keeps text sizes consistent and restores the line between Basic and Health.
+========================= */
+
+#navbar {
+  border-width: 3px;
+}
+
+#navbar a,
+.dropbtn {
+  border-right-width: 3px;
+}
+
+.dropdown-content {
+  border-width: 3px;
+  box-shadow: 4px 4px 0 var(--black);
+}
+
+.dropdown-content > a,
+.nav-group summary {
+  height: 50px;
+  border-bottom: 3px solid var(--black);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.dropdown-content > a:first-child {
+  border-bottom: 3px solid var(--black);
+}
+
+.nav-group {
+  border-bottom: 3px solid var(--black);
+}
+
+.nav-group:last-child {
+  border-bottom: none;
+}
+
+.nav-group-links {
+  border-width: 3px;
+  box-shadow: 4px 4px 0 var(--black);
+}
+
+.nav-group-links a {
+  height: 50px;
+  border-bottom: 3px solid var(--black);
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* Keep the opened scrolled side menu clean */
+#navbar.open,
+#navbar.open a,
+#navbar.open .dropbtn,
+#navbar.open .dropdown-content,
+#navbar.open .dropdown-content > a,
+#navbar.open .nav-group,
+#navbar.open .nav-group summary,
+#navbar.open .nav-group-links,
+#navbar.open .nav-group-links a {
+  border-width: 0;
+}
+
+#navbar.open .nav-group[open] > summary {
+  border: 2px solid #333;
+}
+
+
+
+/* =========================
+   SCROLLED MENU MATCH 2ND IMAGE
+   Right-side scrolled menu uses the same outlined cartoon boxes
+   as the normal top menu, and the hamburger matches the resize buttons.
+========================= */
+
+@media (min-width: 851px) {
+  /* smaller hamburger, same size family as resize buttons */
+  #menuIcon {
+    top: 22px;
+    right: 22px;
+    width: 52px;
+    height: 48px;
+    border: 4px solid var(--black);
+    box-shadow: 5px 5px 0 var(--black);
+  }
+
+  #menuIcon::before {
+    width: 24px;
+    height: 4px;
+    border-width: 2px;
+    box-shadow:
+      0 -10px 0 #6f7c87,
+      0 -10px 0 2px var(--black),
+      0 10px 0 #6f7c87,
+      0 10px 0 2px var(--black);
+  }
+
+  #menuIcon::after {
+    inset: -4px;
+    box-shadow: none;
+  }
+
+  #menuIcon:hover {
+    transform: translate(2px, 2px);
+    box-shadow:
+      3px 0 0 var(--black),
+      0 3px 0 var(--black),
+      3px 3px 0 var(--black),
+      inset 4px 4px 0 #dfeeff,
+      inset -4px -4px 0 #9fb3c8;
+  }
+
+  /* remove the big black background panel */
+  #navbar.open::before {
+    display: none;
+  }
+
+  /* right-side main menu */
+  #navbar.open {
+    top: 22px;
+    right: 88px;
+    width: 210px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    gap: 0;
+    align-items: stretch;
+  }
+
+  body.left-hand #navbar.open {
+    left: 88px;
+    right: auto;
+  }
+
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 210px;
+    height: 58px;
+    margin: 0;
+  }
+
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    width: 210px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--white);
+    border: 3px solid var(--black);
+    box-shadow: 5px 5px 0 var(--black);
+    color: var(--black);
+    font-size: 28px;
+    font-weight: bold;
+    line-height: 1;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  /* stack items tightly like the reference */
+  #navbar.open > a + a,
+  #navbar.open > a + .dropdown,
+  #navbar.open > .dropdown + a,
+  #navbar.open > .dropdown + .dropdown {
+    margin-top: -1px;
+  }
+
+  /* active calculator box while submenu is visible */
+  #navbar.open > .dropdown > .dropbtn {
+    position: relative;
+    z-index: 3;
+  }
+
+  /* left submenu block */
+  #navbar.open .dropdown {
+    position: relative;
+    overflow: visible;
+  }
+
+  #navbar.open .dropdown-content {
+    display: block;
+    position: absolute;
+    top: 43px;
+    right: 207px;
+    left: auto;
+    width: 245px;
+    background: var(--white);
+    border: 3px solid var(--black);
+    box-shadow: 5px 5px 0 var(--black);
+    overflow: visible;
+    z-index: 5;
+  }
+
+  body.left-hand #navbar.open .dropdown-content {
+    left: 207px;
+    right: auto;
+  }
+
+  #navbar.open .dropdown-content > a,
+  #navbar.open .nav-group,
+  #navbar.open .nav-group > summary {
+    width: 100%;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px;
+    background: var(--white);
+    border: none;
+    border-bottom: 3px solid var(--black);
+    box-shadow: none;
+    color: var(--black);
+    font-size: 22px;
+    font-weight: bold;
+    line-height: 1;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  /* basic = active yellow row */
+  #navbar.open .dropdown-content > a:first-child {
+    background: var(--yellow);
+  }
+
+  #navbar.open .dropdown-content > a:last-child,
+  #navbar.open .nav-group:last-child,
+  #navbar.open .nav-group:last-child > summary {
+    border-bottom: none;
+  }
+
+  #navbar.open .nav-group {
+    position: relative;
+    height: auto;
+    background: var(--white);
+    overflow: visible;
+  }
+
+  #navbar.open .nav-group > summary {
+    cursor: pointer;
+    list-style: none;
+  }
+
+  #navbar.open .nav-group > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  #navbar.open .nav-group > summary::after {
+    content: " ▶";
+    margin-left: 8px;
+    font-size: 16px;
+  }
+
+  #navbar.open .nav-group[open] > summary::after {
+    content: " ▼";
+  }
+
+  #navbar.open .nav-group[open] > summary {
+    border: none;
+    border-bottom: 3px solid var(--black);
+    border-radius: 0;
+  }
+
+  /* finance nested submenu opens to the left with same design language */
+  #navbar.open .nav-group-links {
+    display: none;
+    position: absolute;
+    top: -3px;
+    right: calc(100% + 3px);
+    left: auto;
+    width: 230px;
+    background: var(--white);
+    border: 3px solid var(--black);
+    box-shadow: 5px 5px 0 var(--black);
+    overflow: visible;
+    z-index: 6;
+  }
+
+  body.left-hand #navbar.open .nav-group-links {
+    left: calc(100% + 3px);
+    right: auto;
+  }
+
+  #navbar.open .nav-group[open] .nav-group-links {
+    display: block;
+  }
+
+  #navbar.open .nav-group-links a {
+    width: 100%;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px;
+    background: var(--white);
+    border: none;
+    border-bottom: 3px solid var(--black);
+    box-shadow: none;
+    color: var(--black);
+    font-size: 21px;
+    font-weight: bold;
+    line-height: 1;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  #navbar.open .nav-group-links a:last-child {
+    border-bottom: none;
+  }
+
+  /* keep hover clean */
+  #navbar.open > a:hover,
+  #navbar.open > .dropdown > .dropbtn:hover,
+  #navbar.open .dropdown-content > a:hover,
+  #navbar.open .nav-group > summary:hover,
+  #navbar.open .nav-group-links a:hover {
+    background: var(--soft-yellow);
+  }
+
+  #navbar.open .dropdown-content > a:first-child:hover {
+    background: var(--yellow);
+  }
+}
+
+
+
+/* =========================
+   FINAL SCROLLED SIDE BAR STYLE
+   Matches the reference image:
+   - vertical boxed menu on the right
+   - submenu box on the left
+   - thinner cartoon lines
+   - yellow hover color
+   - smaller hamburger button
+========================= */
+
+@media (min-width: 851px) {
+  #navbar.open::before {
+    display: none !important;
+  }
+
+  #navbar.open {
+    display: flex !important;
+    position: fixed !important;
+
+    top: 86px !important;
+    right: 150px !important;
+    left: auto !important;
+
+    width: 265px !important;
+    height: auto !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+
+    overflow: visible !important;
+    z-index: 99999998 !important;
+  }
+
+  body.left-hand #navbar.open {
+    left: 150px !important;
+    right: auto !important;
+  }
+
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 265px !important;
+    height: 74px !important;
+    flex: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    width: 265px !important;
+    height: 74px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 7px 7px 0 var(--black) !important;
+
+    font-size: 30px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  #navbar.open > a + a,
+  #navbar.open > a + .dropdown,
+  #navbar.open > .dropdown + a,
+  #navbar.open > .dropdown + .dropdown {
+    margin-top: -4px !important;
+  }
+
+  #navbar.open > a:hover,
+  #navbar.open > .dropdown:hover > .dropbtn,
+  #navbar.open > .dropdown > .dropbtn:hover {
+    background: var(--yellow) !important;
+  }
+
+  #navbar.open .dropdown {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  /* Big submenu to the left of the right-side menu */
+  #navbar.open .dropdown-content {
+    display: block !important;
+
+    position: absolute !important;
+    top: 130px !important;
+    right: 265px !important;
+    left: auto !important;
+
+    width: 310px !important;
+    max-height: none !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: var(--white) !important;
+    border: 4px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 7px 7px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 99999999 !important;
+  }
+
+  body.left-hand #navbar.open .dropdown-content {
+    left: 265px !important;
+    right: auto !important;
+  }
+
+  #navbar.open .dropdown-content > a,
+  #navbar.open .nav-group,
+  #navbar.open .nav-group > summary {
+    width: 100% !important;
+    height: 76px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 18px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 4px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    font-size: 25px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  #navbar.open .dropdown-content > a:first-child {
+    background: var(--white) !important;
+  }
+
+  #navbar.open .dropdown-content > a:last-child,
+  #navbar.open .nav-group:last-child,
+  #navbar.open .nav-group:last-child > summary {
+    border-bottom: none !important;
+  }
+
+  #navbar.open .dropdown-content > a:hover,
+  #navbar.open .nav-group:hover,
+  #navbar.open .nav-group > summary:hover {
+    background: var(--yellow) !important;
+  }
+
+  #navbar.open .nav-group {
+    position: relative !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  #navbar.open .nav-group > summary {
+    cursor: pointer !important;
+    list-style: none !important;
+  }
+
+  #navbar.open .nav-group > summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  #navbar.open .nav-group > summary::marker {
+    content: "" !important;
+  }
+
+  #navbar.open .nav-group > summary::after {
+    content: "▼" !important;
+    display: inline-block !important;
+    margin-left: 12px !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+  }
+
+  #navbar.open .nav-group[open] > summary::after {
+    content: "▲" !important;
+  }
+
+  #navbar.open .nav-group[open] > summary {
+    border: none !important;
+    border-bottom: 4px solid var(--black) !important;
+    border-radius: 0 !important;
+  }
+
+  /* Nested menu, if health or finance is opened */
+  #navbar.open .nav-group-links {
+    display: none !important;
+
+    position: absolute !important;
+    top: -4px !important;
+    right: calc(100% + 4px) !important;
+    left: auto !important;
+
+    width: 260px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: var(--white) !important;
+    border: 4px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 7px 7px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 999999999 !important;
+  }
+
+  body.left-hand #navbar.open .nav-group-links {
+    left: calc(100% + 4px) !important;
+    right: auto !important;
+  }
+
+  #navbar.open .nav-group[open] .nav-group-links {
+    display: block !important;
+  }
+
+  #navbar.open .nav-group-links a {
+    width: 100% !important;
+    height: 64px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 16px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 4px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 23px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  #navbar.open .nav-group-links a:last-child {
+    border-bottom: none !important;
+  }
+
+  #navbar.open .nav-group-links a:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* Smaller pixel hamburger beside the menu */
+  #menuIcon {
+    top: 94px !important;
+    right: 88px !important;
+
+    width: 52px !important;
+    height: 48px !important;
+
+    border: 4px solid var(--black) !important;
+    border-radius: 0 !important;
+    background: var(--white) !important;
+    color: transparent !important;
+
+    box-shadow:
+      5px 0 0 var(--black),
+      0 5px 0 var(--black),
+      5px 5px 0 var(--black),
+      inset 4px 4px 0 #dfeeff,
+      inset -4px -4px 0 #9fb3c8 !important;
+
+    font-size: 0 !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  body.left-hand #menuIcon {
+    left: 88px !important;
+    right: auto !important;
+  }
+
+  #menuIcon::before {
+    width: 24px !important;
+    height: 4px !important;
+    border: 2px solid var(--black) !important;
+    background: #6f7c87 !important;
+
+    box-shadow:
+      0 -10px 0 #6f7c87,
+      0 -10px 0 2px var(--black),
+      0 10px 0 #6f7c87,
+      0 10px 0 2px var(--black) !important;
+  }
+
+  #menuIcon::after {
+    inset: -4px !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  #menuIcon:hover {
+    background: var(--yellow) !important;
+    transform: translate(2px, 2px) !important;
+    box-shadow:
+      3px 0 0 var(--black),
+      0 3px 0 var(--black),
+      3px 3px 0 var(--black),
+      inset 4px 4px 0 #fff4b8,
+      inset -4px -4px 0 #d4b84f !important;
+  }
+}
+
+
+
+/* =========================
+   PC SIDE MENU: CALCULATOR EXPANDS ONLY ON HOVER / CLICK
+   This stops the calculator submenu from always showing.
+========================= */
+
+@media (min-width: 851px) {
+  #navbar.open .dropdown-content {
+    display: none !important;
+  }
+
+  #navbar.open .dropdown:hover > .dropdown-content,
+  #navbar.open .dropdown:focus-within > .dropdown-content,
+  #navbar.open .dropdown.menu-open > .dropdown-content {
+    display: block !important;
+  }
+
+  #navbar.open .dropdown:hover > .dropbtn,
+  #navbar.open .dropdown:focus-within > .dropbtn,
+  #navbar.open .dropdown.menu-open > .dropbtn {
+    background: var(--yellow) !important;
+  }
+}
+
+/* =========================
+   FIX LINE BETWEEN BASIC AND HEALTH
+========================= */
+
+@media (min-width: 851px) {
+  #navbar.open .dropdown-content > a,
+  #navbar.open .dropdown-content > .nav-group,
+  #navbar.open .dropdown-content > .nav-group > summary {
+    border-bottom: 4px solid var(--black) !important;
+  }
+
+  /* Remove line only from the last row */
+  #navbar.open .dropdown-content > *:last-child,
+  #navbar.open .dropdown-content > *:last-child > summary {
+    border-bottom: none !important;
+  }
+
+  /* Extra forced line under BASIC */
+  #navbar.open .dropdown-content > a:first-child {
+    position: relative !important;
+  }
+
+  #navbar.open .dropdown-content > a:first-child::after {
+    content: "" !important;
+    position: absolute !important;
+
+    left: 0 !important;
+    right: 0 !important;
+    bottom: -4px !important;
+
+    height: 4px !important;
+    background: var(--black) !important;
+
+    z-index: 20 !important;
+    pointer-events: none !important;
+  }
+
+  /* Keep arrow normal */
+  #navbar.open .nav-group > summary::after {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    background: transparent !important;
+  }
+}
+/* =====================================================
+   FINAL PC SIDE MENU DESIGN
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+@media (min-width: 851px) {
+  /* Hide submenu by default */
+  #navbar.open .dropdown-content {
+    display: none !important;
+  }
+
+  /* Show calculator submenu only on hover or click */
+  #navbar.open .dropdown:hover > .dropdown-content,
+  #navbar.open .dropdown:focus-within > .dropdown-content,
+  #navbar.open .dropdown.menu-open > .dropdown-content {
+    display: block !important;
+  }
+
+  /* Remove old black background panel */
+  #navbar.open::before {
+    display: none !important;
+  }
+
+  /* Main right side menu */
+  #navbar.open {
+    display: flex !important;
+    position: fixed !important;
+
+    top: 55px !important;
+    right: 120px !important;
+    left: auto !important;
+
+    width: 190px !important;
+    height: auto !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    flex-direction: column !important;
+    gap: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+
+    overflow: visible !important;
+    z-index: 99999998 !important;
+  }
+
+  /* Main menu rows: home, calculator, about */
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 190px !important;
+    height: 55px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex: none !important;
+  }
+
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    width: 190px !important;
+    height: 55px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    font-size: 24px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  /* Overlap borders nicely */
+  #navbar.open > a + a,
+  #navbar.open > a + .dropdown,
+  #navbar.open > .dropdown + a,
+  #navbar.open > .dropdown + .dropdown {
+    margin-top: -3px !important;
+  }
+
+  /* Yellow hover for main menu */
+  #navbar.open > a:hover,
+  #navbar.open > .dropdown:hover > .dropbtn,
+  #navbar.open > .dropdown.menu-open > .dropbtn,
+  #navbar.open > .dropdown > .dropbtn:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* Calculator submenu box on the left */
+  #navbar.open .dropdown {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  #navbar.open .dropdown-content {
+    position: absolute !important;
+
+    top: 52px !important;
+    right: 190px !important;
+    left: auto !important;
+
+    width: 235px !important;
+    max-height: none !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 99999999 !important;
+  }
+
+  /* Calculator submenu rows */
+  #navbar.open .dropdown-content > a,
+  #navbar.open .dropdown-content > .nav-group,
+  #navbar.open .dropdown-content > .nav-group > summary {
+    width: 100% !important;
+    height: 48px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 12px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    font-size: 18px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  /* Remove bottom border only from last row */
+  #navbar.open .dropdown-content > *:last-child,
+  #navbar.open .dropdown-content > *:last-child > summary {
+    border-bottom: none !important;
+  }
+
+  /* Yellow hover for submenu rows */
+  #navbar.open .dropdown-content > a:hover,
+  #navbar.open .dropdown-content > .nav-group:hover,
+  #navbar.open .dropdown-content > .nav-group > summary:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* Details groups: health, finance */
+  #navbar.open .nav-group {
+    position: relative !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  #navbar.open .nav-group > summary {
+    cursor: pointer !important;
+    list-style: none !important;
+  }
+
+  #navbar.open .nav-group > summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  #navbar.open .nav-group > summary::marker {
+    content: "" !important;
+  }
+
+  /* Remove old broken pseudo-line */
+  #navbar.open .nav-group > summary::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* Arrow design */
+  #navbar.open .nav-group > summary::after {
+    content: "▶" !important;
+    display: inline-block !important;
+
+    position: static !important;
+
+    width: auto !important;
+    height: auto !important;
+
+    margin-left: 8px !important;
+
+    background: transparent !important;
+    color: var(--black) !important;
+
+    font-size: 14px !important;
+    line-height: 1 !important;
+  }
+
+  #navbar.open .nav-group[open] > summary::after {
+    content: "▼" !important;
+  }
+
+  #navbar.open .nav-group[open] > summary {
+    background: var(--yellow) !important;
+  }
+
+  /* Nested submenu: age/bmi or loan/discount */
+  #navbar.open .nav-group-links {
+    display: none !important;
+
+    position: absolute !important;
+
+    top: -3px !important;
+    right: calc(100% + 3px) !important;
+    left: auto !important;
+
+    width: 185px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 999999999 !important;
+  }
+
+  #navbar.open .nav-group[open] .nav-group-links {
+    display: block !important;
+  }
+
+  #navbar.open .nav-group-links a {
+    width: 100% !important;
+    height: 47px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 10px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 17px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  #navbar.open .nav-group-links a:last-child {
+    border-bottom: none !important;
+  }
+
+  #navbar.open .nav-group-links a:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* Small hamburger beside menu */
+  #menuIcon {
+    top: 58px !important;
+    right: 62px !important;
+
+    width: 52px !important;
+    height: 48px !important;
+
+    border: 4px solid var(--black) !important;
+    border-radius: 0 !important;
+
+    background: var(--white) !important;
+    color: transparent !important;
+
+    box-shadow:
+      5px 0 0 var(--black),
+      0 5px 0 var(--black),
+      5px 5px 0 var(--black),
+      inset 4px 4px 0 #dfeeff,
+      inset -4px -4px 0 #9fb3c8 !important;
+
+    font-size: 0 !important;
+    opacity: 1 !important;
+    transform: none !important;
+
+    z-index: 999999999 !important;
+  }
+
+  #menuIcon::before {
+    content: "" !important;
+
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+
+    width: 24px !important;
+    height: 4px !important;
+
+    transform: translate(-50%, -50%) !important;
+
+    background: #6f7c87 !important;
+    border: 2px solid var(--black) !important;
+    border-radius: 0 !important;
+
+    box-shadow:
+      0 -10px 0 #6f7c87,
+      0 -10px 0 2px var(--black),
+      0 10px 0 #6f7c87,
+      0 10px 0 2px var(--black) !important;
+  }
+
+  #menuIcon::after {
+    display: none !important;
+  }
+
+  #menuIcon:hover {
+    background: var(--yellow) !important;
+    transform: translate(2px, 2px) !important;
+    box-shadow:
+      3px 0 0 var(--black),
+      0 3px 0 var(--black),
+      3px 3px 0 var(--black),
+      inset 4px 4px 0 #fff4b8,
+      inset -4px -4px 0 #d4b84f !important;
+  }
+
+  /* Left-hand mode support */
+  body.left-hand #navbar.open {
+    left: 120px !important;
+    right: auto !important;
+  }
+
+  body.left-hand #menuIcon {
+    left: 62px !important;
+    right: auto !important;
+  }
+
+  body.left-hand #navbar.open .dropdown-content {
+    left: 190px !important;
+    right: auto !important;
+  }
+
+  body.left-hand #navbar.open .nav-group-links {
+    left: calc(100% + 3px) !important;
+    right: auto !important;
+  }
+}
+/* =====================================================
+   REMOVE SIDE NAVIGATION BUTTONS
+   Keep only the Go Up button on PC and phone
+===================================================== */
+
+/* Hide hamburger/menu button */
+#menuIcon,
+#menuIcon.show {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Hide resize buttons */
+#resizeNavigator {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Hide left/right hand toggle */
+#handToggleBtn {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Keep Go Up button */
+#scrollTopBtn,
+.scroll-top {
+  display: none;
+  position: fixed;
+  right: 22px;
+  bottom: 28px;
+
+  width: 58px;
+  height: 50px;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 5px solid var(--black);
+  background: var(--white);
+  color: var(--black);
+  box-shadow: 5px 5px 0 var(--black);
+
+  font-size: 28px;
+  font-weight: bold;
+
+  cursor: pointer;
+  opacity: 0.7;
+  z-index: 9999999;
+}
+
+#scrollTopBtn:hover,
+.scroll-top:hover {
+  opacity: 1;
+  background: var(--yellow);
+}
+
+/* Phone Go Up button */
+@media (max-width: 850px) {
+  #menuIcon,
+  #menuIcon.show,
+  #resizeNavigator,
+  #handToggleBtn {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  #scrollTopBtn,
+  .scroll-top {
+    right: 14px !important;
+    left: auto !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+
+    width: 46px;
+    height: 44px;
+
+    font-size: 24px;
+  }
+}
+/* Keep normal navbar visible after scroll */
+#navbar.scrolled {
+  display: flex !important;
+}
+/* =====================================================
+   FORCE MENU ROW LINES ON EVERY PAGE
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+/* Main top navbar boxes */
+#navbar > a,
+#navbar > .dropdown > .dropbtn {
+  border: 3px solid var(--black) !important;
+}
+
+/* Calculator dropdown box */
+.dropdown-content {
+  border: 3px solid var(--black) !important;
+  overflow: visible !important;
+}
+
+/* Every direct dropdown row */
+.dropdown-content > a,
+.dropdown-content > .nav-group > summary {
+  border-bottom: 3px solid var(--black) !important;
+  box-shadow: inset 0 -3px 0 var(--black) !important;
+}
+
+/* Remove line only from the very last dropdown row */
+.dropdown-content > *:last-child,
+.dropdown-content > *:last-child > summary {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* Health / finance rows */
+.nav-group {
+  border-bottom: none !important;
+}
+
+.nav-group > summary {
+  border-bottom: 3px solid var(--black) !important;
+  box-shadow: inset 0 -3px 0 var(--black) !important;
+}
+
+/* Side submenu rows, example: age, bmi, loan, discount */
+.nav-group-links {
+  border: 3px solid var(--black) !important;
+}
+
+.nav-group-links a {
+  border-bottom: 3px solid var(--black) !important;
+  box-shadow: inset 0 -3px 0 var(--black) !important;
+}
+
+.nav-group-links a:last-child {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* PC side menu version */
+@media (min-width: 851px) {
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    border: 3px solid var(--black) !important;
+  }
+
+  #navbar.open .dropdown-content {
+    border: 3px solid var(--black) !important;
+  }
+
+  #navbar.open .dropdown-content > a,
+  #navbar.open .dropdown-content > .nav-group > summary {
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: inset 0 -3px 0 var(--black) !important;
+  }
+
+  #navbar.open .dropdown-content > *:last-child,
+  #navbar.open .dropdown-content > *:last-child > summary {
+    border-bottom: none !important;
+    box-shadow: none !important;
+  }
+
+  #navbar.open .nav-group-links {
+    border: 3px solid var(--black) !important;
+  }
+
+  #navbar.open .nav-group-links a {
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: inset 0 -3px 0 var(--black) !important;
+  }
+
+  #navbar.open .nav-group-links a:last-child {
+    border-bottom: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Fix broken arrow/line overlap */
+  #navbar.open .nav-group > summary::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  #navbar.open .nav-group > summary::after {
+    position: static !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Phone menu version */
+@media (max-width: 850px) {
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn {
+    border: 3px solid var(--black) !important;
+  }
+
+  .dropdown-content > a,
+  .dropdown-content > .nav-group > summary,
+  .nav-group-links a {
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: inset 0 -3px 0 var(--black) !important;
+  }
+
+  .dropdown-content > *:last-child,
+  .dropdown-content > *:last-child > summary,
+  .nav-group-links a:last-child {
+    border-bottom: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* =====================================================
+   FINAL NAVBAR REPAIR
+   1. Remove side buttons except Go Up
+   2. Keep normal navbar visible after scroll
+   3. Force lines between every dropdown menu row
+   4. Fix missing line between basic and health
+===================================================== */
+
+/* =========================
+   REMOVE SIDE NAV BUTTONS
+========================= */
+
+#menuIcon,
+#menuIcon.show,
+#resizeNavigator,
+#handToggleBtn {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Keep only Go Up button */
+#scrollTopBtn,
+.scroll-top {
+  display: none;
+  position: fixed !important;
+  right: 22px !important;
+  left: auto !important;
+  bottom: 28px !important;
+
+  width: 58px !important;
+  height: 50px !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+
+  border: 5px solid var(--black) !important;
+  background: var(--white) !important;
+  color: var(--black) !important;
+  box-shadow: 5px 5px 0 var(--black) !important;
+
+  font-size: 28px !important;
+  font-weight: bold !important;
+
+  cursor: pointer !important;
+  opacity: 0.7 !important;
+  z-index: 9999999 !important;
+}
+
+#scrollTopBtn:hover,
+.scroll-top:hover {
+  opacity: 1 !important;
+  background: var(--yellow) !important;
+}
+
+/* =========================
+   KEEP NORMAL NAVBAR
+========================= */
+
+#navbar,
+#navbar.scrolled,
+#navbar.open {
+  display: flex !important;
+  position: fixed !important;
+
+  top: 25px !important;
+  left: 50% !important;
+  right: auto !important;
+
+  width: 720px !important;
+  height: 65px !important;
+
+  flex-direction: row !important;
+  align-items: stretch !important;
+
+  background: var(--white) !important;
+  border: 3px solid var(--black) !important;
+  box-shadow: var(--shadow) !important;
+
+  overflow: visible !important;
+  transform: translateX(-50%) rotate(-1deg) !important;
+
+  z-index: 999999 !important;
+}
+
+#navbar::before,
+#navbar.open::before {
+  display: none !important;
+  content: none !important;
+}
+
+#navbar > a,
+#navbar > .dropdown,
+#navbar.open > a,
+#navbar.open > .dropdown {
+  width: 240px !important;
+  height: 65px !important;
+  flex: 0 0 240px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#navbar > a,
+#navbar .dropbtn,
+#navbar.open > a,
+#navbar.open .dropbtn {
+  width: 100% !important;
+  height: 65px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 0 !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  border: none !important;
+  border-right: 3px solid var(--black) !important;
+  box-shadow: none !important;
+
+  font-size: 26px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+
+  text-align: center !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+}
+
+#navbar > a:last-child,
+#navbar.open > a:last-child {
+  border-right: none !important;
+}
+
+#navbar > a:hover,
+#navbar .dropbtn:hover,
+#navbar .dropdown:hover > .dropbtn {
+  background: var(--yellow) !important;
+}
+
+/* =========================
+   MAIN DROPDOWN BOX
+========================= */
+
+#navbar .dropdown,
+#navbar.open .dropdown {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+#navbar .dropdown-content,
+#navbar.open .dropdown-content {
+  display: none !important;
+
+  position: absolute !important;
+  top: 62px !important;
+  left: -3px !important;
+  right: auto !important;
+
+  width: 250px !important;
+  max-height: none !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  background: var(--white) !important;
+  border: 3px solid var(--black) !important;
+  border-radius: 0 !important;
+  box-shadow: 5px 5px 0 var(--black) !important;
+
+  overflow: visible !important;
+  z-index: 9999999 !important;
+}
+
+#navbar .dropdown:hover > .dropdown-content,
+#navbar .dropdown:focus-within > .dropdown-content,
+#navbar.open .dropdown:hover > .dropdown-content,
+#navbar.open .dropdown:focus-within > .dropdown-content {
+  display: block !important;
+}
+
+/* =========================
+   FORCE LINE ON EVERY DROPDOWN ROW
+========================= */
+
+#navbar .dropdown-content > *,
+#navbar.open .dropdown-content > * {
+  position: relative !important;
+  width: 100% !important;
+  height: 50px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  background: var(--white) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Every row content */
+#navbar .dropdown-content > a,
+#navbar .dropdown-content > .nav-group > summary,
+#navbar.open .dropdown-content > a,
+#navbar.open .dropdown-content > .nav-group > summary {
+  width: 100% !important;
+  height: 50px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  margin: 0 !important;
+  padding: 0 10px !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  border: none !important;
+  box-shadow: none !important;
+
+  font-size: 20px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+
+  text-align: center !important;
+  text-decoration: none !important;
+}
+
+/* THIS is the important part:
+   creates the line between basic and health, and every row after */
+#navbar .dropdown-content > *:not(:last-child)::after,
+#navbar.open .dropdown-content > *:not(:last-child)::after {
+  content: "" !important;
+
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+
+  height: 3px !important;
+  background: var(--black) !important;
+
+  z-index: 99999999 !important;
+  pointer-events: none !important;
+}
+
+/* Hover yellow for all main dropdown rows */
+#navbar .dropdown-content > a:hover,
+#navbar .dropdown-content > .nav-group:hover > summary,
+#navbar.open .dropdown-content > a:hover,
+#navbar.open .dropdown-content > .nav-group:hover > summary {
+  background: var(--yellow) !important;
+}
+
+/* =========================
+   HEALTH / FINANCE GROUPS
+========================= */
+
+#navbar .nav-group,
+#navbar.open .nav-group {
+  position: relative !important;
+  height: 50px !important;
+  overflow: visible !important;
+
+  background: var(--white) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#navbar .nav-group > summary,
+#navbar.open .nav-group > summary {
+  cursor: pointer !important;
+  list-style: none !important;
+}
+
+#navbar .nav-group > summary::-webkit-details-marker,
+#navbar.open .nav-group > summary::-webkit-details-marker {
+  display: none !important;
+}
+
+#navbar .nav-group > summary::marker,
+#navbar.open .nav-group > summary::marker {
+  content: "" !important;
+}
+
+/* Remove broken extra pseudo lines */
+#navbar .nav-group > summary::before,
+#navbar.open .nav-group > summary::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* Arrow */
+#navbar .nav-group > summary::after,
+#navbar.open .nav-group > summary::after {
+  content: " ▶" !important;
+  position: static !important;
+
+  width: auto !important;
+  height: auto !important;
+
+  margin-left: 6px !important;
+
+  background: transparent !important;
+  color: var(--black) !important;
+  box-shadow: none !important;
+
+  font-size: 14px !important;
+  line-height: 1 !important;
+}
+
+#navbar .nav-group[open] > summary::after,
+#navbar.open .nav-group[open] > summary::after {
+  content: " ▼" !important;
+}
+
+/* =========================
+   SIDE SUBMENUS: AGE/BMI, LOAN/DISCOUNT
+========================= */
+
+#navbar .nav-group-links,
+#navbar.open .nav-group-links {
+  display: none !important;
+
+  position: absolute !important;
+  top: -3px !important;
+  left: 100% !important;
+  right: auto !important;
+
+  width: 180px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  background: var(--white) !important;
+  border: 3px solid var(--black) !important;
+  border-radius: 0 !important;
+  box-shadow: 5px 5px 0 var(--black) !important;
+
+  overflow: visible !important;
+  z-index: 99999999 !important;
+}
+
+#navbar .nav-group[open] .nav-group-links,
+#navbar.open .nav-group[open] .nav-group-links {
+  display: block !important;
+}
+
+#navbar .nav-group-links a,
+#navbar.open .nav-group-links a {
+  position: relative !important;
+
+  width: 100% !important;
+  height: 50px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  margin: 0 !important;
+  padding: 0 10px !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  border: none !important;
+  box-shadow: none !important;
+
+  font-size: 18px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+
+  text-align: center !important;
+  text-decoration: none !important;
+}
+
+/* Lines inside age/bmi or loan/discount submenu */
+#navbar .nav-group-links a:not(:last-child)::after,
+#navbar.open .nav-group-links a:not(:last-child)::after {
+  content: "" !important;
+
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+
+  height: 3px !important;
+  background: var(--black) !important;
+
+  z-index: 99999999 !important;
+  pointer-events: none !important;
+}
+
+#navbar .nav-group-links a:hover,
+#navbar.open .nav-group-links a:hover {
+  background: var(--yellow) !important;
+}
+
+/* =========================
+   INDEX PAGE CARD DROPDOWN LINES
+========================= */
+
+.group-links {
+  border-top: 3px solid var(--black) !important;
+}
+
+.group-links a {
+  position: relative !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+.group-links a:not(:last-child)::after {
+  content: "" !important;
+
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+
+  height: 3px !important;
+  background: var(--black) !important;
+
+  pointer-events: none !important;
+}
+
+/* =========================
+   PHONE VERSION
+========================= */
+
+@media (max-width: 850px) {
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open {
+    top: 78px !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+
+    width: 95% !important;
+    height: 58px !important;
+
+    flex-direction: row !important;
+
+    transform: translateX(-50%) rotate(-1deg) !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 33.33% !important;
+    height: 58px !important;
+    flex: 0 0 33.33% !important;
+  }
+
+  #navbar > a,
+  #navbar .dropbtn,
+  #navbar.open > a,
+  #navbar.open .dropbtn {
+    height: 58px !important;
+    font-size: 18px !important;
+  }
+
+  #navbar .dropdown-content,
+  #navbar.open .dropdown-content {
+    top: 55px !important;
+    left: -3px !important;
+    right: auto !important;
+
+    width: 220px !important;
+  }
+
+  #navbar .dropdown-content > *,
+  #navbar.open .dropdown-content > * {
+    height: 46px !important;
+  }
+
+  #navbar .dropdown-content > a,
+  #navbar .dropdown-content > .nav-group > summary,
+  #navbar.open .dropdown-content > a,
+  #navbar.open .dropdown-content > .nav-group > summary {
+    height: 46px !important;
+    font-size: 17px !important;
+  }
+
+  #navbar .nav-group,
+  #navbar.open .nav-group {
+    height: auto !important;
+  }
+
+  #navbar .nav-group-links,
+  #navbar.open .nav-group-links {
+    position: static !important;
+    width: 100% !important;
+
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    box-shadow: none !important;
+  }
+
+  #navbar .nav-group-links a,
+  #navbar.open .nav-group-links a {
+    height: 42px !important;
+    font-size: 16px !important;
+  }
+
+  #scrollTopBtn,
+  .scroll-top {
+    right: 14px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+
+    width: 46px !important;
+    height: 44px !important;
+
+    font-size: 24px !important;
+  }
+}
+/* =====================================================
+   TOP NAVBAR TURNS INTO MENU ICON ON SCROLL
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+/* Default: hide icon when page is at top */
+#menuIcon {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+
+  position: fixed !important;
+  top: 24px !important;
+  right: 24px !important;
+  left: auto !important;
+  bottom: auto !important;
+
+  width: 54px !important;
+  height: 50px !important;
+
+  border: 4px solid var(--black) !important;
+  border-radius: 0 !important;
+
+  background: var(--white) !important;
+  color: transparent !important;
+
+  box-shadow:
+    5px 0 0 var(--black),
+    0 5px 0 var(--black),
+    5px 5px 0 var(--black),
+    inset 4px 4px 0 #dfeeff,
+    inset -4px -4px 0 #9fb3c8 !important;
+
+  font-size: 0 !important;
+  opacity: 1 !important;
+  transform: none !important;
+  cursor: pointer !important;
+
+  z-index: 999999999 !important;
+}
+
+/* Draw the 3 hamburger lines */
+#menuIcon::before {
+  content: "" !important;
+
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+
+  width: 24px !important;
+  height: 4px !important;
+
+  transform: translate(-50%, -50%) !important;
+
+  background: #6f7c87 !important;
+  border: 2px solid var(--black) !important;
+  border-radius: 0 !important;
+
+  box-shadow:
+    0 -10px 0 #6f7c87,
+    0 -10px 0 2px var(--black),
+    0 10px 0 #6f7c87,
+    0 10px 0 2px var(--black) !important;
+}
+
+#menuIcon::after {
+  display: none !important;
+}
+
+/* Show icon only after scroll */
+#menuIcon.show,
+body.menu-scrolled #menuIcon {
+  display: flex !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#menuIcon:hover {
+  background: var(--yellow) !important;
+  transform: translate(2px, 2px) !important;
+
+  box-shadow:
+    3px 0 0 var(--black),
+    0 3px 0 var(--black),
+    3px 3px 0 var(--black),
+    inset 4px 4px 0 #fff4b8,
+    inset -4px -4px 0 #d4b84f !important;
+}
+
+/* When scrolled, hide the normal top navbar */
+body.menu-scrolled #navbar:not(.open),
+#navbar.scrolled:not(.open) {
+  display: none !important;
+}
+
+/* When menu icon is clicked, show compact menu */
+body.menu-scrolled #navbar.open,
+#navbar.scrolled.open {
+  display: flex !important;
+  position: fixed !important;
+
+  top: 24px !important;
+  right: 92px !important;
+  left: auto !important;
+  bottom: auto !important;
+
+  width: 190px !important;
+  height: auto !important;
+
+  flex-direction: column !important;
+  align-items: stretch !important;
+
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+
+  overflow: visible !important;
+  z-index: 999999998 !important;
+}
+
+/* Compact menu rows */
+body.menu-scrolled #navbar.open > a,
+body.menu-scrolled #navbar.open > .dropdown,
+#navbar.scrolled.open > a,
+#navbar.scrolled.open > .dropdown {
+  width: 190px !important;
+  height: 55px !important;
+
+  flex: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Home / Calculator / About boxes */
+body.menu-scrolled #navbar.open > a,
+body.menu-scrolled #navbar.open .dropbtn,
+#navbar.scrolled.open > a,
+#navbar.scrolled.open .dropbtn {
+  width: 190px !important;
+  height: 55px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  border: 3px solid var(--black) !important;
+  box-shadow: 5px 5px 0 var(--black) !important;
+
+  font-size: 24px !important;
+  font-weight: bold !important;
+  text-decoration: none !important;
+}
+
+/* overlap borders neatly */
+body.menu-scrolled #navbar.open > a + a,
+body.menu-scrolled #navbar.open > a + .dropdown,
+body.menu-scrolled #navbar.open > .dropdown + a,
+#navbar.scrolled.open > a + a,
+#navbar.scrolled.open > a + .dropdown,
+#navbar.scrolled.open > .dropdown + a {
+  margin-top: -3px !important;
+}
+
+body.menu-scrolled #navbar.open > a:hover,
+body.menu-scrolled #navbar.open .dropdown:hover > .dropbtn,
+#navbar.scrolled.open > a:hover,
+#navbar.scrolled.open .dropdown:hover > .dropbtn {
+  background: var(--yellow) !important;
+}
+
+/* Phone version */
+@media (max-width: 850px) {
+  #menuIcon {
+    top: 18px !important;
+    right: 14px !important;
+
+    width: 48px !important;
+    height: 44px !important;
+  }
+
+  #menuIcon::before {
+    width: 20px !important;
+    height: 3px !important;
+
+    box-shadow:
+      0 -8px 0 #6f7c87,
+      0 -8px 0 2px var(--black),
+      0 8px 0 #6f7c87,
+      0 8px 0 2px var(--black) !important;
+  }
+
+  body.menu-scrolled #navbar.open,
+  #navbar.scrolled.open {
+    top: 18px !important;
+    right: 74px !important;
+    left: auto !important;
+
+    width: 135px !important;
+  }
+
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open > .dropdown,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open > .dropdown {
+    width: 135px !important;
+    height: 42px !important;
+  }
+
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open .dropbtn,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open .dropbtn {
+    width: 135px !important;
+    height: 42px !important;
+    font-size: 18px !important;
+  }
+}
+/* =====================================================
+   FIX THICK CALCULATOR NAVBAR LINE
+   Makes all top navbar lines same thickness
+===================================================== */
+
+#navbar {
+  border: 3px solid var(--black) !important;
+  overflow: visible !important;
+}
+
+/* Remove full border from individual menu items */
+#navbar > a,
+#navbar > .dropdown,
+#navbar > .dropdown > .dropbtn,
+#navbar a,
+#navbar .dropbtn {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Same size for all 3 menu sections */
+#navbar > a,
+#navbar > .dropdown {
+  width: 240px !important;
+  height: 65px !important;
+  flex: 0 0 240px !important;
+}
+
+/* Text/button layout */
+#navbar > a,
+#navbar > .dropdown > .dropbtn {
+  width: 100% !important;
+  height: 65px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  font-size: 26px !important;
+  font-weight: bold !important;
+  text-decoration: none !important;
+}
+
+/* Only use ONE separator line between menu items */
+#navbar > a:first-child,
+#navbar > .dropdown {
+  border-right: 3px solid var(--black) !important;
+}
+
+/* Hover color */
+#navbar > a:hover,
+#navbar > .dropdown:hover > .dropbtn,
+#navbar > .dropdown > .dropbtn:hover {
+  background: var(--yellow) !important;
+}
+
+/* Keep dropdown box normal */
+#navbar .dropdown-content {
+  border: 3px solid var(--black) !important;
+  box-shadow: 5px 5px 0 var(--black) !important;
+}
+
+/* =====================================================
+   MAKE EVERY DROPDOWN EXPAND ON HOVER
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+/* Top navbar calculator dropdown */
+#navbar .dropdown:hover > .dropdown-content,
+#navbar .dropdown:focus-within > .dropdown-content {
+  display: block !important;
+}
+
+/* Health / Finance submenu inside navbar dropdown */
+#navbar .nav-group:hover > .nav-group-links,
+#navbar .nav-group:focus-within > .nav-group-links,
+#navbar .nav-group[open] > .nav-group-links {
+  display: block !important;
+}
+
+/* Make health / finance row yellow on hover */
+#navbar .nav-group:hover > summary,
+#navbar .nav-group:focus-within > summary {
+  background: var(--yellow) !important;
+}
+
+/* Index page dropdown cards, like Health and Finance cards */
+.group-card:hover > .group-links,
+.group-card:focus-within > .group-links,
+.group-card[open] > .group-links {
+  display: block !important;
+}
+
+/* Make index card summary yellow on hover */
+.group-card:hover > summary,
+.group-card:focus-within > summary {
+  background: var(--yellow) !important;
+}
+
+/* Make sure hidden details content can appear on hover */
+details.group-card:not([open]):hover > .group-links,
+details.group-card:not([open]):focus-within > .group-links,
+details.nav-group:not([open]):hover > .nav-group-links,
+details.nav-group:not([open]):focus-within > .nav-group-links {
+  display: block !important;
+}
+
+/* Side submenu links hover yellow */
+.nav-group-links a:hover,
+.group-links a:hover {
+  background: var(--yellow) !important;
+}
+
+/* =====================================================
+   CHANGE SCROLL MENU ICON TO HOUSE ICON
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+/* Show only the house menu icon after scroll */
+#menuIcon {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+
+  position: fixed !important;
+  top: 24px !important;
+  right: 24px !important;
+  left: auto !important;
+  bottom: auto !important;
+
+  width: 54px !important;
+  height: 50px !important;
+
+  border: 4px solid var(--black) !important;
+  border-radius: 0 !important;
+
+  background: var(--white) !important;
+  color: transparent !important;
+
+  box-shadow:
+    5px 0 0 var(--black),
+    0 5px 0 var(--black),
+    5px 5px 0 var(--black),
+    inset 4px 4px 0 #dfeeff,
+    inset -4px -4px 0 #9fb3c8 !important;
+
+  font-size: 0 !important;
+  opacity: 1 !important;
+  transform: none !important;
+  cursor: pointer !important;
+
+  z-index: 999999999 !important;
+}
+
+/* Show icon only after scrolling */
+#menuIcon.show,
+body.menu-scrolled #menuIcon {
+  display: flex !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Pixel house roof */
+#menuIcon::before {
+  content: "" !important;
+
+  position: absolute !important;
+  left: 50% !important;
+  top: 16px !important;
+
+  width: 24px !important;
+  height: 24px !important;
+
+  background: #dfeeff !important;
+  border-left: 4px solid var(--black) !important;
+  border-top: 4px solid var(--black) !important;
+  border-right: none !important;
+  border-bottom: none !important;
+
+  transform: translateX(-50%) rotate(45deg) !important;
+
+  box-shadow: none !important;
+  z-index: 2 !important;
+}
+
+/* Pixel house body + door */
+#menuIcon::after {
+  content: "" !important;
+
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 8px !important;
+
+  width: 30px !important;
+  height: 24px !important;
+
+  transform: translateX(-50%) !important;
+
+  background:
+    linear-gradient(
+      to bottom,
+      transparent 0 9px,
+      var(--black) 9px 13px,
+      transparent 13px 100%
+    ),
+    linear-gradient(
+      to right,
+      transparent 0 11px,
+      #7b8791 11px 19px,
+      transparent 19px 100%
+    ),
+    #dfeeff !important;
+
+  border: 4px solid var(--black) !important;
+  border-radius: 0 !important;
+
+  box-shadow: none !important;
+  z-index: 3 !important;
+}
+
+/* Hover effect */
+#menuIcon:hover {
+  background: var(--yellow) !important;
+  transform: translate(2px, 2px) !important;
+
+  box-shadow:
+    3px 0 0 var(--black),
+    0 3px 0 var(--black),
+    3px 3px 0 var(--black),
+    inset 4px 4px 0 #fff4b8,
+    inset -4px -4px 0 #d4b84f !important;
+}
+
+/* Hide other side buttons */
+#resizeNavigator,
+#handToggleBtn {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Phone size */
+@media (max-width: 850px) {
+  #menuIcon {
+    top: 18px !important;
+    right: 14px !important;
+
+    width: 48px !important;
+    height: 44px !important;
+  }
+
+  #menuIcon::before {
+    top: 14px !important;
+    width: 20px !important;
+    height: 20px !important;
+    border-left-width: 3px !important;
+    border-top-width: 3px !important;
+  }
+
+  #menuIcon::after {
+    bottom: 7px !important;
+    width: 26px !important;
+    height: 20px !important;
+    border-width: 3px !important;
+  }
+}
+/* =====================================================
+   PHONE: HOUSE BUTTON + GO UP BUTTON SIDE BY SIDE
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+@media (max-width: 850px) {
+  /* House / side menu button */
+  #menuIcon {
+    top: auto !important;
+    left: auto !important;
+    right: 70px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+
+    width: 46px !important;
+    height: 44px !important;
+
+    z-index: 999999999 !important;
+  }
+
+  #menuIcon.show,
+  body.menu-scrolled #menuIcon {
+    display: flex !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Go Up button */
+  #scrollTopBtn,
+  .scroll-top {
+    top: auto !important;
+    left: auto !important;
+    right: 14px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+
+    width: 46px !important;
+    height: 44px !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    z-index: 999999998 !important;
+  }
+
+  /* When the house button opens the menu, show menu above the buttons */
+  body.menu-scrolled #navbar.open,
+  #navbar.scrolled.open {
+    top: auto !important;
+    left: auto !important;
+    right: 14px !important;
+    bottom: calc(86px + env(safe-area-inset-bottom)) !important;
+
+    width: 135px !important;
+    height: auto !important;
+
+    flex-direction: column !important;
+    transform: none !important;
+  }
+
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open > .dropdown,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open > .dropdown {
+    width: 135px !important;
+    height: 42px !important;
+    flex: none !important;
+  }
+
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open .dropbtn,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open .dropbtn {
+    width: 135px !important;
+    height: 42px !important;
+    font-size: 18px !important;
+  }
+}
+/* =====================================================
+   PHONE: SIDE MENU EXPANDS SIDEWAYS TO THE LEFT
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+@media (max-width: 850px) {
+  /* House button stays bottom-right, beside Go Up */
+  #menuIcon {
+    top: auto !important;
+    left: auto !important;
+    right: 70px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+
+    width: 46px !important;
+    height: 44px !important;
+  }
+
+  /* Go Up button stays on the far right */
+  #scrollTopBtn,
+  .scroll-top {
+    top: auto !important;
+    left: auto !important;
+    right: 14px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+
+    width: 46px !important;
+    height: 44px !important;
+  }
+
+  /* Opened menu expands sideways to the LEFT of the house button */
+  body.menu-scrolled #navbar.open,
+  #navbar.scrolled.open {
+    display: flex !important;
+    position: fixed !important;
+
+    top: auto !important;
+    left: auto !important;
+    right: 126px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+
+    width: auto !important;
+    height: 44px !important;
+
+    flex-direction: row !important;
+    align-items: stretch !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    transform: none !important;
+    overflow: visible !important;
+
+    z-index: 999999998 !important;
+  }
+
+  /* Home / Calculator / About become horizontal boxes */
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open > .dropdown,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open > .dropdown {
+    width: 105px !important;
+    height: 44px !important;
+
+    flex: 0 0 105px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open .dropbtn,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open .dropbtn {
+    width: 105px !important;
+    height: 44px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 3px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    font-size: 16px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  /* Overlap borders neatly between horizontal buttons */
+  body.menu-scrolled #navbar.open > a + a,
+  body.menu-scrolled #navbar.open > a + .dropdown,
+  body.menu-scrolled #navbar.open > .dropdown + a,
+  #navbar.scrolled.open > a + a,
+  #navbar.scrolled.open > a + .dropdown,
+  #navbar.scrolled.open > .dropdown + a {
+    margin-left: -3px !important;
+  }
+
+  /* Hover color */
+  body.menu-scrolled #navbar.open > a:hover,
+  body.menu-scrolled #navbar.open .dropdown:hover > .dropbtn,
+  #navbar.scrolled.open > a:hover,
+  #navbar.scrolled.open .dropdown:hover > .dropbtn {
+    background: var(--yellow) !important;
+  }
+
+  /* Calculator dropdown opens upward from the horizontal side menu */
+  body.menu-scrolled #navbar.open .dropdown-content,
+  #navbar.scrolled.open .dropdown-content {
+    display: none !important;
+
+    position: absolute !important;
+    left: 0 !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: 47px !important;
+
+    width: 180px !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 999999999 !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown:hover > .dropdown-content,
+  body.menu-scrolled #navbar.open .dropdown:focus-within > .dropdown-content,
+  #navbar.scrolled.open .dropdown:hover > .dropdown-content,
+  #navbar.scrolled.open .dropdown:focus-within > .dropdown-content {
+    display: block !important;
+  }
+
+  /* Dropdown rows */
+  body.menu-scrolled #navbar.open .dropdown-content > a,
+  body.menu-scrolled #navbar.open .dropdown-content > .nav-group > summary,
+  #navbar.scrolled.open .dropdown-content > a,
+  #navbar.scrolled.open .dropdown-content > .nav-group > summary {
+    width: 100% !important;
+    height: 42px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    border-bottom: 3px solid var(--black) !important;
+
+    font-size: 15px !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown-content > *:last-child,
+  body.menu-scrolled #navbar.open .dropdown-content > *:last-child > summary,
+  #navbar.scrolled.open .dropdown-content > *:last-child,
+  #navbar.scrolled.open .dropdown-content > *:last-child > summary {
+    border-bottom: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown-content > a:hover,
+  body.menu-scrolled #navbar.open .nav-group:hover > summary,
+  #navbar.scrolled.open .dropdown-content > a:hover,
+  #navbar.scrolled.open .nav-group:hover > summary {
+    background: var(--yellow) !important;
+  }
+}
+/* =====================================================
+   REAL BLACK HOME ICON FOR SIDE MENU BUTTON
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+#menuIcon {
+  background: var(--white) !important;
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
+/* Real black home icon */
+#menuIcon::before {
+  content: "" !important;
+
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+
+  width: 30px !important;
+  height: 30px !important;
+
+  transform: translate(-50%, -50%) !important;
+
+  background: var(--black) !important;
+
+  clip-path: polygon(
+    50% 0%,
+    100% 38%,
+    88% 38%,
+    88% 100%,
+    62% 100%,
+    62% 66%,
+    38% 66%,
+    38% 100%,
+    12% 100%,
+    12% 38%,
+    0% 38%
+  ) !important;
+
+  border: none !important;
+  box-shadow: none !important;
+  z-index: 5 !important;
+}
+
+/* Remove old pixel house body */
+#menuIcon::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Hover */
+#menuIcon:hover {
+  background: var(--yellow) !important;
+}
+
+/* Phone size */
+@media (max-width: 850px) {
+  #menuIcon::before {
+    width: 25px !important;
+    height: 25px !important;
+  }
+}
+/* =====================================================
+   PC: HOME ICON EXPANDS MENU TO THE LEFT ON HOVER
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+@media (min-width: 851px) {
+  /* Show home/menu button only after scroll */
+  #menuIcon.show,
+  body.menu-scrolled #menuIcon {
+    display: flex !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  /* Black home icon button */
+  #menuIcon {
+    position: fixed !important;
+    top: 24px !important;
+    right: 24px !important;
+    left: auto !important;
+    bottom: auto !important;
+
+    width: 54px !important;
+    height: 50px !important;
+
+    display: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border: 4px solid var(--black) !important;
+    background: var(--white) !important;
+    color: transparent !important;
+
+    box-shadow:
+      5px 0 0 var(--black),
+      0 5px 0 var(--black),
+      5px 5px 0 var(--black) !important;
+
+    font-size: 0 !important;
+    cursor: pointer !important;
+    z-index: 999999999 !important;
+  }
+
+  #menuIcon::before {
+    content: "" !important;
+    position: absolute !important;
+
+    width: 30px !important;
+    height: 30px !important;
+
+    background: var(--black) !important;
+
+    clip-path: polygon(
+      50% 0%,
+      100% 38%,
+      88% 38%,
+      88% 100%,
+      62% 100%,
+      62% 66%,
+      38% 66%,
+      38% 100%,
+      12% 100%,
+      12% 38%,
+      0% 38%
+    ) !important;
+
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  #menuIcon::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  #menuIcon:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* Hide normal navbar after scroll */
+  body.menu-scrolled #navbar:not(.open),
+  #navbar.scrolled:not(.open) {
+    display: none !important;
+  }
+
+  /* Main menu opens to the LEFT of home icon */
+  body.menu-scrolled #navbar.open,
+  #navbar.scrolled.open {
+    display: flex !important;
+    position: fixed !important;
+
+    top: 24px !important;
+    right: 92px !important;
+    left: auto !important;
+    bottom: auto !important;
+
+    width: 190px !important;
+    height: auto !important;
+
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+
+    overflow: visible !important;
+    z-index: 999999998 !important;
+  }
+
+  /* Stack home / calculator / about */
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open > .dropdown,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open > .dropdown {
+    width: 190px !important;
+    height: 55px !important;
+
+    flex: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open > .dropdown > .dropbtn,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open > .dropdown > .dropbtn {
+    width: 190px !important;
+    height: 55px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    font-size: 24px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  body.menu-scrolled #navbar.open > a + a,
+  body.menu-scrolled #navbar.open > a + .dropdown,
+  body.menu-scrolled #navbar.open > .dropdown + a,
+  #navbar.scrolled.open > a + a,
+  #navbar.scrolled.open > a + .dropdown,
+  #navbar.scrolled.open > .dropdown + a {
+    margin-top: -3px !important;
+  }
+
+  body.menu-scrolled #navbar.open > a:hover,
+  body.menu-scrolled #navbar.open > .dropdown:hover > .dropbtn,
+  #navbar.scrolled.open > a:hover,
+  #navbar.scrolled.open > .dropdown:hover > .dropbtn {
+    background: var(--yellow) !important;
+  }
+
+  /* Calculator submenu opens to the LEFT */
+  body.menu-scrolled #navbar.open .dropdown,
+  #navbar.scrolled.open .dropdown {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown-content,
+  #navbar.scrolled.open .dropdown-content {
+    display: none !important;
+
+    position: absolute !important;
+    top: 52px !important;
+    right: 190px !important;
+    left: auto !important;
+
+    width: 230px !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 999999999 !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown:hover > .dropdown-content,
+  body.menu-scrolled #navbar.open .dropdown:focus-within > .dropdown-content,
+  #navbar.scrolled.open .dropdown:hover > .dropdown-content,
+  #navbar.scrolled.open .dropdown:focus-within > .dropdown-content {
+    display: block !important;
+  }
+
+  /* Basic / health / finance / percentage rows */
+  body.menu-scrolled #navbar.open .dropdown-content > a,
+  body.menu-scrolled #navbar.open .dropdown-content > .nav-group > summary,
+  #navbar.scrolled.open .dropdown-content > a,
+  #navbar.scrolled.open .dropdown-content > .nav-group > summary {
+    width: 100% !important;
+    height: 48px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 18px !important;
+    font-weight: bold !important;
+    text-decoration: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown-content > *:last-child > summary,
+  body.menu-scrolled #navbar.open .dropdown-content > a:last-child,
+  #navbar.scrolled.open .dropdown-content > *:last-child > summary,
+  #navbar.scrolled.open .dropdown-content > a:last-child {
+    border-bottom: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown-content > a:hover,
+  body.menu-scrolled #navbar.open .nav-group:hover > summary,
+  #navbar.scrolled.open .dropdown-content > a:hover,
+  #navbar.scrolled.open .nav-group:hover > summary {
+    background: var(--yellow) !important;
+  }
+
+  /* Health / finance group setup */
+  body.menu-scrolled #navbar.open .nav-group,
+  #navbar.scrolled.open .nav-group {
+    position: relative !important;
+    width: 100% !important;
+    height: 48px !important;
+    overflow: visible !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary,
+  #navbar.scrolled.open .nav-group > summary {
+    cursor: pointer !important;
+    list-style: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary::-webkit-details-marker,
+  #navbar.scrolled.open .nav-group > summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary::after,
+  #navbar.scrolled.open .nav-group > summary::after {
+    content: " ▶" !important;
+    margin-left: 8px !important;
+    font-size: 14px !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group:hover > summary::after,
+  #navbar.scrolled.open .nav-group:hover > summary::after {
+   
+  }
+
+  /* Age / BMI submenu opens to the LEFT of health */
+  body.menu-scrolled #navbar.open .nav-group-links,
+  #navbar.scrolled.open .nav-group-links {
+    display: none !important;
+
+    position: absolute !important;
+    top: -3px !important;
+    right: calc(100% + 3px) !important;
+    left: auto !important;
+
+    width: 170px !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 999999999 !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group:hover > .nav-group-links,
+  body.menu-scrolled #navbar.open .nav-group:focus-within > .nav-group-links,
+  body.menu-scrolled #navbar.open .nav-group[open] > .nav-group-links,
+  #navbar.scrolled.open .nav-group:hover > .nav-group-links,
+  #navbar.scrolled.open .nav-group:focus-within > .nav-group-links,
+  #navbar.scrolled.open .nav-group[open] > .nav-group-links {
+    display: block !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group-links a,
+  #navbar.scrolled.open .nav-group-links a {
+    width: 100% !important;
+    height: 45px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+
+    font-size: 17px !important;
+    font-weight: bold !important;
+    text-decoration: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group-links a:last-child,
+  #navbar.scrolled.open .nav-group-links a:last-child {
+    border-bottom: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group-links a:hover,
+  #navbar.scrolled.open .nav-group-links a:hover {
+    background: var(--yellow) !important;
+  }
+}
+/* =====================================================
+   CHANGE HOME ICON BUTTON TO MENU BUTTON
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+#menuIcon {
+  width: 78px !important;
+  height: 50px !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  font-size: 0 !important;
+  font-weight: bold !important;
+
+  border: 4px solid var(--black) !important;
+  box-shadow:
+    5px 0 0 var(--black),
+    0 5px 0 var(--black),
+    5px 5px 0 var(--black) !important;
+}
+
+/* Replace house icon with MENU text */
+#menuIcon::before {
+  content: "MENU" !important;
+
+  position: static !important;
+
+  width: auto !important;
+  height: auto !important;
+
+  display: block !important;
+
+  background: transparent !important;
+  color: var(--black) !important;
+
+  clip-path: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+
+  font-size: 18px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+  letter-spacing: 1px !important;
+}
+
+/* Remove old house body */
+#menuIcon::after {
+  display: none !important;
+  content: none !important;
+}
+
+#menuIcon:hover {
+  background: var(--yellow) !important;
+}
+
+/* Move opened PC menu slightly left so it does not touch MENU button */
+@media (min-width: 851px) {
+  body.menu-scrolled #navbar.open,
+  #navbar.scrolled.open {
+    right: 116px !important;
+  }
+}
+
+/* Phone MENU button */
+@media (max-width: 850px) {
+  #menuIcon {
+    width: 62px !important;
+    height: 44px !important;
+
+    right: 70px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+  }
+
+  #menuIcon::before {
+    font-size: 14px !important;
+    letter-spacing: 0.5px !important;
+  }
+
+  /* If phone menu expands sideways left */
+  body.menu-scrolled #navbar.open,
+  #navbar.scrolled.open {
+    right: 140px !important;
+  }
+}
+/* =====================================================
+   PC SIDE MENU:
+   MENU button hover -> menu expands left
+   home/calculator/about stack vertically
+   calculator hover -> basic/health/finance/percentage opens left
+   health hover -> age/bmi opens further left
+===================================================== */
+
+@media (min-width: 851px) {
+  /* MENU button */
+  #menuIcon {
+    position: fixed !important;
+    top: 24px !important;
+    right: 24px !important;
+    left: auto !important;
+    bottom: auto !important;
+
+    width: 78px !important;
+    height: 50px !important;
+
+    display: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    border-radius: 0 !important;
+
+    box-shadow:
+      5px 0 0 var(--black),
+      0 5px 0 var(--black),
+      5px 5px 0 var(--black) !important;
+
+    font-size: 0 !important;
+    cursor: pointer !important;
+    opacity: 1 !important;
+
+    z-index: 999999999 !important;
+  }
+
+  #menuIcon::before {
+    content: "MENU" !important;
+
+    position: static !important;
+
+    width: auto !important;
+    height: auto !important;
+
+    display: block !important;
+
+    background: transparent !important;
+    color: var(--black) !important;
+
+    clip-path: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+
+    font-size: 18px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    letter-spacing: 1px !important;
+  }
+
+  #menuIcon::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  #menuIcon:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* Show MENU button only after scroll */
+  #menuIcon.show,
+  body.menu-scrolled #menuIcon {
+    display: flex !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  /* Hide normal top navbar after scroll */
+  body.menu-scrolled #navbar:not(.open),
+  #navbar.scrolled:not(.open) {
+    display: none !important;
+  }
+
+  /* Main menu opens to the LEFT of MENU button */
+  body.menu-scrolled #navbar.open,
+  #navbar.scrolled.open {
+    display: flex !important;
+    position: fixed !important;
+
+    top: 24px !important;
+    right: 116px !important;
+    left: auto !important;
+    bottom: auto !important;
+
+    width: 190px !important;
+    height: auto !important;
+
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+
+    overflow: visible !important;
+    z-index: 999999998 !important;
+  }
+
+  /* home / calculator / about stacked vertically */
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open > .dropdown,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open > .dropdown {
+    width: 190px !important;
+    height: 55px !important;
+
+    flex: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open > .dropdown > .dropbtn,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open > .dropdown > .dropbtn {
+    width: 190px !important;
+    height: 55px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    font-size: 24px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  body.menu-scrolled #navbar.open > a + a,
+  body.menu-scrolled #navbar.open > a + .dropdown,
+  body.menu-scrolled #navbar.open > .dropdown + a,
+  #navbar.scrolled.open > a + a,
+  #navbar.scrolled.open > a + .dropdown,
+  #navbar.scrolled.open > .dropdown + a {
+    margin-top: -3px !important;
+  }
+
+  body.menu-scrolled #navbar.open > a:hover,
+  body.menu-scrolled #navbar.open > .dropdown:hover > .dropbtn,
+  #navbar.scrolled.open > a:hover,
+  #navbar.scrolled.open > .dropdown:hover > .dropbtn {
+    background: var(--yellow) !important;
+  }
+
+  /* Calculator submenu opens to the LEFT, beside the stacked menu */
+  body.menu-scrolled #navbar.open .dropdown-content,
+  #navbar.scrolled.open .dropdown-content {
+    display: none !important;
+
+    position: absolute !important;
+
+    top: 0 !important;
+    right: 190px !important;
+    left: auto !important;
+
+    width: 230px !important;
+    height: auto !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 999999999 !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown:hover > .dropdown-content,
+  body.menu-scrolled #navbar.open .dropdown:focus-within > .dropdown-content,
+  body.menu-scrolled #navbar.open .dropdown.menu-open > .dropdown-content,
+  #navbar.scrolled.open .dropdown:hover > .dropdown-content,
+  #navbar.scrolled.open .dropdown:focus-within > .dropdown-content,
+  #navbar.scrolled.open .dropdown.menu-open > .dropdown-content {
+    display: block !important;
+  }
+
+  /* basic / health / finance / percentage rows */
+  body.menu-scrolled #navbar.open .dropdown-content > a,
+  body.menu-scrolled #navbar.open .dropdown-content > .nav-group,
+  body.menu-scrolled #navbar.open .dropdown-content > .nav-group > summary,
+  #navbar.scrolled.open .dropdown-content > a,
+  #navbar.scrolled.open .dropdown-content > .nav-group,
+  #navbar.scrolled.open .dropdown-content > .nav-group > summary {
+    width: 100% !important;
+    height: 50px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 12px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    font-size: 18px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown-content > *:last-child,
+  body.menu-scrolled #navbar.open .dropdown-content > *:last-child > summary,
+  #navbar.scrolled.open .dropdown-content > *:last-child,
+  #navbar.scrolled.open .dropdown-content > *:last-child > summary {
+    border-bottom: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown-content > a:hover,
+  body.menu-scrolled #navbar.open .dropdown-content > .nav-group:hover > summary,
+  #navbar.scrolled.open .dropdown-content > a:hover,
+  #navbar.scrolled.open .dropdown-content > .nav-group:hover > summary {
+    background: var(--yellow) !important;
+  }
+
+  /* health / finance groups */
+  body.menu-scrolled #navbar.open .nav-group,
+  #navbar.scrolled.open .nav-group {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary,
+  #navbar.scrolled.open .nav-group > summary {
+    cursor: pointer !important;
+    list-style: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary::-webkit-details-marker,
+  #navbar.scrolled.open .nav-group > summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary::marker,
+  #navbar.scrolled.open .nav-group > summary::marker {
+    content: "" !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary::before,
+  #navbar.scrolled.open .nav-group > summary::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary::after,
+  #navbar.scrolled.open .nav-group > summary::after {
+    
+
+    position: static !important;
+
+    width: auto !important;
+    height: auto !important;
+
+    margin-left: 8px !important;
+
+    background: transparent !important;
+    color: var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 14px !important;
+    line-height: 1 !important;
+  }
+
+  /* age / bmi opens further LEFT beside health */
+  body.menu-scrolled #navbar.open .nav-group-links,
+  #navbar.scrolled.open .nav-group-links {
+    display: none !important;
+
+    position: absolute !important;
+
+    top: -3px !important;
+    right: calc(100% + 3px) !important;
+    left: auto !important;
+
+    width: 170px !important;
+    height: auto !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 999999999 !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group:hover > .nav-group-links,
+  body.menu-scrolled #navbar.open .nav-group:focus-within > .nav-group-links,
+  body.menu-scrolled #navbar.open .nav-group[open] > .nav-group-links,
+  #navbar.scrolled.open .nav-group:hover > .nav-group-links,
+  #navbar.scrolled.open .nav-group:focus-within > .nav-group-links,
+  #navbar.scrolled.open .nav-group[open] > .nav-group-links {
+    display: block !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group-links a,
+  #navbar.scrolled.open .nav-group-links a {
+    width: 100% !important;
+    height: 47px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 10px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 17px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group-links a:last-child,
+  #navbar.scrolled.open .nav-group-links a:last-child {
+    border-bottom: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group-links a:hover,
+  #navbar.scrolled.open .nav-group-links a:hover {
+    background: var(--yellow) !important;
+  }
+}
+
+/* PHONE: keep top menu bar inside screen */
+@media (max-width: 850px) {
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open {
+    left: 12px !important;
+    right: 12px !important;
+    width: auto !important;
+    max-width: calc(100vw - 24px) !important;
+
+    transform: none !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 33.333% !important;
+    min-width: 0 !important;
+    flex: 1 1 33.333% !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn,
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    font-size: 16px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .dropdown-content {
+    max-width: calc(100vw - 24px) !important;
+  }
+}
+
+/* PHONE MENU: open upward, calculator left, finance left */
+@media (max-width: 850px) {
+  /* MENU button bottom-right */
+  #menuIcon {
+    display: flex !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+
+    position: fixed !important;
+    top: auto !important;
+    left: auto !important;
+    right: 70px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+
+    width: 62px !important;
+    height: 44px !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    font-size: 0 !important;
+    z-index: 999999999 !important;
+  }
+
+  #menuIcon::before {
+    content: "MENU" !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    color: var(--black) !important;
+  }
+
+  #menuIcon::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* Main phone menu opens upward */
+  body.menu-scrolled #navbar.open,
+  #navbar.scrolled.open,
+  #navbar.open.phone-menu-open {
+    display: flex !important;
+    position: fixed !important;
+
+    top: auto !important;
+    left: auto !important;
+    right: 70px !important;
+    bottom: calc(82px + env(safe-area-inset-bottom)) !important;
+
+    width: 135px !important;
+    height: auto !important;
+
+    flex-direction: column !important;
+    align-items: stretch !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    transform: none !important;
+    overflow: visible !important;
+    z-index: 999999998 !important;
+  }
+
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open > .dropdown,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open > .dropdown,
+  #navbar.open.phone-menu-open > a,
+  #navbar.open.phone-menu-open > .dropdown {
+    width: 135px !important;
+    height: 42px !important;
+    flex: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open > .dropdown > .dropbtn,
+  #navbar.scrolled.open > a,
+  #navbar.scrolled.open > .dropdown > .dropbtn,
+  #navbar.open.phone-menu-open > a,
+  #navbar.open.phone-menu-open > .dropdown > .dropbtn {
+    width: 135px !important;
+    height: 42px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 3px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    font-size: 17px !important;
+    font-weight: bold !important;
+    text-decoration: none !important;
+  }
+
+  body.menu-scrolled #navbar.open > a + a,
+  body.menu-scrolled #navbar.open > a + .dropdown,
+  body.menu-scrolled #navbar.open > .dropdown + a,
+  #navbar.scrolled.open > a + a,
+  #navbar.scrolled.open > a + .dropdown,
+  #navbar.scrolled.open > .dropdown + a,
+  #navbar.open.phone-menu-open > a + a,
+  #navbar.open.phone-menu-open > a + .dropdown,
+  #navbar.open.phone-menu-open > .dropdown + a {
+    margin-top: -3px !important;
+  }
+
+  body.menu-scrolled #navbar.open > a:hover,
+  body.menu-scrolled #navbar.open > .dropdown > .dropbtn:hover,
+  #navbar.scrolled.open > a:hover,
+  #navbar.scrolled.open > .dropdown > .dropbtn:hover,
+  #navbar.open.phone-menu-open > a:hover,
+  #navbar.open.phone-menu-open > .dropdown > .dropbtn:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* Calculator menu opens to the LEFT and stacks upward */
+  body.menu-scrolled #navbar.open .dropdown-content,
+  #navbar.scrolled.open .dropdown-content,
+  #navbar.open.phone-menu-open .dropdown-content {
+    display: none !important;
+
+    position: absolute !important;
+    top: auto !important;
+    left: auto !important;
+    right: 135px !important;
+    bottom: 0 !important;
+
+    width: 180px !important;
+    height: auto !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 999999999 !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown.phone-open > .dropdown-content,
+  #navbar.scrolled.open .dropdown.phone-open > .dropdown-content,
+  #navbar.open.phone-menu-open .dropdown.phone-open > .dropdown-content {
+    display: block !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown-content > a,
+  body.menu-scrolled #navbar.open .dropdown-content > .nav-group,
+  body.menu-scrolled #navbar.open .dropdown-content > .nav-group > summary,
+  #navbar.scrolled.open .dropdown-content > a,
+  #navbar.scrolled.open .dropdown-content > .nav-group,
+  #navbar.scrolled.open .dropdown-content > .nav-group > summary,
+  #navbar.open.phone-menu-open .dropdown-content > a,
+  #navbar.open.phone-menu-open .dropdown-content > .nav-group,
+  #navbar.open.phone-menu-open .dropdown-content > .nav-group > summary {
+    width: 100% !important;
+    height: 42px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 15px !important;
+    font-weight: bold !important;
+    text-decoration: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .dropdown-content > *:last-child,
+  body.menu-scrolled #navbar.open .dropdown-content > *:last-child > summary,
+  #navbar.scrolled.open .dropdown-content > *:last-child,
+  #navbar.scrolled.open .dropdown-content > *:last-child > summary,
+  #navbar.open.phone-menu-open .dropdown-content > *:last-child,
+  #navbar.open.phone-menu-open .dropdown-content > *:last-child > summary {
+    border-bottom: none !important;
+  }
+
+  /* Finance submenu opens further LEFT and stacks upward */
+  body.menu-scrolled #navbar.open .nav-group-links,
+  #navbar.scrolled.open .nav-group-links,
+  #navbar.open.phone-menu-open .nav-group-links {
+    display: none !important;
+
+    position: absolute !important;
+    top: auto !important;
+    left: auto !important;
+    right: calc(100% + 3px) !important;
+    bottom: 0 !important;
+
+    width: 130px !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    z-index: 999999999 !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group[open] > .nav-group-links,
+  #navbar.scrolled.open .nav-group[open] > .nav-group-links,
+  #navbar.open.phone-menu-open .nav-group[open] > .nav-group-links {
+    display: block !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group-links a,
+  #navbar.scrolled.open .nav-group-links a,
+  #navbar.open.phone-menu-open .nav-group-links a {
+    width: 100% !important;
+    height: 42px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+
+    font-size: 15px !important;
+    font-weight: bold !important;
+    text-decoration: none !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group-links a:last-child,
+  #navbar.scrolled.open .nav-group-links a:last-child,
+  #navbar.open.phone-menu-open .nav-group-links a:last-child {
+    border-bottom: none !important;
+  }
+
+  .dropdown.phone-open > .dropbtn,
+  .nav-group[open] > summary,
+  .dropdown-content a:hover,
+  .nav-group-links a:hover {
+    background: var(--yellow) !important;
+  }
+}
+/* PHONE: make sizing, font, and color consistent with PC mode */
+@media (max-width: 850px) {
+  /* top navbar */
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+    height: 58px !important;
+
+    left: 12px !important;
+    right: 12px !important;
+    transform: none !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    box-sizing: border-box !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 33.333% !important;
+    height: 58px !important;
+    flex: 1 1 33.333% !important;
+    min-width: 0 !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn,
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    height: 58px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-right: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 17px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  #navbar > a:last-child,
+  #navbar.open > a:last-child {
+    border-right: none !important;
+  }
+
+  #navbar > a:hover,
+  #navbar > .dropdown:hover > .dropbtn,
+  #navbar.open > a:hover,
+  #navbar.open > .dropdown:hover > .dropbtn {
+    background: var(--yellow) !important;
+  }
+
+  /* dropdown box */
+  #navbar .dropdown-content,
+  #navbar.open .dropdown-content {
+    width: 210px !important;
+    max-width: calc(100vw - 24px) !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    color: var(--black) !important;
+  }
+
+  #navbar .dropdown-content > a,
+  #navbar .dropdown-content > .nav-group,
+  #navbar .dropdown-content > .nav-group > summary,
+  #navbar.open .dropdown-content > a,
+  #navbar.open .dropdown-content > .nav-group,
+  #navbar.open .dropdown-content > .nav-group > summary {
+    height: 44px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 16px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+  }
+
+  #navbar .dropdown-content > a:hover,
+  #navbar .dropdown-content > .nav-group:hover > summary,
+  #navbar.open .dropdown-content > a:hover,
+  #navbar.open .dropdown-content > .nav-group:hover > summary {
+    background: var(--yellow) !important;
+  }
+
+  /* health / finance submenu */
+  #navbar .nav-group-links,
+  #navbar.open .nav-group-links {
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+  }
+
+  #navbar .nav-group-links a,
+  #navbar.open .nav-group-links a {
+    height: 42px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border-bottom: 3px solid var(--black) !important;
+
+    font-size: 15px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+  }
+
+  #navbar .nav-group-links a:hover,
+  #navbar.open .nav-group-links a:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* MENU and Go Up buttons */
+  #menuIcon,
+  #scrollTopBtn,
+  .scroll-top {
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    font-weight: bold !important;
+  }
+
+  #menuIcon:hover,
+  #scrollTopBtn:hover,
+  .scroll-top:hover {
+    background: var(--yellow) !important;
+  }
+
+  #menuIcon {
+    width: 62px !important;
+    height: 44px !important;
+  }
+
+  #menuIcon::before {
+    font-size: 14px !important;
+    font-weight: bold !important;
+    color: var(--black) !important;
+  }
+
+  #scrollTopBtn,
+  .scroll-top {
+    width: 46px !important;
+    height: 44px !important;
+    font-size: 24px !important;
+  }
+}
+/* PHONE: make symbols and text match PC mode */
+@media (max-width: 850px) {
+  /* MENU button text same as PC */
+  #menuIcon {
+    width: 78px !important;
+    height: 50px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    font-size: 0 !important;
+    font-weight: bold !important;
+  }
+
+  #menuIcon::before {
+    content: "MENU" !important;
+
+    position: static !important;
+
+    display: block !important;
+
+    width: auto !important;
+    height: auto !important;
+
+    background: transparent !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    box-shadow: none !important;
+    clip-path: none !important;
+    transform: none !important;
+
+    font-size: 18px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    letter-spacing: 1px !important;
+  }
+
+  #menuIcon::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* Go Up button style same as PC */
+  #scrollTopBtn,
+  .scroll-top {
+    width: 58px !important;
+    height: 50px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    font-size: 28px !important;
+    font-weight: bold !important;
+  }
+
+  /* Keep buttons side by side */
+  #menuIcon {
+    right: 84px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+  }
+
+  #scrollTopBtn,
+  .scroll-top {
+    right: 14px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+  }
+
+  /* Navbar text same style as PC */
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn,
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    color: var(--black) !important;
+    font-weight: bold !important;
+    text-transform: lowercase !important;
+  }
+
+  /* Dropdown text same style */
+  #navbar .dropdown-content > a,
+  #navbar .dropdown-content > .nav-group > summary,
+  #navbar.open .dropdown-content > a,
+  #navbar.open .dropdown-content > .nav-group > summary {
+    color: var(--black) !important;
+    font-weight: bold !important;
+    text-transform: lowercase !important;
+  }
+
+  /* Submenu text same style */
+  #navbar .nav-group-links a,
+  #navbar.open .nav-group-links a {
+    color: var(--black) !important;
+    font-weight: bold !important;
+    text-transform: lowercase !important;
+  }
+
+  /* Arrow symbol same as PC */
+  #navbar .nav-group > summary::after,
+  #navbar.open .nav-group > summary::after {
+    
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: 24px !important;
+    height: 24px !important;
+
+    margin-left: 8px !important;
+
+    background: transparent !important;
+    color: var(--black) !important;
+
+    border: 2px solid transparent !important;
+    box-shadow: none !important;
+
+    font-size: 15px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+  }
+
+  #navbar .nav-group:hover > summary::after,
+  #navbar.open .nav-group:hover > summary::after,
+  #navbar .nav-group[open] > summary::after,
+  #navbar.open .nav-group[open] > summary::after {
+    background: var(--black) !important;
+    color: var(--yellow) !important;
+    border-color: var(--black) !important;
+    box-shadow: 3px 3px 0 var(--black) !important;
+    transform: translateX(-4px) scale(1.08) !important;
+  }
+}
+/* INDEX PAGE: stop cards from moving when health/finance expands */
+.calculator-grid {
+  align-items: start !important;
+}
+
+.card,
+.group-card {
+  height: 110px !important;
+  min-height: 110px !important;
+}
+
+/* Keep health/finance card fixed size */
+.group-card {
+  position: relative !important;
+  display: block !important;
+  overflow: visible !important;
+  z-index: 5 !important;
+}
+
+/* Keep only the summary inside the original card size */
+.group-card > summary {
+  height: 110px !important;
+}
+
+/* Dropdown expands outside the card, so it will NOT push other blocks */
+.group-card > .group-links {
+  display: none !important;
+
+  position: absolute !important;
+  top: 100% !important;
+  left: -5px !important;
+  right: auto !important;
+
+  width: calc(100% + 10px) !important;
+
+  background: var(--white) !important;
+  border: 5px solid var(--black) !important;
+  border-top: none !important;
+  box-shadow: 7px 7px 0 var(--black) !important;
+
+  z-index: 9999 !important;
+}
+
+/* Show only the dropdown when health/finance is opened */
+.group-card[open] > .group-links,
+.group-card:hover > .group-links,
+.group-card:focus-within > .group-links {
+  display: block !important;
+}
+
+/* Put opened card above other cards */
+.group-card[open],
+.group-card:hover {
+  z-index: 9999 !important;
+}
+
+/* Dropdown links */
+.group-links a {
+  height: 60px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  border-bottom: 3px solid var(--black) !important;
+
+  font-size: 28px !important;
+  font-weight: bold !important;
+  text-decoration: none !important;
+}
+
+.group-links a:last-child {
+  border-bottom: none !important;
+}
+
+.group-links a:hover {
+  background: var(--yellow) !important;
+}
+/* PHONE: remove MENU button and keep top menu inside screen */
+@media (max-width: 850px) {
+  /* Remove MENU button on phone only */
+  #menuIcon,
+  #menuIcon.show {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  /* Keep top navbar visible on phone */
+  body.menu-scrolled #navbar:not(.open),
+  #navbar.scrolled:not(.open),
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open {
+    display: flex !important;
+
+    position: fixed !important;
+    top: 78px !important;
+    left: 10px !important;
+    right: 10px !important;
+
+    width: auto !important;
+    max-width: calc(100vw - 20px) !important;
+    height: 58px !important;
+
+    flex-direction: row !important;
+    align-items: stretch !important;
+
+    transform: none !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  /* 3 top menu buttons fit evenly */
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 33.333% !important;
+    min-width: 0 !important;
+    height: 58px !important;
+
+    flex: 1 1 33.333% !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn,
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    width: 100% !important;
+    height: 58px !important;
+
+    font-size: 16px !important;
+    font-weight: bold !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+
+    box-sizing: border-box !important;
+  }
+
+  /* Dropdown must not go beyond phone screen */
+  #navbar .dropdown-content,
+  #navbar.open .dropdown-content {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+
+    width: 220px !important;
+    max-width: calc(100vw - 20px) !important;
+
+    box-sizing: border-box !important;
+  }
+
+  /* Phone submenus stay inside dropdown */
+  #navbar .nav-group-links,
+  #navbar.open .nav-group-links {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+
+    transform: none !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Keep Go Up button only */
+  #scrollTopBtn,
+  .scroll-top {
+    right: 14px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+  }
+}
+/* PHONE: remove MENU button and keep top menu inside screen */
+@media (max-width: 850px) {
+  /* Remove MENU button on phone only */
+  #menuIcon,
+  #menuIcon.show {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  /* Keep top navbar visible on phone */
+  body.menu-scrolled #navbar:not(.open),
+  #navbar.scrolled:not(.open),
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open {
+    display: flex !important;
+
+    position: fixed !important;
+    top: 78px !important;
+    left: 10px !important;
+    right: 10px !important;
+
+    width: auto !important;
+    max-width: calc(100vw - 20px) !important;
+    height: 58px !important;
+
+    flex-direction: row !important;
+    align-items: stretch !important;
+
+    transform: none !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  /* 3 top menu buttons fit evenly */
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 33.333% !important;
+    min-width: 0 !important;
+    height: 58px !important;
+
+    flex: 1 1 33.333% !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn,
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    width: 100% !important;
+    height: 58px !important;
+
+    font-size: 16px !important;
+    font-weight: bold !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+
+    box-sizing: border-box !important;
+  }
+
+  /* Dropdown must not go beyond phone screen */
+  #navbar .dropdown-content,
+  #navbar.open .dropdown-content {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+
+    width: 220px !important;
+    max-width: calc(100vw - 20px) !important;
+
+    box-sizing: border-box !important;
+  }
+
+  /* Phone submenus stay inside dropdown */
+  #navbar .nav-group-links,
+  #navbar.open .nav-group-links {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+
+    transform: none !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Keep Go Up button only */
+  #scrollTopBtn,
+  .scroll-top {
+    right: 14px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+  }
+}
+/* PHONE FIX: remove MENU button and make top navbar fit screen */
+@media (max-width: 850px) {
+  /* Force remove MENU button on phone */
+  #menuIcon,
+  #menuIcon.show,
+  body.menu-scrolled #menuIcon,
+  body.menu-scrolled #menuIcon.show,
+  body.right-hand #menuIcon,
+  body.left-hand #menuIcon {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Force top navbar to stay full width on phone */
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open,
+  #navbar.open.phone-menu-open,
+  body.menu-scrolled #navbar,
+  body.menu-scrolled #navbar.scrolled,
+  body.menu-scrolled #navbar.open,
+  body.menu-scrolled #navbar:not(.open) {
+    display: flex !important;
+
+    position: fixed !important;
+    top: 78px !important;
+    left: 8px !important;
+    right: 8px !important;
+    bottom: auto !important;
+
+    width: calc(100vw - 16px) !important;
+    max-width: calc(100vw - 16px) !important;
+    height: 60px !important;
+
+    flex-direction: row !important;
+    align-items: stretch !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    transform: none !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+
+    z-index: 999999 !important;
+  }
+
+  /* Make home / calculator / about fill evenly */
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar.open > a,
+  #navbar.open > .dropdown,
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open > .dropdown {
+    width: 33.333% !important;
+    min-width: 0 !important;
+    max-width: 33.333% !important;
+
+    height: 60px !important;
+    flex: 1 1 33.333% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn,
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn,
+  body.menu-scrolled #navbar.open > a,
+  body.menu-scrolled #navbar.open > .dropdown > .dropbtn {
+    width: 100% !important;
+    height: 60px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-right: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 18px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+
+    box-sizing: border-box !important;
+  }
+
+  #navbar > a:last-child,
+  #navbar.open > a:last-child,
+  body.menu-scrolled #navbar.open > a:last-child {
+    border-right: none !important;
+  }
+
+  /* Dropdown stays inside phone screen */
+  #navbar .dropdown-content,
+  #navbar.open .dropdown-content,
+  body.menu-scrolled #navbar.open .dropdown-content {
+    top: 57px !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+
+    width: 220px !important;
+    max-width: calc(100vw - 16px) !important;
+
+    transform: translateX(-50%) !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Submenu stays inside dropdown on phone */
+  #navbar .nav-group-links,
+  #navbar.open .nav-group-links,
+  body.menu-scrolled #navbar.open .nav-group-links {
+    position: static !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    transform: none !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Keep only Go Up button */
+  #scrollTopBtn,
+  .scroll-top {
+    right: 14px !important;
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+  }
+}
+/* PHONE: make top navbar same width as calculator box */
+@media (max-width: 850px) {
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open,
+  body.menu-scrolled #navbar,
+  body.menu-scrolled #navbar.scrolled,
+  body.menu-scrolled #navbar.open {
+    display: flex !important;
+
+    position: fixed !important;
+    top: 78px !important;
+    left: 14px !important;
+    right: 14px !important;
+
+    width: calc(100dvw - 28px) !important;
+    min-width: calc(100dvw - 28px) !important;
+    max-width: calc(100dvw - 28px) !important;
+
+    height: 60px !important;
+
+    transform: none !important;
+    scale: 1 !important;
+    zoom: 1 !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    box-sizing: border-box !important;
+    overflow: visible !important;
+
+    z-index: 999999 !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar.open > a,
+  #navbar.open > .dropdown,
+  body.menu-scrolled #navbar > a,
+  body.menu-scrolled #navbar > .dropdown {
+    width: 33.333333% !important;
+    min-width: 0 !important;
+    max-width: 33.333333% !important;
+
+    height: 60px !important;
+    flex: 1 1 33.333333% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn,
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn,
+  body.menu-scrolled #navbar > a,
+  body.menu-scrolled #navbar > .dropdown > .dropbtn {
+    width: 100% !important;
+    height: 60px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-right: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 17px !important;
+    font-weight: bold !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+
+    box-sizing: border-box !important;
+  }
+
+  #navbar > a:last-child,
+  #navbar.open > a:last-child {
+    border-right: none !important;
+  }
+
+  /* stop old JS zoom from making navbar small */
+  #navbar[style] {
+    zoom: 1 !important;
+  }
+}
+/* PHONE: add space between top navbar and page content */
+@media (max-width: 850px) {
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open,
+  body.menu-scrolled #navbar,
+  body.menu-scrolled #navbar.scrolled,
+  body.menu-scrolled #navbar.open {
+    top: 78px !important;
+  }
+
+  .calculator-box,
+  .calculator-container,
+  .age-calculator-container,
+  .bmi-calculator-container,
+  .loan-calculator-container,
+  .discount-calculator-container,
+  .percentage-calculator-container,
+  .about-container {
+    margin-top: 20px !important;
+  }
+}
+
+/* Make expanded side menu boxes closer side-by-side */
+#navbar.open .dropdown-content,
+body.menu-scrolled #navbar.open .dropdown-content,
+#navbar.scrolled.open .dropdown-content {
+  right: calc(100% - 3px) !important;
+  left: auto !important;
+}
+
+/* Make health / finance expanded box closer */
+#navbar.open .nav-group-links,
+body.menu-scrolled #navbar.open .nav-group-links,
+#navbar.scrolled.open .nav-group-links {
+  right: calc(100% - 3px) !important;
+  left: auto !important;
+}
+
+/* Phone side menu closer too */
+@media (max-width: 850px) {
+  #navbar.open .dropdown-content,
+  body.menu-scrolled #navbar.open .dropdown-content,
+  #navbar.scrolled.open .dropdown-content {
+    right: calc(100% - 3px) !important;
+    left: auto !important;
+  }
+
+  #navbar.open .nav-group-links,
+  body.menu-scrolled #navbar.open .nav-group-links,
+  #navbar.scrolled.open .nav-group-links {
+    right: calc(100% - 3px) !important;
+    left: auto !important;
+  }
+}
+
+/* SIDE MENU ONLY: health/finance arrow down normally, left when hover/open */
+
+/* Normal arrow in side menu = down */
+body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after,
+#navbar.scrolled.open .dropdown-content .nav-group > summary::after,
+#navbar.open.phone-menu-open .dropdown-content .nav-group > summary::after {
+  content: " ▼" !important;
+
+  display: inline-block !important;
+  margin-left: 8px !important;
+
+  color: var(--black) !important;
+  background: transparent !important;
+
+  border: none !important;
+  box-shadow: none !important;
+
+  font-size: 16px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+
+  transform: none !important;
+}
+
+/* When hover side menu health/finance = left arrow */
+body.menu-scrolled #navbar.open .dropdown-content .nav-group:hover > summary::after,
+#navbar.scrolled.open .dropdown-content .nav-group:hover > summary::after,
+#navbar.open.phone-menu-open .dropdown-content .nav-group:hover > summary::after {
+  
+}
+
+/* When opened side menu health/finance = left arrow */
+body.menu-scrolled #navbar.open .dropdown-content .nav-group[open] > summary::after,
+#navbar.scrolled.open .dropdown-content .nav-group[open] > summary::after,
+#navbar.open.phone-menu-open .dropdown-content .nav-group[open] > summary::after {
+  
+}
+
+/* SIDE MENU ONLY:
+   health/finance arrow is ▼ normally,
+   changes to ◀ only when hover/open inside side menu
+*/
+
+body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after,
+#navbar.scrolled.open .dropdown-content .nav-group > summary::after,
+#navbar.open.phone-menu-open .dropdown-content .nav-group > summary::after {
+  content: " ▼" !important;
+  display: inline-block !important;
+  margin-left: 8px !important;
+
+  color: var(--black) !important;
+  background: transparent !important;
+
+  border: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+
+  font-size: 16px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+}
+
+/* Hover side menu health/finance */
+body.menu-scrolled #navbar.open .dropdown-content .nav-group:hover > summary::after,
+#navbar.scrolled.open .dropdown-content .nav-group:hover > summary::after,
+#navbar.open.phone-menu-open .dropdown-content .nav-group:hover > summary::after {
+  
+}
+
+/* Opened side menu health/finance */
+body.menu-scrolled #navbar.open .dropdown-content .nav-group[open] > summary::after,
+#navbar.scrolled.open .dropdown-content .nav-group[open] > summary::after,
+#navbar.open.phone-menu-open .dropdown-content .nav-group[open] > summary::after {
+
+}
+
+/* PHONE: bottom menu bar like reference image */
+@media (max-width: 850px) {
+  /* remove MENU button on phone */
+  #menuIcon,
+  #menuIcon.show,
+  body.menu-scrolled #menuIcon,
+  body.menu-scrolled #menuIcon.show {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  /* keep space so content is not hidden behind bottom menu */
+  body {
+    padding-bottom: 95px !important;
+  }
+
+  /* bottom navbar */
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open,
+  body.menu-scrolled #navbar,
+  body.menu-scrolled #navbar.scrolled,
+  body.menu-scrolled #navbar.open,
+  body.menu-scrolled #navbar:not(.open) {
+    display: flex !important;
+
+    position: fixed !important;
+    top: auto !important;
+    left: 0 !important;
+    right: auto !important;
+    bottom: 14px !important;
+
+    width: calc(100vw - 78px) !important;
+    max-width: calc(100vw - 78px) !important;
+    height: 58px !important;
+
+    flex-direction: row !important;
+    align-items: stretch !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    transform: none !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+
+    z-index: 999999 !important;
+  }
+
+  /* 3 buttons fit evenly */
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 33.333% !important;
+    min-width: 0 !important;
+    max-width: 33.333% !important;
+
+    height: 58px !important;
+    flex: 1 1 33.333% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn,
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    width: 100% !important;
+    height: 58px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-right: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 16px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+
+    box-sizing: border-box !important;
+  }
+
+  #navbar > a:last-child,
+  #navbar.open > a:last-child {
+    border-right: none !important;
+  }
+
+  /* Go Up button beside menu bar */
+  #scrollTopBtn,
+  .scroll-top {
+    display: flex !important;
+
+    position: fixed !important;
+    top: auto !important;
+    left: auto !important;
+    right: 10px !important;
+    bottom: 18px !important;
+
+    width: 54px !important;
+    height: 54px !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 #555 !important;
+
+    font-size: 34px !important;
+    font-weight: normal !important;
+    line-height: 1 !important;
+
+    opacity: 1 !important;
+    z-index: 9999999 !important;
+  }
+
+  #scrollTopBtn:hover,
+  .scroll-top:hover,
+  #navbar > a:hover,
+  #navbar > .dropdown:hover > .dropbtn {
+    background: var(--yellow) !important;
+  }
+
+  /* dropdown opens upward from bottom bar */
+  #navbar .dropdown-content,
+  #navbar.open .dropdown-content {
+    top: auto !important;
+    bottom: 58px !important;
+    left: 50% !important;
+    right: auto !important;
+
+    width: 210px !important;
+    max-width: calc(100vw - 20px) !important;
+
+    transform: translateX(-50%) !important;
+  }
+
+  /* health/finance submenu stays inside phone screen */
+  #navbar .nav-group-links,
+  #navbar.open .nav-group-links {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    transform: none !important;
+  }
+}
+/* PHONE: bottom menu sits beside Go Up button and fits screen */
+@media (max-width: 850px) {
+  /* hide MENU button on phone */
+  #menuIcon,
+  #menuIcon.show,
+  body.menu-scrolled #menuIcon,
+  body.menu-scrolled #menuIcon.show {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  body {
+    padding-bottom: 95px !important;
+  }
+
+  /* Go Up button on right */
+  #scrollTopBtn,
+  .scroll-top {
+    display: flex !important;
+
+    position: fixed !important;
+    right: 10px !important;
+    left: auto !important;
+    bottom: calc(16px + env(safe-area-inset-bottom)) !important;
+
+    width: 54px !important;
+    height: 54px !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    font-size: 32px !important;
+    font-weight: bold !important;
+
+    opacity: 1 !important;
+    z-index: 9999999 !important;
+  }
+
+  /* bottom menu bar sits beside Go Up button */
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open,
+  body.menu-scrolled #navbar,
+  body.menu-scrolled #navbar.scrolled,
+  body.menu-scrolled #navbar.open,
+  body.menu-scrolled #navbar:not(.open) {
+    display: flex !important;
+
+    position: fixed !important;
+    top: auto !important;
+    left: 6px !important;
+    right: 74px !important;
+    bottom: calc(16px + env(safe-area-inset-bottom)) !important;
+
+    width: auto !important;
+    max-width: none !important;
+    height: 54px !important;
+
+    flex-direction: row !important;
+    align-items: stretch !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    transform: none !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+
+    z-index: 999999 !important;
+  }
+
+  /* home / calculator / about fit evenly */
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 33.333% !important;
+    min-width: 0 !important;
+    max-width: 33.333% !important;
+
+    height: 54px !important;
+    flex: 1 1 33.333% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn,
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    width: 100% !important;
+    height: 54px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-right: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 15px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+
+    box-sizing: border-box !important;
+  }
+
+  #navbar > a:last-child,
+  #navbar.open > a:last-child {
+    border-right: none !important;
+  }
+
+  /* dropdown opens upward from bottom menu */
+  #navbar .dropdown-content,
+  #navbar.open .dropdown-content {
+    top: auto !important;
+    bottom: 54px !important;
+    left: 50% !important;
+    right: auto !important;
+
+    width: 210px !important;
+    max-width: calc(100vw - 20px) !important;
+
+    transform: translateX(-50%) !important;
+  }
+
+  #navbar .nav-group-links,
+  #navbar.open .nav-group-links {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    transform: none !important;
+  }
+}
+
+/* PHONE: bottom menu + Go Up orientation and gap like reference */
+@media (max-width: 850px) {
+  /* remove MENU button on phone */
+  #menuIcon,
+  #menuIcon.show,
+  body.menu-scrolled #menuIcon,
+  body.menu-scrolled #menuIcon.show {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  body {
+    padding-bottom: 95px !important;
+  }
+
+  /* bottom menu bar */
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open,
+  body.menu-scrolled #navbar,
+  body.menu-scrolled #navbar.scrolled,
+  body.menu-scrolled #navbar.open,
+  body.menu-scrolled #navbar:not(.open) {
+    display: flex !important;
+
+    position: fixed !important;
+    top: auto !important;
+    left: 8px !important;
+    right: 200px !important;
+    bottom: calc(18px + env(safe-area-inset-bottom)) !important;
+
+    width: auto !important;
+    height: 56px !important;
+
+    flex-direction: row !important;
+    align-items: stretch !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    transform: none !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+
+    z-index: 999999 !important;
+  }
+
+  /* home / calculator / about */
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 33.333% !important;
+    min-width: 0 !important;
+    max-width: 33.333% !important;
+
+    height: 56px !important;
+    flex: 1 1 33.333% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn,
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    width: 100% !important;
+    height: 56px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-right: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 15px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+
+    box-sizing: border-box !important;
+  }
+
+  #navbar > a:last-child,
+  #navbar.open > a:last-child {
+    border-right: none !important;
+  }
+
+  /* Go Up button with gap beside menu */
+  #scrollTopBtn,
+  .scroll-top {
+    display: flex !important;
+
+    position: fixed !important;
+    top: auto !important;
+    left: auto !important;
+    right: 14px !important;
+    bottom: calc(18px + env(safe-area-inset-bottom)) !important;
+
+    width: 52px !important;
+    height: 52px !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 #555 !important;
+
+    font-size: 32px !important;
+    font-weight: normal !important;
+    line-height: 1 !important;
+
+    opacity: 1 !important;
+    z-index: 9999999 !important;
+  }
+
+  /* dropdown opens upward from bottom menu */
+  #navbar .dropdown-content,
+  #navbar.open .dropdown-content {
+    top: auto !important;
+    bottom: 56px !important;
+    left: 50% !important;
+    right: auto !important;
+
+    width: 210px !important;
+    max-width: calc(100vw - 20px) !important;
+
+    transform: translateX(-50%) !important;
+  }
+
+  #navbar .nav-group-links,
+  #navbar.open .nav-group-links {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    transform: none !important;
+  }
+}
+/* PHONE: force visible gap between bottom menu and Go Up button */
+@media (max-width: 850px) {
+  /* remove MENU button */
+  #menuIcon,
+  #menuIcon.show,
+  body.menu-scrolled #menuIcon,
+  body.menu-scrolled #menuIcon.show {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  /* Go Up button */
+  #scrollTopBtn,
+  .scroll-top {
+    display: flex !important;
+
+    position: fixed !important;
+    right: 12px !important;
+    left: auto !important;
+    bottom: calc(18px + env(safe-area-inset-bottom)) !important;
+
+    width: 54px !important;
+    height: 54px !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    font-size: 32px !important;
+    font-weight: bold !important;
+
+    opacity: 1 !important;
+    z-index: 9999999 !important;
+  }
+
+  /* Bottom menu bar with real gap before Go Up button */
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open,
+  body.menu-scrolled #navbar,
+  body.menu-scrolled #navbar.scrolled,
+  body.menu-scrolled #navbar.open,
+  body.menu-scrolled #navbar:not(.open) {
+    display: flex !important;
+
+    position: fixed !important;
+    top: auto !important;
+    left: 8px !important;
+    right: auto !important;
+    bottom: calc(18px + env(safe-area-inset-bottom)) !important;
+
+    /* 8px left + 24px gap + 54px GoUp + 12px right = 98px */
+    width: calc(100dvw - 98px) !important;
+    min-width: 0 !important;
+    max-width: calc(100dvw - 98px) !important;
+
+    height: 54px !important;
+
+    flex-direction: row !important;
+    align-items: stretch !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    transform: none !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+
+    z-index: 999999 !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 33.333% !important;
+    min-width: 0 !important;
+    max-width: 33.333% !important;
+
+    height: 54px !important;
+    flex: 1 1 33.333% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn,
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    width: 100% !important;
+    height: 54px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-right: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 15px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+
+    box-sizing: border-box !important;
+  }
+
+  #navbar > a:last-child,
+  #navbar.open > a:last-child {
+    border-right: none !important;
+  }
+}
+
+/* PHONE: force gap between bottom menu and Go Up button */
+@media screen and (max-width: 850px) {
+  html body #menuIcon,
+  html body #menuIcon.show {
+    display: none !important;
+  }
+
+  html body #scrollTopBtn,
+  html body .scroll-top {
+    position: fixed !important;
+    right: 12px !important;
+    left: auto !important;
+    bottom: calc(18px + env(safe-area-inset-bottom)) !important;
+
+    width: 54px !important;
+    height: 54px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    z-index: 9999999 !important;
+  }
+
+  html body #navbar,
+  html body #navbar.scrolled,
+  html body #navbar.open,
+  html body.menu-scrolled #navbar,
+  html body.menu-scrolled #navbar.scrolled,
+  html body.menu-scrolled #navbar.open,
+  html body.menu-scrolled #navbar:not(.open) {
+    position: fixed !important;
+
+    top: auto !important;
+    bottom: calc(18px + env(safe-area-inset-bottom)) !important;
+
+    left: 8px !important;
+    right: 110px !important;
+
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+
+    height: 54px !important;
+
+    display: flex !important;
+    flex-direction: row !important;
+
+    transform: none !important;
+    scale: 1 !important;
+    zoom: 1 !important;
+
+    box-sizing: border-box !important;
+  }
+
+  html body #navbar > a,
+  html body #navbar > .dropdown,
+  html body #navbar.open > a,
+  html body #navbar.open > .dropdown {
+    width: 33.333% !important;
+    max-width: 33.333% !important;
+    min-width: 0 !important;
+    flex: 1 1 33.333% !important;
+  }
+}
+/* PHONE BOTTOM MENU: health/finance submenu opens upward + PC-style arrow */
+@media (max-width: 850px) {
+  /* make health/finance row able to hold upward submenu */
+  #navbar .dropdown-content .nav-group,
+  #navbar.open .dropdown-content .nav-group,
+  body.menu-scrolled #navbar.open .dropdown-content .nav-group {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  /* hide submenu until health/finance is opened */
+  #navbar .dropdown-content .nav-group-links,
+  #navbar.open .dropdown-content .nav-group-links,
+  body.menu-scrolled #navbar.open .dropdown-content .nav-group-links {
+    display: none !important;
+
+    position: absolute !important;
+    left: 0 !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: 100% !important;
+
+    width: 100% !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    z-index: 999999999 !important;
+  }
+
+  /* show age/bmi or loan/discount upward when clicked/opened */
+  #navbar .dropdown-content .nav-group[open] > .nav-group-links,
+  #navbar.open .dropdown-content .nav-group[open] > .nav-group-links,
+  body.menu-scrolled #navbar.open .dropdown-content .nav-group[open] > .nav-group-links {
+    display: block !important;
+  }
+
+  /* submenu link style */
+  #navbar .dropdown-content .nav-group-links a,
+  #navbar.open .dropdown-content .nav-group-links a,
+  body.menu-scrolled #navbar.open .dropdown-content .nav-group-links a {
+    width: 100% !important;
+    height: 42px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border-bottom: 3px solid var(--black) !important;
+
+    font-size: 15px !important;
+    font-weight: bold !important;
+    text-decoration: none !important;
+  }
+
+  #navbar .dropdown-content .nav-group-links a:last-child,
+  #navbar.open .dropdown-content .nav-group-links a:last-child {
+    border-bottom: none !important;
+  }
+
+  /* arrow same as PC mode: down normally */
+  #navbar .dropdown-content .nav-group > summary::after,
+  #navbar.open .dropdown-content .nav-group > summary::after,
+  body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after {
+    content: "▼" !important;
+
+    display: inline-block !important;
+    margin-left: 8px !important;
+
+    color: var(--black) !important;
+    background: transparent !important;
+
+    border: none !important;
+    box-shadow: none !important;
+
+    font-family: Arial, sans-serif !important;
+    font-size: 15px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    transform: none !important;
+  }
+
+  /* arrow changes left when opened */
+  #navbar .dropdown-content .nav-group[open] > summary::after,
+  #navbar.open .dropdown-content .nav-group[open] > summary::after,
+  body.menu-scrolled #navbar.open .dropdown-content .nav-group[open] > summary::after {
+  
+  }
+}
+/* PHONE BOTTOM MENU ONLY: health/finance expand upward + PC-style CSS arrow */
+@media (max-width: 850px) {
+  /* target only health/finance inside calculator dropdown from bottom menu */
+  html body #navbar .dropdown-content details.nav-group,
+  html body #navbar.open .dropdown-content details.nav-group,
+  html body.menu-scrolled #navbar.open .dropdown-content details.nav-group {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  /* force age/bmi and loan/discount to open UPWARD */
+  html body #navbar .dropdown-content details.nav-group > .nav-group-links,
+  html body #navbar.open .dropdown-content details.nav-group > .nav-group-links,
+  html body.menu-scrolled #navbar.open .dropdown-content details.nav-group > .nav-group-links {
+    display: none !important;
+
+    position: absolute !important;
+    left: 0 !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: 100% !important;
+
+    width: 100% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    z-index: 999999999 !important;
+  }
+
+  html body #navbar .dropdown-content details.nav-group[open] > .nav-group-links,
+  html body #navbar.open .dropdown-content details.nav-group[open] > .nav-group-links,
+  html body.menu-scrolled #navbar.open .dropdown-content details.nav-group[open] > .nav-group-links {
+    display: block !important;
+  }
+
+  /* submenu rows */
+  html body #navbar .dropdown-content details.nav-group > .nav-group-links > a,
+  html body #navbar.open .dropdown-content details.nav-group > .nav-group-links > a,
+  html body.menu-scrolled #navbar.open .dropdown-content details.nav-group > .nav-group-links > a {
+    width: 100% !important;
+    height: 42px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border-bottom: 3px solid var(--black) !important;
+
+    font-size: 15px !important;
+    font-weight: bold !important;
+    text-decoration: none !important;
+  }
+
+  html body #navbar .dropdown-content details.nav-group > .nav-group-links > a:last-child {
+    border-bottom: none !important;
+  }
+
+  /* remove old text/emoji arrows */
+  html body #navbar .dropdown-content details.nav-group > summary::after,
+  html body #navbar.open .dropdown-content details.nav-group > summary::after,
+  html body.menu-scrolled #navbar.open .dropdown-content details.nav-group > summary::after {
+    content: "" !important;
+
+    display: inline-block !important;
+    width: 0 !important;
+    height: 0 !important;
+
+    margin-left: 8px !important;
+
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
+
+    border-left: 6px solid transparent !important;
+    border-right: 6px solid transparent !important;
+    border-top: 8px solid var(--black) !important;
+    border-bottom: none !important;
+  }
+
+  /* when opened, arrow points LEFT */
+  html body #navbar .dropdown-content details.nav-group[open] > summary::after,
+  html body #navbar.open .dropdown-content details.nav-group[open] > summary::after,
+  html body.menu-scrolled #navbar.open .dropdown-content details.nav-group[open] > summary::after {
+    border-top: 6px solid transparent !important;
+    border-bottom: 6px solid transparent !important;
+    border-right: 8px solid var(--black) !important;
+    border-left: none !important;
+  }
+}
+/* PHONE SIDE MENU: remove emoji arrow and use CSS triangle arrow */
+@media (max-width: 850px) {
+  html body #navbar .dropdown-content details.nav-group > summary,
+  html body #navbar.open .dropdown-content details.nav-group > summary,
+  html body.menu-scrolled #navbar.open .dropdown-content details.nav-group > summary {
+    gap: 8px !important;
+  }
+
+  html body #navbar .dropdown-content details.nav-group > summary::after,
+  html body #navbar.open .dropdown-content details.nav-group > summary::after,
+  html body.menu-scrolled #navbar.open .dropdown-content details.nav-group > summary::after {
+    content: "" !important;
+
+    display: inline-block !important;
+    width: 0 !important;
+    height: 0 !important;
+
+    margin-left: 6px !important;
+
+    border-left: 6px solid transparent !important;
+    border-right: 6px solid transparent !important;
+    border-top: 8px solid var(--black) !important;
+    border-bottom: none !important;
+
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  html body #navbar .dropdown-content details.nav-group[open] > summary::after,
+  html body #navbar.open .dropdown-content details.nav-group[open] > summary::after,
+  html body.menu-scrolled #navbar.open .dropdown-content details.nav-group[open] > summary::after {
+    border-top: 6px solid transparent !important;
+    border-bottom: 6px solid transparent !important;
+    border-right: 8px solid var(--black) !important;
+    border-left: none !important;
+  }
+}
+/* PHONE SIDE MENU: force no emoji arrow, use CSS triangle only */
+@media (max-width: 850px) {
+  html body #navbar#navbar.open.phone-menu-open .dropdown-content details.nav-group > summary,
+  html body.menu-scrolled #navbar#navbar.open .dropdown-content details.nav-group > summary,
+  html body #navbar#navbar.scrolled.open .dropdown-content details.nav-group > summary,
+  html body #navbar#navbar .dropdown-content details.nav-group > summary {
+    list-style: none !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+  }
+
+  html body #navbar#navbar.open.phone-menu-open .dropdown-content details.nav-group > summary::-webkit-details-marker,
+  html body.menu-scrolled #navbar#navbar.open .dropdown-content details.nav-group > summary::-webkit-details-marker,
+  html body #navbar#navbar.scrolled.open .dropdown-content details.nav-group > summary::-webkit-details-marker,
+  html body #navbar#navbar .dropdown-content details.nav-group > summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  html body #navbar#navbar.open.phone-menu-open .dropdown-content details.nav-group > summary::marker,
+  html body.menu-scrolled #navbar#navbar.open .dropdown-content details.nav-group > summary::marker,
+  html body #navbar#navbar.scrolled.open .dropdown-content details.nav-group > summary::marker,
+  html body #navbar#navbar .dropdown-content details.nav-group > summary::marker {
+    content: "" !important;
+  }
+
+  /* normal arrow = CSS triangle down */
+  html body #navbar#navbar.open.phone-menu-open .dropdown-content details.nav-group > summary::after,
+  html body.menu-scrolled #navbar#navbar.open .dropdown-content details.nav-group > summary::after,
+  html body #navbar#navbar.scrolled.open .dropdown-content details.nav-group > summary::after,
+  html body #navbar#navbar .dropdown-content details.nav-group > summary::after {
+    content: "" !important;
+
+    display: inline-block !important;
+    width: 0 !important;
+    height: 0 !important;
+
+    margin-left: 8px !important;
+
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
+
+    border-left: 6px solid transparent !important;
+    border-right: 6px solid transparent !important;
+    border-top: 8px solid var(--black) !important;
+    border-bottom: none !important;
+  }
+
+  /* opened arrow = CSS triangle left */
+  html body #navbar#navbar.open.phone-menu-open .dropdown-content details.nav-group[open] > summary::after,
+  html body.menu-scrolled #navbar#navbar.open .dropdown-content details.nav-group[open] > summary::after,
+  html body #navbar#navbar.scrolled.open .dropdown-content details.nav-group[open] > summary::after,
+  html body #navbar#navbar .dropdown-content details.nav-group[open] > summary::after {
+    content: "" !important;
+
+    border-top: 6px solid transparent !important;
+    border-bottom: 6px solid transparent !important;
+    border-right: 8px solid var(--black) !important;
+    border-left: none !important;
+  }
+}
+/* PHONE: remove emoji arrow in bottom menu dropdown */
+@media (max-width: 850px) {
+  #navbar .dropdown-content details.nav-group > summary {
+    list-style: none !important;
+  }
+
+  #navbar .dropdown-content details.nav-group > summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  #navbar .dropdown-content details.nav-group > summary::marker {
+    content: "" !important;
+  }
+
+  /* remove old emoji/text arrow */
+  #navbar .dropdown-content details.nav-group > summary::after,
+  #navbar.open .dropdown-content details.nav-group > summary::after,
+  body.menu-scrolled #navbar.open .dropdown-content details.nav-group > summary::after,
+  #navbar.scrolled.open .dropdown-content details.nav-group > summary::after,
+  #navbar.open.phone-menu-open .dropdown-content details.nav-group > summary::after {
+    content: "" !important;
+
+    display: inline-block !important;
+    width: 0 !important;
+    height: 0 !important;
+
+    margin-left: 8px !important;
+
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
+
+    border-left: 6px solid transparent !important;
+    border-right: 6px solid transparent !important;
+    border-top: 8px solid var(--black) !important;
+    border-bottom: none !important;
+  }
+
+  /* when opened, use CSS left arrow, not emoji */
+  #navbar .dropdown-content details.nav-group[open] > summary::after,
+  #navbar.open .dropdown-content details.nav-group[open] > summary::after,
+  body.menu-scrolled #navbar.open .dropdown-content details.nav-group[open] > summary::after,
+  #navbar.scrolled.open .dropdown-content details.nav-group[open] > summary::after,
+  #navbar.open.phone-menu-open .dropdown-content details.nav-group[open] > summary::after {
+    content: "" !important;
+
+    border-top: 6px solid transparent !important;
+    border-bottom: 6px solid transparent !important;
+    border-right: 8px solid var(--black) !important;
+    border-left: none !important;
+  }
+}
+/* SIDE MENU ONLY: health/finance arrow down normally, left on hover */
+@media (min-width: 851px) {
+  /* normal side menu arrow */
+  body.menu-scrolled #navbar.open .dropdown-content details.nav-group > summary::after,
+  #navbar.scrolled.open .dropdown-content details.nav-group > summary::after {
+    content: " ▼" !important;
+    display: inline-block !important;
+    margin-left: 8px !important;
+
+    color: var(--black) !important;
+    background: transparent !important;
+
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+
+    font-size: 16px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+  }
+
+  /* when hover, arrow changes left */
+  body.menu-scrolled #navbar.open .dropdown-content details.nav-group:hover > summary::after,
+  #navbar.scrolled.open .dropdown-content details.nav-group:hover > summary::after {
+    content: " ◀" !important;
+  }
+
+  /* when open, also keep arrow left */
+  body.menu-scrolled #navbar.open .dropdown-content details.nav-group[open] > summary::after,
+  #navbar.scrolled.open .dropdown-content details.nav-group[open] > summary::after {
+    content: " ◀" !important;
   }
 }
