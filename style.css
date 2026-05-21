@@ -1837,3 +1837,242 @@ body.right-hand .scroll-top {
     font-size: 24px;
   }
 }
+
+/* =====================================================
+   PHONE: BOTTOM CONTROL BAR + DROPUP MENU
+===================================================== */
+
+@media (max-width: 850px) {
+
+  /* make space at bottom so buttons do not cover page */
+  body {
+    padding-bottom: 95px !important;
+    overflow-x: hidden !important;
+  }
+
+  /* keep normal navbar at top */
+  #navbar {
+    top: 78px !important;
+    width: 95% !important;
+    height: 58px !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown {
+    width: 33.33% !important;
+    height: 58px !important;
+    flex: 0 0 33.33% !important;
+  }
+
+  #navbar a,
+  .dropbtn {
+    height: 58px !important;
+    font-size: 18px !important;
+  }
+
+  /* page content starts below navbar */
+  .calculator-container,
+  .age-calculator-container,
+  .bmi-calculator-container,
+  .discount-calculator-container,
+  .loan-calculator-container,
+  .percentage-calculator-container {
+    margin-top: 155px !important;
+  }
+
+  /* bottom control bar */
+  #menuIcon {
+    display: none;
+    position: fixed !important;
+
+    top: auto !important;
+    bottom: 16px !important;
+    left: 12px !important;
+    right: auto !important;
+
+    width: 44px !important;
+    height: 42px !important;
+
+    font-size: 22px !important;
+
+    opacity: 0.55 !important;
+    z-index: 99999999 !important;
+  }
+
+  #menuIcon.show {
+    display: block !important;
+  }
+
+  #resizeNavigator {
+    position: fixed !important;
+
+    top: auto !important;
+    bottom: 16px !important;
+    left: 68px !important;
+    right: auto !important;
+
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 6px !important;
+
+    opacity: 0.55 !important;
+
+    zoom: 1 !important;
+    transform: none !important;
+
+    z-index: 99999999 !important;
+  }
+
+  #resizeNavigator button {
+    width: 40px !important;
+    height: 42px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    font-size: 15px !important;
+
+    transform: none !important;
+  }
+
+  #handToggleBtn {
+    position: fixed !important;
+
+    top: auto !important;
+    bottom: 16px !important;
+    right: 64px !important;
+    left: auto !important;
+
+    width: 44px !important;
+    height: 42px !important;
+
+    font-size: 18px !important;
+
+    opacity: 0.55 !important;
+
+    transform: none !important;
+    z-index: 99999999 !important;
+  }
+
+  #scrollTopBtn,
+  .scroll-top {
+    position: fixed !important;
+
+    top: auto !important;
+    bottom: 16px !important;
+    right: 10px !important;
+    left: auto !important;
+
+    width: 44px !important;
+    height: 42px !important;
+
+    font-size: 22px !important;
+
+    opacity: 0.55 !important;
+
+    transform: none !important;
+    z-index: 99999999 !important;
+  }
+
+  #menuIcon:hover,
+  #resizeNavigator:hover,
+  #handToggleBtn:hover,
+  #scrollTopBtn:hover,
+  .scroll-top:hover {
+    opacity: 1 !important;
+  }
+
+  /* keep bottom bar same in left-hand mode */
+  body.left-hand #menuIcon {
+    left: 12px !important;
+    right: auto !important;
+  }
+
+  body.left-hand #resizeNavigator {
+    left: 68px !important;
+    right: auto !important;
+  }
+
+  body.left-hand #handToggleBtn {
+    right: 64px !important;
+    left: auto !important;
+  }
+
+  body.left-hand #scrollTopBtn,
+  body.left-hand .scroll-top {
+    right: 10px !important;
+    left: auto !important;
+  }
+
+  /* DROPUP MENU when hamburger opens */
+  #navbar.open {
+    display: flex !important;
+    position: fixed !important;
+
+    top: auto !important;
+    bottom: 72px !important;
+
+    left: 12px !important;
+    right: auto !important;
+
+    width: 255px !important;
+    height: auto !important;
+    max-height: calc(100vh - 120px) !important;
+
+    margin: 0 !important;
+    transform: none !important;
+
+    flex-direction: column !important;
+
+    overflow-y: auto !important;
+
+    z-index: 99999998 !important;
+  }
+
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 255px !important;
+    height: auto !important;
+    flex: none !important;
+  }
+
+  #navbar.open a,
+  #navbar.open .dropbtn {
+    width: 255px !important;
+    height: 52px !important;
+
+    font-size: 21px !important;
+
+    border-right: none !important;
+    border-bottom: 5px solid black !important;
+  }
+
+  #navbar.open .dropdown-content {
+    position: static !important;
+
+    width: 255px !important;
+    max-height: 220px !important;
+
+    overflow-y: auto !important;
+
+    box-shadow: none !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  #navbar.open .dropdown-content a {
+    width: 255px !important;
+    height: 46px !important;
+    font-size: 18px !important;
+  }
+
+  /* left-hand mode keeps dropup menu near menu button */
+  body.left-hand #navbar.open {
+    left: 12px !important;
+    right: auto !important;
+  }
+}
