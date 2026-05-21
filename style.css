@@ -3072,3 +3072,42 @@ body.right-hand #navbar.open {
   right: 20px !important;
   left: auto !important;
 }
+
+/* =====================================================
+   PHONE: REMOVE HAMBURGER MENU BUTTON
+===================================================== */
+
+@media (max-width: 850px) {
+  #menuIcon {
+    display: none !important;
+  }
+
+  #menuIcon.show {
+    display: none !important;
+  }
+
+  /* keep only the go-up button */
+  #scrollTopBtn,
+  .scroll-top {
+    display: flex !important;
+
+    position: fixed !important;
+    top: auto !important;
+    bottom: calc(150px + env(safe-area-inset-bottom)) !important;
+
+    right: 14px !important;
+    left: auto !important;
+
+    width: 46px !important;
+    height: 44px !important;
+
+    opacity: 0.55 !important;
+    z-index: 99999999 !important;
+  }
+
+  body.left-hand #scrollTopBtn,
+  body.left-hand .scroll-top {
+    right: 14px !important;
+    left: auto !important;
+  }
+}
