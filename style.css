@@ -2986,3 +2986,89 @@ body.right-hand .scroll-top {
     bottom: var(--phone-menu-open-bottom) !important;
   }
 }
+
+/* =====================================================
+   REPAIR LEFT / RIGHT HAND BUTTON
+===================================================== */
+
+/* Show orientation button on desktop */
+#handToggleBtn {
+  position: fixed !important;
+
+  right: 22px !important;
+  left: auto !important;
+  bottom: 120px !important;
+  top: auto !important;
+
+  width: 58px !important;
+  height: 50px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  border: 5px solid black !important;
+  background: white !important;
+  color: black !important;
+
+  font-size: 24px !important;
+  font-weight: bold !important;
+
+  box-shadow: 5px 5px 0 black !important;
+
+  cursor: pointer !important;
+
+  opacity: 0.55 !important;
+
+  z-index: 99999999 !important;
+
+  transform: none !important;
+}
+
+#handToggleBtn:hover {
+  opacity: 1 !important;
+}
+
+/* Left hand mode */
+body.left-hand #handToggleBtn {
+  left: 22px !important;
+  right: auto !important;
+}
+
+body.left-hand #menuIcon {
+  left: 22px !important;
+  right: auto !important;
+}
+
+body.left-hand #scrollTopBtn,
+body.left-hand .scroll-top {
+  left: 22px !important;
+  right: auto !important;
+}
+
+body.left-hand #navbar.open {
+  left: 20px !important;
+  right: auto !important;
+}
+
+/* Right hand mode */
+body.right-hand #handToggleBtn {
+  right: 22px !important;
+  left: auto !important;
+}
+
+body.right-hand #menuIcon {
+  right: 22px !important;
+  left: auto !important;
+}
+
+body.right-hand #scrollTopBtn,
+body.right-hand .scroll-top {
+  right: 22px !important;
+  left: auto !important;
+}
+
+body.right-hand #navbar.open {
+  right: 20px !important;
+  left: auto !important;
+}

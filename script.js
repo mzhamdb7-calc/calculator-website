@@ -756,3 +756,49 @@ function resetPageZoom() {
 document.addEventListener("DOMContentLoaded", function () {
   createResizeNavigator();
 });
+
+/* =========================
+   LEFT / RIGHT HAND MODE
+========================= */
+
+function createHandToggleButton() {
+  if (document.getElementById("handToggleBtn")) return;
+
+  const button = document.createElement("button");
+  button.id = "handToggleBtn";
+  button.type = "button";
+  button.textContent = "↔";
+  button.onclick = toggleHandMode;
+
+  document.body.appendChild(button);
+}
+
+function applyHandMode() {
+  const savedMode = localStorage.getItem("handMode") || "right";
+
+  document.body.classList.remove("left-hand");
+  document.body.classList.remove("right-hand");
+
+  if (savedMode === "left") {
+    document.body.classList.add("left-hand");
+  } else {
+    document.body.classList.add("right-hand");
+  }
+}
+
+function toggleHandMode() {
+  const isLeft = document.body.classList.contains("left-hand");
+
+  if (isLeft) {
+    localStorage.setItem("handMode", "right");
+  } else {
+    localStorage.setItem("handMode", "left");
+  }
+
+  applyHandMode();
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  createHandToggleButton();
+  applyHandMode();
+});
