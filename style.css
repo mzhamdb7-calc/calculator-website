@@ -6700,7 +6700,7 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group[open] > summary::af
     position: fixed !important;
     top: auto !important;
     left: 8px !important;
-    right: 60px !important;
+    right: 150px !important;
     bottom: calc(18px + env(safe-area-inset-bottom)) !important;
 
     width: auto !important;
