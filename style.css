@@ -2598,3 +2598,211 @@ body.right-hand .scroll-top {
     right: auto !important;
   }
 }
+/* =====================================================
+   DROPDOWN GROUP OPEN SIDEWAYS
+===================================================== */
+
+/* Make health / finance parent able to hold side menu */
+.nav-group {
+  position: relative !important;
+  height: 50px !important;
+  overflow: visible !important;
+}
+
+/* Health / finance row */
+.nav-group summary {
+  height: 50px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  font-size: 20px !important;
+  font-weight: bold !important;
+
+  cursor: pointer !important;
+  list-style: none !important;
+
+  border-bottom: none !important;
+}
+
+/* Remove default marker */
+.nav-group summary::-webkit-details-marker {
+  display: none !important;
+}
+
+/* Side arrow */
+.nav-group summary::after {
+  content: " ▶" !important;
+  font-size: 14px !important;
+  margin-left: 6px !important;
+}
+
+/* Keep arrow sideways when open */
+.nav-group[open] summary::after {
+  content: " ▶" !important;
+}
+
+/* Side submenu */
+.nav-group-links {
+  display: none !important;
+
+  position: absolute !important;
+  top: -5px !important;
+  left: 100% !important;
+
+  width: 180px !important;
+
+  background: white !important;
+
+  border: 5px solid black !important;
+  box-shadow: 6px 6px 0 black !important;
+
+  z-index: 99999999 !important;
+}
+
+/* Show side submenu when health / finance is open */
+.nav-group[open] .nav-group-links {
+  display: block !important;
+}
+
+/* Side submenu links */
+.nav-group-links a {
+  width: 100% !important;
+  height: 50px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  font-size: 18px !important;
+  font-weight: bold !important;
+
+  color: black !important;
+  text-decoration: none !important;
+
+  background: white !important;
+
+  border-bottom: 4px solid black !important;
+}
+
+.nav-group-links a:last-child {
+  border-bottom: none !important;
+}
+
+.nav-group-links a:hover {
+  background: #ffe66d !important;
+}
+
+/* Keep main dropdown from cutting side menu */
+.dropdown,
+.dropdown-content,
+#navbar.open,
+#navbar.open .dropdown,
+#navbar.open .dropdown-content {
+  overflow: visible !important;
+}
+
+/* Phone / opened menu: side menu still opens to the right */
+@media (max-width: 850px) {
+  .nav-group {
+    height: 52px !important;
+  }
+
+  .nav-group summary {
+    height: 52px !important;
+    font-size: 18px !important;
+  }
+
+  .nav-group-links {
+    left: 100% !important;
+    top: -5px !important;
+    width: 155px !important;
+  }
+
+  .nav-group-links a {
+    width: 100% !important;
+    height: 46px !important;
+    font-size: 16px !important;
+  }
+}
+
+/* =====================================================
+   PHONE: NAV GROUP OPEN DOWNWARD, NOT SIDEWAYS
+===================================================== */
+
+@media (max-width: 850px) {
+
+  /* Let health / finance expand downward on phone */
+  .nav-group {
+    height: auto !important;
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  .nav-group summary {
+    height: 52px !important;
+    font-size: 18px !important;
+  }
+
+  /* Phone arrow points down */
+  .nav-group summary::after {
+    content: " ▼" !important;
+  }
+
+  .nav-group[open] summary::after {
+    content: " ▲" !important;
+  }
+
+  /* Submenu opens downward */
+  .nav-group-links {
+    display: none !important;
+
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+
+    width: 100% !important;
+
+    border: none !important;
+    border-top: 4px solid black !important;
+
+    box-shadow: none !important;
+
+    background: white !important;
+  }
+
+  .nav-group[open] .nav-group-links {
+    display: block !important;
+  }
+
+  .nav-group-links a {
+    width: 100% !important;
+    height: 46px !important;
+
+    font-size: 16px !important;
+
+    border-bottom: 4px solid black !important;
+  }
+
+  .nav-group-links a:last-child {
+    border-bottom: none !important;
+  }
+
+  /* Keep phone dropup menu clean */
+  #navbar.open .nav-group {
+    width: 255px !important;
+  }
+
+  #navbar.open .nav-group summary {
+    width: 255px !important;
+  }
+
+  #navbar.open .nav-group-links {
+    width: 255px !important;
+  }
+
+  #navbar.open .nav-group-links a {
+    width: 255px !important;
+  }
+}
