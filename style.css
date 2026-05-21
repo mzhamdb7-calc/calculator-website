@@ -2329,3 +2329,28 @@ body.right-hand .scroll-top {
       inset -4px -4px 0 #d4b84f !important;
   }
 }
+
+
+
+/* =========================
+   PC SIDE MENU: CALCULATOR EXPANDS ONLY ON HOVER / CLICK
+   This stops the calculator submenu from always showing.
+========================= */
+
+@media (min-width: 851px) {
+  #navbar.open .dropdown-content {
+    display: none !important;
+  }
+
+  #navbar.open .dropdown:hover > .dropdown-content,
+  #navbar.open .dropdown:focus-within > .dropdown-content,
+  #navbar.open .dropdown.menu-open > .dropdown-content {
+    display: block !important;
+  }
+
+  #navbar.open .dropdown:hover > .dropbtn,
+  #navbar.open .dropdown:focus-within > .dropbtn,
+  #navbar.open .dropdown.menu-open > .dropbtn {
+    background: var(--yellow) !important;
+  }
+}
