@@ -890,3 +890,42 @@ document.addEventListener("DOMContentLoaded", function () {
     calculatorDropdown.classList.remove("menu-open");
   });
 });
+
+/* =========================
+   PC SIDE MENU CLICK EXPAND
+========================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  if (!navbar) return;
+
+  const calculatorDropdown = navbar.querySelector(":scope > .dropdown");
+  if (!calculatorDropdown) return;
+
+  const calculatorButton = calculatorDropdown.querySelector(".dropbtn");
+  if (!calculatorButton) return;
+
+  function isPcSideMenu() {
+    return window.matchMedia("(min-width: 851px)").matches &&
+      navbar.classList.contains("open");
+  }
+
+  calculatorButton.addEventListener("click", function (event) {
+    if (!isPcSideMenu()) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    calculatorDropdown.classList.toggle("menu-open");
+  });
+
+  document.addEventListener("click", function (event) {
+    if (!calculatorDropdown.contains(event.target)) {
+      calculatorDropdown.classList.remove("menu-open");
+    }
+  });
+
+  window.addEventListener("resize", function () {
+    calculatorDropdown.classList.remove("menu-open");
+  });
+});

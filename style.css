@@ -2400,3 +2400,376 @@ body.right-hand .scroll-top {
     background: transparent !important;
   }
 }
+/* =====================================================
+   FINAL PC SIDE MENU DESIGN
+   Paste at the VERY BOTTOM of style.css
+===================================================== */
+
+@media (min-width: 851px) {
+  /* Hide submenu by default */
+  #navbar.open .dropdown-content {
+    display: none !important;
+  }
+
+  /* Show calculator submenu only on hover or click */
+  #navbar.open .dropdown:hover > .dropdown-content,
+  #navbar.open .dropdown:focus-within > .dropdown-content,
+  #navbar.open .dropdown.menu-open > .dropdown-content {
+    display: block !important;
+  }
+
+  /* Remove old black background panel */
+  #navbar.open::before {
+    display: none !important;
+  }
+
+  /* Main right side menu */
+  #navbar.open {
+    display: flex !important;
+    position: fixed !important;
+
+    top: 55px !important;
+    right: 120px !important;
+    left: auto !important;
+
+    width: 190px !important;
+    height: auto !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    flex-direction: column !important;
+    gap: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+
+    overflow: visible !important;
+    z-index: 99999998 !important;
+  }
+
+  /* Main menu rows: home, calculator, about */
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 190px !important;
+    height: 55px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex: none !important;
+  }
+
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    width: 190px !important;
+    height: 55px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    font-size: 24px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  /* Overlap borders nicely */
+  #navbar.open > a + a,
+  #navbar.open > a + .dropdown,
+  #navbar.open > .dropdown + a,
+  #navbar.open > .dropdown + .dropdown {
+    margin-top: -3px !important;
+  }
+
+  /* Yellow hover for main menu */
+  #navbar.open > a:hover,
+  #navbar.open > .dropdown:hover > .dropbtn,
+  #navbar.open > .dropdown.menu-open > .dropbtn,
+  #navbar.open > .dropdown > .dropbtn:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* Calculator submenu box on the left */
+  #navbar.open .dropdown {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  #navbar.open .dropdown-content {
+    position: absolute !important;
+
+    top: 52px !important;
+    right: 190px !important;
+    left: auto !important;
+
+    width: 235px !important;
+    max-height: none !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 99999999 !important;
+  }
+
+  /* Calculator submenu rows */
+  #navbar.open .dropdown-content > a,
+  #navbar.open .dropdown-content > .nav-group,
+  #navbar.open .dropdown-content > .nav-group > summary {
+    width: 100% !important;
+    height: 48px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 12px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    font-size: 18px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  /* Remove bottom border only from last row */
+  #navbar.open .dropdown-content > *:last-child,
+  #navbar.open .dropdown-content > *:last-child > summary {
+    border-bottom: none !important;
+  }
+
+  /* Yellow hover for submenu rows */
+  #navbar.open .dropdown-content > a:hover,
+  #navbar.open .dropdown-content > .nav-group:hover,
+  #navbar.open .dropdown-content > .nav-group > summary:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* Details groups: health, finance */
+  #navbar.open .nav-group {
+    position: relative !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  #navbar.open .nav-group > summary {
+    cursor: pointer !important;
+    list-style: none !important;
+  }
+
+  #navbar.open .nav-group > summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  #navbar.open .nav-group > summary::marker {
+    content: "" !important;
+  }
+
+  /* Remove old broken pseudo-line */
+  #navbar.open .nav-group > summary::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* Arrow design */
+  #navbar.open .nav-group > summary::after {
+    content: "▶" !important;
+    display: inline-block !important;
+
+    position: static !important;
+
+    width: auto !important;
+    height: auto !important;
+
+    margin-left: 8px !important;
+
+    background: transparent !important;
+    color: var(--black) !important;
+
+    font-size: 14px !important;
+    line-height: 1 !important;
+  }
+
+  #navbar.open .nav-group[open] > summary::after {
+    content: "▼" !important;
+  }
+
+  #navbar.open .nav-group[open] > summary {
+    background: var(--yellow) !important;
+  }
+
+  /* Nested submenu: age/bmi or loan/discount */
+  #navbar.open .nav-group-links {
+    display: none !important;
+
+    position: absolute !important;
+
+    top: -3px !important;
+    right: calc(100% + 3px) !important;
+    left: auto !important;
+
+    width: 185px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    border-radius: 0 !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 999999999 !important;
+  }
+
+  #navbar.open .nav-group[open] .nav-group-links {
+    display: block !important;
+  }
+
+  #navbar.open .nav-group-links a {
+    width: 100% !important;
+    height: 47px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 10px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 17px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  #navbar.open .nav-group-links a:last-child {
+    border-bottom: none !important;
+  }
+
+  #navbar.open .nav-group-links a:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* Small hamburger beside menu */
+  #menuIcon {
+    top: 58px !important;
+    right: 62px !important;
+
+    width: 52px !important;
+    height: 48px !important;
+
+    border: 4px solid var(--black) !important;
+    border-radius: 0 !important;
+
+    background: var(--white) !important;
+    color: transparent !important;
+
+    box-shadow:
+      5px 0 0 var(--black),
+      0 5px 0 var(--black),
+      5px 5px 0 var(--black),
+      inset 4px 4px 0 #dfeeff,
+      inset -4px -4px 0 #9fb3c8 !important;
+
+    font-size: 0 !important;
+    opacity: 1 !important;
+    transform: none !important;
+
+    z-index: 999999999 !important;
+  }
+
+  #menuIcon::before {
+    content: "" !important;
+
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+
+    width: 24px !important;
+    height: 4px !important;
+
+    transform: translate(-50%, -50%) !important;
+
+    background: #6f7c87 !important;
+    border: 2px solid var(--black) !important;
+    border-radius: 0 !important;
+
+    box-shadow:
+      0 -10px 0 #6f7c87,
+      0 -10px 0 2px var(--black),
+      0 10px 0 #6f7c87,
+      0 10px 0 2px var(--black) !important;
+  }
+
+  #menuIcon::after {
+    display: none !important;
+  }
+
+  #menuIcon:hover {
+    background: var(--yellow) !important;
+    transform: translate(2px, 2px) !important;
+    box-shadow:
+      3px 0 0 var(--black),
+      0 3px 0 var(--black),
+      3px 3px 0 var(--black),
+      inset 4px 4px 0 #fff4b8,
+      inset -4px -4px 0 #d4b84f !important;
+  }
+
+  /* Left-hand mode support */
+  body.left-hand #navbar.open {
+    left: 120px !important;
+    right: auto !important;
+  }
+
+  body.left-hand #menuIcon {
+    left: 62px !important;
+    right: auto !important;
+  }
+
+  body.left-hand #navbar.open .dropdown-content {
+    left: 190px !important;
+    right: auto !important;
+  }
+
+  body.left-hand #navbar.open .nav-group-links {
+    left: calc(100% + 3px) !important;
+    right: auto !important;
+  }
+}
