@@ -921,3 +921,45 @@ body.right-hand #navbar.open {
   white-space: pre-line;
 }
 
+/* BASIC CALCULATOR HISTORY COPY BUTTON */
+
+.history-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: start;
+
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+
+  border-bottom: 3px solid black;
+}
+
+.history-text {
+  font-size: 18px;
+  line-height: 1.4;
+
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.history-copy-btn {
+  border: 4px solid black;
+  background: #ffd3d3;
+
+  padding: 6px 10px;
+
+  font-size: 14px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  box-shadow: 3px 3px 0 black;
+}
+
+.history-copy-btn:hover {
+  background: #ffe66d;
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 black;
+}
+
