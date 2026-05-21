@@ -2177,3 +2177,46 @@ body.right-hand .scroll-top {
     width: 255px !important;
   }
 }
+
+/* =========================
+   FIX DROPDOWN GROUP LINES
+========================= */
+
+/* Every direct item inside calculator dropdown gets a bottom line */
+.dropdown-content > a,
+.dropdown-content > .nav-group {
+  border-bottom: 4px solid black !important;
+}
+
+/* Remove only the last bottom line */
+.dropdown-content > a:last-child,
+.dropdown-content > .nav-group:last-child {
+  border-bottom: none !important;
+}
+
+/* Make basic / percentage same height as group title */
+.dropdown-content > a {
+  height: 50px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Make health / finance same height */
+.nav-group summary {
+  height: 50px !important;
+}
+
+/* Lines inside opened group */
+.nav-group-links {
+  border-top: 4px solid black !important;
+}
+
+.nav-group-links a {
+  border-bottom: 4px solid black !important;
+}
+
+.nav-group-links a:last-child {
+  border-bottom: none !important;
+}
