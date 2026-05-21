@@ -1399,3 +1399,63 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+/* Restrict all calculator number inputs to numbers only */
+document.addEventListener("DOMContentLoaded", function () {
+  const numberInputs = document.querySelectorAll('input[type="number"]');
+
+  numberInputs.forEach(function (input) {
+    input.setAttribute("inputmode", "decimal");
+
+    input.addEventListener("keydown", function (event) {
+      const allowedKeys = [
+        "Backspace",
+        "Delete",
+        "ArrowLeft",
+        "ArrowRight",
+        "ArrowUp",
+        "ArrowDown",
+        "Tab",
+        "Home",
+        "End"
+      ];
+
+      if (allowedKeys.includes(event.key)) return;
+
+      if (event.ctrlKey || event.metaKey) return;
+
+      if (/^[0-9]$/.test(event.key)) return;
+
+      if (event.key === "." && !input.value.includes(".")) return;
+
+      event.preventDefault();
+    });
+
+    input.addEventListener("input", function () {
+      let value = input.value;
+
+      value = value.replace(/[^0-9.]/g, "");
+
+      const parts = value.split(".");
+      if (parts.length > 2) {
+        value = parts[0] + "." + parts.slice(1).join("");
+      }
+
+      input.value = value;
+    });
+
+    input.addEventListener("paste", function (event) {
+      event.preventDefault();
+
+      const pastedText = (event.clipboardData || window.clipboardData).getData("text");
+      let cleanedText = pastedText.replace(/[^0-9.]/g, "");
+
+      const parts = cleanedText.split(".");
+      if (parts.length > 2) {
+        cleanedText = parts[0] + "." + parts.slice(1).join("");
+      }
+
+      input.value = cleanedText;
+      input.dispatchEvent(new Event("input"));
+    });
+  });
+});
