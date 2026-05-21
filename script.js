@@ -670,3 +670,75 @@ document.addEventListener("DOMContentLoaded", function () {
   setupHistoryCopyButtons();
   watchCopyButtons();
 });
+/* =========================
+   PAGE RESIZE NAVIGATOR
+========================= */
+
+let pageZoom = Number(localStorage.getItem("pageZoom")) || 1;
+
+function createResizeNavigator() {
+  if (document.getElementById("resizeNavigator")) return;
+
+  const box = document.createElement("div");
+  box.id = "resizeNavigator";
+
+  const minusBtn = document.createElement("button");
+  minusBtn.type = "button";
+  minusBtn.textContent = "−";
+  minusBtn.onclick = zoomOutPage;
+
+  const resetBtn = document.createElement("button");
+  resetBtn.type = "button";
+  resetBtn.textContent = "100";
+  resetBtn.onclick = resetPageZoom;
+
+  const plusBtn = document.createElement("button");
+  plusBtn.type = "button";
+  plusBtn.textContent = "+";
+  plusBtn.onclick = zoomInPage;
+
+  box.appendChild(minusBtn);
+  box.appendChild(resetBtn);
+  box.appendChild(plusBtn);
+
+  document.body.appendChild(box);
+
+  applyPageZoom();
+}
+
+function applyPageZoom() {
+  document.body.style.zoom = pageZoom;
+
+  const resetBtn = document.querySelector("#resizeNavigator button:nth-child(2)");
+
+  if (resetBtn) {
+    resetBtn.textContent = Math.round(pageZoom * 100);
+  }
+
+  localStorage.setItem("pageZoom", String(pageZoom));
+}
+
+function zoomInPage() {
+  if (pageZoom < 1.5) {
+    pageZoom += 0.1;
+    pageZoom = Number(pageZoom.toFixed(1));
+    applyPageZoom();
+  }
+}
+
+function zoomOutPage() {
+  if (pageZoom > 0.6) {
+    pageZoom -= 0.1;
+    pageZoom = Number(pageZoom.toFixed(1));
+    applyPageZoom();
+  }
+}
+
+function resetPageZoom() {
+  pageZoom = 1;
+  applyPageZoom();
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  createResizeNavigator();
+});
