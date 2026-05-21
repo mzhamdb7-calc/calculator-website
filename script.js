@@ -1464,20 +1464,38 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-/* PHONE FIX: health/finance click once open, second click close */
+/* PHONE FINAL FIX: health/finance open once, close on second tap */
 (function () {
   function isPhone() {
     return window.matchMedia("(max-width: 850px)").matches;
   }
 
-  function closeAllGroups() {
-    document
-      .querySelectorAll("#navbar .dropdown-content details.nav-group")
-      .forEach(function (group) {
-        group.open = false;
-        group.removeAttribute("open");
-        group.classList.remove("open", "active", "phone-sub-open");
-      });
+  function allPhoneGroups() {
+    return document.querySelectorAll(
+      "#navbar .dropdown-content details.nav-group"
+    );
+  }
+
+  function forceClose(group) {
+    group.open = false;
+    group.removeAttribute("open");
+    group.dataset.phoneOpen = "false";
+    group.classList.remove("open", "active", "phone-sub-open");
+  }
+
+  function forceOpen(group) {
+    group.open = true;
+    group.setAttribute("open", "");
+    group.dataset.phoneOpen = "true";
+    group.classList.add("open", "active", "phone-sub-open");
+  }
+
+  function closeAllExcept(exceptGroup) {
+    allPhoneGroups().forEach(function (group) {
+      if (group !== exceptGroup) {
+        forceClose(group);
+      }
+    });
   }
 
   window.addEventListener(
@@ -1496,19 +1514,34 @@ document.addEventListener("DOMContentLoaded", function () {
       event.stopImmediatePropagation();
 
       const group = summary.parentElement;
-      const shouldOpen = !group.open;
 
-      closeAllGroups();
+      /* use our own state, not browser <details> state */
+      const isAlreadyOpen = group.dataset.phoneOpen === "true";
 
-      if (shouldOpen) {
-        group.open = true;
-        group.setAttribute("open", "");
-        group.classList.add("open", "active", "phone-sub-open");
+      closeAllExcept(group);
+
+      if (isAlreadyOpen) {
+        forceClose(group);
       } else {
-        group.open = false;
-        group.removeAttribute("open");
-        group.classList.remove("open", "active", "phone-sub-open");
+        forceOpen(group);
       }
+
+      /* override any old script that runs after this */
+      setTimeout(function () {
+        if (isAlreadyOpen) {
+          forceClose(group);
+        } else {
+          forceOpen(group);
+        }
+      }, 0);
+
+      setTimeout(function () {
+        if (isAlreadyOpen) {
+          forceClose(group);
+        } else {
+          forceOpen(group);
+        }
+      }, 50);
     },
     true
   );
