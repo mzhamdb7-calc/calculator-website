@@ -915,3 +915,9 @@ body.right-hand #navbar.open {
   }
 }
 
+/* AGE RESULT LINE BREAK */
+
+#result {
+  white-space: pre-line;
+}
+
