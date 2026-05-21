@@ -2516,3 +2516,85 @@ body.right-hand .scroll-top {
     bottom: var(--phone-menu-bottom) !important;
   }
 }
+
+/* =====================================================
+   PHONE: REMOVE SIZE + ORIENTATION BUTTONS
+===================================================== */
+
+@media (max-width: 850px) {
+
+  /* hide + 100 - resize bar */
+  #resizeNavigator {
+    display: none !important;
+  }
+
+  /* hide left/right orientation button */
+  #handToggleBtn {
+    display: none !important;
+  }
+
+  /* keep only menu button */
+  #menuIcon {
+    display: none;
+    position: fixed !important;
+
+    top: auto !important;
+    bottom: calc(115px + env(safe-area-inset-bottom)) !important;
+
+    left: 12px !important;
+    right: auto !important;
+
+    width: 44px !important;
+    height: 42px !important;
+
+    font-size: 22px !important;
+
+    opacity: 0.55 !important;
+    z-index: 99999999 !important;
+  }
+
+  #menuIcon.show {
+    display: block !important;
+  }
+
+  /* keep only scroll-up button */
+  #scrollTopBtn,
+  .scroll-top {
+    position: fixed !important;
+
+    top: auto !important;
+    bottom: calc(115px + env(safe-area-inset-bottom)) !important;
+
+    right: 10px !important;
+    left: auto !important;
+
+    width: 44px !important;
+    height: 42px !important;
+
+    font-size: 22px !important;
+
+    opacity: 0.55 !important;
+    z-index: 99999999 !important;
+  }
+
+  /* left-hand mode should not move phone buttons */
+  body.left-hand #menuIcon {
+    left: 12px !important;
+    right: auto !important;
+  }
+
+  body.left-hand #scrollTopBtn,
+  body.left-hand .scroll-top {
+    right: 10px !important;
+    left: auto !important;
+  }
+
+  /* dropup menu opens above menu button */
+  #navbar.open {
+    bottom: calc(175px + env(safe-area-inset-bottom)) !important;
+    top: auto !important;
+
+    left: 12px !important;
+    right: auto !important;
+  }
+}
