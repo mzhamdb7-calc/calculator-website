@@ -2299,3 +2299,220 @@ body.right-hand .scroll-top {
     right: auto !important;
   }
 }
+
+/* =====================================================
+   PHONE: FIX BOTTOM CONTROL BAR POSITION
+===================================================== */
+
+@media (max-width: 850px) {
+
+  /* Add safe space above phone browser bar */
+  body {
+    padding-bottom: 190px !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Bottom bar height from phone browser bar */
+  :root {
+    --phone-bar-bottom: calc(115px + env(safe-area-inset-bottom));
+    --phone-menu-bottom: calc(175px + env(safe-area-inset-bottom));
+  }
+
+  /* MENU BUTTON */
+  #menuIcon {
+    position: fixed !important;
+
+    top: auto !important;
+    bottom: var(--phone-bar-bottom) !important;
+
+    left: 12px !important;
+    right: auto !important;
+
+    width: 44px !important;
+    height: 42px !important;
+
+    font-size: 22px !important;
+
+    z-index: 99999999 !important;
+    opacity: 0.55 !important;
+  }
+
+  #menuIcon.show {
+    display: block !important;
+  }
+
+  /* RESIZE BUTTONS: + 100 - */
+  #resizeNavigator {
+    position: fixed !important;
+
+    top: auto !important;
+    bottom: var(--phone-bar-bottom) !important;
+
+    left: 68px !important;
+    right: auto !important;
+
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 6px !important;
+
+    z-index: 99999999 !important;
+
+    opacity: 0.55 !important;
+    zoom: 1 !important;
+    transform: none !important;
+  }
+
+  #resizeNavigator button {
+    width: 40px !important;
+    height: 42px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    font-size: 15px !important;
+
+    transform: none !important;
+  }
+
+  /* LEFT / RIGHT HAND BUTTON */
+  #handToggleBtn {
+    position: fixed !important;
+
+    top: auto !important;
+    bottom: var(--phone-bar-bottom) !important;
+
+    right: 64px !important;
+    left: auto !important;
+
+    width: 44px !important;
+    height: 42px !important;
+
+    font-size: 18px !important;
+
+    z-index: 99999999 !important;
+    opacity: 0.55 !important;
+    transform: none !important;
+  }
+
+  /* SCROLL TOP BUTTON */
+  #scrollTopBtn,
+  .scroll-top {
+    position: fixed !important;
+
+    top: auto !important;
+    bottom: var(--phone-bar-bottom) !important;
+
+    right: 10px !important;
+    left: auto !important;
+
+    width: 44px !important;
+    height: 42px !important;
+
+    font-size: 22px !important;
+
+    z-index: 99999999 !important;
+    opacity: 0.55 !important;
+    transform: none !important;
+  }
+
+  /* Full opacity when touched */
+  #menuIcon:hover,
+  #resizeNavigator:hover,
+  #handToggleBtn:hover,
+  #scrollTopBtn:hover,
+  .scroll-top:hover {
+    opacity: 1 !important;
+  }
+
+  /* Keep same position in left-hand mode */
+  body.left-hand #menuIcon {
+    left: 12px !important;
+    right: auto !important;
+    bottom: var(--phone-bar-bottom) !important;
+  }
+
+  body.left-hand #resizeNavigator {
+    left: 68px !important;
+    right: auto !important;
+    bottom: var(--phone-bar-bottom) !important;
+  }
+
+  body.left-hand #handToggleBtn {
+    right: 64px !important;
+    left: auto !important;
+    bottom: var(--phone-bar-bottom) !important;
+  }
+
+  body.left-hand #scrollTopBtn,
+  body.left-hand .scroll-top {
+    right: 10px !important;
+    left: auto !important;
+    bottom: var(--phone-bar-bottom) !important;
+  }
+
+  /* Dropup menu opens above bottom control bar */
+  #navbar.open {
+    display: flex !important;
+    position: fixed !important;
+
+    top: auto !important;
+    bottom: var(--phone-menu-bottom) !important;
+
+    left: 12px !important;
+    right: auto !important;
+
+    width: 255px !important;
+    height: auto !important;
+    max-height: calc(100vh - 230px) !important;
+
+    margin: 0 !important;
+    transform: none !important;
+
+    flex-direction: column !important;
+
+    overflow-y: auto !important;
+
+    z-index: 99999998 !important;
+  }
+
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 255px !important;
+    height: auto !important;
+    flex: none !important;
+  }
+
+  #navbar.open a,
+  #navbar.open .dropbtn {
+    width: 255px !important;
+    height: 52px !important;
+
+    font-size: 21px !important;
+
+    border-right: none !important;
+    border-bottom: 5px solid black !important;
+  }
+
+  #navbar.open .dropdown-content {
+    position: static !important;
+
+    width: 255px !important;
+    max-height: 220px !important;
+
+    overflow-y: auto !important;
+
+    box-shadow: none !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  body.left-hand #navbar.open {
+    left: 12px !important;
+    right: auto !important;
+    bottom: var(--phone-menu-bottom) !important;
+  }
+}
