@@ -1204,3 +1204,75 @@ body.right-hand #navbar.open {
     max-height: 300px;
   }
 }
+/* =========================
+   DISCOUNT CALCULATOR HISTORY
+========================= */
+
+.discount-calculator-container {
+  max-width: 1180px;
+  margin: 130px auto 80px;
+  padding: 30px;
+
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 35px;
+  align-items: start;
+}
+
+.discount-history-box {
+  background: #fff4b8;
+  border: 5px solid black;
+  box-shadow: 7px 7px 0 black;
+  padding: 20px;
+  transform: rotate(-1deg);
+
+  min-height: 450px;
+  max-height: 520px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.discount-history-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.discount-history-top h3 {
+  font-size: 24px;
+}
+
+#discountHistoryList {
+  list-style: none;
+  font-size: 17px;
+  line-height: 1.4;
+
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+#discountHistoryList li {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 3px solid black;
+}
+
+/* Mobile */
+@media (max-width: 850px) {
+  .discount-calculator-container {
+    grid-template-columns: 1fr;
+    margin-top: 110px;
+    padding: 20px;
+  }
+
+  .discount-history-box {
+    min-height: auto;
+    max-height: 300px;
+  }
+}
