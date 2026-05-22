@@ -2240,3 +2240,41 @@ document.addEventListener("DOMContentLoaded", function () {
     setupPhoneCalculatorDropdown();
   }
 })();
+
+/* =====================================================
+   FINAL REPAIR: real arrow for health / finance menu
+   PC normal = ▼
+   PC hover/open = ▲
+===================================================== */
+@media (min-width: 851px) {
+  #navbar .dropdown-content > details.nav-group > summary::after,
+  #navbar .dropdown-content > .nav-group > summary::after,
+  #navbar .dropdown-content > .navbar-fixed-group > .navbar-fixed-summary::after,
+  body.menu-scrolled #navbar.open .nav-group > summary::after,
+  #navbar.scrolled.open .nav-group > summary::after,
+  #navbar.open .nav-group > summary::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  #navbar .nav-menu-arrow {
+    display: inline-block !important;
+    margin-left: 8px !important;
+    color: var(--black) !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  #navbar .nav-group:hover > summary .nav-menu-arrow,
+  #navbar .nav-group:focus-within > summary .nav-menu-arrow,
+  #navbar .nav-group[open] > summary .nav-menu-arrow,
+  #navbar .navbar-fixed-group:hover > .navbar-fixed-summary .nav-menu-arrow,
+  #navbar .navbar-fixed-group:focus-within > .navbar-fixed-summary .nav-menu-arrow,
+  #navbar .navbar-fixed-group.is-open > .navbar-fixed-summary .nav-menu-arrow {
+    color: var(--black) !important;
+  }
+}
