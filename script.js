@@ -2345,3 +2345,122 @@ document.addEventListener("DOMContentLoaded", function () {
     start();
   }
 })();
+
+/* =====================================================
+   FINAL REPAIR V2: health / finance arrow works with .nav-summary
+   normal = ▼
+   hover/open = ▲
+===================================================== */
+(function () {
+  function isPcMode() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function cleanLabel(text) {
+    return String(text || "")
+      .replace(/[▼▲▶◀⬇⬆⬅➡]/g, "")
+      .trim();
+  }
+
+  function isOpen(group) {
+    return (
+      group.matches(":hover") ||
+      group.open === true ||
+      group.classList.contains("open") ||
+      group.classList.contains("active") ||
+      group.classList.contains("is-open") ||
+      group.classList.contains("phone-sub-open")
+    );
+  }
+
+  function setArrow(group) {
+    const arrow = group.querySelector(":scope > summary .nav-menu-arrow, :scope > .nav-summary .nav-menu-arrow, :scope > .navbar-fixed-summary .nav-menu-arrow");
+    if (!arrow) return;
+
+    arrow.textContent = isOpen(group) ? "▲" : "▼";
+  }
+
+  function setupGroup(group) {
+    if (!group || group.dataset.arrowRepairV2 === "true") return;
+
+    const trigger =
+      group.querySelector(":scope > summary") ||
+      group.querySelector(":scope > .nav-summary") ||
+      group.querySelector(":scope > .navbar-fixed-summary");
+
+    if (!trigger) return;
+
+    group.dataset.arrowRepairV2 = "true";
+
+    let arrow = trigger.querySelector(".nav-menu-arrow");
+
+    if (!arrow) {
+      const label = cleanLabel(trigger.textContent);
+      trigger.textContent = label + " ";
+
+      arrow = document.createElement("span");
+      arrow.className = "nav-menu-arrow";
+      arrow.textContent = "▼";
+
+      trigger.appendChild(arrow);
+    }
+
+    group.addEventListener("mouseenter", function () {
+      if (!isPcMode()) return;
+      arrow.textContent = "▲";
+    });
+
+    group.addEventListener("mouseleave", function () {
+      if (!isPcMode()) return;
+      arrow.textContent = group.open || group.classList.contains("is-open") ? "▲" : "▼";
+    });
+
+    group.addEventListener("toggle", function () {
+      setArrow(group);
+    });
+
+    trigger.addEventListener("click", function () {
+      setTimeout(function () {
+        setArrow(group);
+      }, 0);
+    });
+
+    setArrow(group);
+  }
+
+  function setupAllNavbarArrows() {
+    document
+      .querySelectorAll(
+        "#navbar .dropdown-content > details.nav-group, " +
+        "#navbar .dropdown-content > .nav-group, " +
+        "#navbar .dropdown-content > .fixed-nav-group, " +
+        "#navbar .dropdown-content > .navbar-fixed-group"
+      )
+      .forEach(setupGroup);
+  }
+
+  function start() {
+    setupAllNavbarArrows();
+
+    const navbar = document.getElementById("navbar");
+
+    if (navbar && navbar.dataset.arrowObserverV2 !== "true") {
+      navbar.dataset.arrowObserverV2 = "true";
+
+      const observer = new MutationObserver(function () {
+        setupAllNavbarArrows();
+      });
+
+      observer.observe(navbar, {
+        childList: true,
+        subtree: true
+      });
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
