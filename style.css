@@ -5018,3 +5018,146 @@ main.has-instructions {
     width: 220px !important;
   }
 }
+/* =====================================================
+   ABOUT / PRIVACY / CONTACT CLEAN PAGE OVERRIDE
+   PC: no instruction/sidebar bar
+   PHONE: improved top navigation dropdown layout
+===================================================== */
+
+/* PC MODE: make info pages clean and centered */
+@media (min-width: 851px) {
+  body.info-page .about-container,
+  body.about-page .about-container,
+  body.privacy-page .about-container,
+  body.contact-page .about-container {
+    max-width: 900px !important;
+    margin: 130px auto 80px !important;
+    padding: 30px !important;
+    display: block !important;
+  }
+
+  body.info-page .about-box,
+  body.about-page .about-box,
+  body.privacy-page .about-box,
+  body.contact-page .about-box {
+    width: 100% !important;
+    max-width: 900px !important;
+    margin: 0 auto !important;
+  }
+
+  body.info-page .instruction-box,
+  body.about-page .instruction-box,
+  body.privacy-page .instruction-box,
+  body.contact-page .instruction-box,
+  body.info-page .instruction-panel,
+  body.about-page .instruction-panel,
+  body.privacy-page .instruction-panel,
+  body.contact-page .instruction-panel {
+    display: none !important;
+  }
+}
+
+/* PHONE MODE: better navbar dropdown behavior */
+@media (max-width: 850px) {
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open {
+    top: 78px !important;
+    left: 50% !important;
+    right: auto !important;
+    width: 95% !important;
+    height: 58px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    transform: translateX(-50%) rotate(-1deg) !important;
+    overflow: visible !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 33.33% !important;
+    height: 58px !important;
+    flex: 0 0 33.33% !important;
+  }
+
+  #navbar > a,
+  #navbar .dropbtn,
+  #navbar.open > a,
+  #navbar.open .dropbtn {
+    width: 100% !important;
+    height: 58px !important;
+    font-size: 18px !important;
+  }
+
+  /* Hide dropdowns by default on phone */
+  #navbar > .dropdown > .dropdown-content,
+  #navbar > .dropdown:hover > .dropdown-content,
+  #navbar > .dropdown:focus-within > .dropdown-content,
+  #navbar.open > .dropdown > .dropdown-content,
+  #navbar.open > .dropdown:hover > .dropdown-content,
+  #navbar.open > .dropdown:focus-within > .dropdown-content {
+    display: none !important;
+  }
+
+  /* Open only when JS adds phone-open/mobile-open */
+  #navbar > .dropdown.phone-open > .dropdown-content,
+  #navbar > .dropdown.mobile-open > .dropdown-content,
+  #navbar.open > .dropdown.phone-open > .dropdown-content,
+  #navbar.open > .dropdown.mobile-open > .dropdown-content {
+    display: block !important;
+  }
+
+  /* Calculator dropdown position */
+  #navbar > .dropdown:not(.about-dropdown) > .dropdown-content {
+    top: 55px !important;
+    left: -3px !important;
+    right: auto !important;
+    width: 230px !important;
+  }
+
+  /* Info dropdown position */
+  #navbar > .about-dropdown > .about-dropdown-content {
+    top: 55px !important;
+    left: auto !important;
+    right: -3px !important;
+    width: 230px !important;
+  }
+
+  #navbar > .dropdown.phone-open > .dropbtn,
+  #navbar > .dropdown.mobile-open > .dropbtn {
+    background: var(--yellow) !important;
+  }
+
+  /* Phone submenu layout inside calculator dropdown */
+  #navbar .navbar-fixed-group,
+  #navbar .nav-group {
+    width: 100% !important;
+    height: auto !important;
+    position: relative !important;
+  }
+
+  #navbar .navbar-fixed-group > .nav-group-links,
+  #navbar .nav-group > .nav-group-links {
+    display: none !important;
+    position: static !important;
+    width: 100% !important;
+    border: none !important;
+    border-top: 3px solid var(--black) !important;
+    box-shadow: none !important;
+  }
+
+  #navbar .navbar-fixed-group.is-open > .nav-group-links,
+  #navbar .nav-group[open] > .nav-group-links {
+    display: block !important;
+  }
+
+  #navbar .nav-group-links a {
+    width: 100% !important;
+    height: 42px !important;
+    justify-content: center !important;
+    padding: 0 8px !important;
+    font-size: 16px !important;
+  }
+}
