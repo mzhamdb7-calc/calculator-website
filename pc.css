@@ -1,0 +1,102 @@
+/*
+  Copyright © 2026 Hamdi.
+  PC MODE ONLY
+*/
+
+@media (min-width: 851px) {
+  #navbar {
+    overflow: visible !important;
+  }
+
+  #navbar > .dropdown {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  #navbar > .dropdown:hover > .dropdown-content,
+  #navbar > .dropdown:focus-within > .dropdown-content,
+  #navbar > .dropdown.menu-open > .dropdown-content {
+    display: block !important;
+  }
+
+  #navbar .dropdown-content {
+    top: 62px !important;
+    left: -3px !important;
+    right: auto !important;
+    width: 250px !important;
+    overflow: visible !important;
+  }
+
+  #navbar .about-dropdown-content {
+    left: auto !important;
+    right: -3px !important;
+  }
+
+  #navbar .dropdown-content > .nav-group,
+  #navbar .dropdown-content > .fixed-nav-group,
+  #navbar .dropdown-content > .navbar-fixed-group {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  #navbar .dropdown-content > .nav-group > .nav-group-links,
+  #navbar .dropdown-content > .fixed-nav-group > .nav-group-links,
+  #navbar .dropdown-content > .navbar-fixed-group > .nav-group-links {
+    display: none !important;
+    position: absolute !important;
+    top: -3px !important;
+    right: calc(100% + 3px) !important;
+    left: auto !important;
+    width: 210px !important;
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+    z-index: 999999999 !important;
+  }
+
+  #navbar .dropdown-content > .nav-group:hover > .nav-group-links,
+  #navbar .dropdown-content > .nav-group:focus-within > .nav-group-links,
+  #navbar .dropdown-content > .nav-group[open] > .nav-group-links,
+  #navbar .dropdown-content > .fixed-nav-group:hover > .nav-group-links,
+  #navbar .dropdown-content > .fixed-nav-group:focus-within > .nav-group-links,
+  #navbar .dropdown-content > .fixed-nav-group.is-open > .nav-group-links,
+  #navbar .dropdown-content > .navbar-fixed-group:hover > .nav-group-links,
+  #navbar .dropdown-content > .navbar-fixed-group:focus-within > .nav-group-links,
+  #navbar .dropdown-content > .navbar-fixed-group.is-open > .nav-group-links {
+    display: block !important;
+  }
+
+  #navbar .dropdown-content > .nav-group:hover > summary,
+  #navbar .dropdown-content > .nav-group:focus-within > summary,
+  #navbar .dropdown-content > .nav-group[open] > summary,
+  #navbar .dropdown-content > .fixed-nav-group:hover > .nav-summary,
+  #navbar .dropdown-content > .fixed-nav-group:focus-within > .nav-summary,
+  #navbar .dropdown-content > .fixed-nav-group.is-open > .nav-summary,
+  #navbar .dropdown-content > .navbar-fixed-group:hover > .navbar-fixed-summary,
+  #navbar .dropdown-content > .navbar-fixed-group:focus-within > .navbar-fixed-summary,
+  #navbar .dropdown-content > .navbar-fixed-group.is-open > .navbar-fixed-summary {
+    background: var(--yellow) !important;
+  }
+
+  /* Remove old duplicate CSS arrows from health/finance */
+  #navbar .dropdown-content details.nav-group > summary::after,
+  #navbar .dropdown-content .nav-group > summary::after,
+  #navbar .dropdown-content .fixed-nav-group > .nav-summary::after,
+  #navbar .dropdown-content .navbar-fixed-group > .navbar-fixed-summary::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  /* Real JS arrow */
+  #navbar .nav-menu-arrow {
+    display: inline-block !important;
+    margin-left: 8px !important;
+    color: var(--black) !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+}
