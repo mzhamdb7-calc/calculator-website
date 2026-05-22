@@ -5621,3 +5621,57 @@ body.menu-scrolled #navbar.open .nav-group > summary::after {
   border: none !important;
   box-shadow: none !important;
 }
+/* FINAL REPAIR V2: hide old CSS arrows and use real JS arrow */
+#navbar .dropdown-content > details.nav-group > summary::after,
+#navbar .dropdown-content > .nav-group > summary::after,
+#navbar .dropdown-content > .fixed-nav-group > .nav-summary::after,
+#navbar .dropdown-content > .navbar-fixed-group > .navbar-fixed-summary::after {
+  content: none !important;
+  display: none !important;
+}
+
+#navbar .nav-menu-arrow {
+  display: inline-block !important;
+  margin-left: 8px !important;
+  color: var(--black) !important;
+  font-size: 14px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+/* =====================================================
+   FINAL FIX: remove duplicate health / finance arrows
+   Keep only the JS arrow: .nav-menu-arrow
+===================================================== */
+
+/* Remove old CSS pseudo arrows from navbar health/finance */
+#navbar .dropdown-content details.nav-group > summary::after,
+#navbar .dropdown-content .nav-group > summary::after,
+#navbar .dropdown-content .fixed-nav-group > .nav-summary::after,
+#navbar .dropdown-content .navbar-fixed-group > .navbar-fixed-summary::after,
+#navbar.open .dropdown-content details.nav-group > summary::after,
+#navbar.open .dropdown-content .nav-group > summary::after,
+#navbar.open .dropdown-content .fixed-nav-group > .nav-summary::after,
+#navbar.open .dropdown-content .navbar-fixed-group > .navbar-fixed-summary::after,
+body.menu-scrolled #navbar.open .dropdown-content details.nav-group > summary::after,
+body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after,
+body.menu-scrolled #navbar.open .dropdown-content .fixed-nav-group > .nav-summary::after,
+body.menu-scrolled #navbar.open .dropdown-content .navbar-fixed-group > .navbar-fixed-summary::after {
+  content: "" !important;
+  display: none !important;
+}
+
+/* Keep the real JS arrow */
+#navbar .nav-menu-arrow {
+  display: inline-block !important;
+  margin-left: 8px !important;
+  color: var(--black) !important;
+  font-size: 14px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
