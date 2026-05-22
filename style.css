@@ -3897,3 +3897,125 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after, #
 
   color: green !important;
 }
+/* OVERRIDE: put instruction box below result/history box on PC */
+@media (min-width: 851px) {
+  .calculator-container.has-instructions,
+  .age-calculator-container.has-instructions,
+  .bmi-calculator-container.has-instructions,
+  .discount-calculator-container.has-instructions,
+  .loan-calculator-container.has-instructions,
+  .percentage-calculator-container.has-instructions {
+    width: 100% !important;
+    max-width: 1180px !important;
+
+    display: grid !important;
+    grid-template-columns: 280px minmax(560px, 780px) !important;
+    grid-template-rows: auto auto !important;
+
+    gap: 25px 35px !important;
+
+    justify-content: center !important;
+    align-items: start !important;
+
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .calculator-container.has-instructions .history,
+  .age-calculator-container.has-instructions .age-history-box,
+  .bmi-calculator-container.has-instructions .bmi-history-box,
+  .discount-calculator-container.has-instructions .discount-history-box,
+  .loan-calculator-container.has-instructions .loan-history-box,
+  .percentage-calculator-container.has-instructions .percentage-history-box {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    justify-self: center !important;
+  }
+
+  .calculator-container.has-instructions .instruction-box,
+  .age-calculator-container.has-instructions .instruction-box,
+  .bmi-calculator-container.has-instructions .instruction-box,
+  .discount-calculator-container.has-instructions .instruction-box,
+  .loan-calculator-container.has-instructions .instruction-box,
+  .percentage-calculator-container.has-instructions .instruction-box {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+
+    width: 280px !important;
+    min-height: auto !important;
+
+    justify-self: center !important;
+  }
+
+  .calculator-container.has-instructions .calculator,
+  .age-calculator-container.has-instructions .calculator,
+  .bmi-calculator-container.has-instructions .calculator,
+  .discount-calculator-container.has-instructions .calculator,
+  .loan-calculator-container.has-instructions .calculator,
+  .percentage-calculator-container.has-instructions .calculator {
+    grid-column: 2 !important;
+    grid-row: 1 / span 2 !important;
+    justify-self: center !important;
+  }
+
+  /* index.html does not need instruction */
+  .calculator-box .instruction-box {
+    display: none !important;
+  }
+
+  .calculator-box.has-instructions {
+    display: block !important;
+    width: 620px !important;
+    max-width: 620px !important;
+  }
+}
+
+/* OVERRIDE: phone instruction below result/history box */
+@media (max-width: 850px) {
+  .calculator-container.has-instructions,
+  .age-calculator-container.has-instructions,
+  .bmi-calculator-container.has-instructions,
+  .discount-calculator-container.has-instructions,
+  .loan-calculator-container.has-instructions,
+  .percentage-calculator-container.has-instructions {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .calculator-container.has-instructions .history,
+  .age-calculator-container.has-instructions .age-history-box,
+  .bmi-calculator-container.has-instructions .bmi-history-box,
+  .discount-calculator-container.has-instructions .discount-history-box,
+  .loan-calculator-container.has-instructions .loan-history-box,
+  .percentage-calculator-container.has-instructions .percentage-history-box {
+    order: 1 !important;
+  }
+
+  .calculator-container.has-instructions .instruction-box,
+  .age-calculator-container.has-instructions .instruction-box,
+  .bmi-calculator-container.has-instructions .instruction-box,
+  .discount-calculator-container.has-instructions .instruction-box,
+  .loan-calculator-container.has-instructions .instruction-box,
+  .percentage-calculator-container.has-instructions .instruction-box {
+    order: 2 !important;
+
+    width: 100% !important;
+    min-height: auto !important;
+
+    margin: 0 auto 22px !important;
+  }
+
+  .calculator-container.has-instructions .calculator,
+  .age-calculator-container.has-instructions .calculator,
+  .bmi-calculator-container.has-instructions .calculator,
+  .discount-calculator-container.has-instructions .calculator,
+  .loan-calculator-container.has-instructions .calculator,
+  .percentage-calculator-container.has-instructions .calculator {
+    order: 3 !important;
+  }
+
+  /* index.html does not need instruction */
+  .calculator-box .instruction-box {
+    display: none !important;
+  }
+}
