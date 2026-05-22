@@ -3743,3 +3743,114 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after, #
     border-left: none !important;
   }
 }
+/* OVERRIDE: add instruction box to every page */
+(function () {
+  function getInstructionData() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    if (title.includes("basic")) {
+      return [
+        "Enter numbers using the buttons.",
+        "Choose +, −, ×, ÷, power, or square root.",
+        "Press = to calculate.",
+        "Use ANS to reuse your last answer.",
+        "Press AC to clear the display."
+      ];
+    }
+
+    if (title.includes("age")) {
+      return [
+        "Select your birth date.",
+        "Press calculate age.",
+        "Normal age and Asian age will appear.",
+        "Use Clear to remove saved results."
+      ];
+    }
+
+    if (title.includes("bmi")) {
+      return [
+        "Choose SI or US units.",
+        "Enter your weight and height.",
+        "Waist size is optional.",
+        "Press calculate bmi.",
+        "Your BMI result will appear below."
+      ];
+    }
+
+    if (title.includes("loan")) {
+      return [
+        "Enter the loan amount.",
+        "Enter the annual interest rate.",
+        "Enter the loan years.",
+        "Press calculate loan.",
+        "Monthly payment will be shown."
+      ];
+    }
+
+    if (title.includes("discount")) {
+      return [
+        "Enter the original price.",
+        "Enter the discount percentage.",
+        "Press calculate discount.",
+        "Final price and savings will be shown."
+      ];
+    }
+
+    if (title.includes("percentage")) {
+      return [
+        "Enter the percentage value.",
+        "Enter the number.",
+        "Press calculate percentage.",
+        "The percentage result will appear below."
+      ];
+    }
+
+    if (title.includes("calculator")) {
+      return [
+        "Choose a calculator type.",
+        "Open health for age and BMI.",
+        "Open finance for loan and discount.",
+        "Choose percentage for percentage calculation."
+      ];
+    }
+
+    return [
+      "Use the menu to move between pages.",
+      "Open calculator to choose a calculator type.",
+      "Use the go up button to return to the top."
+    ];
+  }
+
+  function addInstructionBox() {
+    const main = document.querySelector("main");
+    if (!main) return;
+    if (main.querySelector(".instruction-box")) return;
+
+    const box = document.createElement("aside");
+    box.className = "instruction-box";
+
+    const title = document.createElement("h2");
+    title.textContent = "Instructions";
+
+    const list = document.createElement("ul");
+
+    getInstructionData().forEach(function (text) {
+      const li = document.createElement("li");
+      li.textContent = text;
+      list.appendChild(li);
+    });
+
+    box.appendChild(title);
+    box.appendChild(list);
+
+    main.classList.add("has-instructions");
+    main.appendChild(box);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", addInstructionBox);
+  } else {
+    addInstructionBox();
+  }
+})();
