@@ -686,5 +686,207 @@ document.querySelectorAll("#navbar .navbar-fixed-summary").forEach(function (but
       window.calculateCompoundInterest = calculateCompoundInterest;
     })();
   </script>
+  <script>
+/* COMPOUND INTEREST CALCULATOR FIX */
+(function () {
+  "use strict";
+
+  const historyKey = "compoundInterestHistory";
+
+  function getElement(ids) {
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (el) return el;
+    }
+    return null;
+  }
+
+  const principalInput = getElement(["principal", "compoundPrincipal", "principalAmount"]);
+  const rateInput = getElement(["rate", "compoundRate", "interestRate"]);
+  const yearsInput = getElement(["years", "compoundYears", "timeYears"]);
+  const frequencyInput = getElement(["frequency", "compoundFrequency"]);
+  const resultElement = getElement(["compoundResult", "percentageResult", "result"]);
+  const historyList = getElement(["compoundHistoryList", "percentageHistoryList", "historyList"]);
+  const clearButton = getElement(["clearCompoundHistoryBtn", "clearHistoryBtn"]);
+
+  function money(value) {
+    return Number(value).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function readNumber(input) {
+    if (!input) return NaN;
+    const value = String(input.value || "").replace(/,/g, "").trim();
+    if (value === "") return NaN;
+    return Number(value);
+  }
+
+  function getHistory() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(historyKey) || "[]");
+      return Array.isArray(saved) ? saved : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveHistory(text) {
+    const history = getHistory();
+    history.push(text);
+    localStorage.setItem(historyKey, JSON.stringify(history.slice(-50)));
+    showCompoundHistory();
+  }
+
+  function copyText(text, button) {
+    const original = button.textContent;
+
+    function setStatus(status) {
+      button.textContent = status;
+      setTimeout(function () {
+        button.textContent = original;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(function () {
+        setStatus("Copied");
+      }).catch(function () {
+        setStatus("Failed");
+      });
+      return;
+    }
+
+    const temp = document.createElement("textarea");
+    temp.value = text;
+    temp.setAttribute("readonly", "");
+    temp.style.position = "fixed";
+    temp.style.left = "-9999px";
+    document.body.appendChild(temp);
+    temp.select();
+
+    try {
+      document.execCommand("copy");
+      setStatus("Copied");
+    } catch {
+      setStatus("Failed");
+    }
+
+    document.body.removeChild(temp);
+  }
+
+  function showCompoundHistory() {
+    if (!historyList) return;
+
+    historyList.innerHTML = "";
+
+    getHistory().slice().reverse().forEach(function (item) {
+      const li = document.createElement("li");
+      li.className = "history-item";
+
+      const text = document.createElement("span");
+      text.className = "history-text";
+      text.textContent = item;
+
+      const copyButton = document.createElement("button");
+      copyButton.type = "button";
+      copyButton.className = "history-copy-btn";
+      copyButton.textContent = "Copy";
+
+      copyButton.addEventListener("click", function (event) {
+        event.stopPropagation();
+        copyText(item, copyButton);
+      });
+
+      li.appendChild(text);
+      li.appendChild(copyButton);
+      historyList.appendChild(li);
+    });
+  }
+
+  function calculateCompoundInterest() {
+    const principal = readNumber(principalInput);
+    const annualRate = readNumber(rateInput);
+    const years = readNumber(yearsInput);
+    const frequency = readNumber(frequencyInput);
+
+    if (
+      !Number.isFinite(principal) ||
+      !Number.isFinite(annualRate) ||
+      !Number.isFinite(years) ||
+      !Number.isFinite(frequency) ||
+      principal <= 0 ||
+      annualRate < 0 ||
+      years < 0 ||
+      frequency <= 0
+    ) {
+      if (resultElement) {
+        resultElement.textContent = "Please enter valid values.";
+      }
+      return;
+    }
+
+    const r = annualRate / 100;
+    const futureValue = principal * Math.pow(1 + r / frequency, frequency * years);
+    const compoundInterest = futureValue - principal;
+
+    const resultText =
+      "Future Value: " + money(futureValue) + "\n" +
+      "Compound Interest: " + money(compoundInterest) + "\n" +
+      "Principal: " + money(principal);
+
+    if (resultElement) {
+      resultElement.textContent = resultText;
+    }
+
+    saveHistory(
+      "P=" + money(principal) +
+      ", r=" + annualRate + "%" +
+      ", t=" + years + " years" +
+      ", n=" + frequency +
+      " → A=" + money(futureValue) +
+      ", CI=" + money(compoundInterest)
+    );
+  }
+
+  document.addEventListener(
+    "click",
+    function (event) {
+      const button = event.target.closest("#calculateCompoundBtn, .calculate-compound-btn");
+
+      if (!button) return;
+
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      calculateCompoundInterest();
+    },
+    true
+  );
+
+  [principalInput, rateInput, yearsInput, frequencyInput].forEach(function (input) {
+    if (!input) return;
+
+    input.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        calculateCompoundInterest();
+      }
+    });
+  });
+
+  if (clearButton) {
+    clearButton.addEventListener("click", function () {
+      localStorage.removeItem(historyKey);
+      showCompoundHistory();
+    });
+  }
+
+  showCompoundHistory();
+
+  window.calculateCompoundInterest = calculateCompoundInterest;
+})();
+</script>
 </body>
 </html>
