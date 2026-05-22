@@ -3462,3 +3462,32 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after, #
     content: " ◀" !important;
   }
 }
+
+/* PHONE FIX: finance must only open with .is-open, not hover */
+@media (max-width: 850px) {
+  #navbar .nav-finance > .nav-group-links,
+  #navbar .nav-finance:hover > .nav-group-links,
+  #navbar .nav-finance:focus-within > .nav-group-links {
+    display: none !important;
+  }
+
+  #navbar .nav-finance.is-open > .nav-group-links,
+  #navbar .nav-finance.is-open:hover > .nav-group-links,
+  #navbar .nav-finance.is-open:focus-within > .nav-group-links {
+    display: block !important;
+
+    position: absolute !important;
+    left: 0 !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: 100% !important;
+
+    width: 100% !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    z-index: 999999999 !important;
+  }
+}
