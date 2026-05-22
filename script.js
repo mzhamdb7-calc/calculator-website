@@ -1,3 +1,9 @@
+
+/*
+  Copyright © 2026 Hamdi. All rights reserved.
+  Do not copy, modify, or redistribute without permission.
+*/
+
 /* =====================================================
    REPAIRED + OPTIMIZED CALCULATOR SCRIPT
    - Removed duplicate functions
