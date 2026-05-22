@@ -2123,3 +2123,120 @@ document.addEventListener("DOMContentLoaded", function () {
     setupFinalPhoneCalculatorToggle();
   }
 })();
+/* FINAL REAL PHONE FIX: calculator button second tap closes dropdown */
+(function () {
+  function isPhoneMode() {
+    return window.matchMedia("(max-width: 850px)").matches;
+  }
+
+  function setupPhoneCalculatorDropdown() {
+    const navbar = document.getElementById("navbar");
+    if (!navbar) return;
+
+    const calculatorDropdown = navbar.querySelector(":scope > .dropdown");
+    if (!calculatorDropdown) return;
+
+    const calculatorButton = calculatorDropdown.querySelector(":scope > .dropbtn");
+    const dropdownContent = calculatorDropdown.querySelector(":scope > .dropdown-content");
+
+    if (!calculatorButton || !dropdownContent) return;
+
+    function closeSubmenus() {
+      navbar.querySelectorAll("details.nav-group").forEach(function (group) {
+        group.open = false;
+        group.removeAttribute("open");
+        group.dataset.phoneOpen = "false";
+        group.classList.remove("is-open", "open", "active", "phone-sub-open");
+      });
+
+      navbar.querySelectorAll(".navbar-fixed-group").forEach(function (group) {
+        group.classList.remove("is-open", "open", "active", "phone-sub-open");
+      });
+    }
+
+    function setCalculatorOpen(isOpen) {
+      calculatorDropdown.classList.toggle("phone-open", isOpen);
+      calculatorDropdown.classList.toggle("mobile-open", isOpen);
+      calculatorDropdown.dataset.phoneOpen = isOpen ? "true" : "false";
+
+      dropdownContent.style.setProperty(
+        "display",
+        isOpen ? "block" : "none",
+        "important"
+      );
+
+      calculatorButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+
+      if (!isOpen) {
+        calculatorButton.blur();
+
+        if (document.activeElement && document.activeElement.blur) {
+          document.activeElement.blur();
+        }
+      }
+
+      closeSubmenus();
+    }
+
+    function clearDesktopInlineStyle() {
+      calculatorDropdown.classList.remove("phone-open", "mobile-open");
+      calculatorDropdown.removeAttribute("data-phone-open");
+      dropdownContent.style.removeProperty("display");
+      calculatorButton.setAttribute("aria-expanded", "false");
+    }
+
+    document.addEventListener(
+      "pointerdown",
+      function (event) {
+        if (!isPhoneMode()) return;
+
+        if (!calculatorButton.contains(event.target)) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        const shouldOpen = calculatorDropdown.dataset.phoneOpen !== "true";
+        setCalculatorOpen(shouldOpen);
+      },
+      true
+    );
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        if (!isPhoneMode()) return;
+
+        if (calculatorButton.contains(event.target)) {
+          event.preventDefault();
+          event.stopPropagation();
+          event.stopImmediatePropagation();
+          return;
+        }
+
+        if (!calculatorDropdown.contains(event.target)) {
+          setCalculatorOpen(false);
+        }
+      },
+      true
+    );
+
+    window.addEventListener("resize", function () {
+      if (isPhoneMode()) {
+        setCalculatorOpen(false);
+      } else {
+        clearDesktopInlineStyle();
+      }
+    });
+
+    if (isPhoneMode()) {
+      setCalculatorOpen(false);
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupPhoneCalculatorDropdown);
+  } else {
+    setupPhoneCalculatorDropdown();
+  }
+})();

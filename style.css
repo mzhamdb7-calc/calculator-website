@@ -4968,3 +4968,26 @@ main.has-instructions {
     background: var(--yellow) !important;
   }
 }
+/* FINAL PHONE CALCULATOR DROPDOWN FIX */
+@media (max-width: 850px) {
+  #navbar > .dropdown > .dropdown-content,
+  #navbar > .dropdown:hover > .dropdown-content,
+  #navbar > .dropdown:focus-within > .dropdown-content,
+  #navbar.open > .dropdown > .dropdown-content,
+  #navbar.open > .dropdown:hover > .dropdown-content,
+  #navbar.open > .dropdown:focus-within > .dropdown-content {
+    display: none !important;
+  }
+
+  #navbar > .dropdown.phone-open > .dropdown-content,
+  #navbar > .dropdown.mobile-open > .dropdown-content,
+  #navbar.open > .dropdown.phone-open > .dropdown-content,
+  #navbar.open > .dropdown.mobile-open > .dropdown-content {
+    display: block !important;
+  }
+
+  #navbar > .dropdown.phone-open > .dropbtn,
+  #navbar > .dropdown.mobile-open > .dropbtn {
+    background: var(--yellow) !important;
+  }
+}
