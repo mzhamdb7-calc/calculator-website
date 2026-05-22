@@ -1868,3 +1868,30 @@ document.addEventListener("DOMContentLoaded", function () {
     addInstructionBox();
   }
 })();
+/* OVERRIDE: remove instruction box from index.html only */
+(function () {
+  function removeIndexInstruction() {
+    const main = document.querySelector("main");
+
+    if (!main) return;
+
+    /* index.html uses calculator-box */
+    if (main.classList.contains("calculator-box")) {
+      const instructionBox = main.querySelector(".instruction-box");
+
+      if (instructionBox) {
+        instructionBox.remove();
+      }
+
+      main.classList.remove("has-instructions");
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", removeIndexInstruction);
+  } else {
+    removeIndexInstruction();
+  }
+
+  setTimeout(removeIndexInstruction, 100);
+})();
