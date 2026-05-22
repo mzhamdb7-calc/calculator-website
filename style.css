@@ -1,0 +1,264 @@
+/*
+  Copyright © 2026 Hamdi.
+  PHONE MODE ONLY
+*/
+
+@media (max-width: 850px) {
+  body {
+    padding-bottom: 95px !important;
+  }
+
+  #menuIcon,
+  #menuIcon.show,
+  body.menu-scrolled #menuIcon,
+  body.menu-scrolled #menuIcon.show {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  #scrollTopBtn,
+  .scroll-top {
+    display: flex !important;
+    position: fixed !important;
+    right: 12px !important;
+    left: auto !important;
+    bottom: calc(18px + env(safe-area-inset-bottom)) !important;
+    width: 54px !important;
+    height: 54px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+    font-size: 32px !important;
+    font-weight: bold !important;
+    opacity: 1 !important;
+    z-index: 9999999 !important;
+  }
+
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open,
+  body.menu-scrolled #navbar,
+  body.menu-scrolled #navbar.scrolled,
+  body.menu-scrolled #navbar.open {
+    display: flex !important;
+    position: fixed !important;
+    top: auto !important;
+    bottom: calc(18px + env(safe-area-inset-bottom)) !important;
+    left: 8px !important;
+    right: 110px !important;
+    width: auto !important;
+    max-width: none !important;
+    height: 54px !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: none !important;
+    transform: none !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+    z-index: 999999 !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 33.333% !important;
+    min-width: 0 !important;
+    max-width: 33.333% !important;
+    height: 54px !important;
+    flex: 1 1 33.333% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn,
+  #navbar.open > a,
+  #navbar.open > .dropdown > .dropbtn {
+    width: 100% !important;
+    height: 54px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border: none !important;
+    border-right: 3px solid var(--black) !important;
+    box-shadow: none !important;
+    font-size: 15px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    box-sizing: border-box !important;
+  }
+
+  #navbar > a:last-child,
+  #navbar.open > a:last-child,
+  #navbar > .dropdown:last-child > .dropbtn {
+    border-right: none !important;
+  }
+
+  #navbar > a:hover,
+  #navbar > .dropdown:hover > .dropbtn,
+  #navbar > .dropdown.phone-open > .dropbtn,
+  #navbar > .dropdown.mobile-open > .dropbtn {
+    background: var(--yellow) !important;
+  }
+
+  /* PHONE DROPUP: calculator + info open upward */
+  #navbar > .dropdown > .dropdown-content,
+  #navbar.open > .dropdown > .dropdown-content,
+  body.menu-scrolled #navbar.open > .dropdown > .dropdown-content {
+    display: none !important;
+    position: absolute !important;
+    top: auto !important;
+    bottom: calc(100% + 3px) !important;
+    width: 210px !important;
+    max-width: calc(100vw - 16px) !important;
+    height: auto !important;
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+    overflow: visible !important;
+    z-index: 999999999 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Calculator dropup position */
+  #navbar > .dropdown:not(.about-dropdown) > .dropdown-content,
+  #navbar.open > .dropdown:not(.about-dropdown) > .dropdown-content,
+  body.menu-scrolled #navbar.open > .dropdown:not(.about-dropdown) > .dropdown-content {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+  }
+
+  /* Info dropup position */
+  #navbar > .about-dropdown > .about-dropdown-content,
+  #navbar.open > .about-dropdown > .about-dropdown-content,
+  body.menu-scrolled #navbar.open > .about-dropdown > .about-dropdown-content {
+    left: auto !important;
+    right: 0 !important;
+    transform: none !important;
+  }
+
+  /* Show dropdown on hover/focus/click class */
+  #navbar > .dropdown:hover > .dropdown-content,
+  #navbar > .dropdown:focus-within > .dropdown-content,
+  #navbar > .dropdown.phone-open > .dropdown-content,
+  #navbar > .dropdown.mobile-open > .dropdown-content,
+  #navbar.open > .dropdown:hover > .dropdown-content,
+  #navbar.open > .dropdown:focus-within > .dropdown-content,
+  #navbar.open > .dropdown.phone-open > .dropdown-content,
+  #navbar.open > .dropdown.mobile-open > .dropdown-content {
+    display: block !important;
+  }
+
+  #navbar .dropdown-content > a,
+  #navbar .dropdown-content > .nav-group,
+  #navbar .dropdown-content > .nav-group > summary,
+  #navbar .dropdown-content > .fixed-nav-group,
+  #navbar .dropdown-content > .fixed-nav-group > .nav-summary,
+  #navbar .dropdown-content > .navbar-fixed-group,
+  #navbar .dropdown-content > .navbar-fixed-group > .navbar-fixed-summary {
+    width: 100% !important;
+    height: 42px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
+    font-size: 15px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    box-sizing: border-box !important;
+  }
+
+  #navbar .dropdown-content > *:last-child,
+  #navbar .dropdown-content > *:last-child > summary,
+  #navbar .dropdown-content > *:last-child > .nav-summary,
+  #navbar .dropdown-content > *:last-child > .navbar-fixed-summary {
+    border-bottom: none !important;
+  }
+
+  #navbar .dropdown-content > a:hover,
+  #navbar .dropdown-content > .nav-group:hover > summary,
+  #navbar .dropdown-content > .fixed-nav-group:hover > .nav-summary,
+  #navbar .dropdown-content > .navbar-fixed-group:hover > .navbar-fixed-summary {
+    background: var(--yellow) !important;
+  }
+
+  /* Health/finance inside calculator dropup grows upward with the panel */
+  #navbar .nav-group-links {
+    display: none !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    background: var(--white) !important;
+    border: none !important;
+    border-top: 3px solid var(--black) !important;
+    box-shadow: none !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+  }
+
+  #navbar .nav-group:hover > .nav-group-links,
+  #navbar .nav-group:focus-within > .nav-group-links,
+  #navbar .nav-group[open] > .nav-group-links,
+  #navbar .fixed-nav-group.is-open > .nav-group-links,
+  #navbar .navbar-fixed-group.is-open > .nav-group-links {
+    display: block !important;
+  }
+
+  #navbar .nav-group-links a {
+    width: 100% !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border-bottom: 3px solid var(--black) !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    text-decoration: none !important;
+  }
+
+  #navbar .nav-group-links a:last-child {
+    border-bottom: none !important;
+  }
+
+  #navbar .nav-group-links a:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* Main content spacing because navbar is now bottom */
+  .calculator-box,
+  .calculator-container,
+  .age-calculator-container,
+  .bmi-calculator-container,
+  .loan-calculator-container,
+  .discount-calculator-container,
+  .percentage-calculator-container,
+  .about-container,
+  main.has-instructions {
+    margin-top: 20px !important;
+  }
+}
