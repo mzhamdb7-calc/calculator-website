@@ -262,3 +262,207 @@
     margin-top: 20px !important;
   }
 }
+
+/* =====================================================
+   PHONE FINAL: calculator/info DROP UP
+   and health/finance items also expand UPWARD
+===================================================== */
+@media (max-width: 850px) {
+  /* Keep phone navbar at bottom */
+  html body #navbar,
+  html body #navbar.open,
+  html body #navbar.scrolled,
+  html body #navbar.scrolled.open,
+  html body.menu-scrolled #navbar,
+  html body.menu-scrolled #navbar.open {
+    position: fixed !important;
+    top: auto !important;
+    bottom: calc(18px + env(safe-area-inset-bottom)) !important;
+    left: 8px !important;
+    right: 110px !important;
+
+    width: auto !important;
+    height: 54px !important;
+
+    display: flex !important;
+    flex-direction: row !important;
+
+    overflow: visible !important;
+    transform: none !important;
+    z-index: 999999 !important;
+  }
+
+  /* Top menu buttons: home / calculator / info */
+  html body #navbar > a,
+  html body #navbar > .dropdown {
+    position: relative !important;
+    width: 33.333% !important;
+    height: 54px !important;
+    flex: 1 1 33.333% !important;
+    overflow: visible !important;
+  }
+
+  html body #navbar > a,
+  html body #navbar > .dropdown > .dropbtn {
+    width: 100% !important;
+    height: 54px !important;
+  }
+
+  /* Hide calculator/info panels by default */
+  html body #navbar > .dropdown > .dropdown-content,
+  html body #navbar > .dropdown:hover > .dropdown-content,
+  html body #navbar > .dropdown:focus-within > .dropdown-content,
+  html body #navbar.open > .dropdown > .dropdown-content,
+  html body #navbar.open > .dropdown:hover > .dropdown-content,
+  html body #navbar.open > .dropdown:focus-within > .dropdown-content {
+    display: none !important;
+  }
+
+  /* Show only clicked/active dropdown */
+  html body #navbar > .dropdown.phone-open > .dropdown-content,
+  html body #navbar > .dropdown.mobile-open > .dropdown-content,
+  html body #navbar.open > .dropdown.phone-open > .dropdown-content,
+  html body #navbar.open > .dropdown.mobile-open > .dropdown-content,
+  html body #navbar > .dropdown:hover > .dropdown-content,
+  html body #navbar > .dropdown:focus-within > .dropdown-content {
+    display: block !important;
+  }
+
+  /* IMPORTANT: calculator/info panels open UPWARD */
+  html body #navbar > .dropdown > .dropdown-content,
+  html body #navbar.open > .dropdown > .dropdown-content {
+    position: absolute !important;
+
+    top: auto !important;
+    bottom: calc(100% + 3px) !important;
+
+    width: 210px !important;
+    max-width: calc(100vw - 16px) !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    overflow: visible !important;
+    transform: none !important;
+    z-index: 999999999 !important;
+  }
+
+  /* Calculator dropup position */
+  html body #navbar > .dropdown:not(.about-dropdown) > .dropdown-content {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+  }
+
+  /* Info dropup position */
+  html body #navbar > .about-dropdown > .about-dropdown-content {
+    left: auto !important;
+    right: 0 !important;
+    transform: none !important;
+  }
+
+  /* Dropdown rows */
+  html body #navbar .dropdown-content > a,
+  html body #navbar .dropdown-content > .nav-group > summary,
+  html body #navbar .dropdown-content > .fixed-nav-group > .nav-summary,
+  html body #navbar .dropdown-content > .navbar-fixed-group > .navbar-fixed-summary {
+    width: 100% !important;
+    height: 42px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
+
+    font-size: 15px !important;
+    font-weight: bold !important;
+    text-decoration: none !important;
+  }
+
+  /* Health / finance containers */
+  html body #navbar .dropdown-content .nav-group,
+  html body #navbar .dropdown-content .fixed-nav-group,
+  html body #navbar .dropdown-content .navbar-fixed-group {
+    position: relative !important;
+    overflow: visible !important;
+    height: 42px !important;
+  }
+
+  /* Hide health/finance items by default */
+  html body #navbar .nav-group > .nav-group-links,
+  html body #navbar .fixed-nav-group > .nav-group-links,
+  html body #navbar .navbar-fixed-group > .nav-group-links {
+    display: none !important;
+  }
+
+  /* Show health/finance items */
+  html body #navbar .nav-group[open] > .nav-group-links,
+  html body #navbar .nav-group[data-phone-open="true"] > .nav-group-links,
+  html body #navbar .nav-group.is-open > .nav-group-links,
+  html body #navbar .fixed-nav-group.is-open > .nav-group-links,
+  html body #navbar .navbar-fixed-group.is-open > .nav-group-links,
+  html body #navbar .nav-group:hover > .nav-group-links,
+  html body #navbar .fixed-nav-group:hover > .nav-group-links,
+  html body #navbar .navbar-fixed-group:hover > .nav-group-links {
+    display: block !important;
+  }
+
+  /* IMPORTANT: health/finance items also expand UPWARD */
+  html body #navbar .nav-group > .nav-group-links,
+  html body #navbar .fixed-nav-group > .nav-group-links,
+  html body #navbar .navbar-fixed-group > .nav-group-links {
+    position: absolute !important;
+
+    top: auto !important;
+    bottom: calc(100% + 3px) !important;
+
+    left: 0 !important;
+    right: auto !important;
+
+    width: 100% !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 999999999 !important;
+  }
+
+  html body #navbar .nav-group-links a {
+    width: 100% !important;
+    height: 40px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border-bottom: 3px solid var(--black) !important;
+
+    font-size: 14px !important;
+    font-weight: bold !important;
+    text-decoration: none !important;
+  }
+
+  html body #navbar .nav-group-links a:last-child {
+    border-bottom: none !important;
+  }
+
+  html body #navbar .dropdown.phone-open > .dropbtn,
+  html body #navbar .dropdown.mobile-open > .dropbtn,
+  html body #navbar .nav-group[open] > summary,
+  html body #navbar .nav-group.is-open > summary,
+  html body #navbar .fixed-nav-group.is-open > .nav-summary,
+  html body #navbar .navbar-fixed-group.is-open > .navbar-fixed-summary {
+    background: var(--yellow) !important;
+  }
+}
