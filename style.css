@@ -5522,3 +5522,34 @@ main.has-instructions {
     transform: rotate(180deg) !important;
   }
 }
+/* FINAL REPAIR: health / finance arrow direction */
+@media (min-width: 851px) {
+  html body #navbar .dropdown-content > .nav-group > summary::after,
+  html body #navbar .dropdown-content > details.nav-group > summary::after,
+  html body #navbar .dropdown-content > .navbar-fixed-group > .navbar-fixed-summary::after {
+    content: "▼" !important;
+    display: inline-block !important;
+    width: auto !important;
+    height: auto !important;
+    margin-left: 8px !important;
+    color: var(--black) !important;
+    font-size: 14px !important;
+    line-height: 1 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  html body #navbar .dropdown-content > .nav-group:hover > summary::after,
+  html body #navbar .dropdown-content > .nav-group:focus-within > summary::after,
+  html body #navbar .dropdown-content > .nav-group[open] > summary::after,
+  html body #navbar .dropdown-content > details.nav-group:hover > summary::after,
+  html body #navbar .dropdown-content > details.nav-group:focus-within > summary::after,
+  html body #navbar .dropdown-content > details.nav-group[open] > summary::after,
+  html body #navbar .dropdown-content > .navbar-fixed-group:hover > .navbar-fixed-summary::after,
+  html body #navbar .dropdown-content > .navbar-fixed-group:focus-within > .navbar-fixed-summary::after,
+  html body #navbar .dropdown-content > .navbar-fixed-group.is-open > .navbar-fixed-summary::after {
+    content: "▲" !important;
+  }
+}
