@@ -4220,3 +4220,13 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after, #
     max-width: 620px !important;
   }
 }
+/* OVERRIDE: make only the "Instructions" title background attractive */
+.instruction-box h2 {
+  background: linear-gradient(135deg, #ffe66d, #ff9fcb) !important;
+  color: var(--black) !important;
+
+  border: 4px solid var(--black) !important;
+  box-shadow: 5px 5px 0 var(--black) !important;
+
+  padding: 10px 12px !important;
+}
