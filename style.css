@@ -3703,3 +3703,43 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after, #
   border-right: 8px solid var(--black) !important;
   border-left: none !important;
 }
+
+/* OVERRIDE: PC hover expand works again for health/finance */
+@media (min-width: 851px) {
+  html body #navbar .dropdown-content .navbar-fixed-group:hover > .nav-group-links,
+  html body #navbar .dropdown-content .navbar-fixed-group:focus-within > .nav-group-links,
+  html body #navbar.open .dropdown-content .navbar-fixed-group:hover > .nav-group-links,
+  html body #navbar.open .dropdown-content .navbar-fixed-group:focus-within > .nav-group-links {
+    display: block !important;
+
+    position: absolute !important;
+    top: -3px !important;
+    right: calc(100% + 3px) !important;
+    left: auto !important;
+
+    width: 185px !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    z-index: 999999999 !important;
+  }
+
+  html body #navbar .dropdown-content .navbar-fixed-group:hover > .navbar-fixed-summary,
+  html body #navbar .dropdown-content .navbar-fixed-group:focus-within > .navbar-fixed-summary,
+  html body #navbar.open .dropdown-content .navbar-fixed-group:hover > .navbar-fixed-summary,
+  html body #navbar.open .dropdown-content .navbar-fixed-group:focus-within > .navbar-fixed-summary {
+    background: var(--yellow) !important;
+  }
+
+  html body #navbar .dropdown-content .navbar-fixed-group:hover > .navbar-fixed-summary::after,
+  html body #navbar .dropdown-content .navbar-fixed-group:focus-within > .navbar-fixed-summary::after,
+  html body #navbar.open .dropdown-content .navbar-fixed-group:hover > .navbar-fixed-summary::after,
+  html body #navbar.open .dropdown-content .navbar-fixed-group:focus-within > .navbar-fixed-summary::after {
+    border-top: 6px solid transparent !important;
+    border-bottom: 6px solid transparent !important;
+    border-right: 8px solid var(--black) !important;
+    border-left: none !important;
+  }
+}
