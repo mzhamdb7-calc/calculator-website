@@ -1659,3 +1659,101 @@ document.addEventListener("DOMContentLoaded", function () {
     true
   );
 })();
+/* OVERRIDE: PHONE navbar health/finance fixed toggle
+   Converts navbar details into button menus so old details behavior cannot reopen finance.
+*/
+(function () {
+  function isPhone() {
+    return window.matchMedia("(max-width: 850px)").matches;
+  }
+
+  function setupFixedNavbarGroups() {
+    const navbar = document.getElementById("navbar");
+    if (!navbar) return;
+
+    const dropdownContent = navbar.querySelector(".dropdown-content");
+    if (!dropdownContent) return;
+
+    dropdownContent
+      .querySelectorAll("details.nav-group")
+      .forEach(function (details) {
+        const summary = details.querySelector(":scope > summary");
+        const links = details.querySelector(":scope > .nav-group-links");
+
+        if (!summary || !links) return;
+
+        const group = document.createElement("div");
+        group.className = "nav-group fixed-nav-group";
+        group.dataset.menuName = summary.textContent.trim().toLowerCase();
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "nav-summary";
+        button.textContent = summary.textContent.trim();
+
+        group.appendChild(button);
+        group.appendChild(links.cloneNode(true));
+
+        details.replaceWith(group);
+      });
+  }
+
+  function closeAllGroups(exceptGroup) {
+    document
+      .querySelectorAll("#navbar .dropdown-content .fixed-nav-group")
+      .forEach(function (group) {
+        if (group !== exceptGroup) {
+          group.classList.remove("is-open");
+        }
+      });
+  }
+
+  function handleNavbarGroupClick(event) {
+    if (!isPhone()) return;
+
+    const button = event.target.closest(
+      "#navbar .dropdown-content .fixed-nav-group > .nav-summary"
+    );
+
+    if (!button) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    const group = button.closest(".fixed-nav-group");
+    const wasOpen = group.classList.contains("is-open");
+
+    closeAllGroups(group);
+
+    if (wasOpen) {
+      group.classList.remove("is-open");
+    } else {
+      group.classList.add("is-open");
+    }
+  }
+
+  function closeWhenClickOutside(event) {
+    if (!isPhone()) return;
+
+    const navbar = document.getElementById("navbar");
+    if (!navbar) return;
+
+    if (!navbar.contains(event.target)) {
+      closeAllGroups(null);
+    }
+  }
+
+  function initFixedNavbarGroups() {
+    setupFixedNavbarGroups();
+
+    window.addEventListener("click", handleNavbarGroupClick, true);
+    document.addEventListener("click", closeWhenClickOutside, true);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initFixedNavbarGroups);
+  } else {
+    initFixedNavbarGroups();
+  }
+})();
