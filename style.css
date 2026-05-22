@@ -3854,3 +3854,46 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after, #
     addInstructionBox();
   }
 })();
+
+/* OVERRIDE: make each instruction item look like a box */
+.instruction-box ul {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+.instruction-box li {
+  width: 100% !important;
+
+  margin: 0 !important;
+  padding: 12px 10px !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  border: 3px solid var(--black) !important;
+  box-shadow: 4px 4px 0 var(--black) !important;
+
+  font-size: 17px !important;
+  font-weight: bold !important;
+  line-height: 1.3 !important;
+
+  text-align: center !important;
+}
+
+/* make the instruction main box cleaner */
+.instruction-box {
+  padding: 22px 16px !important;
+  background: #8bb6e8 !important;
+}
+
+.instruction-box h2 {
+  padding: 8px 10px !important;
+  margin-bottom: 18px !important;
+
+  background: var(--white) !important;
+  border: 3px solid var(--black) !important;
+  box-shadow: 4px 4px 0 var(--black) !important;
+
+  color: green !important;
+}
