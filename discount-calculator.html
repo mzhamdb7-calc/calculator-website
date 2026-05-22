@@ -3,7 +3,6 @@
   Do not copy, modify, redistribute, or reuse this project without permission.
 -->
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,10 +57,10 @@
           <summary>finance</summary>
 
           <div class="nav-group-links">
-  <a href="loan-calculator.html">loan</a>
-  <a href="discount-calculator.html">discount</a>
-  <a href="compound-interest-calculator.html">compound interest</a>
-</div>
+            <a href="loan-calculator.html">loan</a>
+            <a href="discount-calculator.html">discount</a>
+            <a href="compound-interest-calculator.html">compound interest</a>
+          </div>
         </details>
 
         <a href="percentage-calculator.html">percentage</a>
@@ -70,16 +69,16 @@
     </div>
 
     <div class="dropdown about-dropdown">
-  <button type="button" class="dropbtn">
-    info
-  </button>
+      <button type="button" class="dropbtn">
+        info
+      </button>
 
-  <div class="dropdown-content about-dropdown-content">
-    <a href="about.html">about</a>
-    <a href="privacy-policy.html">privacy policy</a>
-    <a href="contact.html">contact</a>
-  </div>
-</div>
+      <div class="dropdown-content about-dropdown-content">
+        <a href="about.html">about</a>
+        <a href="privacy-policy.html">privacy policy</a>
+        <a href="contact.html">contact</a>
+      </div>
+    </div>
 
   </nav>
 
@@ -269,185 +268,6 @@
 
     document.addEventListener("DOMContentLoaded", showDiscountHistory);
   </script>
-<style>
-/* OVERRIDE: fixed navbar health/finance menu */
-#navbar .navbar-fixed-group {
-  position: relative !important;
-  overflow: visible !important;
-}
 
-#navbar .navbar-fixed-summary {
-  width: 100% !important;
-  height: 50px !important;
-
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-
-  background: var(--white) !important;
-  color: var(--black) !important;
-
-  border: none !important;
-  border-bottom: 3px solid var(--black) !important;
-
-  font-family: inherit !important;
-  font-size: 20px !important;
-  font-weight: bold !important;
-
-  cursor: pointer !important;
-}
-
-#navbar .navbar-fixed-summary::after {
-  content: "" !important;
-
-  display: inline-block !important;
-  width: 0 !important;
-  height: 0 !important;
-
-  margin-left: 8px !important;
-
-  font-size: 0 !important;
-  line-height: 0 !important;
-
-  background: transparent !important;
-  box-shadow: none !important;
-  transform: none !important;
-
-  border-left: 6px solid transparent !important;
-  border-right: 6px solid transparent !important;
-  border-top: 8px solid var(--black) !important;
-  border-bottom: none !important;
-}
-
-#navbar .navbar-fixed-group.is-open > .navbar-fixed-summary {
-  background: var(--yellow) !important;
-}
-
-#navbar .navbar-fixed-group.is-open > .navbar-fixed-summary::after {
-  content: "" !important;
-
-  border-top: 6px solid transparent !important;
-  border-bottom: 6px solid transparent !important;
-  border-right: 8px solid var(--black) !important;
-  border-left: none !important;
-}
-
-#navbar .navbar-fixed-group > .nav-group-links,
-#navbar .navbar-fixed-group:hover > .nav-group-links,
-#navbar .navbar-fixed-group:focus-within > .nav-group-links {
-  display: none !important;
-}
-
-#navbar .navbar-fixed-group.is-open > .nav-group-links {
-  display: block !important;
-}
-
-@media (max-width: 850px) {
-  #navbar .navbar-fixed-summary {
-    height: 46px !important;
-    font-size: 17px !important;
-  }
-
-  #navbar .navbar-fixed-group.is-open > .nav-group-links {
-    position: absolute !important;
-    left: 0 !important;
-    right: auto !important;
-    top: auto !important;
-    bottom: 100% !important;
-
-    width: 100% !important;
-
-    background: var(--white) !important;
-    border: 3px solid var(--black) !important;
-    box-shadow: 4px 4px 0 var(--black) !important;
-
-    z-index: 999999999 !important;
-  }
-}
-</style>
-
-<script>
-/* OVERRIDE: fix phone navbar health/finance second-click close */
-(function () {
-  function convertNavbarDetails() {
-    const navbar = document.getElementById("navbar");
-    if (!navbar) return;
-
-    navbar
-      .querySelectorAll(".dropdown-content > details.nav-group")
-      .forEach(function (details) {
-        const summary = details.querySelector("summary");
-        const links = details.querySelector(".nav-group-links");
-
-        if (!summary || !links) return;
-
-        const group = document.createElement("div");
-        group.className = "nav-group navbar-fixed-group";
-
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "navbar-fixed-summary";
-        button.textContent = summary.textContent
-          .replace(/[▼▲◀▶⬅🔽🔼]/g, "")
-          .trim();
-
-        group.appendChild(button);
-        group.appendChild(links.cloneNode(true));
-
-        details.replaceWith(group);
-      });
-  }
-
-  function closeAllNavbarFixedGroups(exceptGroup) {
-    document
-      .querySelectorAll("#navbar .navbar-fixed-group")
-      .forEach(function (group) {
-        if (group !== exceptGroup) {
-          group.classList.remove("is-open");
-        }
-      });
-  }
-
-  function setupNavbarFixedClick() {
-    document.addEventListener(
-      "click",
-      function (event) {
-        const button = event.target.closest(
-          "#navbar .navbar-fixed-group > .navbar-fixed-summary"
-        );
-
-        if (!button) return;
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        const group = button.closest(".navbar-fixed-group");
-        const wasOpen = group.classList.contains("is-open");
-
-        closeAllNavbarFixedGroups(group);
-
-        if (wasOpen) {
-          group.classList.remove("is-open");
-        } else {
-          group.classList.add("is-open");
-        }
-      },
-      true
-    );
-
-    document.addEventListener("click", function (event) {
-      const navbar = document.getElementById("navbar");
-      if (!navbar) return;
-
-      if (!navbar.contains(event.target)) {
-        closeAllNavbarFixedGroups(null);
-      }
-    });
-  }
-
-  convertNavbarDetails();
-  setupNavbarFixedClick();
-})();
-</script>
 </body>
 </html>
