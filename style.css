@@ -5740,3 +5740,118 @@ body.menu-scrolled #navbar.open .dropdown-content .navbar-fixed-group > .navbar-
     background: var(--yellow) !important;
   }
 }
+
+/* =====================================================
+   PHONE FINAL DROPUP FIX
+   calculator + info expand UPWARD on phone hover/open
+===================================================== */
+@media (max-width: 850px) {
+
+  /* Make the phone navbar stay visible and allow dropdowns outside it */
+  html body #navbar,
+  html body #navbar.open,
+  html body #navbar.scrolled.open,
+  html body.menu-scrolled #navbar.open {
+    overflow: visible !important;
+  }
+
+  html body #navbar > .dropdown,
+  html body #navbar.open > .dropdown,
+  html body #navbar.scrolled.open > .dropdown,
+  html body.menu-scrolled #navbar.open > .dropdown {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  /* Force calculator/info dropdown panels to open UP, not down */
+  html body #navbar > .dropdown > .dropdown-content,
+  html body #navbar.open > .dropdown > .dropdown-content,
+  html body #navbar.scrolled.open > .dropdown > .dropdown-content,
+  html body.menu-scrolled #navbar.open > .dropdown > .dropdown-content {
+    position: absolute !important;
+
+    top: auto !important;
+    bottom: calc(100% + 3px) !important;
+
+    width: 220px !important;
+    max-height: none !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    overflow: visible !important;
+    z-index: 999999999 !important;
+  }
+
+  /* Calculator dropup position */
+  html body #navbar > .dropdown:not(.about-dropdown) > .dropdown-content,
+  html body #navbar.open > .dropdown:not(.about-dropdown) > .dropdown-content,
+  html body #navbar.scrolled.open > .dropdown:not(.about-dropdown) > .dropdown-content,
+  html body.menu-scrolled #navbar.open > .dropdown:not(.about-dropdown) > .dropdown-content {
+    left: 0 !important;
+    right: auto !important;
+  }
+
+  /* Info dropup position */
+  html body #navbar > .about-dropdown > .about-dropdown-content,
+  html body #navbar.open > .about-dropdown > .about-dropdown-content,
+  html body #navbar.scrolled.open > .about-dropdown > .about-dropdown-content,
+  html body.menu-scrolled #navbar.open > .about-dropdown > .about-dropdown-content {
+    left: auto !important;
+    right: 0 !important;
+  }
+
+  /* Hide dropdowns first */
+  html body #navbar > .dropdown > .dropdown-content,
+  html body #navbar.open > .dropdown > .dropdown-content,
+  html body #navbar.scrolled.open > .dropdown > .dropdown-content,
+  html body.menu-scrolled #navbar.open > .dropdown > .dropdown-content {
+    display: none !important;
+  }
+
+  /* Show calculator/info when hover, focus, or JS class is active */
+  html body #navbar > .dropdown:hover > .dropdown-content,
+  html body #navbar > .dropdown:focus-within > .dropdown-content,
+  html body #navbar > .dropdown.phone-open > .dropdown-content,
+  html body #navbar > .dropdown.mobile-open > .dropdown-content,
+  html body #navbar.open > .dropdown:hover > .dropdown-content,
+  html body #navbar.open > .dropdown:focus-within > .dropdown-content,
+  html body #navbar.open > .dropdown.phone-open > .dropdown-content,
+  html body #navbar.open > .dropdown.mobile-open > .dropdown-content,
+  html body #navbar.scrolled.open > .dropdown:hover > .dropdown-content,
+  html body #navbar.scrolled.open > .dropdown:focus-within > .dropdown-content,
+  html body #navbar.scrolled.open > .dropdown.phone-open > .dropdown-content,
+  html body #navbar.scrolled.open > .dropdown.mobile-open > .dropdown-content,
+  html body.menu-scrolled #navbar.open > .dropdown:hover > .dropdown-content,
+  html body.menu-scrolled #navbar.open > .dropdown:focus-within > .dropdown-content,
+  html body.menu-scrolled #navbar.open > .dropdown.phone-open > .dropdown-content,
+  html body.menu-scrolled #navbar.open > .dropdown.mobile-open > .dropdown-content {
+    display: block !important;
+  }
+
+  /* Make dropdown items clean inside the dropup */
+  html body #navbar .dropdown-content > a,
+  html body #navbar .dropdown-content > .nav-group > summary,
+  html body #navbar .dropdown-content > .fixed-nav-group > .nav-summary {
+    width: 100% !important;
+    height: 42px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    font-size: 15px !important;
+    font-weight: bold !important;
+    text-decoration: none !important;
+  }
+
+  html body #navbar .dropdown-content > a:hover,
+  html body #navbar .dropdown-content > .nav-group:hover > summary,
+  html body #navbar .dropdown-content > .fixed-nav-group:hover > .nav-summary {
+    background: var(--yellow) !important;
+  }
+}
