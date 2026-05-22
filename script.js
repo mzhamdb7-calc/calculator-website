@@ -1554,3 +1554,108 @@ document.addEventListener("DOMContentLoaded", function () {
   );
 })();
 
+/* OVERRIDE: PHONE finance/health tap toggle fix */
+(function () {
+  function isPhone() {
+    return window.matchMedia("(max-width: 850px)").matches;
+  }
+
+  function getNavbarGroup(event) {
+    const summary = event.target.closest(
+      "#navbar .dropdown-content details.nav-group > summary"
+    );
+
+    if (summary) {
+      return summary.parentElement;
+    }
+
+    const button = event.target.closest(
+      "#navbar .dropdown-content .nav-summary"
+    );
+
+    if (button) {
+      return button.closest(".nav-group");
+    }
+
+    return null;
+  }
+
+  function groupName(group) {
+    const text = group.textContent.toLowerCase();
+    if (text.includes("finance")) return "finance";
+    if (text.includes("health")) return "health";
+    return "";
+  }
+
+  function closeGroup(group) {
+    if (!group) return;
+
+    group.open = false;
+    group.removeAttribute("open");
+    group.dataset.phoneOpen = "false";
+    group.classList.remove("is-open", "open", "active", "phone-sub-open");
+  }
+
+  function openGroup(group) {
+    if (!group) return;
+
+    group.open = true;
+    group.setAttribute("open", "");
+    group.dataset.phoneOpen = "true";
+    group.classList.add("is-open", "open", "active", "phone-sub-open");
+  }
+
+  function closeAllNavbarGroupsExcept(exceptGroup) {
+    document
+      .querySelectorAll("#navbar .dropdown-content .nav-group")
+      .forEach(function (group) {
+        if (group !== exceptGroup) {
+          closeGroup(group);
+        }
+      });
+  }
+
+  window.addEventListener(
+    "click",
+    function (event) {
+      if (!isPhone()) return;
+
+      const group = getNavbarGroup(event);
+      if (!group) return;
+
+      const name = groupName(group);
+      if (name !== "finance" && name !== "health") return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+
+      const wasOpen = group.dataset.phoneOpen === "true";
+
+      closeAllNavbarGroupsExcept(group);
+
+      if (wasOpen) {
+        closeGroup(group);
+      } else {
+        openGroup(group);
+      }
+
+      setTimeout(function () {
+        if (wasOpen) {
+          closeGroup(group);
+        } else {
+          openGroup(group);
+        }
+      }, 0);
+
+      setTimeout(function () {
+        if (wasOpen) {
+          closeGroup(group);
+        } else {
+          openGroup(group);
+        }
+      }, 80);
+    },
+    true
+  );
+})();

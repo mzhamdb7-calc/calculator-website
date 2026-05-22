@@ -3491,3 +3491,43 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after, #
     z-index: 999999999 !important;
   }
 }
+/* OVERRIDE: PHONE finance/health must only open by JS state */
+@media (max-width: 850px) {
+  #navbar .dropdown-content .nav-group {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  #navbar .dropdown-content .nav-group > .nav-group-links,
+  #navbar .dropdown-content .nav-group:hover > .nav-group-links,
+  #navbar .dropdown-content .nav-group:focus-within > .nav-group-links,
+  #navbar .dropdown-content details.nav-group[open]:not([data-phone-open="true"]) > .nav-group-links {
+    display: none !important;
+  }
+
+  #navbar .dropdown-content .nav-group[data-phone-open="true"] > .nav-group-links,
+  #navbar .dropdown-content .nav-group.is-open > .nav-group-links {
+    display: block !important;
+
+    position: absolute !important;
+    left: 0 !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: 100% !important;
+
+    width: 100% !important;
+
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    z-index: 999999999 !important;
+  }
+
+  #navbar .dropdown-content .nav-group[data-phone-open="true"] > summary,
+  #navbar .dropdown-content .nav-group.is-open > summary,
+  #navbar .dropdown-content .nav-group[data-phone-open="true"] > .nav-summary,
+  #navbar .dropdown-content .nav-group.is-open > .nav-summary {
+    background: var(--yellow) !important;
+  }
+}
