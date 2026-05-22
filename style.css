@@ -4019,3 +4019,30 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after, #
     display: none !important;
   }
 }
+/* OVERRIDE: instruction text black + remove blue outer box/border */
+.instruction-box {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.instruction-box,
+.instruction-box h2,
+.instruction-box ul,
+.instruction-box li {
+  color: var(--black) !important;
+  outline: none !important;
+}
+
+.instruction-box h2 {
+  color: var(--black) !important;
+}
+
+/* remove any dotted/focus outline around instruction area */
+.instruction-box:focus,
+.instruction-box:focus-visible,
+.instruction-box *:focus,
+.instruction-box *:focus-visible {
+  outline: none !important;
+}
