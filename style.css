@@ -4046,3 +4046,66 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after, #
 .instruction-box *:focus-visible {
   outline: none !important;
 }
+/* OVERRIDE: detailed instruction sections */
+.instruction-box ul {
+  display: none !important;
+}
+
+.instruction-section {
+  width: 100% !important;
+
+  margin: 0 0 12px !important;
+  padding: 12px 10px !important;
+
+  background: var(--white) !important;
+  color: var(--black) !important;
+
+  border: 3px solid var(--black) !important;
+  box-shadow: 4px 4px 0 var(--black) !important;
+
+  text-align: center !important;
+}
+
+.instruction-section h3 {
+  margin: 0 0 6px !important;
+
+  color: var(--black) !important;
+
+  font-size: 17px !important;
+  font-weight: bold !important;
+  line-height: 1.2 !important;
+
+  text-align: center !important;
+}
+
+.instruction-section p {
+  margin: 0 !important;
+
+  color: var(--black) !important;
+
+  font-size: 15px !important;
+  font-weight: bold !important;
+  line-height: 1.35 !important;
+
+  text-align: center !important;
+}
+
+.instruction-box {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.instruction-box h2 {
+  color: var(--black) !important;
+}
+
+@media (max-width: 850px) {
+  .instruction-section h3 {
+    font-size: 17px !important;
+  }
+
+  .instruction-section p {
+    font-size: 15px !important;
+  }
+}

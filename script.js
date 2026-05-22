@@ -1895,3 +1895,139 @@ document.addEventListener("DOMContentLoaded", function () {
 
   setTimeout(removeIndexInstruction, 100);
 })();
+/* OVERRIDE: detailed instruction content */
+(function () {
+  function pageTitle() {
+    const h1 = document.querySelector("h1");
+    return h1 ? h1.textContent.trim().toLowerCase() : "";
+  }
+
+  function makeSection(title, text) {
+    const section = document.createElement("div");
+    section.className = "instruction-section";
+
+    const h3 = document.createElement("h3");
+    h3.textContent = title;
+
+    const p = document.createElement("p");
+    p.textContent = text;
+
+    section.appendChild(h3);
+    section.appendChild(p);
+
+    return section;
+  }
+
+  function getDetailedInstructions() {
+    const title = pageTitle();
+
+    if (title.includes("basic")) {
+      return [
+        ["What does this calculator do?", "It helps you do quick math calculations like addition, subtraction, multiplication, division, power, and square root."],
+        ["How to use it", "Enter numbers using the buttons, choose an operator, then press = to get the answer."],
+        ["Formula used", "The calculator follows normal math order: brackets first, then powers, multiplication/division, then addition/subtraction."],
+        ["Example calculation", "Example: 8 + 2 × 3 = 14 because multiplication is calculated before addition."]
+      ];
+    }
+
+    if (title.includes("age")) {
+      return [
+        ["What does this calculator do?", "It calculates your normal age and Asian age from your birth date."],
+        ["How to use it", "Select your birth date, then press calculate age."],
+        ["Formula used", "Normal age = current year − birth year, adjusted if your birthday has not passed. Asian age = current year − birth year + 1."],
+        ["Example calculation", "If you were born in 2000 and the current year is 2026, Asian age = 2026 − 2000 + 1 = 27."]
+      ];
+    }
+
+    if (title.includes("bmi")) {
+      return [
+        ["What does this calculator do?", "It calculates your Body Mass Index and optional waist-to-height ratio."],
+        ["How to use it", "Choose SI or US unit, enter your weight and height, then press calculate bmi. Waist is optional."],
+        ["Formula used", "SI BMI = weight kg ÷ height m². US BMI = 703 × weight lb ÷ height inch². W/H ratio = waist ÷ height."],
+        ["Example calculation", "If weight is 70 kg and height is 1.70 m, BMI = 70 ÷ 1.70² = 24.22."]
+      ];
+    }
+
+    if (title.includes("loan")) {
+      return [
+        ["What does this calculator do?", "It estimates your monthly loan payment, total payment, and total interest."],
+        ["How to use it", "Enter loan amount, annual interest rate, and loan years, then press calculate loan."],
+        ["Formula used", "Monthly payment = P × r × (1 + r)ⁿ ÷ ((1 + r)ⁿ − 1), where P is loan amount, r is monthly rate, and n is total months."],
+        ["Example calculation", "For a 10000 loan at 5% yearly interest for 2 years, it calculates the estimated monthly payment."]
+      ];
+    }
+
+    if (title.includes("discount")) {
+      return [
+        ["What does this calculator do?", "It calculates the final price after discount and how much money you save."],
+        ["How to use it", "Enter the original price and discount percentage, then press calculate discount."],
+        ["Formula used", "Savings = original price × discount ÷ 100. Final price = original price − savings."],
+        ["Example calculation", "If price is 100 and discount is 20%, savings = 20 and final price = 80."]
+      ];
+    }
+
+    if (title.includes("percentage")) {
+      return [
+        ["What does this calculator do?", "It calculates what a percentage of a number is."],
+        ["How to use it", "Enter the percentage value and the number, then press calculate percentage."],
+        ["Formula used", "Result = percentage ÷ 100 × number."],
+        ["Example calculation", "20% of 150 = 20 ÷ 100 × 150 = 30."]
+      ];
+    }
+
+    if (title.includes("about")) {
+      return [
+        ["What does this page do?", "This page explains what the website is about, privacy information, and contact details."],
+        ["How to use it", "Read the information or use the menu to open a calculator page."],
+        ["Formula used", "No formula is used on this page."],
+        ["Example", "You can use the calculator menu to open BMI, age, loan, discount, percentage, or basic calculator."]
+      ];
+    }
+
+    return [];
+  }
+
+  function rebuildInstructionBox() {
+    const main = document.querySelector("main");
+    if (!main) return;
+
+    /* No instruction on index.html */
+    if (main.classList.contains("calculator-box")) {
+      const oldIndexBox = main.querySelector(".instruction-box");
+      if (oldIndexBox) oldIndexBox.remove();
+      main.classList.remove("has-instructions");
+      return;
+    }
+
+    const data = getDetailedInstructions();
+    if (!data.length) return;
+
+    let box = main.querySelector(".instruction-box");
+
+    if (!box) {
+      box = document.createElement("aside");
+      box.className = "instruction-box";
+      main.appendChild(box);
+    }
+
+    box.innerHTML = "";
+
+    const h2 = document.createElement("h2");
+    h2.textContent = "Instructions";
+    box.appendChild(h2);
+
+    data.forEach(function (item) {
+      box.appendChild(makeSection(item[0], item[1]));
+    });
+
+    main.classList.add("has-instructions");
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", rebuildInstructionBox);
+  } else {
+    rebuildInstructionBox();
+  }
+
+  setTimeout(rebuildInstructionBox, 100);
+})();
