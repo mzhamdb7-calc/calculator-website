@@ -5480,3 +5480,45 @@ main.has-instructions {
     border-bottom: 8px solid var(--black) !important;
   }
 }
+/* =====================================================
+   PC FINAL FIX: health / finance arrow changes on hover
+   normal = down
+   hover / open = up
+===================================================== */
+@media (min-width: 851px) {
+  html body #navbar .dropdown-content > details.nav-group > summary::after,
+  html body #navbar .dropdown-content > .nav-group > summary::after,
+  html body #navbar .dropdown-content > .navbar-fixed-group > .navbar-fixed-summary::after {
+    content: "▼" !important;
+
+    display: inline-block !important;
+    width: auto !important;
+    height: auto !important;
+
+    margin-left: 8px !important;
+
+    color: var(--black) !important;
+    font-size: 14px !important;
+    line-height: 1 !important;
+
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+
+    transform: rotate(0deg) !important;
+    transition: transform 0.15s ease !important;
+  }
+
+  html body #navbar .dropdown-content > details.nav-group:hover > summary::after,
+  html body #navbar .dropdown-content > details.nav-group:focus-within > summary::after,
+  html body #navbar .dropdown-content > details.nav-group[open] > summary::after,
+  html body #navbar .dropdown-content > .nav-group:hover > summary::after,
+  html body #navbar .dropdown-content > .nav-group:focus-within > summary::after,
+  html body #navbar .dropdown-content > .nav-group[open] > summary::after,
+  html body #navbar .dropdown-content > .navbar-fixed-group:hover > .navbar-fixed-summary::after,
+  html body #navbar .dropdown-content > .navbar-fixed-group:focus-within > .navbar-fixed-summary::after,
+  html body #navbar .dropdown-content > .navbar-fixed-group.is-open > .navbar-fixed-summary::after {
+    content: "▼" !important;
+    transform: rotate(180deg) !important;
+  }
+}
