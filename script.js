@@ -2464,3 +2464,117 @@ document.addEventListener("DOMContentLoaded", function () {
     start();
   }
 })();
+/* =====================================================
+   PHONE FINAL FIX:
+   calculator + info buttons toggle their own dropup
+===================================================== */
+(function () {
+  function isPhoneMode() {
+    return window.matchMedia("(max-width: 850px)").matches;
+  }
+
+  function closePhoneSubmenus(navbar) {
+    if (!navbar) return;
+
+    navbar.querySelectorAll("details.nav-group").forEach(function (group) {
+      group.open = false;
+      group.removeAttribute("open");
+      group.dataset.phoneOpen = "false";
+      group.classList.remove("is-open", "open", "active", "phone-sub-open");
+    });
+
+    navbar.querySelectorAll(".fixed-nav-group, .navbar-fixed-group").forEach(function (group) {
+      group.classList.remove("is-open", "open", "active", "phone-sub-open");
+    });
+  }
+
+  function closeAllDropdowns(navbar, exceptDropdown) {
+    if (!navbar) return;
+
+    navbar.querySelectorAll(":scope > .dropdown").forEach(function (dropdown) {
+      if (dropdown !== exceptDropdown) {
+        dropdown.classList.remove("phone-open", "mobile-open");
+        dropdown.removeAttribute("data-phone-open");
+
+        const content = dropdown.querySelector(":scope > .dropdown-content");
+        if (content) {
+          content.style.removeProperty("display");
+        }
+
+        const button = dropdown.querySelector(":scope > .dropbtn");
+        if (button) {
+          button.setAttribute("aria-expanded", "false");
+          button.blur();
+        }
+      }
+    });
+  }
+
+  function setupPhoneDropups() {
+    const navbar = document.getElementById("navbar");
+    if (!navbar) return;
+
+    const dropdowns = navbar.querySelectorAll(":scope > .dropdown");
+
+    dropdowns.forEach(function (dropdown) {
+      const button = dropdown.querySelector(":scope > .dropbtn");
+      const content = dropdown.querySelector(":scope > .dropdown-content");
+
+      if (!button || !content) return;
+      if (dropdown.dataset.phoneDropupReady === "true") return;
+
+      dropdown.dataset.phoneDropupReady = "true";
+
+      button.addEventListener(
+        "pointerdown",
+        function (event) {
+          if (!isPhoneMode()) return;
+
+          event.preventDefault();
+          event.stopPropagation();
+
+          const isOpen = dropdown.classList.contains("phone-open");
+
+          closeAllDropdowns(navbar, dropdown);
+          closePhoneSubmenus(navbar);
+
+          dropdown.classList.toggle("phone-open", !isOpen);
+          dropdown.classList.toggle("mobile-open", !isOpen);
+          dropdown.dataset.phoneOpen = !isOpen ? "true" : "false";
+
+          content.style.setProperty("display", !isOpen ? "block" : "none", "important");
+          button.setAttribute("aria-expanded", !isOpen ? "true" : "false");
+
+          setTimeout(function () {
+            button.blur();
+          }, 0);
+        },
+        true
+      );
+    });
+
+    document.addEventListener(
+      "pointerdown",
+      function (event) {
+        if (!isPhoneMode()) return;
+
+        if (!navbar.contains(event.target)) {
+          closeAllDropdowns(navbar, null);
+          closePhoneSubmenus(navbar);
+        }
+      },
+      true
+    );
+
+    window.addEventListener("resize", function () {
+      closeAllDropdowns(navbar, null);
+      closePhoneSubmenus(navbar);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupPhoneDropups);
+  } else {
+    setupPhoneDropups();
+  }
+})();
