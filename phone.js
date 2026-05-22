@@ -545,3 +545,91 @@
     initPhoneMenuOverride();
   }
 })();
+/* =====================================================
+   PHONE FIX: closed calculator/info button returns white
+   Only the currently open dropdown stays yellow
+===================================================== */
+(function () {
+  "use strict";
+
+  function isPhone() {
+    return window.matchMedia("(max-width: 850px)").matches;
+  }
+
+  function installWhiteResetCSS() {
+    const oldStyle = document.getElementById("phone-yellow-reset-css");
+    if (oldStyle) oldStyle.remove();
+
+    const style = document.createElement("style");
+    style.id = "phone-yellow-reset-css";
+
+    style.textContent = `
+      @media (max-width: 850px) {
+        html body #navbar > .dropdown:not(.phone-dropup-open) > .dropbtn,
+        html body #navbar > .dropdown:not(.phone-dropup-open):hover > .dropbtn,
+        html body #navbar > .dropdown:not(.phone-dropup-open):focus-within > .dropbtn,
+        html body #navbar > .dropdown:not(.phone-dropup-open).phone-open > .dropbtn,
+        html body #navbar > .dropdown:not(.phone-dropup-open).mobile-open > .dropbtn {
+          background: var(--white) !important;
+        }
+
+        html body #navbar > .dropdown.phone-dropup-open > .dropbtn {
+          background: var(--yellow) !important;
+        }
+      }
+    `;
+
+    document.head.appendChild(style);
+  }
+
+  function normalizePhoneDropdownColors() {
+    if (!isPhone()) return;
+
+    const navbar = document.getElementById("navbar");
+    if (!navbar) return;
+
+    navbar.querySelectorAll(":scope > .dropdown").forEach(function (dropdown) {
+      const button = dropdown.querySelector(":scope > .dropbtn");
+
+      if (!button) return;
+
+      const isOpen = dropdown.classList.contains("phone-dropup-open");
+
+      if (!isOpen) {
+        dropdown.classList.remove("phone-open", "mobile-open");
+        dropdown.dataset.phoneOpen = "false";
+        button.setAttribute("aria-expanded", "false");
+        button.style.setProperty("background", "var(--white)", "important");
+        button.blur();
+      } else {
+        button.style.setProperty("background", "var(--yellow)", "important");
+      }
+    });
+
+    if (document.activeElement && document.activeElement.blur) {
+      document.activeElement.blur();
+    }
+  }
+
+  function start() {
+    installWhiteResetCSS();
+
+    window.addEventListener("pointerup", function () {
+      setTimeout(normalizePhoneDropdownColors, 0);
+      setTimeout(normalizePhoneDropdownColors, 80);
+    }, true);
+
+    window.addEventListener("click", function () {
+      setTimeout(normalizePhoneDropdownColors, 0);
+      setTimeout(normalizePhoneDropdownColors, 80);
+    }, true);
+
+    window.addEventListener("resize", normalizePhoneDropdownColors);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
