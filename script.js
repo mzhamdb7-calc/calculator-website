@@ -2242,39 +2242,106 @@ document.addEventListener("DOMContentLoaded", function () {
 })();
 
 /* =====================================================
-   FINAL REPAIR: real arrow for health / finance menu
-   PC normal = ▼
-   PC hover/open = ▲
+   FINAL CLEAN NAVBAR ARROW SCRIPT
+   health / finance:
+   normal = ▼
+   hover/open = ▲
 ===================================================== */
-@media (min-width: 851px) {
-  #navbar .dropdown-content > details.nav-group > summary::after,
-  #navbar .dropdown-content > .nav-group > summary::after,
-  #navbar .dropdown-content > .navbar-fixed-group > .navbar-fixed-summary::after,
-  body.menu-scrolled #navbar.open .nav-group > summary::after,
-  #navbar.scrolled.open .nav-group > summary::after,
-  #navbar.open .nav-group > summary::after {
-    content: none !important;
-    display: none !important;
+(function () {
+  function isPcMode() {
+    return window.matchMedia("(min-width: 851px)").matches;
   }
 
-  #navbar .nav-menu-arrow {
-    display: inline-block !important;
-    margin-left: 8px !important;
-    color: var(--black) !important;
-    font-size: 14px !important;
-    font-weight: bold !important;
-    line-height: 1 !important;
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
+  function cleanLabel(text) {
+    return String(text || "")
+      .replace(/[▼▲▶◀⬇⬆⬅➡]/g, "")
+      .trim();
   }
 
-  #navbar .nav-group:hover > summary .nav-menu-arrow,
-  #navbar .nav-group:focus-within > summary .nav-menu-arrow,
-  #navbar .nav-group[open] > summary .nav-menu-arrow,
-  #navbar .navbar-fixed-group:hover > .navbar-fixed-summary .nav-menu-arrow,
-  #navbar .navbar-fixed-group:focus-within > .navbar-fixed-summary .nav-menu-arrow,
-  #navbar .navbar-fixed-group.is-open > .navbar-fixed-summary .nav-menu-arrow {
-    color: var(--black) !important;
+  function setArrow(arrow, isOpen) {
+    if (!arrow) return;
+    arrow.textContent = isOpen ? "▲" : "▼";
   }
-}
+
+  function setupGroup(group) {
+    if (!group || group.dataset.finalArrowReady === "true") return;
+
+    const trigger =
+      group.querySelector(":scope > summary") ||
+      group.querySelector(":scope > .navbar-fixed-summary");
+
+    if (!trigger) return;
+
+    group.dataset.finalArrowReady = "true";
+
+    const label = cleanLabel(trigger.textContent);
+    trigger.textContent = label + " ";
+
+    const arrow = document.createElement("span");
+    arrow.className = "nav-menu-arrow";
+    arrow.textContent = "▼";
+    trigger.appendChild(arrow);
+
+    function groupIsOpen() {
+      return (
+        group.open ||
+        group.classList.contains("open") ||
+        group.classList.contains("active") ||
+        group.classList.contains("is-open")
+      );
+    }
+
+    group.addEventListener("mouseenter", function () {
+      if (!isPcMode()) return;
+      setArrow(arrow, true);
+    });
+
+    group.addEventListener("mouseleave", function () {
+      if (!isPcMode()) return;
+      setArrow(arrow, groupIsOpen());
+    });
+
+    group.addEventListener("toggle", function () {
+      setArrow(arrow, groupIsOpen());
+    });
+
+    trigger.addEventListener("click", function () {
+      setTimeout(function () {
+        setArrow(arrow, groupIsOpen());
+      }, 0);
+    });
+
+    setArrow(arrow, groupIsOpen());
+  }
+
+  function setupNavbarArrows() {
+    document
+      .querySelectorAll(
+        "#navbar .dropdown-content > details.nav-group, " +
+        "#navbar .dropdown-content > .nav-group, " +
+        "#navbar .dropdown-content > .navbar-fixed-group"
+      )
+      .forEach(setupGroup);
+  }
+
+  function start() {
+    setupNavbarArrows();
+
+    const navbar = document.getElementById("navbar");
+
+    if (navbar) {
+      const observer = new MutationObserver(setupNavbarArrows);
+
+      observer.observe(navbar, {
+        childList: true,
+        subtree: true
+      });
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();

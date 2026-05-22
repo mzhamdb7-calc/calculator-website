@@ -5591,3 +5591,33 @@ main.has-instructions {
     color: var(--black) !important;
   }
 }
+/* =====================================================
+   FINAL CLEAN NAVBAR ARROW FIX
+   health / finance:
+   normal = ▼
+   hover/open = ▲
+===================================================== */
+
+/* Hide all old pseudo arrows for navbar health/finance */
+#navbar .dropdown-content > details.nav-group > summary::after,
+#navbar .dropdown-content > .nav-group > summary::after,
+#navbar .dropdown-content > .navbar-fixed-group > .navbar-fixed-summary::after,
+#navbar.open .nav-group > summary::after,
+#navbar.scrolled.open .nav-group > summary::after,
+body.menu-scrolled #navbar.open .nav-group > summary::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Real JS arrow */
+#navbar .nav-menu-arrow {
+  display: inline-block !important;
+  margin-left: 8px !important;
+  color: var(--black) !important;
+  font-size: 14px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
