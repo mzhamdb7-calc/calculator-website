@@ -5161,3 +5161,61 @@ main.has-instructions {
     font-size: 16px !important;
   }
 }
+/* PC ONLY: calculator dropdown auto opens on hover */
+@media (min-width: 851px) {
+  body.about-page #navbar > .dropdown:hover > .dropdown-content,
+  body.about-page #navbar > .dropdown:focus-within > .dropdown-content,
+  body.privacy-page #navbar > .dropdown:hover > .dropdown-content,
+  body.privacy-page #navbar > .dropdown:focus-within > .dropdown-content,
+  body.contact-page #navbar > .dropdown:hover > .dropdown-content,
+  body.contact-page #navbar > .dropdown:focus-within > .dropdown-content {
+    display: block !important;
+  }
+
+  body.about-page #navbar > .dropdown:hover > .dropbtn,
+  body.privacy-page #navbar > .dropdown:hover > .dropbtn,
+  body.contact-page #navbar > .dropdown:hover > .dropbtn {
+    background: var(--yellow) !important;
+  }
+
+  /* PC ONLY: health / finance opens left on hover */
+  body.about-page #navbar .nav-group:hover > .nav-group-links,
+  body.about-page #navbar .nav-group:focus-within > .nav-group-links,
+  body.about-page #navbar .nav-group[open] > .nav-group-links,
+  body.about-page #navbar .navbar-fixed-group:hover > .nav-group-links,
+  body.about-page #navbar .navbar-fixed-group:focus-within > .nav-group-links,
+  body.about-page #navbar .navbar-fixed-group.is-open > .nav-group-links,
+
+  body.privacy-page #navbar .nav-group:hover > .nav-group-links,
+  body.privacy-page #navbar .nav-group:focus-within > .nav-group-links,
+  body.privacy-page #navbar .nav-group[open] > .nav-group-links,
+  body.privacy-page #navbar .navbar-fixed-group:hover > .nav-group-links,
+  body.privacy-page #navbar .navbar-fixed-group:focus-within > .nav-group-links,
+  body.privacy-page #navbar .navbar-fixed-group.is-open > .nav-group-links,
+
+  body.contact-page #navbar .nav-group:hover > .nav-group-links,
+  body.contact-page #navbar .nav-group:focus-within > .nav-group-links,
+  body.contact-page #navbar .nav-group[open] > .nav-group-links,
+  body.contact-page #navbar .navbar-fixed-group:hover > .nav-group-links,
+  body.contact-page #navbar .navbar-fixed-group:focus-within > .nav-group-links,
+  body.contact-page #navbar .navbar-fixed-group.is-open > .nav-group-links {
+    display: block !important;
+  }
+
+  body.about-page #navbar .nav-group > .nav-group-links,
+  body.about-page #navbar .navbar-fixed-group > .nav-group-links,
+  body.privacy-page #navbar .nav-group > .nav-group-links,
+  body.privacy-page #navbar .navbar-fixed-group > .nav-group-links,
+  body.contact-page #navbar .nav-group > .nav-group-links,
+  body.contact-page #navbar .navbar-fixed-group > .nav-group-links {
+    position: absolute !important;
+    top: -3px !important;
+    right: calc(100% + 3px) !important;
+    left: auto !important;
+    width: 185px !important;
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+    z-index: 999999999 !important;
+  }
+}
