@@ -4991,3 +4991,30 @@ main.has-instructions {
     background: var(--yellow) !important;
   }
 }
+/* ABOUT NAVBAR DROPDOWN */
+#navbar > .dropdown:last-child > .dropbtn {
+  border-right: none !important;
+}
+
+#navbar .about-dropdown {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+#navbar .about-dropdown-content {
+  left: auto !important;
+  right: -3px !important;
+}
+
+#navbar .about-dropdown-content a {
+  text-transform: lowercase !important;
+}
+
+/* PHONE: keep about dropdown inside screen */
+@media (max-width: 850px) {
+  #navbar .about-dropdown-content {
+    left: auto !important;
+    right: -3px !important;
+    width: 220px !important;
+  }
+}
