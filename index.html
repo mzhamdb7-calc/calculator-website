@@ -269,6 +269,91 @@
       setupNavbarFixedClick();
     })();
   </script>
+<style>
+/* FINAL OVERRIDE: remove duplicate emoji/text arrows */
+#navbar .navbar-fixed-summary::after {
+  content: "" !important;
 
+  display: inline-block !important;
+  width: 0 !important;
+  height: 0 !important;
+
+  margin-left: 8px !important;
+
+  font-size: 0 !important;
+  line-height: 0 !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+
+  border-left: 6px solid transparent !important;
+  border-right: 6px solid transparent !important;
+  border-top: 8px solid var(--black) !important;
+  border-bottom: none !important;
+}
+
+/* open arrow points left */
+#navbar .navbar-fixed-group.is-open > .navbar-fixed-summary::after {
+  content: "" !important;
+
+  border-top: 6px solid transparent !important;
+  border-bottom: 6px solid transparent !important;
+  border-right: 8px solid var(--black) !important;
+  border-left: none !important;
+}
+</style>
+<style>
+/* FINAL ARROW CLEANUP OVERRIDE */
+
+/* Remove any old text arrows from fixed navbar buttons */
+#navbar .navbar-fixed-summary::after {
+  content: "" !important;
+
+  display: inline-block !important;
+  width: 0 !important;
+  height: 0 !important;
+
+  margin-left: 8px !important;
+
+  font-size: 0 !important;
+  line-height: 0 !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+
+  border-left: 6px solid transparent !important;
+  border-right: 6px solid transparent !important;
+  border-top: 8px solid var(--black) !important;
+  border-bottom: none !important;
+}
+
+/* When open, use CSS triangle pointing left */
+#navbar .navbar-fixed-group.is-open > .navbar-fixed-summary::after {
+  content: "" !important;
+
+  border-top: 6px solid transparent !important;
+  border-bottom: 6px solid transparent !important;
+  border-right: 8px solid var(--black) !important;
+  border-left: none !important;
+}
+
+/* Remove old arrow from original details if any still appears */
+#navbar .dropdown-content > details.nav-group > summary::after,
+#navbar.open .dropdown-content > details.nav-group > summary::after {
+  content: "" !important;
+  display: none !important;
+}
+</style>
+
+<script>
+/* FINAL ARROW TEXT CLEANUP */
+document.querySelectorAll("#navbar .navbar-fixed-summary").forEach(function (button) {
+  button.textContent = button.textContent
+    .replace(/[▼▲◀▶⬅🔽🔼]/g, "")
+    .trim();
+});
+</script>
 </body>
 </html>
