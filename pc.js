@@ -1,17 +1,20 @@
 /*
   Copyright © 2026 Hamdi. All rights reserved.
   PC MODE ONLY
-  Clean arrows + question mark help panel
+  Layout + ? help panel
+  ? opens LEFT when clicked, closes when clicked again
 */
 
 (function () {
   "use strict";
 
+  const PC_QUERY = "(min-width: 851px)";
+
   function isPc() {
-    return window.matchMedia("(min-width: 851px)").matches;
+    return window.matchMedia(PC_QUERY).matches;
   }
 
-  function cleanOldNavbarArrows() {
+  function cleanOldArrows() {
     document
       .querySelectorAll("#navbar .nav-menu-arrow, #navbar .phone-sub-arrow")
       .forEach(function (arrow) {
@@ -19,43 +22,73 @@
       });
   }
 
-  function isCalculatorPage(main) {
-    return !!(
-      main &&
-      main.classList.contains("pc-calculator-layout") &&
-      main.querySelector(":scope > .calculator") &&
-      main.querySelector(":scope > .instruction-box")
+  function isInfoOrIndexPage() {
+    return (
+      document.body.classList.contains("index-page") ||
+      document.body.classList.contains("about-page") ||
+      document.body.classList.contains("privacy-page") ||
+      document.body.classList.contains("contact-page") ||
+      document.body.classList.contains("info-page")
     );
   }
 
-  function syncPanelPosition(main) {
-    if (!isPc()) return;
-    if (!isCalculatorPage(main)) return;
-
-    const calculator = main.querySelector(":scope > .calculator");
-    const button = main.querySelector(":scope > .pc-question-toggle");
-
-    if (!calculator || !button) return;
-
-    const mainRect = main.getBoundingClientRect();
-    const calcRect = calculator.getBoundingClientRect();
-    const buttonRect = button.getBoundingClientRect();
-
-    const gap = 14;
-    const panelWidth = calcRect.width;
-    const panelHeight = calcRect.height;
-
-    const left = buttonRect.left - mainRect.left - panelWidth - gap;
-    const top = buttonRect.top - mainRect.top;
-
-    main.style.setProperty("--pc-help-left", left + "px");
-    main.style.setProperty("--pc-help-top", top + "px");
-    main.style.setProperty("--pc-help-width", panelWidth + "px");
-    main.style.setProperty("--pc-help-height", panelHeight + "px");
+  function getLeftBox(main) {
+    return (
+      main.querySelector(":scope > .history") ||
+      main.querySelector(":scope > .age-history-box") ||
+      main.querySelector(":scope > .bmi-history-box") ||
+      main.querySelector(":scope > .discount-history-box") ||
+      main.querySelector(":scope > .loan-history-box") ||
+      main.querySelector(":scope > .percentage-history-box") ||
+      main.querySelector(":scope > .compound-history-box")
+    );
   }
 
-  function setupQuestionButton(main) {
+  function isCalculatorPage(main) {
+    if (!main || isInfoOrIndexPage()) return false;
+    if (main.classList.contains("calculator-box")) return false;
+
+    return !!(
+      main.querySelector(":scope > .calculator") &&
+      main.querySelector(":scope > .instruction-box") &&
+      getLeftBox(main)
+    );
+  }
+
+  function setupPcLayout(main) {
     if (!isCalculatorPage(main)) return;
+
+    const instructionBox = main.querySelector(":scope > .instruction-box");
+    const leftBox = getLeftBox(main);
+
+    main.classList.add("pc-calculator-layout");
+
+    let whatBox =
+      main.querySelector(":scope > .pc-what-slot .instruction-what-box") ||
+      instructionBox.querySelector(":scope > .instruction-what-box");
+
+    if (whatBox && leftBox) {
+      main.querySelectorAll(".instruction-what-box").forEach(function (box) {
+        if (box !== whatBox) box.remove();
+      });
+
+      let slot = main.querySelector(":scope > .pc-what-slot");
+
+      if (!slot) {
+        slot = document.createElement("aside");
+        slot.className = "pc-what-slot";
+        slot.setAttribute("aria-label", "What this calculator does");
+        main.insertBefore(slot, leftBox);
+      }
+
+      if (!slot.contains(whatBox)) {
+        slot.appendChild(whatBox);
+      }
+    }
+  }
+
+  function createQuestionButton(main) {
+    if (!isCalculatorPage(main)) return null;
 
     let button = main.querySelector(":scope > .pc-question-toggle");
 
@@ -71,10 +104,45 @@
       main.insertBefore(button, instructionBox);
     }
 
-    if (button.dataset.pcQuestionReady === "true") {
-      syncPanelPosition(main);
-      return;
-    }
+    return button;
+  }
+
+  function syncPanelPosition(main) {
+    if (!isPc()) return;
+
+    const button = main.querySelector(":scope > .pc-question-toggle");
+    const calculator = main.querySelector(":scope > .calculator");
+    const instructionBox = main.querySelector(":scope > .instruction-box");
+
+    if (!button || !calculator || !instructionBox) return;
+
+    const mainRect = main.getBoundingClientRect();
+    const buttonRect = button.getBoundingClientRect();
+    const calcRect = calculator.getBoundingClientRect();
+
+    const gap = 14;
+    const width = calcRect.width;
+    const height = calcRect.height;
+
+    const left = buttonRect.left - mainRect.left - width - gap;
+    const top = buttonRect.top - mainRect.top;
+
+    main.style.setProperty("--pc-help-left", left + "px");
+    main.style.setProperty("--pc-help-top", top + "px");
+    main.style.setProperty("--pc-help-width", width + "px");
+    main.style.setProperty("--pc-help-height", height + "px");
+  }
+
+  function setupQuestionButton(main) {
+    setupPcLayout(main);
+
+    const button = createQuestionButton(main);
+
+    if (!button) return;
+
+    syncPanelPosition(main);
+
+    if (button.dataset.pcQuestionReady === "true") return;
 
     button.dataset.pcQuestionReady = "true";
 
@@ -95,14 +163,17 @@
 
       syncPanelPosition(main);
     });
-
-    syncPanelPosition(main);
   }
 
-  function setupAllQuestionButtons() {
-    cleanOldNavbarArrows();
+  function setupAll() {
+    cleanOldArrows();
 
-    document.querySelectorAll("main.pc-calculator-layout").forEach(function (main) {
+    document.querySelectorAll("main").forEach(function (main) {
+      if (!isCalculatorPage(main)) {
+        main.classList.remove("pc-calculator-layout", "pc-help-open");
+        return;
+      }
+
       setupQuestionButton(main);
 
       if (!isPc()) {
@@ -111,30 +182,25 @@
     });
   }
 
+  function syncOpenPanels() {
+    document.querySelectorAll("main.pc-calculator-layout").forEach(function (main) {
+      syncPanelPosition(main);
+    });
+  }
+
   function start() {
-    setupAllQuestionButtons();
+    setupAll();
 
-    window.addEventListener("resize", setupAllQuestionButtons);
-    window.addEventListener("scroll", function () {
-      document.querySelectorAll("main.pc-calculator-layout").forEach(syncPanelPosition);
+    window.addEventListener("resize", function () {
+      setupAll();
+      syncOpenPanels();
     });
 
-    document.addEventListener("click", function () {
-      setTimeout(setupAllQuestionButtons, 0);
-    });
+    window.addEventListener("scroll", syncOpenPanels);
 
-    setTimeout(setupAllQuestionButtons, 150);
-    setTimeout(setupAllQuestionButtons, 500);
-    setTimeout(setupAllQuestionButtons, 1000);
-
-    const observer = new MutationObserver(function () {
-      setupAllQuestionButtons();
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
+    setTimeout(setupAll, 150);
+    setTimeout(setupAll, 500);
+    setTimeout(setupAll, 1000);
   }
 
   if (document.readyState === "loading") {
