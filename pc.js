@@ -1213,3 +1213,202 @@
     start();
   }
 })();
+/* =====================================================
+   PC ONLY: CONSISTENT HELP OVERLAY SIZE FOR ALL PAGES
+   - Age follows same size as loan page
+   - Instruction/reference overlay same size as calculator box
+   - ? stays beside What box
+   - Works for all calculator pages
+===================================================== */
+(function () {
+  "use strict";
+
+  const PC_QUERY = "(min-width: 851px)";
+
+  function isPc() {
+    return window.matchMedia(PC_QUERY).matches;
+  }
+
+  function isExcludedPage() {
+    return (
+      document.body.classList.contains("index-page") ||
+      document.body.classList.contains("about-page") ||
+      document.body.classList.contains("privacy-page") ||
+      document.body.classList.contains("contact-page") ||
+      document.body.classList.contains("info-page")
+    );
+  }
+
+  function getMain() {
+    return (
+      document.querySelector("main.pc-calculator-layout") ||
+      document.querySelector("main.has-instructions") ||
+      document.querySelector("main")
+    );
+  }
+
+  function getHelpButton() {
+    return (
+      document.getElementById("pcHelpQuestionButton") ||
+      document.getElementById("pcQuestionOverlayButton")
+    );
+  }
+
+  function isCalculatorPage(main) {
+    if (!main || isExcludedPage()) return false;
+
+    return !!(
+      main.querySelector(":scope > .calculator") &&
+      main.querySelector(":scope > .instruction-box")
+    );
+  }
+
+  function getWhatBox(main) {
+    return (
+      main.querySelector(":scope > .pc-what-slot") ||
+      main.querySelector(":scope > .pc-what-slot .instruction-what-box") ||
+      main.querySelector(".instruction-what-box")
+    );
+  }
+
+  function markPageType() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    if (title.includes("basic")) {
+      document.body.classList.add("basic-page");
+      document.body.dataset.page = "basic";
+    }
+
+    if (title.includes("age")) {
+      document.body.classList.add("age-page");
+      document.body.dataset.page = "age";
+    }
+
+    if (title.includes("bmi")) {
+      document.body.classList.add("bmi-page");
+      document.body.dataset.page = "bmi";
+    }
+
+    if (title.includes("loan")) {
+      document.body.classList.add("loan-page");
+      document.body.dataset.page = "loan";
+    }
+
+    if (title.includes("discount")) {
+      document.body.classList.add("discount-page");
+      document.body.dataset.page = "discount";
+    }
+
+    if (title.includes("percentage")) {
+      document.body.classList.add("percentage-page");
+      document.body.dataset.page = "percentage";
+    }
+
+    if (title.includes("compound")) {
+      document.body.classList.add("compound-page");
+      document.body.dataset.page = "compound";
+    }
+  }
+
+  function positionConsistentHelpOverlay() {
+    if (!isPc()) return;
+
+    const main = getMain();
+    const button = getHelpButton();
+
+    if (!main || !button || !isCalculatorPage(main)) return;
+
+    const calculator = main.querySelector(":scope > .calculator");
+    const instructionBox = main.querySelector(":scope > .instruction-box");
+    const whatBox = getWhatBox(main);
+
+    if (!calculator || !instructionBox || !whatBox) return;
+
+    const calcRect = calculator.getBoundingClientRect();
+    const whatRect = whatBox.getBoundingClientRect();
+
+    const screenPadding = 12;
+    const buttonSize = 58;
+    const buttonGap = 8;
+
+    /* ? beside What box */
+    let buttonLeft = whatRect.right + buttonGap;
+    let buttonTop = whatRect.top + Math.max(0, (whatRect.height - buttonSize) / 2);
+
+    if (buttonLeft + buttonSize > window.innerWidth - screenPadding) {
+      buttonLeft = whatRect.right - buttonSize - 12;
+    }
+
+    buttonLeft = Math.max(
+      screenPadding,
+      Math.min(buttonLeft, window.innerWidth - screenPadding - buttonSize)
+    );
+
+    buttonTop = Math.max(
+      screenPadding,
+      Math.min(buttonTop, window.innerHeight - screenPadding - buttonSize)
+    );
+
+    /*
+      Same size as calculator box.
+      This makes Age, Loan, BMI, Discount, Percentage, Compound consistent.
+    */
+    let panelLeft = calcRect.left;
+    let panelTop = calcRect.top;
+    let panelWidth = calcRect.width;
+    let panelHeight = calcRect.height;
+
+    panelWidth = Math.min(panelWidth, window.innerWidth - screenPadding * 2);
+    panelHeight = Math.min(panelHeight, window.innerHeight - screenPadding * 2);
+
+    if (panelLeft + panelWidth > window.innerWidth - screenPadding) {
+      panelLeft = window.innerWidth - screenPadding - panelWidth;
+    }
+
+    if (panelTop + panelHeight > window.innerHeight - screenPadding) {
+      panelTop = window.innerHeight - screenPadding - panelHeight;
+    }
+
+    panelLeft = Math.max(screenPadding, panelLeft);
+    panelTop = Math.max(screenPadding, panelTop);
+
+    /* New clean variables */
+    document.documentElement.style.setProperty("--pc-help-btn-left", buttonLeft + "px");
+    document.documentElement.style.setProperty("--pc-help-btn-top", buttonTop + "px");
+    document.documentElement.style.setProperty("--pc-help-panel-left", panelLeft + "px");
+    document.documentElement.style.setProperty("--pc-help-panel-top", panelTop + "px");
+    document.documentElement.style.setProperty("--pc-help-panel-width", panelWidth + "px");
+    document.documentElement.style.setProperty("--pc-help-panel-height", panelHeight + "px");
+
+    /* Old compatible variables */
+    document.documentElement.style.setProperty("--calc-help-btn-left", buttonLeft + "px");
+    document.documentElement.style.setProperty("--calc-help-btn-top", buttonTop + "px");
+    document.documentElement.style.setProperty("--calc-help-left", panelLeft + "px");
+    document.documentElement.style.setProperty("--calc-help-top", panelTop + "px");
+    document.documentElement.style.setProperty("--calc-help-width", panelWidth + "px");
+    document.documentElement.style.setProperty("--calc-help-height", panelHeight + "px");
+  }
+
+  function startConsistentPcHelpSize() {
+    markPageType();
+    positionConsistentHelpOverlay();
+
+    window.addEventListener("resize", positionConsistentHelpOverlay);
+    window.addEventListener("scroll", positionConsistentHelpOverlay, { passive: true });
+
+    document.addEventListener("click", function () {
+      setTimeout(positionConsistentHelpOverlay, 0);
+      setTimeout(positionConsistentHelpOverlay, 120);
+    });
+
+    setTimeout(positionConsistentHelpOverlay, 300);
+    setTimeout(positionConsistentHelpOverlay, 800);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startConsistentPcHelpSize);
+  } else {
+    startConsistentPcHelpSize();
+  }
+})();
