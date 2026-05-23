@@ -9,8 +9,10 @@
 (function () {
   "use strict";
 
+  const PC_QUERY = "(min-width: 851px)";
+
   function isPcMode() {
-    return window.matchMedia("(min-width: 851px)").matches;
+    return window.matchMedia(PC_QUERY).matches;
   }
 
   function cleanLabel(text) {
@@ -27,7 +29,7 @@
     );
   }
 
-  function groupIsOpen(group) {
+  function isGroupOpen(group) {
     return (
       group.matches(":hover") ||
       group.open === true ||
@@ -44,7 +46,7 @@
     const arrow = trigger.querySelector(".nav-menu-arrow");
     if (!arrow) return;
 
-    arrow.textContent = groupIsOpen(group) ? "▲" : "▼";
+    arrow.textContent = isGroupOpen(group) ? "▲" : "▼";
   }
 
   function setupGroup(group) {
@@ -84,7 +86,7 @@
     trigger.addEventListener("click", function () {
       if (!isPcMode()) return;
 
-      setTimeout(function () {
+      window.setTimeout(function () {
         updateArrow(group);
       }, 0);
     });
@@ -93,8 +95,6 @@
   }
 
   function setupPcNavbarArrows() {
-    if (!isPcMode()) return;
-
     document
       .querySelectorAll(
         "#navbar .dropdown-content > details.nav-group, " +
@@ -103,14 +103,12 @@
         "#navbar .dropdown-content > .navbar-fixed-group"
       )
       .forEach(setupGroup);
-  }
 
-  function resetPhoneArrows() {
-    if (isPcMode()) return;
-
-    document.querySelectorAll("#navbar .nav-menu-arrow").forEach(function (arrow) {
-      arrow.textContent = "▼";
-    });
+    if (!isPcMode()) {
+      document.querySelectorAll("#navbar .nav-menu-arrow").forEach(function (arrow) {
+        arrow.textContent = "▼";
+      });
+    }
   }
 
   function start() {
@@ -118,7 +116,6 @@
 
     window.addEventListener("resize", function () {
       setupPcNavbarArrows();
-      resetPhoneArrows();
     });
   }
 
