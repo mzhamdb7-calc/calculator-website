@@ -423,3 +423,196 @@
     start();
   }
 })();
+/* =====================================================
+   PC ONLY: FINAL HOVER AUTO-EXPAND MENU FIX
+   - Top calculator/info menu opens on hover
+   - Scrolled side menu opens on hover
+   - Health/finance submenus open on hover
+   - One dropdown closes when another opens
+===================================================== */
+(function () {
+  "use strict";
+
+  const PC_QUERY = "(min-width: 851px)";
+  const CSS_ID = "pc-hover-auto-expand-fix-css";
+
+  function isPc() {
+    return window.matchMedia(PC_QUERY).matches;
+  }
+
+  function getNavbar() {
+    return document.getElementById("navbar");
+  }
+
+  function installHoverCss() {
+    const old = document.getElementById(CSS_ID);
+    if (old) old.remove();
+
+    const style = document.createElement("style");
+    style.id = CSS_ID;
+
+    style.textContent = `
+      @media (min-width: 851px) {
+        /* Make sure menu can overflow outward */
+        #navbar,
+        #navbar.open,
+        #navbar .dropdown,
+        #navbar .dropdown-content,
+        #navbar .nav-group,
+        #navbar .nav-group-links {
+          overflow: visible !important;
+        }
+
+        /* Normal top navbar dropdown hover */
+        #navbar > .dropdown:hover > .dropdown-content,
+        #navbar > .dropdown:focus-within > .dropdown-content,
+        #navbar > .dropdown.menu-open > .dropdown-content,
+        #navbar > .dropdown.pc-hover-open > .dropdown-content {
+          display: block !important;
+        }
+
+        /* Health / finance submenu hover */
+        #navbar .nav-group:hover > .nav-group-links,
+        #navbar .nav-group:focus-within > .nav-group-links,
+        #navbar .nav-group[open] > .nav-group-links,
+        #navbar .nav-group.pc-sub-hover-open > .nav-group-links {
+          display: block !important;
+        }
+
+        /* Scrolled side menu dropdown hover */
+        body.menu-scrolled #navbar.open > .dropdown:hover > .dropdown-content,
+        body.menu-scrolled #navbar.open > .dropdown:focus-within > .dropdown-content,
+        body.menu-scrolled #navbar.open > .dropdown.menu-open > .dropdown-content,
+        body.menu-scrolled #navbar.open > .dropdown.pc-hover-open > .dropdown-content {
+          display: block !important;
+        }
+
+        body.menu-scrolled #navbar.open .nav-group:hover > .nav-group-links,
+        body.menu-scrolled #navbar.open .nav-group:focus-within > .nav-group-links,
+        body.menu-scrolled #navbar.open .nav-group[open] > .nav-group-links,
+        body.menu-scrolled #navbar.open .nav-group.pc-sub-hover-open > .nav-group-links {
+          display: block !important;
+        }
+
+        /* Arrow direction */
+        #navbar > .dropdown.pc-hover-open > .dropbtn::after,
+        #navbar > .dropdown.menu-open > .dropbtn::after,
+        #navbar > .dropdown:hover > .dropbtn::after {
+          content: "▲" !important;
+        }
+
+        #navbar .nav-group.pc-sub-hover-open > summary::after,
+        #navbar .nav-group[open] > summary::after,
+        #navbar .nav-group:hover > summary::after {
+          content: "▲" !important;
+        }
+      }
+    `;
+
+    document.head.appendChild(style);
+  }
+
+  function closeOtherDropdowns(currentDropdown) {
+    const navbar = getNavbar();
+    if (!navbar) return;
+
+    navbar.querySelectorAll(":scope > .dropdown").forEach(function (dropdown) {
+      if (dropdown !== currentDropdown) {
+        dropdown.classList.remove("pc-hover-open", "menu-open");
+      }
+    });
+  }
+
+  function closeOtherSubmenus(currentGroup) {
+    const navbar = getNavbar();
+    if (!navbar) return;
+
+    navbar.querySelectorAll(".nav-group").forEach(function (group) {
+      if (group !== currentGroup) {
+        group.classList.remove("pc-sub-hover-open");
+
+        if (group.tagName.toLowerCase() === "details") {
+          group.open = false;
+        }
+      }
+    });
+  }
+
+  function setupTopDropdownHover(dropdown) {
+    if (dropdown.dataset.pcHoverReady === "true") return;
+    dropdown.dataset.pcHoverReady = "true";
+
+    dropdown.addEventListener("mouseenter", function () {
+      if (!isPc()) return;
+
+      closeOtherDropdowns(dropdown);
+      dropdown.classList.add("pc-hover-open", "menu-open");
+    });
+
+    dropdown.addEventListener("mouseleave", function () {
+      if (!isPc()) return;
+
+      dropdown.classList.remove("pc-hover-open", "menu-open");
+
+      dropdown.querySelectorAll(".nav-group").forEach(function (group) {
+        group.classList.remove("pc-sub-hover-open");
+
+        if (group.tagName.toLowerCase() === "details") {
+          group.open = false;
+        }
+      });
+    });
+  }
+
+  function setupSubmenuHover(group) {
+    if (group.dataset.pcSubHoverReady === "true") return;
+    group.dataset.pcSubHoverReady = "true";
+
+    group.addEventListener("mouseenter", function () {
+      if (!isPc()) return;
+
+      closeOtherSubmenus(group);
+      group.classList.add("pc-sub-hover-open");
+
+      if (group.tagName.toLowerCase() === "details") {
+        group.open = true;
+      }
+    });
+
+    group.addEventListener("mouseleave", function () {
+      if (!isPc()) return;
+
+      group.classList.remove("pc-sub-hover-open");
+
+      if (group.tagName.toLowerCase() === "details") {
+        group.open = false;
+      }
+    });
+  }
+
+  function setupPcHoverMenu() {
+    const navbar = getNavbar();
+    if (!navbar) return;
+
+    installHoverCss();
+
+    navbar.querySelectorAll(":scope > .dropdown").forEach(setupTopDropdownHover);
+    navbar.querySelectorAll(".nav-group").forEach(setupSubmenuHover);
+  }
+
+  function start() {
+    setupPcHoverMenu();
+
+    window.addEventListener("resize", setupPcHoverMenu);
+
+    setTimeout(setupPcHoverMenu, 100);
+    setTimeout(setupPcHoverMenu, 400);
+    setTimeout(setupPcHoverMenu, 900);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();

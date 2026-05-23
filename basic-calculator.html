@@ -14,20 +14,22 @@
   <meta name="description" content="Free basic calculator for quick math calculations.">
 
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="pc.css" media="screen and (min-width: 851px)">
-<link rel="stylesheet" href="phone.css" media="screen and (max-width: 850px)">
+  <link rel="stylesheet" href="pc.css" media="screen and (min-width: 851px)">
+  <link rel="stylesheet" href="phone.css" media="screen and (max-width: 850px)">
+
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
-<body>
+<body class="basic-page" data-page="basic">
 
   <!-- Go Up Button -->
   <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
     ↑
   </button>
 
-  <!-- MENU Button shown after scroll -->
+  <!-- MENU Button shown after scroll on PC -->
   <button id="menuIcon" type="button" onclick="toggleMenu()" aria-label="Open menu">
     MENU
   </button>
@@ -38,7 +40,7 @@
     <a href="index.html">home</a>
 
     <div class="dropdown">
-      <button type="button" class="dropbtn">
+      <button type="button" class="dropbtn" aria-expanded="false">
         calculator
       </button>
 
@@ -71,7 +73,7 @@
     </div>
 
     <div class="dropdown about-dropdown">
-      <button type="button" class="dropbtn">
+      <button type="button" class="dropbtn" aria-expanded="false">
         info
       </button>
 
@@ -87,10 +89,11 @@
   <!-- Main Content -->
   <main class="calculator-container">
 
+    <!-- History Box -->
     <section class="history">
 
       <div class="history-top">
-        <h3>History</h3>
+        <h3>Input Equation</h3>
 
         <button type="button" class="clear-btn" onclick="clearHistory()">
           Clear
@@ -101,6 +104,7 @@
 
     </section>
 
+    <!-- Calculator Box -->
     <section class="calculator">
 
       <h1>Basic Calculator</h1>
@@ -151,8 +155,8 @@
   </main>
 
   <script src="script.js"></script>
-<script src="pc.js"></script>
-<script src="phone.js"></script>
+  <script src="pc.js"></script>
+  <script src="phone.js"></script>
 
 </body>
 </html>
