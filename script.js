@@ -5022,3 +5022,124 @@ document.addEventListener("DOMContentLoaded", function () {
     startAgeResultTable();
   }
 })();
+/* =====================================================
+   AGE CALCULATOR ONLY: Copy button copies result table
+   Copies: Birthdate / Normal age / Asian age
+===================================================== */
+(function () {
+  "use strict";
+
+  function isAgePage() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    return title.includes("age") || !!document.getElementById("birthdate");
+  }
+
+  function getAgeResultTableText() {
+    const table =
+      document.querySelector("#universalLoanStyleOutput .loan-result-table") ||
+      document.querySelector(".loan-style-output-panel .loan-result-table") ||
+      document.querySelector(".universal-output-panel .loan-result-table");
+
+    if (!table) return "";
+
+    return Array.from(table.querySelectorAll("tr"))
+      .map(function (row) {
+        return Array.from(row.querySelectorAll("th, td"))
+          .map(function (cell) {
+            return cell.textContent.trim();
+          })
+          .join("\t");
+      })
+      .join("\n");
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function copyAgeResultTable(button) {
+    const text = getAgeResultTableText();
+
+    if (!text) return;
+
+    function copied() {
+      const oldText = button.textContent;
+      button.textContent = "Copied!";
+
+      setTimeout(function () {
+        button.textContent = oldText;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(copied).catch(function () {
+        fallbackCopy(text);
+        copied();
+      });
+    } else {
+      fallbackCopy(text);
+      copied();
+    }
+  }
+
+  function fixAgeCopyButton() {
+    if (!isAgePage()) return;
+
+    document
+      .querySelectorAll(
+        "#universalLoanStyleOutput .loan-copy-btn, " +
+        ".loan-style-output-panel .loan-copy-btn, " +
+        ".universal-output-panel .loan-copy-btn"
+      )
+      .forEach(function (button) {
+        if (button.dataset.ageTableCopyFixed === "true") return;
+
+        button.dataset.ageTableCopyFixed = "true";
+
+        button.addEventListener(
+          "click",
+          function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+
+            copyAgeResultTable(button);
+          },
+          true
+        );
+      });
+  }
+
+  function start() {
+    fixAgeCopyButton();
+
+    document.addEventListener("click", function () {
+      setTimeout(fixAgeCopyButton, 0);
+      setTimeout(fixAgeCopyButton, 150);
+      setTimeout(fixAgeCopyButton, 400);
+    });
+
+    setTimeout(fixAgeCopyButton, 300);
+    setTimeout(fixAgeCopyButton, 1000);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
