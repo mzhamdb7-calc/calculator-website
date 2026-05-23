@@ -2456,3 +2456,126 @@ document.addEventListener("DOMContentLoaded", function () {
     startLoanOutput();
   }
 })();
+/* =====================================================
+   PC ONLY: move calculator result outside calculator box
+   Result appears below calculator + result/history area
+===================================================== */
+(function () {
+  "use strict";
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  const resultSelectors = [
+    "#result",
+    "#bmiResult",
+    "#loanResult",
+    "#discountResult",
+    "#percentageResult",
+    "#compoundResult"
+  ];
+
+  function getMain() {
+    return document.querySelector("main.pc-calculator-layout") || document.querySelector("main");
+  }
+
+  function getResultElements(main) {
+    if (!main) return [];
+
+    return resultSelectors
+      .map(function (selector) {
+        return main.querySelector(selector);
+      })
+      .filter(Boolean);
+  }
+
+  function getOutsidePanel(main) {
+    let panel = main.querySelector(":scope > .pc-outside-result-panel");
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.className = "pc-outside-result-panel";
+      panel.setAttribute("aria-label", "Calculator result");
+
+      const calculator = main.querySelector(":scope > .calculator");
+
+      if (calculator) {
+        calculator.insertAdjacentElement("afterend", panel);
+      } else {
+        main.appendChild(panel);
+      }
+    }
+
+    return panel;
+  }
+
+  function moveResultsOutside() {
+    const main = getMain();
+    if (!main) return;
+
+    const calculator = main.querySelector(":scope > .calculator");
+    if (!calculator) return;
+
+    const results = getResultElements(main);
+
+    if (!isPc()) {
+      const panel = main.querySelector(":scope > .pc-outside-result-panel");
+
+      results.forEach(function (result) {
+        if (panel && panel.contains(result)) {
+          calculator.appendChild(result);
+        }
+      });
+
+      if (panel && panel.children.length === 0) {
+        panel.remove();
+      }
+
+      return;
+    }
+
+    if (!main.classList.contains("pc-calculator-layout")) return;
+
+    const panel = getOutsidePanel(main);
+
+    results.forEach(function (result) {
+      if (!panel.contains(result)) {
+        panel.appendChild(result);
+      }
+    });
+
+    const loanOutputPanel = main.querySelector(":scope > #loanOutputPanel");
+
+    if (loanOutputPanel && !panel.contains(loanOutputPanel)) {
+      panel.appendChild(loanOutputPanel);
+    }
+  }
+
+  function startMoveResultsOutside() {
+    moveResultsOutside();
+
+    window.addEventListener("resize", moveResultsOutside);
+
+    document.addEventListener("click", function () {
+      setTimeout(moveResultsOutside, 0);
+      setTimeout(moveResultsOutside, 150);
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        setTimeout(moveResultsOutside, 0);
+        setTimeout(moveResultsOutside, 150);
+      }
+    });
+
+    setTimeout(moveResultsOutside, 300);
+    setTimeout(moveResultsOutside, 800);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startMoveResultsOutside);
+  } else {
+    startMoveResultsOutside();
+  }
+})();

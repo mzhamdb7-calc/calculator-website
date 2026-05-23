@@ -2402,3 +2402,98 @@
     margin: 0 auto !important;
   }
 }
+/* =====================================================
+   PC ONLY: outside result panel below calculator/history
+===================================================== */
+@media (min-width: 851px) {
+  main.pc-calculator-layout > .pc-outside-result-panel {
+    grid-column: 1 / 3 !important;
+    grid-row: 3 !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 22px 0 0 !important;
+    padding: 18px !important;
+
+    background: #d3fff9 !important;
+    color: var(--black) !important;
+
+    border: 5px solid var(--black) !important;
+    box-shadow: 7px 7px 0 var(--black) !important;
+
+    box-sizing: border-box !important;
+
+    display: block !important;
+    overflow: hidden !important;
+  }
+
+  main.pc-calculator-layout > .pc-outside-result-panel:empty {
+    display: none !important;
+  }
+
+  main.pc-calculator-layout > .pc-outside-result-panel > h2,
+  main.pc-calculator-layout > .pc-outside-result-panel > #result,
+  main.pc-calculator-layout > .pc-outside-result-panel > #bmiResult,
+  main.pc-calculator-layout > .pc-outside-result-panel > #loanResult,
+  main.pc-calculator-layout > .pc-outside-result-panel > #discountResult,
+  main.pc-calculator-layout > .pc-outside-result-panel > #percentageResult,
+  main.pc-calculator-layout > .pc-outside-result-panel > #compoundResult {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 0 18px !important;
+    padding: 14px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    font-size: 26px !important;
+    font-weight: bold !important;
+    line-height: 1.35 !important;
+    text-align: center !important;
+    white-space: pre-line !important;
+
+    box-sizing: border-box !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+  }
+
+  main.pc-calculator-layout > .pc-outside-result-panel > #loanOutputPanel,
+  main.pc-calculator-layout > .pc-outside-result-panel > .loan-output-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 300px !important;
+    gap: 18px !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    box-sizing: border-box !important;
+  }
+
+  main.pc-calculator-layout .calculator > #result,
+  main.pc-calculator-layout .calculator > #bmiResult,
+  main.pc-calculator-layout .calculator > #loanResult,
+  main.pc-calculator-layout .calculator > #discountResult,
+  main.pc-calculator-layout .calculator > #percentageResult,
+  main.pc-calculator-layout .calculator > #compoundResult {
+    display: none !important;
+  }
+}
+
+@media (min-width: 851px) and (max-width: 1180px) {
+  main.pc-calculator-layout > .pc-outside-result-panel > #loanOutputPanel,
+  main.pc-calculator-layout > .pc-outside-result-panel > .loan-output-panel {
+    grid-template-columns: 1fr !important;
+  }
+}
