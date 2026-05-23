@@ -336,7 +336,6 @@
   const resultIds = [
     "result",
     "bmiResult",
-    "loanResult",
     "discountResult",
     "percentageResult"
   ];
@@ -1742,35 +1741,44 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 })();
 
-
 /* =====================================================
-   LOAN PAGE: clean outside result table + graph
-   - Removes old inside-calculator loan comparison blocks
-   - Result table appears in its own box
-   - Graph appears in its own box below
-   - Copy button stays on the right side of result box
+   LOAN PAGE: clean fixed result table + graph
+   No MutationObserver. No document-wide click rebuilding.
+   calculateLoan() creates result outside the calculator.
 ===================================================== */
 (function () {
   "use strict";
 
-  function isPcMode() {
-    return window.matchMedia("(min-width: 851px)").matches;
-  }
+  let loanHistory = [];
 
   function isLoanPage() {
-    const h1 = document.querySelector("h1");
-    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
-
     return (
-      title.includes("loan") ||
       document.body.classList.contains("loan-page") ||
       document.body.dataset.page === "loan" ||
       !!document.getElementById("loanResult")
     );
   }
 
-  function cleanNumber(value) {
-    return Number(String(value || "").replace(/,/g, "").trim());
+  function safeLoadHistory() {
+    try {
+      const saved = JSON.parse(localStorage.getItem("loanHistory") || "[]");
+      loanHistory = Array.isArray(saved) ? saved : [];
+    } catch {
+      loanHistory = [];
+    }
+  }
+
+  function safeSaveHistory() {
+    try {
+      localStorage.setItem("loanHistory", JSON.stringify(loanHistory));
+    } catch {
+      /* ignore storage error */
+    }
+  }
+
+  function getNumber(id) {
+    const input = document.getElementById(id);
+    return input ? Number(input.value) : NaN;
   }
 
   function money(value) {
@@ -1778,51 +1786,6 @@ document.addEventListener("DOMContentLoaded", function () {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
-  }
-
-  function findInputByLabel(pattern) {
-    const labels = Array.from(document.querySelectorAll("label"));
-
-    for (const label of labels) {
-      if (!pattern.test(label.textContent || "")) continue;
-
-      const id = label.getAttribute("for");
-
-      if (id) {
-        const input = document.getElementById(id);
-        if (input) return input;
-      }
-
-      const next = label.nextElementSibling;
-      if (next && /input|select/i.test(next.tagName)) return next;
-    }
-
-    return null;
-  }
-
-  function findLoanInputs() {
-    return {
-      amountInput:
-        document.getElementById("loanAmount") ||
-        document.getElementById("amount") ||
-        document.getElementById("principal") ||
-        document.getElementById("loanPrincipal") ||
-        findInputByLabel(/loan amount|amount|principal/i),
-
-      rateInput:
-        document.getElementById("loanRate") ||
-        document.getElementById("interestRate") ||
-        document.getElementById("annualRate") ||
-        document.getElementById("rate") ||
-        findInputByLabel(/interest|rate/i),
-
-      yearsInput:
-        document.getElementById("loanYears") ||
-        document.getElementById("years") ||
-        document.getElementById("loanTerm") ||
-        document.getElementById("term") ||
-        findInputByLabel(/year|term|period/i)
-    };
   }
 
   function monthlyPayment(principal, annualRate, years) {
@@ -1842,22 +1805,7 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   }
 
-  function removeOldLoanBlocks() {
-    document
-      .querySelectorAll(
-        ".calculator #loanYearTableWrap, " +
-        ".calculator .loan-year-table-wrap, " +
-        ".calculator #loanOutputPanel, " +
-        ".calculator .loan-output-panel, " +
-        ".calculator #loanExternalOutput, " +
-        "#loanYearTableWrap"
-      )
-      .forEach(function (el) {
-        el.remove();
-      });
-  }
-
-  function getExternalPanel() {
+  function getOutputPanel() {
     const calculator = document.querySelector(".calculator");
     if (!calculator) return null;
 
@@ -1866,6 +1814,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!panel) {
       panel = document.createElement("section");
       panel.id = "loanExternalOutput";
+      panel.className = "loan-external-output";
       panel.setAttribute("aria-label", "Loan result table and graph");
       calculator.insertAdjacentElement("afterend", panel);
     }
@@ -1874,14 +1823,14 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function buildGraph(data) {
+    if (!data.length) return "";
+
     const width = 420;
     const height = 250;
     const left = 54;
     const right = 24;
     const top = 26;
     const bottom = 48;
-
-    if (!data.length) return "";
 
     const minYear = data[0].year;
     const maxYear = data[data.length - 1].year;
@@ -1947,7 +1896,7 @@ document.addEventListener("DOMContentLoaded", function () {
     `;
   }
 
-  function tableText(panel) {
+  function getTableCopyText(panel) {
     const table = panel.querySelector("table");
     if (!table) return "";
 
@@ -1962,97 +1911,63 @@ document.addEventListener("DOMContentLoaded", function () {
       .join("\n");
   }
 
-  function setupCopyButton(panel) {
-    const button = panel.querySelector(".loan-copy-btn");
-    if (!button || button.dataset.copyReady === "true") return;
+  function copyText(text, button) {
+    if (!text) return;
 
-    button.dataset.copyReady = "true";
+    function done(label) {
+      const oldText = button.textContent;
+      button.textContent = label;
 
-    button.addEventListener("click", async function () {
-      const text = tableText(panel);
-      if (!text) return;
+      setTimeout(function () {
+        button.textContent = oldText;
+      }, 1200);
+    }
 
-      try {
-        if (navigator.clipboard && window.isSecureContext) {
-          await navigator.clipboard.writeText(text);
-        } else {
-          const textarea = document.createElement("textarea");
-          textarea.value = text;
-          textarea.style.position = "fixed";
-          textarea.style.left = "-9999px";
-          document.body.appendChild(textarea);
-          textarea.select();
-          document.execCommand("copy");
-          textarea.remove();
-        }
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text)
+        .then(function () {
+          done("Copied");
+        })
+        .catch(function () {
+          fallbackCopy(text, done);
+        });
 
-        const old = button.textContent;
-        button.textContent = "Copied!";
-        setTimeout(function () {
-          button.textContent = old;
-        }, 1200);
-      } catch {
-        button.textContent = "Failed";
-        setTimeout(function () {
-          button.textContent = "Copy";
-        }, 1200);
-      }
-    });
+      return;
+    }
+
+    fallbackCopy(text, done);
   }
 
-  function renderLoanExternalOutput() {
-    if (!isLoanPage()) return;
+  function fallbackCopy(text, done) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
 
-    removeOldLoanBlocks();
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
 
-    const panel = getExternalPanel();
+    try {
+      document.execCommand("copy");
+      done("Copied");
+    } catch {
+      done("Failed");
+    }
+
+    textarea.remove();
+  }
+
+  function renderLoanOutput(data) {
+    const panel = getOutputPanel();
     if (!panel) return;
 
-    if (!isPcMode()) {
+    if (!data || !data.length) {
       panel.innerHTML = "";
       panel.hidden = true;
       return;
-    }
-
-    const inputs = findLoanInputs();
-
-    if (!inputs.amountInput || !inputs.rateInput || !inputs.yearsInput) {
-      panel.innerHTML = "";
-      panel.hidden = true;
-      return;
-    }
-
-    const principal = cleanNumber(inputs.amountInput.value);
-    const annualRate = cleanNumber(inputs.rateInput.value);
-    const inputYears = cleanNumber(inputs.yearsInput.value);
-
-    if (
-      !Number.isFinite(principal) ||
-      !Number.isFinite(annualRate) ||
-      !Number.isFinite(inputYears) ||
-      principal <= 0 ||
-      annualRate < 0 ||
-      inputYears <= 0
-    ) {
-      panel.innerHTML = "";
-      panel.hidden = true;
-      return;
-    }
-
-    const maxYears = Math.min(Math.floor(inputYears), 60);
-    const data = [];
-
-    for (let year = 1; year <= maxYears; year += 1) {
-      const monthly = monthlyPayment(principal, annualRate, year);
-      const totalPayment = monthly * year * 12;
-      const totalInterest = totalPayment - principal;
-
-      data.push({
-        year,
-        monthly,
-        totalInterest,
-        totalPayment
-      });
     }
 
     const rows = data.map(function (row) {
@@ -2067,7 +1982,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }).join("");
 
     panel.hidden = false;
-
     panel.innerHTML = `
       <div class="loan-output-top">
         <div class="loan-result-panel">
@@ -2105,32 +2019,148 @@ document.addEventListener("DOMContentLoaded", function () {
       </div>
     `;
 
-    setupCopyButton(panel);
+    const copyButton = panel.querySelector(".loan-copy-btn");
+
+    if (copyButton) {
+      copyButton.addEventListener("click", function () {
+        copyText(getTableCopyText(panel), copyButton);
+      });
+    }
   }
 
-  function startLoanExternalOutput() {
+  function showLoanHistory() {
+    const list = document.getElementById("loanHistoryList");
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    loanHistory.slice().reverse().forEach(function (item) {
+      const li = document.createElement("li");
+      li.className = "history-item";
+
+      const text = document.createElement("span");
+      text.className = "history-text";
+      text.textContent = item;
+
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "history-copy-btn";
+      copyBtn.textContent = "copy";
+
+      copyBtn.addEventListener("click", function () {
+        copyText(item, copyBtn);
+      });
+
+      li.appendChild(text);
+      li.appendChild(copyBtn);
+      list.appendChild(li);
+    });
+  }
+
+  function saveLoanHistory(amount, annualRate, years, answer) {
+    const item =
+      "Loan: " + amount.toFixed(2) +
+      " | Interest: " + annualRate.toFixed(2) + "%" +
+      " | Years: " + years +
+      " → " + answer.replace(/\n/g, " | ");
+
+    loanHistory.push(item);
+
+    if (loanHistory.length > 50) {
+      loanHistory.shift();
+    }
+
+    safeSaveHistory();
+    showLoanHistory();
+  }
+
+  function calculateLoan() {
+    const amount = getNumber("amount");
+    const annualRate = getNumber("interest");
+    const years = getNumber("years");
+    const result = document.getElementById("loanResult");
+
+    if (amount <= 0 || annualRate < 0 || years <= 0) {
+      if (result) {
+        result.innerText = "Please enter valid loan details.";
+      }
+
+      renderLoanOutput([]);
+      return;
+    }
+
+    const maxYears = Math.min(Math.floor(years), 60);
+    const data = [];
+
+    for (let year = 1; year <= maxYears; year += 1) {
+      const monthly = monthlyPayment(amount, annualRate, year);
+      const totalPayment = monthly * year * 12;
+      const totalInterest = totalPayment - amount;
+
+      data.push({
+        year,
+        monthly,
+        totalInterest,
+        totalPayment
+      });
+    }
+
+    const selectedMonthly = monthlyPayment(amount, annualRate, years);
+    const selectedTotalPayment = selectedMonthly * years * 12;
+    const selectedTotalInterest = selectedTotalPayment - amount;
+
+    const answer =
+      "Monthly payment: " + selectedMonthly.toFixed(2) + "\n" +
+      "Annual interest rate: " + annualRate.toFixed(2) + "%\n" +
+      "Total interest: " + selectedTotalInterest.toFixed(2) + "\n" +
+      "Total payment: " + selectedTotalPayment.toFixed(2);
+
+    if (result) {
+      result.innerText = answer;
+    }
+
+    saveLoanHistory(amount, annualRate, years, answer);
+    renderLoanOutput(data);
+  }
+
+  function clearLoanHistory() {
+    loanHistory = [];
+
+    try {
+      localStorage.removeItem("loanHistory");
+    } catch {
+      /* ignore storage error */
+    }
+
+    showLoanHistory();
+
+    const result = document.getElementById("loanResult");
+    if (result) result.innerText = "";
+
+    renderLoanOutput([]);
+  }
+
+  function initLoanPage() {
     if (!isLoanPage()) return;
 
-    renderLoanExternalOutput();
+    safeLoadHistory();
+    showLoanHistory();
 
-    window.addEventListener("resize", renderLoanExternalOutput);
+    const result = document.getElementById("loanResult");
+    if (result) {
+      result.innerText = "";
+    }
 
-    document.addEventListener("click", function () {
-      setTimeout(renderLoanExternalOutput, 0);
-      setTimeout(renderLoanExternalOutput, 150);
-    });
-
-    document.addEventListener("keydown", function (event) {
-      if (event.key === "Enter") {
-        setTimeout(renderLoanExternalOutput, 0);
-        setTimeout(renderLoanExternalOutput, 150);
-      }
-    });
+    renderLoanOutput([]);
   }
 
+  window.calculateLoan = calculateLoan;
+  window.clearLoanHistory = clearLoanHistory;
+  window.showLoanHistory = showLoanHistory;
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startLoanExternalOutput);
+    document.addEventListener("DOMContentLoaded", initLoanPage);
   } else {
-    startLoanExternalOutput();
+    initLoanPage();
   }
 })();
