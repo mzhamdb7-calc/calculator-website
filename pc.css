@@ -721,3 +721,163 @@
     background: var(--yellow) !important;
   }
 }
+/* =====================================================
+   PC ONLY: References items as separate boxes again
+   No big combined reference container
+===================================================== */
+@media (min-width: 851px) {
+  main.pc-calculator-layout .reference-box {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    max-height: none !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    box-shadow: none !important;
+
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  main.pc-calculator-layout .reference-main-title,
+  main.pc-calculator-layout .reference-box > h2 {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 0 16px !important;
+    padding: 10px 12px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: var(--pc-border) solid var(--black) !important;
+    box-shadow: var(--pc-shadow) !important;
+
+    font-size: 22px !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+    text-align: left !important;
+
+    box-sizing: border-box !important;
+  }
+
+  main.pc-calculator-layout .reference-scroll {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    max-height: calc(100vh - 285px) !important;
+
+    margin: 0 !important;
+    padding: 0 8px 8px 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    box-sizing: border-box !important;
+  }
+
+  main.pc-calculator-layout .reference-card {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+
+    margin: 0 0 16px !important;
+    padding: 14px 12px !important;
+
+    color: var(--black) !important;
+
+    border: var(--pc-border) solid var(--black) !important;
+    box-shadow: var(--pc-shadow) !important;
+
+    text-align: center !important;
+
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+
+    box-sizing: border-box !important;
+  }
+
+  main.pc-calculator-layout .reference-card:nth-child(1) {
+    background: #d3fff9 !important;
+  }
+
+  main.pc-calculator-layout .reference-card:nth-child(2) {
+    background: #fff4b8 !important;
+  }
+
+  main.pc-calculator-layout .reference-card:nth-child(3) {
+    background: #d3ffd9 !important;
+  }
+
+  main.pc-calculator-layout .reference-card:nth-child(4) {
+    background: #ffd3d3 !important;
+  }
+
+  main.pc-calculator-layout .reference-card:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  main.pc-calculator-layout .reference-card h3 {
+    margin: 0 0 7px !important;
+
+    color: var(--black) !important;
+
+    font-size: 18px !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+  }
+
+  main.pc-calculator-layout .reference-card p {
+    margin: 0 0 8px !important;
+
+    color: var(--black) !important;
+
+    font-size: 15px !important;
+    font-weight: bold !important;
+    line-height: 1.35 !important;
+  }
+
+  main.pc-calculator-layout .reference-card a {
+    display: inline-flex !important;
+    max-width: 100% !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin-top: 8px !important;
+    padding: 6px 10px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 3px solid var(--black) !important;
+    box-shadow: 3px 3px 0 var(--black) !important;
+
+    font-size: 13px !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+    text-decoration: none !important;
+
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+
+    box-sizing: border-box !important;
+  }
+
+  main.pc-calculator-layout .reference-card a:hover {
+    background: var(--yellow) !important;
+  }
+}
