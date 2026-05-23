@@ -375,7 +375,7 @@
     if (!historyList) return;
 
     const title = document.querySelector(".history h3");
-    if (title) title.textContent = "Input Equation";
+    if (title) title.textContent = "Input";
 
     calcHistory = safeLoadArray("basicEquationHistory");
     historyList.innerHTML = "";
@@ -386,7 +386,7 @@
 
       const text = document.createElement("span");
       text.className = "history-text";
-      text.textContent = "Equation: " + equation;
+      text.textContent = "Eq: " + equation;
 
       const copyBtn = document.createElement("button");
       copyBtn.type = "button";
