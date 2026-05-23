@@ -1,19 +1,22 @@
+
+/*
+  Copyright © 2026 Hamdi. All rights reserved.
+  PC MODE ONLY
+  Clean PC navbar arrows + calculator page layout
+*/
+
 /* =====================================================
-   PC FINAL ARROW FIX
-   Remove duplicate arrows.
-   Use CSS only.
+   PC NAVBAR ARROWS
+   CSS arrows only
    Closed = ▼
    Hover/Open = ▲
 ===================================================== */
 @media (min-width: 851px) {
-  /* Hide old JS arrows */
   #navbar .nav-menu-arrow,
   #navbar .phone-sub-arrow {
     display: none !important;
-    content: none !important;
   }
 
-  /* Remove browser details marker */
   #navbar summary {
     list-style: none !important;
   }
@@ -26,7 +29,6 @@
     content: "" !important;
   }
 
-  /* Top menu arrows: calculator + info */
   #navbar > .dropdown > .dropbtn::after {
     content: "▼" !important;
     display: inline-block !important;
@@ -49,304 +51,13 @@
     content: "▲" !important;
   }
 
-  /* Health / finance arrows */
   #navbar .dropdown-content > details.nav-group > summary::after,
   #navbar .dropdown-content > .nav-group > summary::after,
   #navbar .dropdown-content > .fixed-nav-group > .nav-summary::after,
   #navbar .dropdown-content > .navbar-fixed-group > .navbar-fixed-summary::after {
     content: "▼" !important;
     display: inline-block !important;
-    margin-
-    /* =====================================================
-   LATEST PC ORIENTATION FOR CALCULATOR PAGES ONLY
-   Excludes index/about/privacy/contact
-===================================================== */
-@media (min-width: 851px) {
-  :root {
-    --pc-left-width: 340px;
-    --pc-center-width: 730px;
-    --pc-right-width: 340px;
-    --pc-gap: 35px;
-    --pc-border: 4px;
-    --pc-shadow: 5px 5px 0 var(--black);
-  }
-
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) {
-    width: 100% !important;
-    max-width: 1540px !important;
-
-    margin: 130px auto 80px !important;
-    padding: 16px 26px !important;
-
-    display: grid !important;
-    grid-template-columns: var(--pc-left-width) var(--pc-center-width) var(--pc-right-width) !important;
-    grid-template-rows: auto auto !important;
-
-    gap: 22px var(--pc-gap) !important;
-
-    justify-content: center !important;
-    align-items: start !important;
-
-    box-sizing: border-box !important;
-  }
-
-  /* LEFT TOP: What box */
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) > .pc-what-slot {
-    grid-column: 1 !important;
-    grid-row: 1 !important;
-
-    width: var(--pc-left-width) !important;
-    max-width: var(--pc-left-width) !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-
-    justify-self: center !important;
-    align-self: start !important;
-  }
-
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) > .pc-what-slot .instruction-what-box {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    min-height: 105px !important;
-
-    margin: 0 !important;
-    padding: 14px 12px !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: center !important;
-
-    background: #ffd3d3 !important;
-    color: var(--black) !important;
-
-    border: var(--pc-border) solid var(--black) !important;
-    box-shadow: var(--pc-shadow) !important;
-
-    text-align: center !important;
-    box-sizing: border-box !important;
-  }
-
-  /* LEFT BOTTOM: Result / History */
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) > .history,
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) > .age-history-box,
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) > .bmi-history-box,
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) > .discount-history-box,
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) > .loan-history-box,
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) > .percentage-history-box,
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) > .compound-history-box {
-    grid-column: 1 !important;
-    grid-row: 2 !important;
-
-    width: var(--pc-left-width) !important;
-    max-width: var(--pc-left-width) !important;
-
-    min-height: 520px !important;
-    max-height: 520px !important;
-
-    margin: 0 !important;
-    padding: 20px !important;
-
-    background: var(--soft-yellow) !important;
-
-    border: var(--pc-border) solid var(--black) !important;
-    box-shadow: var(--pc-shadow) !important;
-    transform: none !important;
-
-    justify-self: center !important;
-    align-self: start !important;
-
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-
-    box-sizing: border-box !important;
-  }
-
-  /* CENTER: Calculator */
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) > .calculator {
-    grid-column: 2 !important;
-    grid-row: 1 / span 2 !important;
-
-    width: 100% !important;
-    max-width: var(--pc-center-width) !important;
-
-    margin: 0 !important;
-
-    justify-self: center !important;
-    align-self: start !important;
-
-    box-sizing: border-box !important;
-  }
-
-  /* RIGHT: Instructions / Formula / Example / References */
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) > .instruction-box {
-    grid-column: 3 !important;
-    grid-row: 1 / span 2 !important;
-
-    width: var(--pc-right-width) !important;
-    max-width: var(--pc-right-width) !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-
-    justify-self: center !important;
-    align-self: start !important;
-
-    overflow: visible !important;
-    box-sizing: border-box !important;
-  }
-
-  /* hide What if old code leaves it inside right column */
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) > .instruction-box > .instruction-what-box {
-    display: none !important;
-  }
-
-  /* Titles */
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) .instruction-main-title,
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) .reference-main-title,
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) .reference-box > h2 {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    min-height: 56px !important;
-
-    margin: 0 0 16px !important;
-    padding: 10px 12px !important;
-
-    display: flex !important;
-    align-items: center !important;
-
-    background: var(--white) !important;
-    color: var(--black) !important;
-
-    border: var(--pc-border) solid var(--black) !important;
-    box-shadow: var(--pc-shadow) !important;
-
-    font-size: 22px !important;
-    font-weight: bold !important;
-    line-height: 1.2 !important;
-    text-align: left !important;
-
-    box-sizing: border-box !important;
-  }
-
-  /* Right-side item boxes */
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) .instruction-box .instruction-section:not(.instruction-what-box),
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) .reference-card {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    min-height: 118px !important;
-
-    margin: 0 0 16px !important;
-    padding: 14px 12px !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    color: var(--black) !important;
-
-    border: var(--pc-border) solid var(--black) !important;
-    box-shadow: var(--pc-shadow) !important;
-
-    text-align: center !important;
-    box-sizing: border-box !important;
-
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-  }
-
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) .instruction-how-box {
-    background: #d3fff9 !important;
-  }
-
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) .instruction-formula-box {
-    background: #fff4b8 !important;
-  }
-
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) .instruction-example-box {
-    background: #d3ffd9 !important;
-  }
-
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) .reference-card {
-    background: #d3fff9 !important;
-  }
-
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) .reference-card:nth-child(2) {
-    background: #fff4b8 !important;
-  }
-
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) .reference-card:nth-child(3) {
-    background: #d3ffd9 !important;
-  }
-
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) .reference-box {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-  }
-
-  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
-  main.has-instructions:not(.calculator-box) .reference-scroll {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    max-height: 360px !important;
-
-    padding: 0 8px 8px 0 !important;
-
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-
-    box-sizing: border-box !important;
-  }
-}: 8px !important;
+    margin-left: 8px !important;
     color: var(--black) !important;
     font-size: 14px !important;
     font-weight: bold !important;
@@ -375,492 +86,7 @@
 }
 
 /* =====================================================
-   PC ORIENTATION ONLY FOR REAL CALCULATOR PAGES
-   Not index/about/privacy/contact
-===================================================== */
-@media (min-width: 851px) {
-  :root {
-    --pc-left-width: 340px;
-    --pc-center-width: 730px;
-    --pc-right-width: 340px;
-    --pc-gap: 35px;
-    --pc-border: 4px;
-    --pc-shadow: 5px 5px 0 var(--black);
-  }
-
-  main.calculator-container.has-instructions,
-  main.age-calculator-container.has-instructions,
-  main.bmi-calculator-container.has-instructions,
-  main.discount-calculator-container.has-instructions,
-  main.loan-calculator-container.has-instructions,
-  main.percentage-calculator-container.has-instructions,
-  main.compound-calculator-container.has-instructions,
-  main.compound-interest-container.has-instructions {
-    width: 100% !important;
-    max-width: 1540px !important;
-
-    margin: 130px auto 80px !important;
-    padding: 16px 26px !important;
-
-    display: grid !important;
-    grid-template-columns: var(--pc-left-width) var(--pc-center-width) var(--pc-right-width) !important;
-    grid-template-rows: auto auto !important;
-
-    gap: 22px var(--pc-gap) !important;
-
-    justify-content: center !important;
-    align-items: start !important;
-
-    box-sizing: border-box !important;
-  }
-
-  main.calculator-container.has-instructions > .pc-what-slot,
-  main.age-calculator-container.has-instructions > .pc-what-slot,
-  main.bmi-calculator-container.has-instructions > .pc-what-slot,
-  main.discount-calculator-container.has-instructions > .pc-what-slot,
-  main.loan-calculator-container.has-instructions > .pc-what-slot,
-  main.percentage-calculator-container.has-instructions > .pc-what-slot,
-  main.compound-calculator-container.has-instructions > .pc-what-slot,
-  main.compound-interest-container.has-instructions > .pc-what-slot {
-    grid-column: 1 !important;
-    grid-row: 1 !important;
-
-    width: var(--pc-left-width) !important;
-    max-width: var(--pc-left-width) !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-
-    justify-self: center !important;
-    align-self: start !important;
-  }
-
-  main.has-instructions > .pc-what-slot .instruction-what-box {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    min-height: 105px !important;
-
-    margin: 0 !important;
-    padding: 14px 12px !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: center !important;
-
-    background: #ffd3d3 !important;
-    color: var(--black) !important;
-
-    border: var(--pc-border) solid var(--black) !important;
-    box-shadow: var(--pc-shadow) !important;
-
-    text-align: center !important;
-    box-sizing: border-box !important;
-  }
-
-  main.calculator-container.has-instructions > .history,
-  main.age-calculator-container.has-instructions > .age-history-box,
-  main.bmi-calculator-container.has-instructions > .bmi-history-box,
-  main.discount-calculator-container.has-instructions > .discount-history-box,
-  main.loan-calculator-container.has-instructions > .loan-history-box,
-  main.percentage-calculator-container.has-instructions > .percentage-history-box,
-  main.compound-calculator-container.has-instructions > .compound-history-box,
-  main.compound-interest-container.has-instructions > .compound-history-box {
-    grid-column: 1 !important;
-    grid-row: 2 !important;
-
-    width: var(--pc-left-width) !important;
-    max-width: var(--pc-left-width) !important;
-
-    min-height: 520px !important;
-    max-height: 520px !important;
-
-    margin: 0 !important;
-    padding: 20px !important;
-
-    background: var(--soft-yellow) !important;
-
-    border: var(--pc-border) solid var(--black) !important;
-    box-shadow: var(--pc-shadow) !important;
-    transform: none !important;
-
-    justify-self: center !important;
-    align-self: start !important;
-
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-
-    box-sizing: border-box !important;
-  }
-
-  main.calculator-container.has-instructions > .calculator,
-  main.age-calculator-container.has-instructions > .calculator,
-  main.bmi-calculator-container.has-instructions > .calculator,
-  main.discount-calculator-container.has-instructions > .calculator,
-  main.loan-calculator-container.has-instructions > .calculator,
-  main.percentage-calculator-container.has-instructions > .calculator,
-  main.compound-calculator-container.has-instructions > .calculator,
-  main.compound-interest-container.has-instructions > .calculator {
-    grid-column: 2 !important;
-    grid-row: 1 / span 2 !important;
-
-    width: 100% !important;
-    max-width: var(--pc-center-width) !important;
-
-    margin: 0 !important;
-
-    justify-self: center !important;
-    align-self: start !important;
-
-    box-sizing: border-box !important;
-  }
-
-  main.calculator-container.has-instructions > .instruction-box,
-  main.age-calculator-container.has-instructions > .instruction-box,
-  main.bmi-calculator-container.has-instructions > .instruction-box,
-  main.discount-calculator-container.has-instructions > .instruction-box,
-  main.loan-calculator-container.has-instructions > .instruction-box,
-  main.percentage-calculator-container.has-instructions > .instruction-box,
-  main.compound-calculator-container.has-instructions > .instruction-box,
-  main.compound-interest-container.has-instructions > .instruction-box {
-    grid-column: 3 !important;
-    grid-row: 1 / span 2 !important;
-
-    width: var(--pc-right-width) !important;
-    max-width: var(--pc-right-width) !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-
-    justify-self: center !important;
-    align-self: start !important;
-
-    overflow: visible !important;
-    box-sizing: border-box !important;
-  }
-
-  main.has-instructions > .instruction-box > .instruction-what-box {
-    display: none !important;
-  }
-}
-/* =====================================================
-   PC AUTO-FIT SIDE BOXES
-   Calculator pages only
-   LEFT: What box controls left column width
-   RIGHT: Instruction/How controls right column width
-===================================================== */
-@media (min-width: 851px) {
-  :root {
-    --pc-left-width: clamp(320px, 22vw, 360px);
-    --pc-center-width: clamp(650px, 48vw, 780px);
-    --pc-right-width: clamp(320px, 22vw, 360px);
-    --pc-gap: 35px;
-    --pc-border: 4px;
-    --pc-shadow: 5px 5px 0 var(--black);
-  }
-
-  main.calculator-container.has-instructions,
-  main.age-calculator-container.has-instructions,
-  main.bmi-calculator-container.has-instructions,
-  main.discount-calculator-container.has-instructions,
-  main.loan-calculator-container.has-instructions,
-  main.percentage-calculator-container.has-instructions,
-  main.compound-calculator-container.has-instructions,
-  main.compound-interest-container.has-instructions {
-    width: 100% !important;
-    max-width: 1540px !important;
-
-    display: grid !important;
-    grid-template-columns: var(--pc-left-width) var(--pc-center-width) var(--pc-right-width) !important;
-    grid-template-rows: auto auto !important;
-
-    gap: 22px var(--pc-gap) !important;
-
-    justify-content: center !important;
-    align-items: start !important;
-
-    box-sizing: border-box !important;
-  }
-
-  /* LEFT COLUMN: What box */
-  main.calculator-container.has-instructions > .pc-what-slot,
-  main.age-calculator-container.has-instructions > .pc-what-slot,
-  main.bmi-calculator-container.has-instructions > .pc-what-slot,
-  main.discount-calculator-container.has-instructions > .pc-what-slot,
-  main.loan-calculator-container.has-instructions > .pc-what-slot,
-  main.percentage-calculator-container.has-instructions > .pc-what-slot,
-  main.compound-calculator-container.has-instructions > .pc-what-slot,
-  main.compound-interest-container.has-instructions > .pc-what-slot {
-    grid-column: 1 !important;
-    grid-row: 1 !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    justify-self: stretch !important;
-    align-self: start !important;
-
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-  }
-
-  main.has-instructions > .pc-what-slot .instruction-what-box {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    height: auto !important;
-    min-height: auto !important;
-    max-height: none !important;
-
-    margin: 0 !important;
-    padding: 14px 12px !important;
-
-    background: #ffd3d3 !important;
-    color: var(--black) !important;
-
-    border: var(--pc-border) solid var(--black) !important;
-    box-shadow: var(--pc-shadow) !important;
-
-    text-align: center !important;
-    box-sizing: border-box !important;
-
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-  }
-
-  /* LEFT COLUMN: Result/History follows What box width */
-  main.calculator-container.has-instructions > .history,
-  main.age-calculator-container.has-instructions > .age-history-box,
-  main.bmi-calculator-container.has-instructions > .bmi-history-box,
-  main.discount-calculator-container.has-instructions > .discount-history-box,
-  main.loan-calculator-container.has-instructions > .loan-history-box,
-  main.percentage-calculator-container.has-instructions > .percentage-history-box,
-  main.compound-calculator-container.has-instructions > .compound-history-box,
-  main.compound-interest-container.has-instructions > .compound-history-box {
-    grid-column: 1 !important;
-    grid-row: 2 !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    min-height: 0 !important;
-    height: auto !important;
-    max-height: calc(100vh - 260px) !important;
-
-    margin: 0 !important;
-    padding: 20px !important;
-
-    background: var(--soft-yellow) !important;
-
-    border: var(--pc-border) solid var(--black) !important;
-    box-shadow: var(--pc-shadow) !important;
-    transform: none !important;
-
-    justify-self: stretch !important;
-    align-self: start !important;
-
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-
-    box-sizing: border-box !important;
-  }
-
-  /* CENTER COLUMN: Calculator */
-  main.calculator-container.has-instructions > .calculator,
-  main.age-calculator-container.has-instructions > .calculator,
-  main.bmi-calculator-container.has-instructions > .calculator,
-  main.discount-calculator-container.has-instructions > .calculator,
-  main.loan-calculator-container.has-instructions > .calculator,
-  main.percentage-calculator-container.has-instructions > .calculator,
-  main.compound-calculator-container.has-instructions > .calculator,
-  main.compound-interest-container.has-instructions > .calculator {
-    grid-column: 2 !important;
-    grid-row: 1 / span 2 !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 !important;
-
-    justify-self: stretch !important;
-    align-self: start !important;
-
-    box-sizing: border-box !important;
-  }
-
-  /* RIGHT COLUMN: Instruction column */
-  main.calculator-container.has-instructions > .instruction-box,
-  main.age-calculator-container.has-instructions > .instruction-box,
-  main.bmi-calculator-container.has-instructions > .instruction-box,
-  main.discount-calculator-container.has-instructions > .instruction-box,
-  main.loan-calculator-container.has-instructions > .instruction-box,
-  main.percentage-calculator-container.has-instructions > .instruction-box,
-  main.compound-calculator-container.has-instructions > .instruction-box,
-  main.compound-interest-container.has-instructions > .instruction-box {
-    grid-column: 3 !important;
-    grid-row: 1 / span 2 !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    justify-self: stretch !important;
-    align-self: start !important;
-
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-
-    box-sizing: border-box !important;
-    overflow: visible !important;
-  }
-
-  /* Remove duplicate What box on right side */
-  main.calculator-container.has-instructions > .instruction-box > .instruction-what-box,
-  main.age-calculator-container.has-instructions > .instruction-box > .instruction-what-box,
-  main.bmi-calculator-container.has-instructions > .instruction-box > .instruction-what-box,
-  main.discount-calculator-container.has-instructions > .instruction-box > .instruction-what-box,
-  main.loan-calculator-container.has-instructions > .instruction-box > .instruction-what-box,
-  main.percentage-calculator-container.has-instructions > .instruction-box > .instruction-what-box,
-  main.compound-calculator-container.has-instructions > .instruction-box > .instruction-what-box,
-  main.compound-interest-container.has-instructions > .instruction-box > .instruction-what-box {
-    display: none !important;
-  }
-
-  /* RIGHT COLUMN: Titles auto-fit content */
-  main.calculator-container.has-instructions .instruction-main-title,
-  main.age-calculator-container.has-instructions .instruction-main-title,
-  main.bmi-calculator-container.has-instructions .instruction-main-title,
-  main.discount-calculator-container.has-instructions .instruction-main-title,
-  main.loan-calculator-container.has-instructions .instruction-main-title,
-  main.percentage-calculator-container.has-instructions .instruction-main-title,
-  main.compound-calculator-container.has-instructions .instruction-main-title,
-  main.compound-interest-container.has-instructions .instruction-main-title,
-  main.calculator-container.has-instructions .reference-main-title,
-  main.age-calculator-container.has-instructions .reference-main-title,
-  main.bmi-calculator-container.has-instructions .reference-main-title,
-  main.discount-calculator-container.has-instructions .reference-main-title,
-  main.loan-calculator-container.has-instructions .reference-main-title,
-  main.percentage-calculator-container.has-instructions .reference-main-title,
-  main.compound-calculator-container.has-instructions .reference-main-title,
-  main.compound-interest-container.has-instructions .reference-main-title {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    height: auto !important;
-    min-height: auto !important;
-    max-height: none !important;
-
-    margin: 0 0 16px !important;
-    padding: 10px 12px !important;
-
-    background: var(--white) !important;
-    color: var(--black) !important;
-
-    border: var(--pc-border) solid var(--black) !important;
-    box-shadow: var(--pc-shadow) !important;
-
-    font-size: 22px !important;
-    font-weight: bold !important;
-    line-height: 1.2 !important;
-    text-align: left !important;
-
-    box-sizing: border-box !important;
-  }
-
-  /* RIGHT COLUMN: How / Formula / Example / Reference cards auto-fit */
-  main.calculator-container.has-instructions .instruction-box .instruction-section:not(.instruction-what-box),
-  main.age-calculator-container.has-instructions .instruction-box .instruction-section:not(.instruction-what-box),
-  main.bmi-calculator-container.has-instructions .instruction-box .instruction-section:not(.instruction-what-box),
-  main.discount-calculator-container.has-instructions .instruction-box .instruction-section:not(.instruction-what-box),
-  main.loan-calculator-container.has-instructions .instruction-box .instruction-section:not(.instruction-what-box),
-  main.percentage-calculator-container.has-instructions .instruction-box .instruction-section:not(.instruction-what-box),
-  main.compound-calculator-container.has-instructions .instruction-box .instruction-section:not(.instruction-what-box),
-  main.compound-interest-container.has-instructions .instruction-box .instruction-section:not(.instruction-what-box),
-  main.calculator-container.has-instructions .reference-card,
-  main.age-calculator-container.has-instructions .reference-card,
-  main.bmi-calculator-container.has-instructions .reference-card,
-  main.discount-calculator-container.has-instructions .reference-card,
-  main.loan-calculator-container.has-instructions .reference-card,
-  main.percentage-calculator-container.has-instructions .reference-card,
-  main.compound-calculator-container.has-instructions .reference-card,
-  main.compound-interest-container.has-instructions .reference-card {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    height: auto !important;
-    min-height: auto !important;
-    max-height: none !important;
-
-    margin: 0 0 16px !important;
-    padding: 14px 12px !important;
-
-    color: var(--black) !important;
-
-    border: var(--pc-border) solid var(--black) !important;
-    box-shadow: var(--pc-shadow) !important;
-
-    text-align: center !important;
-    box-sizing: border-box !important;
-
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-  }
-
-  main.has-instructions .instruction-how-box {
-    background: #d3fff9 !important;
-  }
-
-  main.has-instructions .instruction-formula-box {
-    background: #fff4b8 !important;
-  }
-
-  main.has-instructions .instruction-example-box {
-    background: #d3ffd9 !important;
-  }
-
-  main.has-instructions .reference-card {
-    background: #d3fff9 !important;
-  }
-
-  main.has-instructions .reference-card:nth-child(2) {
-    background: #fff4b8 !important;
-  }
-
-  main.has-instructions .reference-card:nth-child(3) {
-    background: #d3ffd9 !important;
-  }
-
-  main.has-instructions .reference-box,
-  main.has-instructions .reference-scroll {
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-  }
-
-  main.has-instructions .reference-scroll {
-    max-height: calc(100vh - 260px) !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-  }
-}
-/* =====================================================
-   PC FINAL AUTO-FIT CALCULATOR LAYOUT
+   PC CALCULATOR PAGE LAYOUT
    Only pages with .pc-calculator-layout
 ===================================================== */
 @media (min-width: 851px) {
@@ -876,7 +102,6 @@
   main.pc-calculator-layout {
     width: 100% !important;
     max-width: min(1540px, calc(100vw - 28px)) !important;
-
     margin: 130px auto 80px !important;
     padding: 16px !important;
 
@@ -888,7 +113,6 @@
     grid-template-rows: auto auto !important;
 
     gap: 22px var(--pc-gap) !important;
-
     justify-content: center !important;
     align-items: start !important;
 
@@ -901,7 +125,6 @@
     box-sizing: border-box !important;
   }
 
-  /* LEFT TOP: What box */
   main.pc-calculator-layout > .pc-what-slot {
     grid-column: 1 !important;
     grid-row: 1 !important;
@@ -947,7 +170,13 @@
     word-break: break-word !important;
   }
 
-  /* LEFT BOTTOM: Result / History */
+  main.pc-calculator-layout > .pc-what-slot .instruction-what-box h3,
+  main.pc-calculator-layout > .pc-what-slot .instruction-what-box p {
+    max-width: 100% !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+  }
+
   main.pc-calculator-layout > .history,
   main.pc-calculator-layout > .age-history-box,
   main.pc-calculator-layout > .bmi-history-box,
@@ -983,7 +212,6 @@
     box-sizing: border-box !important;
   }
 
-  /* CENTER: Calculator */
   main.pc-calculator-layout > .calculator {
     grid-column: 2 !important;
     grid-row: 1 / span 2 !important;
@@ -999,7 +227,6 @@
     box-sizing: border-box !important;
   }
 
-  /* RIGHT COLUMN */
   main.pc-calculator-layout > .instruction-box {
     grid-column: 3 !important;
     grid-row: 1 / span 2 !important;
@@ -1021,12 +248,10 @@
     box-sizing: border-box !important;
   }
 
-  /* Hide duplicate What box if old code leaves it on right */
   main.pc-calculator-layout > .instruction-box > .instruction-what-box {
     display: none !important;
   }
 
-  /* RIGHT TITLES */
   main.pc-calculator-layout .instruction-main-title,
   main.pc-calculator-layout .reference-main-title,
   main.pc-calculator-layout .reference-box > h2 {
@@ -1057,7 +282,6 @@
     word-break: break-word !important;
   }
 
-  /* RIGHT BOXES */
   main.pc-calculator-layout .instruction-box .instruction-section:not(.instruction-what-box),
   main.pc-calculator-layout .reference-card {
     width: 100% !important;
@@ -1187,7 +411,6 @@
   }
 }
 
-/* Smaller PC screens: prevent layout going beyond screen */
 @media (min-width: 851px) and (max-width: 1180px) {
   main.pc-calculator-layout {
     grid-template-columns:
@@ -1201,3 +424,172 @@
     gap: 18px !important;
   }
 }
+```
+
+---
+
+COPY 2 — Full pc.js
+Replace everything inside pc.js with this:
+
+```javascript
+/*
+  Copyright © 2026 Hamdi. All rights reserved.
+  PC MODE ONLY
+  Clean old JS arrows.
+  CSS controls arrows only.
+*/
+
+(function () {
+  "use strict";
+
+  function cleanOldNavbarArrows() {
+    document
+      .querySelectorAll("#navbar .nav-menu-arrow, #navbar .phone-sub-arrow")
+      .forEach(function (arrow) {
+        arrow.remove();
+      });
+  }
+
+  function start() {
+    cleanOldNavbarArrows();
+
+    window.addEventListener("resize", cleanOldNavbarArrows);
+
+    document.addEventListener("click", function () {
+      setTimeout(cleanOldNavbarArrows, 0);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+```
+
+---
+
+COPY 3 — Paste at bottom of script.js
+
+```javascript
+/* =====================================================
+   PC CALCULATOR PAGE LAYOUT ONLY
+   Excludes index/about/privacy/contact
+===================================================== */
+(function () {
+  "use strict";
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function isRealCalculatorPage(main) {
+    if (!main) return false;
+
+    if (main.classList.contains("calculator-box")) return false;
+
+    if (
+      document.body.classList.contains("index-page") ||
+      document.body.classList.contains("about-page") ||
+      document.body.classList.contains("privacy-page") ||
+      document.body.classList.contains("contact-page") ||
+      document.body.classList.contains("info-page")
+    ) {
+      return false;
+    }
+
+    return !!(
+      main.querySelector(":scope > .calculator") &&
+      main.querySelector(":scope > .instruction-box") &&
+      (
+        main.querySelector(":scope > .history") ||
+        main.querySelector(":scope > .age-history-box") ||
+        main.querySelector(":scope > .bmi-history-box") ||
+        main.querySelector(":scope > .discount-history-box") ||
+        main.querySelector(":scope > .loan-history-box") ||
+        main.querySelector(":scope > .percentage-history-box") ||
+        main.querySelector(":scope > .compound-history-box")
+      )
+    );
+  }
+
+  function getLeftBox(main) {
+    return (
+      main.querySelector(":scope > .history") ||
+      main.querySelector(":scope > .age-history-box") ||
+      main.querySelector(":scope > .bmi-history-box") ||
+      main.querySelector(":scope > .discount-history-box") ||
+      main.querySelector(":scope > .loan-history-box") ||
+      main.querySelector(":scope > .percentage-history-box") ||
+      main.querySelector(":scope > .compound-history-box")
+    );
+  }
+
+  function syncPcCalculatorLayout() {
+    document.querySelectorAll("main").forEach(function (main) {
+      if (!isRealCalculatorPage(main)) {
+        main.classList.remove("pc-calculator-layout");
+        return;
+      }
+
+      const instructionBox = main.querySelector(":scope > .instruction-box");
+      const leftBox = getLeftBox(main);
+
+      if (!instructionBox || !leftBox) return;
+
+      main.classList.add("pc-calculator-layout");
+
+      let whatBox =
+        main.querySelector(":scope > .pc-what-slot .instruction-what-box") ||
+        instructionBox.querySelector(":scope > .instruction-what-box");
+
+      if (!whatBox) return;
+
+      main.querySelectorAll(".instruction-what-box").forEach(function (box) {
+        if (box !== whatBox) {
+          box.remove();
+        }
+      });
+
+      let slot = main.querySelector(":scope > .pc-what-slot");
+
+      if (isPc()) {
+        if (!slot) {
+          slot = document.createElement("aside");
+          slot.className = "pc-what-slot";
+          slot.setAttribute("aria-label", "What this calculator does");
+          main.insertBefore(slot, leftBox);
+        }
+
+        if (!slot.contains(whatBox)) {
+          slot.appendChild(whatBox);
+        }
+      } else {
+        const title =
+          instructionBox.querySelector(":scope > .instruction-main-title") ||
+          instructionBox.querySelector(":scope > h2");
+
+        if (title && !instructionBox.contains(whatBox)) {
+          instructionBox.insertBefore(whatBox, title);
+        }
+
+        if (slot && slot.children.length === 0) {
+          slot.remove();
+        }
+      }
+    });
+  }
+
+  function start() {
+    syncPcCalculatorLayout();
+    window.addEventListener("resize", syncPcCalculatorLayout);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+```
