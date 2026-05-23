@@ -561,22 +561,29 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     background: var(--yellow) !important;
   }
 
-  /* Bottom result tables: loan style for all pages */
+  /* Bottom result tables: loan style for all pages
+     Updated: removed 100% / max-width limits so wide tables can go beyond screen width. */
   main.pc-calculator-layout > #universalLoanStyleOutput,
   main.pc-calculator-layout > #loanExternalOutput,
   main.pc-calculator-layout > .universal-output-panel {
     grid-column: 1 / 3 !important;
     grid-row: 3 !important;
-    width: 100% !important;
-    max-width: 100% !important;
+
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+
     margin: 0 !important;
     padding: 0 !important;
+
     display: flex !important;
     flex-direction: column !important;
     gap: 18px !important;
+
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
+
     box-sizing: border-box !important;
     overflow: visible !important;
   }
@@ -590,27 +597,37 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
   #universalLoanStyleOutput .loan-output-top,
   #loanExternalOutput .loan-output-top,
   .universal-output-panel .universal-output-top {
-    width: 100% !important;
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) auto !important;
     gap: 16px !important;
     align-items: start !important;
+
     box-sizing: border-box !important;
+    overflow: visible !important;
   }
 
   #universalLoanStyleOutput .loan-result-panel,
   #loanExternalOutput .loan-result-panel,
   #loanExternalOutput .loan-graph-panel,
   .universal-output-panel .universal-result-panel {
-    width: 100% !important;
-    max-width: 100% !important;
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+
     padding: 18px !important;
+
     background: #d3fff9 !important;
     color: var(--black) !important;
+
     border: 5px solid var(--black) !important;
     box-shadow: 8px 8px 0 var(--black) !important;
+
     box-sizing: border-box !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
 
   #loanExternalOutput .loan-graph-panel {
@@ -632,33 +649,42 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
   #loanExternalOutput .loan-result-body,
   #loanExternalOutput .loan-graph-body,
   .universal-output-panel .universal-result-body {
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow-x: auto !important;
-    overflow-y: auto !important;
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+
+    overflow: visible !important;
     box-sizing: border-box !important;
   }
 
   #universalLoanStyleOutput .loan-result-table-scroll,
   #loanExternalOutput .loan-result-table-scroll,
   .bottom-result-table-scroll {
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow-x: auto !important;
-    overflow-y: auto !important;
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+
+    overflow: visible !important;
+
     background: var(--white) !important;
     border: 4px solid var(--black) !important;
+
     box-sizing: border-box !important;
   }
 
   #universalLoanStyleOutput .loan-result-table,
   #loanExternalOutput .loan-result-table,
   .bottom-result-table {
-    width: 100% !important;
+    width: max-content !important;
     min-width: 700px !important;
+    max-width: none !important;
+
+    table-layout: auto !important;
     border-collapse: collapse !important;
+
     background: var(--white) !important;
     color: var(--black) !important;
+
     font-size: 17px !important;
     font-weight: bold !important;
     text-align: center !important;
@@ -671,10 +697,13 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
   .bottom-result-table th,
   .bottom-result-table td {
     padding: 12px 14px !important;
+
     border: 3px solid var(--black) !important;
+
     text-align: center !important;
-    white-space: pre-line !important;
+    white-space: nowrap !important;
     vertical-align: middle !important;
+    overflow: visible !important;
   }
 
   #universalLoanStyleOutput .loan-result-table th,
@@ -1373,100 +1402,5 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
 
   main.pc-calculator-layout .reference-card a {
     align-self: center !important;
-  }
-}
-/* =====================================================
-   PC ONLY: bottom result can go beyond screen width
-   Fixes age result table being hidden/cut off
-   Applies to all calculator pages
-===================================================== */
-@media (min-width: 851px) {
-  html,
-  body {
-    overflow-x: auto !important;
-  }
-
-  main.pc-calculator-layout {
-    overflow: visible !important;
-  }
-
-  main.pc-calculator-layout > #universalLoanStyleOutput,
-  main.pc-calculator-layout > #loanExternalOutput,
-  main.pc-calculator-layout > .universal-output-panel {
-    grid-column: 1 / 3 !important;
-    grid-row: 3 !important;
-
-    width: max-content !important;
-    min-width: 100% !important;
-    max-width: none !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    overflow: visible !important;
-    box-sizing: border-box !important;
-  }
-
-  #universalLoanStyleOutput .loan-output-top,
-  #loanExternalOutput .loan-output-top,
-  #loanExternalOutput .loan-graph-row,
-  .universal-output-panel .universal-output-top {
-    width: max-content !important;
-    min-width: 100% !important;
-    max-width: none !important;
-
-    overflow: visible !important;
-  }
-
-  #universalLoanStyleOutput .loan-result-panel,
-  #loanExternalOutput .loan-result-panel,
-  #loanExternalOutput .loan-graph-panel,
-  .universal-output-panel .universal-result-panel {
-    width: max-content !important;
-    min-width: 100% !important;
-    max-width: none !important;
-
-    overflow: visible !important;
-  }
-
-  #universalLoanStyleOutput .loan-result-body,
-  #loanExternalOutput .loan-result-body,
-  #loanExternalOutput .loan-graph-body,
-  .universal-output-panel .universal-result-body {
-    width: max-content !important;
-    min-width: 100% !important;
-    max-width: none !important;
-
-    overflow: visible !important;
-  }
-
-  #universalLoanStyleOutput .loan-result-table-scroll,
-  #loanExternalOutput .loan-result-table-scroll,
-  .bottom-result-table-scroll {
-    width: max-content !important;
-    min-width: 100% !important;
-    max-width: none !important;
-
-    overflow: visible !important;
-  }
-
-  #universalLoanStyleOutput .loan-result-table,
-  #loanExternalOutput .loan-result-table,
-  .bottom-result-table {
-    width: max-content !important;
-    min-width: 700px !important;
-    max-width: none !important;
-
-    table-layout: auto !important;
-  }
-
-  #universalLoanStyleOutput .loan-result-table th,
-  #universalLoanStyleOutput .loan-result-table td,
-  #loanExternalOutput .loan-result-table th,
-  #loanExternalOutput .loan-result-table td,
-  .bottom-result-table th,
-  .bottom-result-table td {
-    white-space: nowrap !important;
-    overflow: visible !important;
   }
 }
