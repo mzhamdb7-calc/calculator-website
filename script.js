@@ -3836,3 +3836,594 @@ document.addEventListener("DOMContentLoaded", function () {
 
   window.clearInputHistory = clearInputHistory;
 })();
+/* =====================================================
+   ALL CALCULATOR PAGES: use loan-page result table style
+   Result output becomes table style like loan page
+   Works on PC + keeps loan page table
+===================================================== */
+(function () {
+  "use strict";
+
+  function isExcludedPage() {
+    return (
+      document.body.classList.contains("index-page") ||
+      document.body.classList.contains("about-page") ||
+      document.body.classList.contains("privacy-page") ||
+      document.body.classList.contains("contact-page") ||
+      document.body.classList.contains("info-page")
+    );
+  }
+
+  function getPageType() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    if (title.includes("basic")) return "basic";
+    if (title.includes("age")) return "age";
+    if (title.includes("bmi")) return "bmi";
+    if (title.includes("loan")) return "loan";
+    if (title.includes("discount")) return "discount";
+    if (title.includes("percentage")) return "percentage";
+    if (title.includes("compound")) return "compound";
+
+    return "";
+  }
+
+  function isCalculatorPage() {
+    const main = document.querySelector("main");
+    if (!main || isExcludedPage()) return false;
+    return !!main.querySelector(".calculator");
+  }
+
+  function getMain() {
+    return document.querySelector("main.pc-calculator-layout") || document.querySelector("main");
+  }
+
+  function getCalculator() {
+    const main = getMain();
+    return main ? main.querySelector(".calculator") : null;
+  }
+
+  function getResultElement() {
+    const selectors = [
+      "#result",
+      "#ageResult",
+      "#bmiResult",
+      "#loanResult",
+      "#discountResult",
+      "#percentageResult",
+      "#compoundResult"
+    ];
+
+    for (const selector of selectors) {
+      const el = document.querySelector(selector);
+      if (el) return el;
+    }
+
+    return null;
+  }
+
+  function getValue(id) {
+    const el = document.getElementById(id);
+    return el ? String(el.value || "").trim() : "";
+  }
+
+  function getSelectText(id) {
+    const el = document.getElementById(id);
+    if (!el) return "";
+
+    if (el.tagName.toLowerCase() === "select") {
+      return el.options[el.selectedIndex]
+        ? el.options[el.selectedIndex].textContent.trim()
+        : el.value;
+    }
+
+    return String(el.value || "").trim();
+  }
+
+  function textToRows(text) {
+    return String(text || "")
+      .split(/\n|\|/g)
+      .map(function (line) {
+        return line.trim();
+      })
+      .filter(Boolean)
+      .map(function (line) {
+        const parts = line.split(":");
+
+        if (parts.length >= 2) {
+          return [
+            parts.shift().trim(),
+            parts.join(":").trim()
+          ];
+        }
+
+        return ["Result", line];
+      });
+  }
+
+  function buildRows(type, resultText) {
+    if (type === "basic") {
+      const display = getValue("display");
+      return [
+        ["Result", display || resultText || "-"]
+      ];
+    }
+
+    if (type === "loan") {
+      return null; // loan page already has its own loan comparison table
+    }
+
+    if (type === "compound") {
+      const principal = getValue("principal") || getValue("compoundPrincipal") || getValue("amount");
+      const rate = getValue("rate") || getValue("compoundRate") || getValue("interest") || getValue("interestRate");
+      const years = getValue("years") || getValue("compoundYears") || getValue("time");
+      const frequency = getSelectText("frequency") || getSelectText("compoundFrequency");
+
+      return [
+        ["Principal", principal || "-"],
+        ["Interest rate", rate ? rate + "%" : "-"],
+        ["Years", years || "-"],
+        ["Frequency", frequency || "-"]
+      ].concat(textToRows(resultText));
+    }
+
+    if (type === "discount") {
+      const price = getValue("price") || getValue("originalPrice") || getValue("amount");
+      const discount = getValue("discount") || getValue("discountRate") || getValue("percent");
+
+      const rows = [];
+
+      if (price) rows.push(["Original price", price]);
+      if (discount) rows.push(["Discount", discount + "%"]);
+
+      return rows.concat(textToRows(resultText));
+    }
+
+    if (type === "percentage") {
+      const percent = getValue("percentage") || getValue("percent");
+      const number = getValue("number") || getValue("amount") || getValue("value");
+
+      const rows = [];
+
+      if (percent) rows.push(["Percentage", percent + "%"]);
+      if (number) rows.push(["Number", number]);
+
+      return rows.concat(textToRows(resultText));
+    }
+
+    if (type === "bmi") {
+      return textToRows(resultText);
+    }
+
+    if (type === "age") {
+      const birthdate = getValue("birthdate");
+      const rows = [];
+
+      if (birthdate) rows.push(["Birth date", birthdate]);
+
+      return rows.concat(textToRows(resultText));
+    }
+
+    return textToRows(resultText);
+  }
+
+  function getUniversalLoanTablePanel() {
+    const main = getMain();
+    const calculator = getCalculator();
+
+    if (!main || !calculator) return null;
+
+    let panel = document.getElementById("universalLoanStyleOutput");
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = "universalLoanStyleOutput";
+      panel.className = "loan-style-output-panel";
+      panel.setAttribute("aria-label", "Calculator result table");
+
+      panel.innerHTML = `
+        <div class="loan-output-top">
+          <div class="loan-result-panel">
+            <h2 class="loan-panel-title">Result</h2>
+
+            <div class="loan-result-body"></div>
+          </div>
+
+          <div class="loan-copy-side">
+            <button type="button" class="loan-copy-btn">Copy</button>
+          </div>
+        </div>
+      `;
+
+      calculator.insertAdjacentElement("afterend", panel);
+    }
+
+    return panel;
+  }
+
+  function makeLoanStyleTable(rows) {
+    return `
+      <div class="loan-result-table-scroll">
+        <table class="loan-result-table universal-loan-result-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            ${rows.map(function (row) {
+              return `
+                <tr>
+                  <td>${row[0]}</td>
+                  <td>${row[1]}</td>
+                </tr>
+              `;
+            }).join("")}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  function copyTable(panel, button) {
+    const table = panel.querySelector("table");
+    if (!table) return;
+
+    const text = Array.from(table.querySelectorAll("tr"))
+      .map(function (row) {
+        return Array.from(row.querySelectorAll("th, td"))
+          .map(function (cell) {
+            return cell.textContent.trim();
+          })
+          .join("\t");
+      })
+      .join("\n");
+
+    if (!text) return;
+
+    function copied() {
+      const old = button.textContent;
+      button.textContent = "Copied!";
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(copied).catch(function () {
+        fallbackCopy(text);
+        copied();
+      });
+    } else {
+      fallbackCopy(text);
+      copied();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function setupCopyButton(panel) {
+    const button = panel.querySelector(".loan-copy-btn");
+    if (!button || button.dataset.universalLoanCopyReady === "true") return;
+
+    button.dataset.universalLoanCopyReady = "true";
+
+    button.addEventListener("click", function () {
+      copyTable(panel, button);
+    });
+  }
+
+  function hideOldUniversalPanels() {
+    document.querySelectorAll(".universal-output-panel").forEach(function (panel) {
+      if (panel.id !== "universalLoanStyleOutput") {
+        panel.hidden = true;
+        panel.style.display = "none";
+      }
+    });
+  }
+
+  function renderUniversalLoanStyleResult() {
+    if (!isCalculatorPage()) return;
+
+    const type = getPageType();
+
+    hideOldUniversalPanels();
+
+    if (type === "loan") {
+      const loanPanel = document.getElementById("loanExternalOutput");
+
+      if (loanPanel) {
+        setupCopyButton(loanPanel);
+      }
+
+      const universalPanel = document.getElementById("universalLoanStyleOutput");
+      if (universalPanel) universalPanel.hidden = true;
+
+      return;
+    }
+
+    const result = getResultElement();
+    const panel = getUniversalLoanTablePanel();
+
+    if (!panel) return;
+
+    let resultText = "";
+
+    if (result) {
+      resultText = result.innerText || result.textContent || "";
+    }
+
+    if (type === "basic" && !resultText) {
+      resultText = getValue("display");
+    }
+
+    if (!String(resultText).trim()) {
+      panel.hidden = true;
+      return;
+    }
+
+    const rows = buildRows(type, resultText);
+
+    if (!rows || !rows.length) {
+      panel.hidden = true;
+      return;
+    }
+
+    const body = panel.querySelector(".loan-result-body");
+    if (!body) return;
+
+    body.innerHTML = makeLoanStyleTable(rows);
+    panel.hidden = false;
+
+    if (result) {
+      result.style.display = "none";
+    }
+
+    setupCopyButton(panel);
+  }
+
+  function startUniversalLoanStyleResult() {
+    renderUniversalLoanStyleResult();
+
+    document.addEventListener("click", function () {
+      setTimeout(renderUniversalLoanStyleResult, 0);
+      setTimeout(renderUniversalLoanStyleResult, 150);
+      setTimeout(renderUniversalLoanStyleResult, 400);
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        setTimeout(renderUniversalLoanStyleResult, 0);
+        setTimeout(renderUniversalLoanStyleResult, 150);
+        setTimeout(renderUniversalLoanStyleResult, 400);
+      }
+    });
+
+    setTimeout(renderUniversalLoanStyleResult, 300);
+    setTimeout(renderUniversalLoanStyleResult, 900);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startUniversalLoanStyleResult);
+  } else {
+    startUniversalLoanStyleResult();
+  }
+})();
+/* =====================================================
+   BASIC CALCULATOR ONLY: history shows Input + Output
+===================================================== */
+(function () {
+  "use strict";
+
+  const STORAGE_KEY = "basicInputOutputHistory";
+  const MAX_ITEMS = 50;
+
+  let lastBasicInput = "";
+
+  function isBasicPage() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    return title.includes("basic") || !!document.getElementById("display");
+  }
+
+  function getDisplayValue() {
+    const display = document.getElementById("display");
+    return display ? String(display.value || "").trim() : "";
+  }
+
+  function loadHistory() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      return Array.isArray(saved) ? saved : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveHistory(history) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(history.slice(-MAX_ITEMS)));
+  }
+
+  function renderBasicInputOutputHistory() {
+    if (!isBasicPage()) return;
+
+    const list = document.getElementById("historyList");
+    if (!list) return;
+
+    const history = loadHistory();
+
+    list.innerHTML = "";
+
+    history.slice().reverse().forEach(function (item) {
+      const li = document.createElement("li");
+      li.className = "history-item basic-input-output-item";
+
+      const text = document.createElement("span");
+      text.className = "history-text";
+      text.innerHTML =
+        "<strong>Input:</strong> " + item.input + "<br>" +
+        "<strong>Output:</strong> " + item.output;
+
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "history-copy-btn";
+      copyBtn.textContent = "copy";
+
+      copyBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+
+        const copyText =
+          "Input: " + item.input + "\n" +
+          "Output: " + item.output;
+
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(copyText);
+        } else {
+          const textarea = document.createElement("textarea");
+          textarea.value = copyText;
+          textarea.style.position = "fixed";
+          textarea.style.left = "-9999px";
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand("copy");
+          textarea.remove();
+        }
+
+        const oldText = copyBtn.textContent;
+        copyBtn.textContent = "copied";
+
+        setTimeout(function () {
+          copyBtn.textContent = oldText;
+        }, 1000);
+      });
+
+      li.appendChild(text);
+      li.appendChild(copyBtn);
+      list.appendChild(li);
+    });
+  }
+
+  function addBasicInputOutputHistory(input, output) {
+    if (!input || !output || output === "Error") return;
+    if (input === output) return;
+
+    const history = loadHistory();
+
+    const item = {
+      input: input,
+      output: output
+    };
+
+    const last = history[history.length - 1];
+
+    if (!last || last.input !== item.input || last.output !== item.output) {
+      history.push(item);
+    }
+
+    saveHistory(history);
+    renderBasicInputOutputHistory();
+  }
+
+  function captureBeforeCalculate() {
+    if (!isBasicPage()) return;
+
+    const value = getDisplayValue();
+
+    if (value && value !== "Error") {
+      lastBasicInput = value;
+    }
+  }
+
+  function saveAfterCalculate() {
+    if (!isBasicPage()) return;
+
+    const output = getDisplayValue();
+
+    addBasicInputOutputHistory(lastBasicInput, output);
+  }
+
+  function clearBasicInputOutputHistory() {
+    if (!isBasicPage()) return;
+
+    localStorage.removeItem(STORAGE_KEY);
+    renderBasicInputOutputHistory();
+  }
+
+  function renameHistoryTitle() {
+    if (!isBasicPage()) return;
+
+    const title = document.querySelector(".history h3");
+
+    if (title) {
+      title.textContent = "Input / Output";
+    }
+  }
+
+  function startBasicInputOutputHistory() {
+    if (!isBasicPage()) return;
+
+    renameHistoryTitle();
+    renderBasicInputOutputHistory();
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim();
+
+        if (text === "=") {
+          captureBeforeCalculate();
+
+          setTimeout(saveAfterCalculate, 0);
+          setTimeout(saveAfterCalculate, 100);
+        }
+
+        if (text.toLowerCase().includes("clear")) {
+          setTimeout(clearBasicInputOutputHistory, 0);
+          setTimeout(clearBasicInputOutputHistory, 100);
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key === "Enter" || event.key === "=") {
+          captureBeforeCalculate();
+
+          setTimeout(saveAfterCalculate, 0);
+          setTimeout(saveAfterCalculate, 100);
+        }
+      },
+      true
+    );
+
+    setTimeout(renderBasicInputOutputHistory, 300);
+    setTimeout(renderBasicInputOutputHistory, 1000);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startBasicInputOutputHistory);
+  } else {
+    startBasicInputOutputHistory();
+  }
+})();
