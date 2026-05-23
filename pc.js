@@ -108,3 +108,53 @@
     start();
   }
 })();
+/* =====================================================
+   PC ONLY: make ? help overlay match calculator size
+===================================================== */
+(function () {
+  "use strict";
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function syncHelpOverlaySize() {
+    if (!isPc()) return;
+
+    document.querySelectorAll("main.pc-calculator-layout").forEach(function (main) {
+      const calculator = main.querySelector(":scope > .calculator");
+      const instructionBox = main.querySelector(":scope > .instruction-box");
+
+      if (!calculator || !instructionBox) return;
+
+      const mainRect = main.getBoundingClientRect();
+      const calcRect = calculator.getBoundingClientRect();
+
+      main.style.setProperty("--pc-help-left", (calcRect.left - mainRect.left) + "px");
+      main.style.setProperty("--pc-help-top", (calcRect.top - mainRect.top) + "px");
+      main.style.setProperty("--pc-help-width", calcRect.width + "px");
+      main.style.setProperty("--pc-help-height", calcRect.height + "px");
+    });
+  }
+
+  function startHelpOverlaySizeSync() {
+    syncHelpOverlaySize();
+
+    window.addEventListener("resize", syncHelpOverlaySize);
+    window.addEventListener("scroll", syncHelpOverlaySize);
+
+    document.addEventListener("click", function () {
+      setTimeout(syncHelpOverlaySize, 0);
+      setTimeout(syncHelpOverlaySize, 150);
+    });
+
+    setTimeout(syncHelpOverlaySize, 300);
+    setTimeout(syncHelpOverlaySize, 800);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startHelpOverlaySizeSync);
+  } else {
+    startHelpOverlaySizeSync();
+  }
+})();
