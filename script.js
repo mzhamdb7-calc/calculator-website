@@ -2054,3 +2054,387 @@
     startBasicEqualNoTable();
   }
 })();
+/* =====================================================
+   BASIC + AGE: STABLE RESULT PANEL FIX
+   Fixes result bar appearing for 1 second then disappearing
+   - Basic result: = answer, no table
+   - Age result: stable result table
+===================================================== */
+(function () {
+  "use strict";
+
+  const PANEL_ID = "stableBasicAgeOutput";
+
+  function getPageType() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    if (title.includes("basic") || document.getElementById("display")) return "basic";
+    if (title.includes("age") || document.getElementById("birthdate")) return "age";
+
+    return "";
+  }
+
+  function todayValue() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+
+    return year + "-" + month + "-" + day;
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function getMain() {
+    return document.querySelector("main.pc-calculator-layout") || document.querySelector("main");
+  }
+
+  function getCalculator() {
+    const main = getMain();
+    return main ? main.querySelector(".calculator") : null;
+  }
+
+  function markPage() {
+    const type = getPageType();
+
+    if (type === "basic") {
+      document.body.classList.add("basic-page", "stable-result-page");
+      document.body.dataset.page = "basic";
+    }
+
+    if (type === "age") {
+      document.body.classList.add("age-page", "stable-result-page");
+      document.body.dataset.page = "age";
+    }
+  }
+
+  function hideOldUniversalPanel() {
+    const type = getPageType();
+    if (type !== "basic" && type !== "age") return;
+
+    const oldPanel = document.getElementById("universalLoanStyleOutput");
+
+    if (oldPanel) {
+      oldPanel.hidden = true;
+      oldPanel.style.setProperty("display", "none", "important");
+    }
+  }
+
+  function getStablePanel() {
+    const calculator = getCalculator();
+    if (!calculator) return null;
+
+    let panel = document.getElementById(PANEL_ID);
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = PANEL_ID;
+      panel.className = "stable-result-output";
+      panel.setAttribute("aria-label", "Stable calculator result");
+
+      panel.innerHTML =
+        '<div class="stable-result-top">' +
+          '<div class="stable-result-panel">' +
+            '<h2 class="stable-result-title">Result</h2>' +
+            '<div class="stable-result-body"></div>' +
+          '</div>' +
+          '<div class="stable-copy-side">' +
+            '<button type="button" class="stable-copy-btn">Copy</button>' +
+          '</div>' +
+        '</div>';
+
+      calculator.insertAdjacentElement("afterend", panel);
+    }
+
+    return panel;
+  }
+
+  function copyText(text, button) {
+    const value = String(text || "").trim();
+    if (!value) return;
+
+    function copied() {
+      const old = button.textContent;
+      button.textContent = "Copied!";
+
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(value).then(copied).catch(function () {
+        fallbackCopy(value);
+        copied();
+      });
+    } else {
+      fallbackCopy(value);
+      copied();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function setupCopy(panel, textGetter) {
+    const button = panel.querySelector(".stable-copy-btn");
+    if (!button) return;
+
+    button.onclick = function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      copyText(textGetter(), button);
+    };
+  }
+
+  function renderBasicStableResult() {
+    const display = document.getElementById("display");
+    if (!display) return;
+
+    const answer = String(display.value || "").trim();
+    const panel = getStablePanel();
+
+    if (!panel) return;
+
+    if (!answer || answer === "Error") {
+      panel.hidden = true;
+      return;
+    }
+
+    const body = panel.querySelector(".stable-result-body");
+    if (!body) return;
+
+    body.innerHTML =
+      '<div class="basic-stable-equal-result">' +
+        '<span class="basic-stable-equal-symbol">=</span>' +
+        '<span class="basic-stable-equal-answer">' + escapeHtml(answer) + '</span>' +
+      '</div>';
+
+    panel.hidden = false;
+
+    setupCopy(panel, function () {
+      return answer;
+    });
+  }
+
+  function ensureDateToCalculateInput() {
+    const birthdate = document.getElementById("birthdate");
+    if (!birthdate) return null;
+
+    let target = document.getElementById("dateToCalculate");
+
+    if (!target) {
+      const label = document.createElement("label");
+      label.setAttribute("for", "dateToCalculate");
+      label.textContent = "Date to calculate:";
+
+      target = document.createElement("input");
+      target.type = "date";
+      target.id = "dateToCalculate";
+      target.setAttribute("aria-label", "Date to calculate");
+
+      birthdate.insertAdjacentElement("afterend", target);
+      target.insertAdjacentElement("beforebegin", label);
+    }
+
+    if (!target.value) {
+      target.value = todayValue();
+    }
+
+    return target;
+  }
+
+  function calculateNormalAge(birthdateValue, targetValue) {
+    const birth = new Date(birthdateValue + "T00:00:00");
+    const target = new Date(targetValue + "T00:00:00");
+
+    if (birth > target) return "";
+
+    let years = target.getFullYear() - birth.getFullYear();
+
+    const birthdayThisYear = new Date(
+      target.getFullYear(),
+      birth.getMonth(),
+      birth.getDate()
+    );
+
+    if (target < birthdayThisYear) {
+      years -= 1;
+    }
+
+    return years;
+  }
+
+  function calculateAsianAge(birthdateValue, targetValue) {
+    const birthYear = Number(birthdateValue.split("-")[0]);
+    const targetYear = Number(targetValue.split("-")[0]);
+
+    if (!birthYear || !targetYear || birthYear > targetYear) return "";
+
+    return targetYear - birthYear + 1;
+  }
+
+  function renderAgeStableResult() {
+    const birthdateInput = document.getElementById("birthdate");
+    const targetInput = ensureDateToCalculateInput();
+    const panel = getStablePanel();
+
+    if (!birthdateInput || !targetInput || !panel) return;
+
+    const birthdate = String(birthdateInput.value || "").trim();
+
+    if (!birthdate) {
+      panel.hidden = true;
+      return;
+    }
+
+    if (!targetInput.value) {
+      targetInput.value = todayValue();
+    }
+
+    const targetDate = String(targetInput.value || "").trim();
+    const normalAge = calculateNormalAge(birthdate, targetDate);
+    const asianAge = calculateAsianAge(birthdate, targetDate);
+
+    if (normalAge === "" || asianAge === "") {
+      panel.hidden = true;
+      return;
+    }
+
+    const body = panel.querySelector(".stable-result-body");
+    if (!body) return;
+
+    body.innerHTML =
+      '<div class="loan-result-table-scroll">' +
+        '<table class="loan-result-table stable-age-result-table">' +
+          '<thead>' +
+            '<tr><th>Item</th><th>Value</th></tr>' +
+          '</thead>' +
+          '<tbody>' +
+            '<tr><td>Birthdate</td><td>' + escapeHtml(birthdate) + '</td></tr>' +
+            '<tr><td>Date to calculate</td><td>' + escapeHtml(targetDate) + '</td></tr>' +
+            '<tr><td>Normal age</td><td>' + normalAge + ' years old</td></tr>' +
+            '<tr><td>Asian age</td><td>' + asianAge + ' years old</td></tr>' +
+          '</tbody>' +
+        '</table>' +
+      '</div>';
+
+    panel.hidden = false;
+
+    setupCopy(panel, function () {
+      return (
+        "Item\tValue\n" +
+        "Birthdate\t" + birthdate + "\n" +
+        "Date to calculate\t" + targetDate + "\n" +
+        "Normal age\t" + normalAge + " years old\n" +
+        "Asian age\t" + asianAge + " years old"
+      );
+    });
+
+    const result = document.getElementById("result") || document.getElementById("ageResult");
+    if (result) {
+      result.style.display = "none";
+    }
+  }
+
+  function renderStableResult() {
+    const type = getPageType();
+
+    if (type !== "basic" && type !== "age") return;
+
+    markPage();
+    hideOldUniversalPanel();
+
+    if (type === "basic") {
+      renderBasicStableResult();
+    }
+
+    if (type === "age") {
+      renderAgeStableResult();
+    }
+  }
+
+  function startStableResultFix() {
+    const type = getPageType();
+    if (type !== "basic" && type !== "age") return;
+
+    markPage();
+
+    if (type === "age") {
+      ensureDateToCalculateInput();
+    }
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+
+        if (
+          text === "=" ||
+          text.includes("calculate") ||
+          text.includes("age")
+        ) {
+          setTimeout(renderStableResult, 0);
+          setTimeout(renderStableResult, 200);
+          setTimeout(renderStableResult, 500);
+          setTimeout(renderStableResult, 900);
+        }
+
+        if (text.includes("clear") || text === "ac") {
+          const panel = document.getElementById(PANEL_ID);
+          if (panel) panel.hidden = true;
+
+          hideOldUniversalPanel();
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key === "Enter" || event.key === "=") {
+          setTimeout(renderStableResult, 0);
+          setTimeout(renderStableResult, 200);
+          setTimeout(renderStableResult, 500);
+          setTimeout(renderStableResult, 900);
+        }
+      },
+      true
+    );
+
+    setTimeout(hideOldUniversalPanel, 300);
+    setTimeout(renderStableResult, 700);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startStableResultFix);
+  } else {
+    startStableResultFix();
+  }
+})();
