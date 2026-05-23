@@ -1,19 +1,275 @@
-/* =====================================================
-   PHONE FINAL ARROW FIX
-   Remove duplicate arrows.
-   Use CSS only.
-   Closed = ▼
-   Click/Open = ▲
-===================================================== */
+/*
+  Copyright © 2026 Hamdi. All rights reserved.
+  PHONE MODE ONLY
+  Clean phone rules:
+  - mobile layout only
+  - CSS-only arrows
+  - no JS arrow spans
+  - calculator/info dropdowns open upward
+*/
+
 @media (max-width: 850px) {
-  /* Hide old JS arrows */
-  #navbar .nav-menu-arrow,
-  #navbar .phone-sub-arrow {
+  html,
+  body {
+    overflow-x: hidden !important;
+    touch-action: manipulation !important;
+  }
+
+  #pcQuestionOverlayButton,
+  #menuIcon,
+  #menuIcon.show,
+  #resizeNavigator,
+  #handToggleBtn {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  #scrollTopBtn,
+  .scroll-top {
+    display: flex !important;
+    position: fixed !important;
+    right: 12px !important;
+    left: auto !important;
+    bottom: calc(18px + env(safe-area-inset-bottom)) !important;
+    width: 54px !important;
+    height: 54px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+    font-size: 32px !important;
+    font-weight: bold !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: 9999999 !important;
+  }
+
+  #navbar,
+  #navbar.open,
+  #navbar.scrolled,
+  body.menu-scrolled #navbar,
+  body.menu-scrolled #navbar.open {
+    display: flex !important;
+    position: fixed !important;
+    top: auto !important;
+    bottom: calc(18px + env(safe-area-inset-bottom)) !important;
+    left: 8px !important;
+    right: 76px !important;
+    width: auto !important;
+    max-width: none !important;
+    height: 54px !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: none !important;
+    transform: none !important;
+    overflow: visible !important;
+    pointer-events: auto !important;
+    box-sizing: border-box !important;
+    z-index: 999999 !important;
+  }
+
+  #navbar *,
+  #navbar.open * {
+    pointer-events: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown {
+    width: 33.333% !important;
+    max-width: 33.333% !important;
+    height: 54px !important;
+    flex: 1 1 33.333% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown > .dropbtn {
+    width: 100% !important;
+    height: 54px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border: none !important;
+    border-right: 3px solid var(--black) !important;
+    box-shadow: none !important;
+    font-size: 15px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  #navbar > .dropdown:last-child > .dropbtn {
+    border-right: none !important;
+  }
+
+  #navbar > .dropdown.phone-open > .dropbtn,
+  #navbar > .dropdown.mobile-open > .dropbtn {
+    background: var(--yellow) !important;
+  }
+
+  #navbar > .dropdown > .dropdown-content,
+  #navbar > .dropdown:hover > .dropdown-content,
+  #navbar > .dropdown:focus-within > .dropdown-content {
+    display: none !important;
+  }
+
+  #navbar > .dropdown.phone-open > .dropdown-content,
+  #navbar > .dropdown.mobile-open > .dropdown-content {
+    display: block !important;
+  }
+
+  #navbar > .dropdown > .dropdown-content {
+    position: absolute !important;
+    top: auto !important;
+    bottom: calc(100% + 3px) !important;
+    width: 210px !important;
+    max-width: calc(100vw - 16px) !important;
+    height: auto !important;
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+    overflow: visible !important;
+    z-index: 9999999 !important;
+  }
+
+  #navbar > .dropdown:not(.about-dropdown) > .dropdown-content {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+  }
+
+  #navbar > .about-dropdown > .about-dropdown-content {
+    left: auto !important;
+    right: 0 !important;
+    transform: none !important;
+  }
+
+  #navbar .dropdown-content > a,
+  #navbar .dropdown-content > .nav-group > summary,
+  #navbar .dropdown-content > details.nav-group > summary,
+  #navbar .dropdown-content > .fixed-nav-group > .nav-summary,
+  #navbar .dropdown-content > .navbar-fixed-group > .navbar-fixed-summary {
+    width: 100% !important;
+    height: 42px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
+    font-family: inherit !important;
+    font-size: 15px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+  }
+
+  #navbar .dropdown-content > *:last-child,
+  #navbar .dropdown-content > *:last-child > summary,
+  #navbar .dropdown-content > *:last-child > .nav-summary,
+  #navbar .dropdown-content > *:last-child > .navbar-fixed-summary {
+    border-bottom: none !important;
+  }
+
+  #navbar .dropdown-content .nav-group,
+  #navbar .dropdown-content details.nav-group,
+  #navbar .dropdown-content .fixed-nav-group,
+  #navbar .dropdown-content .navbar-fixed-group {
+    position: relative !important;
+    height: 42px !important;
+    overflow: visible !important;
+    background: var(--white) !important;
+  }
+
+  #navbar .nav-group > .nav-group-links,
+  #navbar .fixed-nav-group > .nav-group-links,
+  #navbar .navbar-fixed-group > .nav-group-links,
+  #navbar .nav-group:hover > .nav-group-links,
+  #navbar .fixed-nav-group:hover > .nav-group-links,
+  #navbar .navbar-fixed-group:hover > .nav-group-links,
+  #navbar .nav-group:focus-within > .nav-group-links,
+  #navbar .fixed-nav-group:focus-within > .nav-group-links,
+  #navbar .navbar-fixed-group:focus-within > .nav-group-links {
+    display: none !important;
+  }
+
+  #navbar .nav-group.phone-sub-open > .nav-group-links,
+  #navbar .fixed-nav-group.phone-sub-open > .nav-group-links,
+  #navbar .navbar-fixed-group.phone-sub-open > .nav-group-links,
+  #navbar .nav-group[open] > .nav-group-links {
+    display: block !important;
+  }
+
+  #navbar .nav-group > .nav-group-links,
+  #navbar .fixed-nav-group > .nav-group-links,
+  #navbar .navbar-fixed-group > .nav-group-links {
+    position: absolute !important;
+    top: auto !important;
+    bottom: calc(100% + 3px) !important;
+    left: 0 !important;
+    right: auto !important;
+    width: 100% !important;
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+    overflow: visible !important;
+    z-index: 99999999 !important;
+  }
+
+  #navbar .nav-group-links a {
+    width: 100% !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  #navbar .nav-group-links a:last-child {
+    border-bottom: none !important;
+  }
+
+  #navbar .nav-group.phone-sub-open > summary,
+  #navbar .fixed-nav-group.phone-sub-open > .nav-summary,
+  #navbar .navbar-fixed-group.phone-sub-open > .navbar-fixed-summary,
+  #navbar .nav-group[open] > summary,
+  #navbar .dropdown-content a:hover,
+  #navbar .nav-group-links a:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* PHONE FINAL ARROW FIX: CSS arrows only */
+  #navbar .phone-sub-arrow,
+  #navbar .nav-menu-arrow {
     display: none !important;
     content: none !important;
   }
 
-  /* Remove browser details marker */
   #navbar summary {
     list-style: none !important;
   }
@@ -26,10 +282,7 @@
     content: "" !important;
   }
 
-  /* Top menu arrows: calculator + info */
-  #navbar > .dropdown > .dropbtn::after,
-  #navbar > .dropdown:not(.phone-open) > .dropbtn::after,
-  #navbar > .dropdown:not(.mobile-open) > .dropbtn::after {
+  #navbar > .dropdown > .dropbtn::after {
     content: "▼" !important;
     display: inline-block !important;
     margin-left: 6px !important;
@@ -44,11 +297,11 @@
   }
 
   #navbar > .dropdown.phone-open > .dropbtn::after,
-  #navbar > .dropdown.mobile-open > .dropbtn::after {
+  #navbar > .dropdown.mobile-open > .dropbtn::after,
+  #navbar > .dropdown.phone-dropup-open > .dropbtn::after {
     content: "▲" !important;
   }
 
-  /* Health / finance arrows */
   #navbar .dropdown-content > details.nav-group > summary::after,
   #navbar .dropdown-content > .nav-group > summary::after,
   #navbar .dropdown-content > .fixed-nav-group > .nav-summary::after,
@@ -75,5 +328,139 @@
   #navbar .dropdown-content > .navbar-fixed-group.phone-sub-open > .navbar-fixed-summary::after,
   #navbar .dropdown-content > .navbar-fixed-group.is-open > .navbar-fixed-summary::after {
     content: "▲" !important;
+  }
+
+  .calculator-container,
+  .age-calculator-container,
+  .bmi-calculator-container,
+  .discount-calculator-container,
+  .loan-calculator-container,
+  .percentage-calculator-container,
+  .compound-calculator-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 175px !important;
+    padding: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 22px !important;
+  }
+
+  .single-calculator-container,
+  .about-container,
+  .calculator-box {
+    width: 95% !important;
+    max-width: 100% !important;
+    margin-top: 175px !important;
+  }
+
+  .history,
+  .age-history-box,
+  .bmi-history-box,
+  .discount-history-box,
+  .loan-history-box,
+  .percentage-history-box,
+  .compound-history-box {
+    order: 1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 170px !important;
+    max-height: 300px !important;
+    margin: 0 auto !important;
+    transform: none !important;
+  }
+
+  .calculator {
+    order: 2 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 22px !important;
+  }
+
+  .calculator h1 {
+    font-size: 36px !important;
+  }
+
+  .subtitle {
+    font-size: 20px !important;
+  }
+
+  .calculator label,
+  .calculator input[type="date"],
+  .calculator input[type="number"],
+  .calculator input[type="text"],
+  .calculator select,
+  #display,
+  .main-btn,
+  .calculator > button {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 450px !important;
+  }
+
+  .calculator input[type="date"],
+  .calculator input[type="number"],
+  .calculator input[type="text"],
+  .calculator select,
+  #display,
+  .main-btn,
+  .calculator > button {
+    height: 62px !important;
+    font-size: 22px !important;
+  }
+
+  .display-row {
+    grid-template-columns: 1fr 100px !important;
+  }
+
+  .ans-btn {
+    height: 62px !important;
+    font-size: 20px !important;
+  }
+
+  .buttons button {
+    height: 58px !important;
+    font-size: 20px !important;
+  }
+
+  .scientific-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+
+  .calculator-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .card,
+  .group-card summary {
+    font-size: 28px !important;
+  }
+
+  .bmi-title-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  #unitToggleBtn {
+    width: 140px !important;
+    margin: 0 auto 15px !important;
+    order: -1 !important;
+  }
+
+  .history-copy-btn,
+  .result-copy-btn {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  .instruction-box,
+  .instruction-section,
+  .reference-box,
+  .reference-card,
+  .reference-scroll {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
   }
 }

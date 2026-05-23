@@ -1,17 +1,25 @@
 /*
   Copyright © 2026 Hamdi. All rights reserved.
   PC MODE ONLY
-  Clean PC navbar arrows + calculator page layout
-  Duplicate old override blocks removed.
+  Clean PC rules:
+  - CSS-only navbar arrows
+  - side menu after scroll
+  - loan-style calculator layout
+  - ? button beside What box
+  - instruction/reference overlay on top of calculator
+  - loan-style result table output
 */
 
-/* =====================================================
-   PC NAVBAR ARROWS
-   CSS arrows only
-   Closed = ▼
-   Hover/Open = ▲
-===================================================== */
 @media (min-width: 851px) {
+  :root {
+    --pc-left-width: clamp(280px, 24vw, 380px);
+    --pc-center-width: clamp(560px, 50vw, 820px);
+    --pc-gap: clamp(18px, 2vw, 32px);
+    --pc-border: 5px;
+    --pc-shadow: 7px 7px 0 var(--black);
+  }
+
+  /* Navbar arrows: one CSS system only */
   #navbar .nav-menu-arrow,
   #navbar .phone-sub-arrow {
     display: none !important;
@@ -45,9 +53,7 @@
 
   #navbar > .dropdown:hover > .dropbtn::after,
   #navbar > .dropdown:focus-within > .dropbtn::after,
-  #navbar > .dropdown.menu-open > .dropbtn::after,
-  #navbar > .dropdown.phone-open > .dropbtn::after,
-  #navbar > .dropdown.mobile-open > .dropbtn::after {
+  #navbar > .dropdown.menu-open > .dropbtn::after {
     content: "▲" !important;
   }
 
@@ -83,448 +89,26 @@
   #navbar .dropdown-content > .navbar-fixed-group.is-open > .navbar-fixed-summary::after {
     content: "▲" !important;
   }
-}
 
-/* =====================================================
-   PC CALCULATOR PAGE LAYOUT
-   Only pages with .pc-calculator-layout
-===================================================== */
-@media (min-width: 851px) {
-  :root {
-    --pc-left-width: clamp(280px, 21vw, 360px);
-    --pc-center-width: clamp(560px, 45vw, 780px);
-    --pc-right-width: clamp(280px, 21vw, 360px);
-    --pc-gap: clamp(18px, 2vw, 35px);
-    --pc-row-gap: 8px;
-    --pc-border: 4px;
-    --pc-shadow: 5px 5px 0 var(--black);
-  }
-
-  main.pc-calculator-layout {
-    width: 100% !important;
-    max-width: min(1540px, calc(100vw - 28px)) !important;
-    margin: 130px auto 80px !important;
-    padding: 16px !important;
-
-    display: grid !important;
-    grid-template-columns:
-      minmax(0, var(--pc-left-width))
-      minmax(0, var(--pc-center-width))
-      minmax(0, var(--pc-right-width)) !important;
-    grid-template-rows: auto auto !important;
-
-    row-gap: var(--pc-row-gap) !important;
-    column-gap: var(--pc-gap) !important;
-    justify-content: center !important;
-    align-items: start !important;
-
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
-  }
-
-  main.pc-calculator-layout > * {
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-  }
-
-  /* LEFT TOP: What box */
-  main.pc-calculator-layout > .pc-what-slot {
-    grid-column: 1 !important;
-    grid-row: 1 !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    justify-self: stretch !important;
-    align-self: start !important;
-
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-
-    overflow: visible !important;
-    box-sizing: border-box !important;
-  }
-
-  main.pc-calculator-layout > .pc-what-slot .instruction-what-box {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-
-    margin: 0 !important;
-    padding: 14px 12px !important;
-
-    background: #ffd3d3 !important;
-    color: var(--black) !important;
-
-    border: var(--pc-border) solid var(--black) !important;
-    box-shadow: var(--pc-shadow) !important;
-
-    text-align: center !important;
-    box-sizing: border-box !important;
-
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-  }
-
-  main.pc-calculator-layout > .pc-what-slot .instruction-what-box h3,
-  main.pc-calculator-layout > .pc-what-slot .instruction-what-box p {
-    max-width: 100% !important;
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-  }
-
-  /* LEFT BOTTOM: Result / History */
-  main.pc-calculator-layout > .history,
-  main.pc-calculator-layout > .age-history-box,
-  main.pc-calculator-layout > .bmi-history-box,
-  main.pc-calculator-layout > .discount-history-box,
-  main.pc-calculator-layout > .loan-history-box,
-  main.pc-calculator-layout > .percentage-history-box,
-  main.pc-calculator-layout > .compound-history-box {
-    grid-column: 1 !important;
-    grid-row: 2 !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    height: auto !important;
-    min-height: 180px !important;
-    max-height: calc(100vh - 285px) !important;
-
-    margin: 0 !important;
-    padding: 20px !important;
-
-    background: var(--soft-yellow) !important;
-
-    border: var(--pc-border) solid var(--black) !important;
-    box-shadow: var(--pc-shadow) !important;
-    transform: none !important;
-
-    justify-self: stretch !important;
-    align-self: start !important;
-
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-
-    box-sizing: border-box !important;
-  }
-
-  /* CENTER: Calculator */
-  main.pc-calculator-layout > .calculator {
-    grid-column: 2 !important;
-    grid-row: 1 / span 2 !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 !important;
-
-    justify-self: stretch !important;
-    align-self: start !important;
-
-    box-sizing: border-box !important;
-  }
-
-  /* RIGHT COLUMN */
-  main.pc-calculator-layout > .instruction-box {
-    grid-column: 3 !important;
-    grid-row: 1 / span 2 !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    justify-self: stretch !important;
-    align-self: start !important;
-
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-
-    overflow: visible !important;
-    box-sizing: border-box !important;
-  }
-
-  main.pc-calculator-layout > .instruction-box > .instruction-what-box {
-    display: none !important;
-  }
-
-  /* RIGHT TITLES */
-  main.pc-calculator-layout .instruction-main-title {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-
-    margin: 0 0 16px !important;
-    padding: 10px 12px !important;
-
-    background: var(--white) !important;
-    color: var(--black) !important;
-
-    border: var(--pc-border) solid var(--black) !important;
-    box-shadow: var(--pc-shadow) !important;
-
-    font-size: 22px !important;
-    font-weight: bold !important;
-    line-height: 1.2 !important;
-    text-align: left !important;
-
-    box-sizing: border-box !important;
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-  }
-
-  /* RIGHT BOXES: How / Formula / Example */
-  main.pc-calculator-layout .instruction-box .instruction-section:not(.instruction-what-box) {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-
-    margin: 0 0 16px !important;
-    padding: 14px 12px !important;
-
-    color: var(--black) !important;
-
-    border: var(--pc-border) solid var(--black) !important;
-    box-shadow: var(--pc-shadow) !important;
-
-    text-align: center !important;
-    box-sizing: border-box !important;
-
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-  }
-
-  main.pc-calculator-layout .instruction-how-box {
-    background: #d3fff9 !important;
-  }
-
-  main.pc-calculator-layout .instruction-formula-box {
-    background: #fff4b8 !important;
-  }
-
-  main.pc-calculator-layout .instruction-example-box {
-    background: #d3ffd9 !important;
-  }
-
-  main.pc-calculator-layout .instruction-section h3,
-  main.pc-calculator-layout .reference-card h3 {
-    margin: 0 0 7px !important;
-
-    color: var(--black) !important;
-
-    font-size: 18px !important;
-    font-weight: bold !important;
-    line-height: 1.2 !important;
-
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-  }
-
-  main.pc-calculator-layout .instruction-section p,
-  main.pc-calculator-layout .reference-card p {
-    margin: 0 !important;
-
-    color: var(--black) !important;
-
-    font-size: 15px !important;
-    font-weight: bold !important;
-    line-height: 1.35 !important;
-
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-  }
-
-  /* REFERENCES: title + sources inside one scrollable box */
-  main.pc-calculator-layout .reference-box {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    max-height: calc(100vh - 260px) !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    background: #d3fff9 !important;
-    color: var(--black) !important;
-
-    border: var(--pc-border) solid var(--black) !important;
-    box-shadow: var(--pc-shadow) !important;
-
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-
-    box-sizing: border-box !important;
-  }
-
-  main.pc-calculator-layout .reference-main-title,
-  main.pc-calculator-layout .reference-box > h2 {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 !important;
-    padding: 12px !important;
-
-    background: var(--white) !important;
-    color: var(--black) !important;
-
-    border: none !important;
-    border-bottom: 4px solid var(--black) !important;
-    box-shadow: none !important;
-
-    font-size: 22px !important;
-    font-weight: bold !important;
-    line-height: 1.2 !important;
-    text-align: left !important;
-
-    box-sizing: border-box !important;
-  }
-
-  main.pc-calculator-layout .reference-scroll {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    max-height: none !important;
-
-    margin: 0 !important;
-    padding: 12px !important;
-
-    overflow: visible !important;
-
-    box-sizing: border-box !important;
-  }
-
-  main.pc-calculator-layout .reference-card {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    min-height: 0 !important;
-    height: auto !important;
-    max-height: none !important;
-
-    margin: 0 0 12px !important;
-    padding: 12px !important;
-
-    background: var(--white) !important;
-    color: var(--black) !important;
-
-    border: 3px solid var(--black) !important;
-    box-shadow: none !important;
-
-    text-align: center !important;
-
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-
-    box-sizing: border-box !important;
-  }
-
-  main.pc-calculator-layout .reference-card:last-child {
-    margin-bottom: 0 !important;
-  }
-
-  main.pc-calculator-layout .reference-card h3 {
-    margin-bottom: 6px !important;
-    font-size: 17px !important;
-  }
-
-  main.pc-calculator-layout .reference-card p {
-    margin: 0 0 8px !important;
-    font-size: 14px !important;
-    line-height: 1.3 !important;
-  }
-
-  main.pc-calculator-layout .reference-card a {
-    display: inline-flex !important;
-    max-width: 100% !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    margin-top: 6px !important;
-    padding: 6px 10px !important;
-
-    background: #fff4b8 !important;
-    color: var(--black) !important;
-
-    border: 3px solid var(--black) !important;
-    box-shadow: 3px 3px 0 var(--black) !important;
-
-    font-size: 13px !important;
-    font-weight: bold !important;
-    line-height: 1.2 !important;
-    text-decoration: none !important;
-
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-
-    box-sizing: border-box !important;
-  }
-
-  main.pc-calculator-layout .reference-card a:hover {
-    background: var(--yellow) !important;
-  }
-}
-
-/* Smaller PC screens */
-@media (min-width: 851px) and (max-width: 1180px) {
-  main.pc-calculator-layout {
-    grid-template-columns:
-      minmax(220px, 1fr)
-      minmax(420px, 1.4fr)
-      minmax(220px, 1fr) !important;
-
-    max-width: calc(100vw - 20px) !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-    column-gap: 18px !important;
-  }
-}
-
-/* =====================================================
-   PC SIDE MENU AFTER SCROLL
-===================================================== */
-@media (min-width: 851px) {
+  /* PC side menu after scroll */
   #menuIcon {
     display: none !important;
     visibility: hidden !important;
     pointer-events: none !important;
-
     position: fixed !important;
     top: 24px !important;
     right: 24px !important;
-
     width: 78px !important;
     height: 50px !important;
-
     align-items: center !important;
     justify-content: center !important;
-
     background: var(--white) !important;
     color: var(--black) !important;
-
     border: 4px solid var(--black) !important;
     box-shadow: 5px 5px 0 var(--black) !important;
-
     font-size: 18px !important;
     font-weight: bold !important;
     line-height: 1 !important;
-
     cursor: pointer !important;
     z-index: 999999999 !important;
   }
@@ -553,25 +137,19 @@
   body.menu-scrolled #navbar.open {
     display: flex !important;
     position: fixed !important;
-
     top: 24px !important;
     right: 116px !important;
     left: auto !important;
     bottom: auto !important;
-
     width: 190px !important;
     height: auto !important;
-
     flex-direction: column !important;
     align-items: stretch !important;
-
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-
     transform: none !important;
     overflow: visible !important;
-
     z-index: 999999998 !important;
   }
 
@@ -580,10 +158,8 @@
     width: 190px !important;
     height: 55px !important;
     flex: none !important;
-
     margin: 0 !important;
     padding: 0 !important;
-
     position: relative !important;
     overflow: visible !important;
   }
@@ -592,17 +168,13 @@
   body.menu-scrolled #navbar.open > .dropdown > .dropbtn {
     width: 190px !important;
     height: 55px !important;
-
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-
     background: var(--white) !important;
     color: var(--black) !important;
-
     border: 3px solid var(--black) !important;
     box-shadow: 5px 5px 0 var(--black) !important;
-
     font-size: 24px !important;
     font-weight: bold !important;
     text-decoration: none !important;
@@ -622,24 +194,21 @@
 
   body.menu-scrolled #navbar.open .dropdown-content {
     display: none !important;
-
     position: absolute !important;
     top: 0 !important;
     right: 190px !important;
     left: auto !important;
-
     width: 230px !important;
-
     background: var(--white) !important;
     border: 3px solid var(--black) !important;
     box-shadow: 5px 5px 0 var(--black) !important;
-
     overflow: visible !important;
     z-index: 999999999 !important;
   }
 
   body.menu-scrolled #navbar.open .dropdown:hover > .dropdown-content,
-  body.menu-scrolled #navbar.open .dropdown:focus-within > .dropdown-content {
+  body.menu-scrolled #navbar.open .dropdown:focus-within > .dropdown-content,
+  body.menu-scrolled #navbar.open .dropdown.menu-open > .dropdown-content {
     display: block !important;
   }
 
@@ -647,16 +216,12 @@
   body.menu-scrolled #navbar.open .dropdown-content > .nav-group > summary {
     width: 100% !important;
     height: 50px !important;
-
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-
     background: var(--white) !important;
     color: var(--black) !important;
-
     border-bottom: 3px solid var(--black) !important;
-
     font-size: 18px !important;
     font-weight: bold !important;
     text-decoration: none !important;
@@ -674,18 +239,14 @@
 
   body.menu-scrolled #navbar.open .nav-group-links {
     display: none !important;
-
     position: absolute !important;
     top: -3px !important;
     right: calc(100% + 3px) !important;
     left: auto !important;
-
     width: 185px !important;
-
     background: var(--white) !important;
     border: 3px solid var(--black) !important;
     box-shadow: 5px 5px 0 var(--black) !important;
-
     z-index: 999999999 !important;
   }
 
@@ -698,16 +259,12 @@
   body.menu-scrolled #navbar.open .nav-group-links a {
     width: 100% !important;
     height: 47px !important;
-
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-
     background: var(--white) !important;
     color: var(--black) !important;
-
     border-bottom: 3px solid var(--black) !important;
-
     font-size: 17px !important;
     font-weight: bold !important;
     text-decoration: none !important;
@@ -720,293 +277,92 @@
   body.menu-scrolled #navbar.open .nav-group-links a:hover {
     background: var(--yellow) !important;
   }
-}
-/* =====================================================
-   PC ONLY: References items as separate boxes again
-   No big combined reference container
-===================================================== */
-@media (min-width: 851px) {
-  main.pc-calculator-layout .reference-box {
+
+  body.left-hand #menuIcon {
+    left: 24px !important;
+    right: auto !important;
+  }
+
+  body.left-hand body.menu-scrolled #navbar.open,
+  body.left-hand #navbar.open {
+    left: 116px !important;
+    right: auto !important;
+  }
+
+  body.left-hand #navbar.open .dropdown-content {
+    left: 190px !important;
+    right: auto !important;
+  }
+
+  body.left-hand #navbar.open .nav-group-links {
+    left: calc(100% + 3px) !important;
+    right: auto !important;
+  }
+
+  /* Loan-style page orientation for all calculator pages */
+  main.pc-calculator-layout {
     width: 100% !important;
-    max-width: 100% !important;
-
-    max-height: none !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    background: transparent !important;
-    color: var(--black) !important;
-
-    border: none !important;
-    box-shadow: none !important;
-
+    max-width: min(1220px, calc(100vw - 32px)) !important;
+    margin: 130px auto 80px !important;
+    padding: 16px !important;
+    display: grid !important;
+    grid-template-columns:
+      minmax(280px, var(--pc-left-width))
+      minmax(560px, var(--pc-center-width)) !important;
+    grid-template-rows: auto auto auto !important;
+    column-gap: var(--pc-gap) !important;
+    row-gap: 18px !important;
+    justify-content: center !important;
+    align-items: start !important;
+    position: relative !important;
     overflow: visible !important;
     box-sizing: border-box !important;
   }
 
-  main.pc-calculator-layout .reference-main-title,
-  main.pc-calculator-layout .reference-box > h2 {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 0 16px !important;
-    padding: 10px 12px !important;
-
-    background: var(--white) !important;
-    color: var(--black) !important;
-
-    border: var(--pc-border) solid var(--black) !important;
-    box-shadow: var(--pc-shadow) !important;
-
-    font-size: 22px !important;
-    font-weight: bold !important;
-    line-height: 1.2 !important;
-    text-align: left !important;
-
+  main.pc-calculator-layout > * {
+    min-width: 0 !important;
     box-sizing: border-box !important;
   }
 
-  main.pc-calculator-layout .reference-scroll {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    max-height: calc(100vh - 285px) !important;
-
-    margin: 0 !important;
-    padding: 0 8px 8px 0 !important;
-
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-
-    box-sizing: border-box !important;
-  }
-
-  main.pc-calculator-layout .reference-card {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-
-    margin: 0 0 16px !important;
-    padding: 14px 12px !important;
-
-    color: var(--black) !important;
-
-    border: var(--pc-border) solid var(--black) !important;
-    box-shadow: var(--pc-shadow) !important;
-
-    text-align: center !important;
-
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-
-    box-sizing: border-box !important;
-  }
-
-  main.pc-calculator-layout .reference-card:nth-child(1) {
-    background: #d3fff9 !important;
-  }
-
-  main.pc-calculator-layout .reference-card:nth-child(2) {
-    background: #fff4b8 !important;
-  }
-
-  main.pc-calculator-layout .reference-card:nth-child(3) {
-    background: #d3ffd9 !important;
-  }
-
-  main.pc-calculator-layout .reference-card:nth-child(4) {
-    background: #ffd3d3 !important;
-  }
-
-  main.pc-calculator-layout .reference-card:last-child {
-    margin-bottom: 0 !important;
-  }
-
-  main.pc-calculator-layout .reference-card h3 {
-    margin: 0 0 7px !important;
-
-    color: var(--black) !important;
-
-    font-size: 18px !important;
-    font-weight: bold !important;
-    line-height: 1.2 !important;
-  }
-
-  main.pc-calculator-layout .reference-card p {
-    margin: 0 0 8px !important;
-
-    color: var(--black) !important;
-
-    font-size: 15px !important;
-    font-weight: bold !important;
-    line-height: 1.35 !important;
-  }
-
-  main.pc-calculator-layout .reference-card a {
-    display: inline-flex !important;
-    max-width: 100% !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    margin-top: 8px !important;
-    padding: 6px 10px !important;
-
-    background: var(--white) !important;
-    color: var(--black) !important;
-
-    border: 3px solid var(--black) !important;
-    box-shadow: 3px 3px 0 var(--black) !important;
-
-    font-size: 13px !important;
-    font-weight: bold !important;
-    line-height: 1.2 !important;
-    text-decoration: none !important;
-
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-
-    box-sizing: border-box !important;
-  }
-
-  main.pc-calculator-layout .reference-card a:hover {
-    background: var(--yellow) !important;
-  }
-}
-
-/* =====================================================
-   PC ONLY: open help orientation like screenshot
-   Applies to all calculator pages using pc-calculator-layout
-===================================================== */
-@media (min-width: 851px) {
-  main.pc-calculator-layout {
-    position: relative !important;
-
-    grid-template-columns:
-      minmax(0, var(--pc-left-width))
-      minmax(0, var(--pc-center-width))
-      66px !important;
-
-    grid-template-rows: auto auto !important;
-
-    row-gap: 18px !important;
-    column-gap: var(--pc-gap) !important;
-  }
-
-  main.pc-calculator-layout.pc-help-open {
-    grid-template-columns:
-      minmax(0, var(--pc-left-width))
-      minmax(0, var(--pc-center-width))
-      66px !important;
-  }
-
-  /* What box becomes wide on top */
   main.pc-calculator-layout > .pc-what-slot {
     grid-column: 1 / 3 !important;
     grid-row: 1 !important;
-
     width: 100% !important;
     max-width: 100% !important;
-
     margin: 0 !important;
     padding: 0 !important;
-
-    justify-self: stretch !important;
-    align-self: start !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
   }
 
   main.pc-calculator-layout > .pc-what-slot .instruction-what-box {
     width: 100% !important;
     max-width: 100% !important;
-
-    min-height: 82px !important;
-    height: auto !important;
-
+    min-height: 86px !important;
     display: flex !important;
     flex-direction: column !important;
+    align-items: center !important;
     justify-content: center !important;
-
     margin: 0 !important;
     padding: 14px 18px !important;
-
     background: #ffd3d3 !important;
     color: var(--black) !important;
-
-    border: 4px solid var(--black) !important;
-    box-shadow: 7px 7px 0 var(--black) !important;
-
-    box-sizing: border-box !important;
+    border: var(--pc-border) solid var(--black) !important;
+    box-shadow: var(--pc-shadow) !important;
+    text-align: center !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
   }
 
-  main.pc-calculator-layout > .pc-what-slot .instruction-what-box h3 {
-    margin: 0 0 6px !important;
-
-    color: var(--black) !important;
-
-    font-size: 22px !important;
-    font-weight: bold !important;
-    line-height: 1.15 !important;
-    text-align: left !important;
-  }
-
+  main.pc-calculator-layout > .pc-what-slot .instruction-what-box h3,
   main.pc-calculator-layout > .pc-what-slot .instruction-what-box p {
-    margin: 0 !important;
-
-    color: var(--black) !important;
-
-    font-size: 16px !important;
-    font-weight: bold !important;
-    line-height: 1.3 !important;
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
     text-align: center !important;
   }
 
-  /* ? button beside the wide What box */
-  main.pc-calculator-layout > .pc-question-toggle {
-    grid-column: 3 !important;
-    grid-row: 1 !important;
-
-    width: 58px !important;
-    height: 58px !important;
-
-    justify-self: center !important;
-    align-self: start !important;
-
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    margin: 6px 0 0 !important;
-    padding: 0 !important;
-
-    background: #ff9fcb !important;
-    color: var(--black) !important;
-
-    border: 4px solid var(--black) !important;
-    box-shadow: 6px 6px 0 var(--black) !important;
-
-    font-family: inherit !important;
-    font-size: 30px !important;
-    font-weight: bold !important;
-    line-height: 1 !important;
-
-    cursor: pointer !important;
-    z-index: 1000002 !important;
-  }
-
-  main.pc-calculator-layout > .pc-question-toggle:hover,
-  main.pc-calculator-layout.pc-help-open > .pc-question-toggle {
-    background: var(--yellow) !important;
-  }
-
-  /* Result/History under What box */
   main.pc-calculator-layout > .history,
   main.pc-calculator-layout > .age-history-box,
   main.pc-calculator-layout > .bmi-history-box,
@@ -1016,148 +372,34 @@
   main.pc-calculator-layout > .compound-history-box {
     grid-column: 1 !important;
     grid-row: 2 !important;
-
     width: 100% !important;
     max-width: 100% !important;
-
-    min-height: 520px !important;
-    max-height: calc(100vh - 280px) !important;
-
+    min-height: 360px !important;
+    max-height: calc(100vh - 300px) !important;
     margin: 0 !important;
+    padding: 20px !important;
+    background: var(--soft-yellow) !important;
+    border: var(--pc-border) solid var(--black) !important;
+    box-shadow: var(--pc-shadow) !important;
     transform: none !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
   }
 
-  /* Calculator under What box */
   main.pc-calculator-layout > .calculator {
     grid-column: 2 !important;
     grid-row: 2 !important;
-
     width: 100% !important;
     max-width: 100% !important;
-
     margin: 0 !important;
-
+    border: var(--pc-border) solid var(--black) !important;
+    box-shadow: 9px 9px 0 var(--black) !important;
     justify-self: stretch !important;
     align-self: start !important;
   }
 
-  /* Closed help panel */
-  main.pc-calculator-layout:not(.pc-help-open) > .instruction-box {
-    display: none !important;
-  }
-
-  /* Open help panel: overlays calculator, does not move layout */
-  main.pc-calculator-layout.pc-help-open > .instruction-box {
-    display: block !important;
-
-    position: absolute !important;
-
-    left: var(--pc-help-left, 0px) !important;
-    top: var(--pc-help-top, 0px) !important;
-
-    width: var(--pc-help-width, var(--pc-center-width)) !important;
-    height: var(--pc-help-height, 620px) !important;
-
-    max-width: var(--pc-help-width, var(--pc-center-width)) !important;
-    max-height: var(--pc-help-height, 620px) !important;
-
-    margin: 0 !important;
-    padding: 24px !important;
-
-    background: var(--white) !important;
-
-    border: 5px solid var(--black) !important;
-    box-shadow: 9px 9px 0 var(--black) !important;
-
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-
-    z-index: 1000001 !important;
-    box-sizing: border-box !important;
-  }
-
-  main.pc-calculator-layout.pc-help-open > .instruction-box *,
-  main.pc-calculator-layout.pc-help-open .reference-box,
-  main.pc-calculator-layout.pc-help-open .reference-scroll,
-  main.pc-calculator-layout.pc-help-open .reference-card {
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-  }
-
-  main.pc-calculator-layout.pc-help-open .reference-box {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    overflow: visible !important;
-  }
-
-  main.pc-calculator-layout.pc-help-open .reference-scroll {
-    max-height: none !important;
-    padding: 0 !important;
-    overflow: visible !important;
-  }
-
-  main.pc-calculator-layout.pc-help-open .reference-card {
-    margin: 0 0 16px !important;
-    padding: 14px 12px !important;
-
-    border: var(--pc-border) solid var(--black) !important;
-    box-shadow: var(--pc-shadow) !important;
-  }
-}
-
-/* =====================================================
-   PC ONLY: center "What does this calculator do?"
-===================================================== */
-@media (min-width: 851px) {
-  main.pc-calculator-layout > .pc-what-slot .instruction-what-box {
-    text-align: center !important;
-    align-items: center !important;
-  }
-
-  main.pc-calculator-layout > .pc-what-slot .instruction-what-box h3 {
-    width: 100% !important;
-    text-align: center !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
-
-  main.pc-calculator-layout > .pc-what-slot .instruction-what-box p {
-    width: 100% !important;
-    text-align: center !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
-}
-
-/* =====================================================
-   PC ONLY: center every text inside calculator box
-   Applies to all calculator pages
-===================================================== */
-@media (min-width: 851px) {
   main.pc-calculator-layout > .calculator,
   main.pc-calculator-layout > .calculator * {
-    text-align: center !important;
-  }
-
-  main.pc-calculator-layout > .calculator h1,
-  main.pc-calculator-layout > .calculator h2,
-  main.pc-calculator-layout > .calculator h3,
-  main.pc-calculator-layout > .calculator p,
-  main.pc-calculator-layout > .calculator label,
-  main.pc-calculator-layout > .calculator .subtitle,
-  main.pc-calculator-layout > .calculator .compound-tip,
-  main.pc-calculator-layout > .calculator .formula-card,
-  main.pc-calculator-layout > .calculator .compound-formula-card,
-  main.pc-calculator-layout > .calculator .compound-mini-row,
-  main.pc-calculator-layout > .calculator #result,
-  main.pc-calculator-layout > .calculator #bmiResult,
-  main.pc-calculator-layout > .calculator #loanResult,
-  main.pc-calculator-layout > .calculator #discountResult,
-  main.pc-calculator-layout > .calculator #percentageResult,
-  main.pc-calculator-layout > .calculator #compoundResult {
     text-align: center !important;
   }
 
@@ -1168,1471 +410,34 @@
     text-align: center !important;
   }
 
-  main.pc-calculator-layout > .calculator input::placeholder,
-  main.pc-calculator-layout > .calculator textarea::placeholder {
-    text-align: center !important;
-  }
-
-  main.pc-calculator-layout > .calculator button {
-    text-align: center !important;
-  }
-}
-
-/* =====================================================
-   PC ONLY: clean ? help panel
-   Opens left of ? button, closes on second click, no duplicate blocks.
-===================================================== */
-@media (min-width: 851px) {
-  main.pc-calculator-layout {
-    position: relative !important;
-    overflow: visible !important;
-
-    grid-template-columns:
-      minmax(0, var(--pc-left-width))
-      minmax(0, var(--pc-center-width))
-      66px !important;
-  }
-
-  main.pc-calculator-layout.pc-help-open {
-    grid-template-columns:
-      minmax(0, var(--pc-left-width))
-      minmax(0, var(--pc-center-width))
-      66px !important;
-  }
-
-  main.pc-calculator-layout > .pc-question-toggle {
-    grid-column: 3 !important;
-    grid-row: 1 !important;
-
-    width: 58px !important;
-    height: 58px !important;
-
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    justify-self: center !important;
-    align-self: start !important;
-
-    margin: 6px 0 0 !important;
-    padding: 0 !important;
-
-    background: #ff9fcb !important;
-    color: var(--black) !important;
-
-    border: 4px solid var(--black) !important;
-    box-shadow: 6px 6px 0 var(--black) !important;
-
-    font-family: inherit !important;
-    font-size: 30px !important;
-    font-weight: bold !important;
-    line-height: 1 !important;
-
-    cursor: pointer !important;
-    pointer-events: auto !important;
-
-    position: relative !important;
-    z-index: 999999999 !important;
-  }
-
-  main.pc-calculator-layout > .pc-question-toggle:hover,
-  main.pc-calculator-layout.pc-help-open > .pc-question-toggle {
-    background: var(--yellow) !important;
-  }
-
-  main.pc-calculator-layout:not(.pc-help-open) > .instruction-box {
-    display: none !important;
-  }
-
-  main.pc-calculator-layout.pc-help-open > .instruction-box {
-    display: block !important;
-    position: fixed !important;
-
-    left: var(--pc-help-left, 16px) !important;
-    top: var(--pc-help-top, 16px) !important;
-    right: auto !important;
-
-    width: var(--pc-help-width, 700px) !important;
-    height: var(--pc-help-height, 620px) !important;
-
-    max-width: calc(100vw - 24px) !important;
-    max-height: calc(100vh - 24px) !important;
-
-    margin: 0 !important;
-    padding: 24px !important;
-
-    background: var(--white) !important;
-
-    border: 5px solid var(--black) !important;
-    box-shadow: 9px 9px 0 var(--black) !important;
-
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-
-    transform: none !important;
-
-    pointer-events: auto !important;
-    z-index: 999999998 !important;
-    box-sizing: border-box !important;
-  }
-
-  main.pc-calculator-layout.pc-help-open > .instruction-box *,
-  main.pc-calculator-layout.pc-help-open .reference-box,
-  main.pc-calculator-layout.pc-help-open .reference-scroll,
-  main.pc-calculator-layout.pc-help-open .reference-card {
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-  }
-
-  main.pc-calculator-layout.pc-help-open .reference-box {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    overflow: visible !important;
-  }
-
-  main.pc-calculator-layout.pc-help-open .reference-scroll {
-    max-height: none !important;
-    padding: 0 !important;
-    overflow: visible !important;
-  }
-
-  main.pc-calculator-layout.pc-help-open .reference-card {
-    margin: 0 0 16px !important;
-    padding: 14px 12px !important;
-
-    border: var(--pc-border) solid var(--black) !important;
-    box-shadow: var(--pc-shadow) !important;
-  }
-}
-
-/* =====================================================
-   PC ONLY: clean loan result output
-   Table box on top, graph box below, copy button on the side.
-===================================================== */
-@media (min-width: 851px) {
-  main.pc-calculator-layout > #loanExternalOutput {
-    grid-column: 1 / 3 !important;
-    grid-row: 3 !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 22px 0 0 !important;
-    padding: 0 !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 16px !important;
-
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-
-    box-sizing: border-box !important;
-    overflow: visible !important;
-  }
-
-  main.pc-calculator-layout > #loanExternalOutput[hidden] {
-    display: none !important;
-  }
-
-  #loanExternalOutput .loan-output-top {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto !important;
-    gap: 14px !important;
-    align-items: start !important;
-
-    box-sizing: border-box !important;
-  }
-
-  #loanExternalOutput .loan-result-panel,
-  #loanExternalOutput .loan-graph-panel {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    padding: 16px !important;
-
-    background: #d3fff9 !important;
-    color: var(--black) !important;
-
-    border: 5px solid var(--black) !important;
-    box-shadow: 7px 7px 0 var(--black) !important;
-
-    box-sizing: border-box !important;
-    overflow: hidden !important;
-  }
-
-  #loanExternalOutput .loan-graph-panel {
-    background: var(--white) !important;
-  }
-
-  #loanExternalOutput .loan-panel-title {
-    margin: 0 0 12px !important;
-
-    color: var(--black) !important;
-
-    font-size: 28px !important;
-    font-weight: bold !important;
-    line-height: 1.2 !important;
-    text-align: center !important;
-  }
-
-  #loanExternalOutput .loan-result-body {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    max-height: 210px !important;
-
-    background: var(--white) !important;
-
-    border: 4px solid var(--black) !important;
-
-    overflow-x: auto !important;
-    overflow-y: auto !important;
-
-    box-sizing: border-box !important;
-  }
-
-  #loanExternalOutput .loan-result-table {
-    width: 100% !important;
-    min-width: 680px !important;
-
-    border-collapse: collapse !important;
-
-    color: var(--black) !important;
-
-    font-size: 16px !important;
-    font-weight: bold !important;
-    text-align: center !important;
-  }
-
-  #loanExternalOutput .loan-result-table th,
-  #loanExternalOutput .loan-result-table td {
-    padding: 10px 12px !important;
-
-    border: 3px solid var(--black) !important;
-
-    text-align: center !important;
-    white-space: nowrap !important;
-
-    box-sizing: border-box !important;
-  }
-
-  #loanExternalOutput .loan-result-table th {
-    position: sticky !important;
-    top: 0 !important;
-
-    background: var(--soft-yellow) !important;
-
-    z-index: 2 !important;
-  }
-
-  #loanExternalOutput .loan-result-table td {
-    background: var(--white) !important;
-  }
-
-  #loanExternalOutput .loan-copy-side {
-    display: flex !important;
-    align-items: flex-start !important;
-    justify-content: center !important;
-  }
-
-  #loanExternalOutput .loan-copy-btn {
-    min-width: 86px !important;
-
-    padding: 10px 12px !important;
-
-    background: var(--pink) !important;
-    color: var(--black) !important;
-
-    border: 4px solid var(--black) !important;
-    box-shadow: 4px 4px 0 var(--black) !important;
-
-    font-family: inherit !important;
-    font-size: 15px !important;
-    font-weight: bold !important;
-    line-height: 1 !important;
-
-    cursor: pointer !important;
-  }
-
-  #loanExternalOutput .loan-copy-btn:hover {
-    background: var(--yellow) !important;
-    transform: translate(-2px, -2px) !important;
-    box-shadow: 6px 6px 0 var(--black) !important;
-  }
-
-  #loanExternalOutput .loan-graph-body {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-
-    box-sizing: border-box !important;
-  }
-
-  #loanExternalOutput .loan-graph {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 360px !important;
-    height: auto !important;
-
-    display: block !important;
-
-    background: var(--white) !important;
-  }
-
-  #loanExternalOutput .loan-graph-grid {
-    stroke: #ccc !important;
-    stroke-width: 2 !important;
-  }
-
-  #loanExternalOutput .loan-graph-axis {
-    stroke: #555 !important;
-    stroke-width: 4 !important;
-  }
-
-  #loanExternalOutput .loan-graph-line {
-    fill: none !important;
-    stroke: #4db6c1 !important;
-    stroke-width: 5 !important;
-    stroke-linecap: round !important;
-    stroke-linejoin: round !important;
-  }
-
-  #loanExternalOutput .loan-graph circle {
-    fill: #d3fff9 !important;
-    stroke: #4db6c1 !important;
-    stroke-width: 4 !important;
-  }
-
-  #loanExternalOutput .loan-graph text {
-    fill: var(--black) !important;
-
-    font-family: "Comic Neue", "Comic Sans MS", cursive, sans-serif !important;
-    font-size: 11px !important;
-    font-weight: bold !important;
-  }
-
-  #loanExternalOutput .loan-graph-value {
-    font-size: 10px !important;
-  }
-
-  /* Hide old inside-calculator loan result/output blocks */
-  .calculator #loanResult,
-  .calculator #loanYearTableWrap,
-  .calculator .loan-year-table-wrap,
-  .calculator #loanOutputPanel,
-  .calculator .loan-output-panel,
-  .calculator #loanResultTableWrap,
-  .calculator .loan-result-table-wrap,
-  .calculator #loanGraphWrap,
-  .calculator #loanGraphBox,
-  .calculator .loan-graph-wrap,
-  .calculator .loan-output-wrap,
-  .calculator .loan-output-box {
-    display: none !important;
-  }
-}
-
-@media (min-width: 851px) and (max-width: 1180px) {
-  #loanExternalOutput .loan-output-top {
-    grid-template-columns: 1fr !important;
-  }
-
-  #loanExternalOutput .loan-copy-side {
-    justify-content: flex-end !important;
-  }
-}
-/* =====================================================
-   PC ONLY: loan external result table + graph below calculator
-   Paste at bottom of pc.css if your result panel is not styled.
-===================================================== */
-@media (min-width: 851px) {
-  body.loan-page main.pc-calculator-layout > #loanExternalOutput,
-  body.loan-page main.pc-calculator-layout > .loan-external-output {
-    grid-column: 1 / 3 !important;
-    grid-row: 3 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 22px 0 0 !important;
-    padding: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 16px !important;
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    box-sizing: border-box !important;
-  }
-
-  #loanExternalOutput[hidden] {
-    display: none !important;
-  }
-
-  #loanExternalOutput .loan-output-top {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto !important;
-    gap: 14px !important;
-    align-items: start !important;
-  }
-
-  #loanExternalOutput .loan-result-panel,
-  #loanExternalOutput .loan-graph-panel {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 16px !important;
-    background: #d3fff9 !important;
-    color: var(--black) !important;
-    border: 5px solid var(--black) !important;
-    box-shadow: 7px 7px 0 var(--black) !important;
-    box-sizing: border-box !important;
-    overflow: hidden !important;
-  }
-
-  #loanExternalOutput .loan-graph-panel {
-    background: var(--white) !important;
-  }
-
-  #loanExternalOutput .loan-panel-title {
-    margin: 0 0 12px !important;
-    color: var(--black) !important;
-    font-size: 28px !important;
-    font-weight: bold !important;
-    line-height: 1.2 !important;
-    text-align: center !important;
-  }
-
-  #loanExternalOutput .loan-result-body {
-    width: 100% !important;
-    max-width: 100% !important;
-    max-height: 240px !important;
-    overflow: auto !important;
-    background: var(--white) !important;
-    border: 4px solid var(--black) !important;
-    box-sizing: border-box !important;
-  }
-
-  #loanExternalOutput .loan-result-table {
-    width: 100% !important;
-    min-width: 680px !important;
-    border-collapse: collapse !important;
-    color: var(--black) !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    text-align: center !important;
-  }
-
-  #loanExternalOutput .loan-result-table th,
-  #loanExternalOutput .loan-result-table td {
-    padding: 10px 8px !important;
-    border: 3px solid var(--black) !important;
-    text-align: center !important;
-    white-space: nowrap !important;
-  }
-
-  #loanExternalOutput .loan-result-table th {
-    position: sticky !important;
-    top: 0 !important;
-    background: var(--soft-yellow) !important;
-    z-index: 2 !important;
-  }
-
-  #loanExternalOutput .loan-result-table td {
-    background: var(--white) !important;
-  }
-
-  #loanExternalOutput .loan-copy-side {
-    display: flex !important;
-    align-items: flex-start !important;
-    justify-content: center !important;
-  }
-
-  #loanExternalOutput .loan-copy-btn {
-    min-width: 78px !important;
-    padding: 10px 14px !important;
-    background: var(--pink) !important;
-    color: var(--black) !important;
-    border: 4px solid var(--black) !important;
-    box-shadow: 4px 4px 0 var(--black) !important;
-    font-family: inherit !important;
-    font-weight: bold !important;
-    cursor: pointer !important;
-  }
-
-  #loanExternalOutput .loan-copy-btn:hover {
-    background: var(--yellow) !important;
-  }
-
-  #loanExternalOutput .loan-graph-body {
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow: auto !important;
-    background: var(--white) !important;
-    border: 4px solid var(--black) !important;
-    box-sizing: border-box !important;
-  }
-
-  #loanExternalOutput .loan-graph {
-    display: block !important;
-    width: min(100%, 520px) !important;
-    height: auto !important;
-    margin: 0 auto !important;
-    background: var(--white) !important;
-  }
-
-  #loanExternalOutput .loan-graph-grid {
-    stroke: #ccc !important;
-    stroke-width: 2 !important;
-  }
-
-  #loanExternalOutput .loan-graph-axis {
-    stroke: #555 !important;
-    stroke-width: 4 !important;
-  }
-
-  #loanExternalOutput .loan-graph-line {
-    fill: none !important;
-    stroke: #4db6c1 !important;
-    stroke-width: 5 !important;
-    stroke-linecap: round !important;
-    stroke-linejoin: round !important;
-  }
-
-  #loanExternalOutput .loan-graph circle {
-    fill: #d3fff9 !important;
-    stroke: #4db6c1 !important;
-    stroke-width: 4 !important;
-  }
-
-  #loanExternalOutput .loan-graph text {
-    fill: var(--black) !important;
-    font-family: "Comic Neue", "Comic Sans MS", cursive, sans-serif !important;
-    font-size: 11px !important;
-    font-weight: bold !important;
-  }
-
-  body.loan-page .calculator #loanResult,
-  body.loan-page .calculator .result-copy-wrap {
-    display: none !important;
-  }
-}
-
-@media (min-width: 851px) and (max-width: 1180px) {
-  #loanExternalOutput .loan-output-top {
-    grid-template-columns: 1fr !important;
-  }
-
-  #loanExternalOutput .loan-copy-side {
-    justify-content: flex-end !important;
-  }
-}
-/* =====================================================
-   PC ONLY: hide loan copy button inside calculator box
-===================================================== */
-@media (min-width: 851px) {
-  body.loan-page .calculator .result-copy-btn,
-  body.loan-page .calculator .copy-result-btn {
-    display: none !important;
-  }
-}
-/* =====================================================
-   PC ONLY: all calculator pages use loan-page orientation
-===================================================== */
-@media (min-width: 851px) {
-  main.pc-calculator-layout {
-    width: 100% !important;
-    max-width: min(1200px, calc(100vw - 32px)) !important;
-
-    margin: 130px auto 80px !important;
-    padding: 16px !important;
-
-    display: grid !important;
-    grid-template-columns:
-      minmax(280px, 360px)
-      minmax(560px, 780px) !important;
-
-    grid-template-rows: auto auto auto !important;
-
-    column-gap: 28px !important;
-    row-gap: 18px !important;
-
-    justify-content: center !important;
-    align-items: start !important;
-
-    overflow: visible !important;
-    box-sizing: border-box !important;
-  }
-
-  main.pc-calculator-layout > .pc-what-slot {
-    grid-column: 1 / 3 !important;
-    grid-row: 1 !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  main.pc-calculator-layout > .pc-what-slot .instruction-what-box {
-    width: 100% !important;
-    min-height: 86px !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: center !important;
-
-    text-align: center !important;
-
-    background: #ffd3d3 !important;
-    border: 5px solid var(--black) !important;
-    box-shadow: 8px 8px 0 var(--black) !important;
-  }
-
-  main.pc-calculator-layout > .history,
-  main.pc-calculator-layout > .age-history-box,
-  main.pc-calculator-layout > .bmi-history-box,
-  main.pc-calculator-layout > .discount-history-box,
-  main.pc-calculator-layout > .loan-history-box,
-  main.pc-calculator-layout > .percentage-history-box,
-  main.pc-calculator-layout > .compound-history-box {
-    grid-column: 1 !important;
-    grid-row: 2 !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    min-height: 360px !important;
-    max-height: calc(100vh - 300px) !important;
-
-    margin: 0 !important;
-
-    background: var(--soft-yellow) !important;
-    border: 5px solid var(--black) !important;
-    box-shadow: 8px 8px 0 var(--black) !important;
-
-    transform: none !important;
-
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-  }
-
-  main.pc-calculator-layout > .calculator {
-    grid-column: 2 !important;
-    grid-row: 2 !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 !important;
-
-    border: 5px solid var(--black) !important;
-    box-shadow: 9px 9px 0 var(--black) !important;
-
-    justify-self: stretch !important;
-    align-self: start !important;
-  }
-
-  main.pc-calculator-layout > .instruction-box,
-  main.pc-calculator-layout > .pc-question-toggle {
-    display: none !important;
-  }
-
-  main.pc-calculator-layout .calculator .result-copy-wrap,
-  main.pc-calculator-layout .calculator .result-copy-btn,
-  main.pc-calculator-layout .calculator .copy-result-btn {
-    display: none !important;
-  }
-}
-
-/* =====================================================
-   PC ONLY: outside result panel style for all pages
-===================================================== */
-@media (min-width: 851px) {
-  main.pc-calculator-layout > .universal-output-panel,
-  main.pc-calculator-layout > #loanExternalOutput {
-    grid-column: 1 / 3 !important;
-    grid-row: 3 !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 18px !important;
-
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-
-    box-sizing: border-box !important;
-    overflow: visible !important;
-  }
-
-  main.pc-calculator-layout > .universal-output-panel[hidden],
-  main.pc-calculator-layout > #loanExternalOutput[hidden] {
-    display: none !important;
-  }
-
-  .universal-output-top,
-  #loanExternalOutput .loan-output-top {
-    width: 100% !important;
-
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto !important;
-    gap: 16px !important;
-
-    align-items: start !important;
-
-    box-sizing: border-box !important;
-  }
-
-  .universal-result-panel,
-  #loanExternalOutput .loan-result-panel,
-  #loanExternalOutput .loan-graph-panel {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    padding: 18px !important;
-
-    background: #d3fff9 !important;
-    color: var(--black) !important;
-
-    border: 5px solid var(--black) !important;
-    box-shadow: 8px 8px 0 var(--black) !important;
-
-    box-sizing: border-box !important;
-    overflow: hidden !important;
-  }
-
-  #loanExternalOutput .loan-graph-panel {
-    background: var(--white) !important;
-  }
-
-  .universal-panel-title,
-  #loanExternalOutput .loan-panel-title {
-    margin: 0 0 14px !important;
-
-    color: var(--black) !important;
-
-    font-size: 30px !important;
-    font-weight: bold !important;
-    line-height: 1.2 !important;
-    text-align: center !important;
-  }
-
-  .universal-result-body,
-  #loanExternalOutput .loan-result-body,
-  #loanExternalOutput .loan-graph-body {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    overflow-x: auto !important;
-    overflow-y: auto !important;
-
-    box-sizing: border-box !important;
-  }
-
-  .universal-result-body > h2,
-  .universal-result-body > div,
-  .universal-result-body > p,
-  .universal-result-body > span,
-  .universal-result-body > #result,
-  .universal-result-body > #ageResult,
-  .universal-result-body > #bmiResult,
-  .universal-result-body > #discountResult,
-  .universal-result-body > #percentageResult,
-  .universal-result-body > #compoundResult {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 !important;
-    padding: 14px !important;
-
-    background: var(--white) !important;
-    color: var(--black) !important;
-
-    border: 4px solid var(--black) !important;
-
-    font-size: 28px !important;
-    font-weight: bold !important;
-    line-height: 1.35 !important;
-    text-align: center !important;
-    white-space: pre-line !important;
-
-    box-sizing: border-box !important;
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-  }
-
-  .universal-copy-side,
-  #loanExternalOutput .loan-copy-side {
-    display: flex !important;
-    align-items: flex-start !important;
-    justify-content: center !important;
-  }
-
-  .universal-copy-btn,
-  #loanExternalOutput .loan-copy-btn {
-    min-width: 90px !important;
-
-    padding: 10px 14px !important;
-
-    background: #ffb3c7 !important;
-    color: var(--black) !important;
-
-    border: 4px solid var(--black) !important;
-    box-shadow: 4px 4px 0 var(--black) !important;
-
-    font-family: inherit !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-
-    cursor: pointer !important;
-  }
-
-  .universal-copy-btn:hover,
-  #loanExternalOutput .loan-copy-btn:hover {
-    background: var(--yellow) !important;
-    transform: translate(-2px, -2px) !important;
-    box-shadow: 6px 6px 0 var(--black) !important;
-  }
-}
-
-/* =====================================================
-   PC ONLY: loan table + graph same cartoon style
-===================================================== */
-@media (min-width: 851px) {
-  #loanExternalOutput .loan-result-table {
-    width: 100% !important;
-    min-width: 700px !important;
-
-    border-collapse: collapse !important;
-
-    background: var(--white) !important;
-
-    color: var(--black) !important;
-
-    font-size: 16px !important;
-    font-weight: bold !important;
-    text-align: center !important;
-  }
-
-  #loanExternalOutput .loan-result-table th,
-  #loanExternalOutput .loan-result-table td {
-    padding: 10px 12px !important;
-
-    border: 3px solid var(--black) !important;
-
-    text-align: center !important;
-    white-space: nowrap !important;
-  }
-
-  #loanExternalOutput .loan-result-table th {
-    background: var(--soft-yellow) !important;
-  }
-
-  #loanExternalOutput .loan-result-table td {
-    background: var(--white) !important;
-  }
-
-  #loanExternalOutput .loan-graph {
-    width: 100% !important;
-    max-width: 520px !important;
-    height: auto !important;
-
-    display: block !important;
-
-    margin: 0 auto !important;
-
-    background: var(--white) !important;
-  }
-
-  #loanExternalOutput .loan-graph-grid {
-    stroke: #ccc !important;
-    stroke-width: 2 !important;
-  }
-
-  #loanExternalOutput .loan-graph-axis {
-    stroke: #555 !important;
-    stroke-width: 4 !important;
-  }
-
-  #loanExternalOutput .loan-graph-line {
-    fill: none !important;
-    stroke: #4db6c1 !important;
-    stroke-width: 5 !important;
-    stroke-linecap: round !important;
-    stroke-linejoin: round !important;
-  }
-
-  #loanExternalOutput .loan-graph circle {
-    fill: #d3fff9 !important;
-    stroke: #4db6c1 !important;
-    stroke-width: 4 !important;
-  }
-
-  #loanExternalOutput .loan-graph text {
-    fill: var(--black) !important;
-
-    font-family: "Comic Neue", "Comic Sans MS", cursive, sans-serif !important;
-    font-size: 11px !important;
-    font-weight: bold !important;
-  }
-}
-
-/* Smaller PC screens */
-@media (min-width: 851px) and (max-width: 1180px) {
-  main.pc-calculator-layout {
-    grid-template-columns: 1fr !important;
-    max-width: calc(100vw - 24px) !important;
-  }
-
-  main.pc-calculator-layout > .pc-what-slot,
-  main.pc-calculator-layout > .history,
-  main.pc-calculator-layout > .age-history-box,
-  main.pc-calculator-layout > .bmi-history-box,
-  main.pc-calculator-layout > .discount-history-box,
-  main.pc-calculator-layout > .loan-history-box,
-  main.pc-calculator-layout > .percentage-history-box,
-  main.pc-calculator-layout > .compound-history-box,
-  main.pc-calculator-layout > .calculator,
-  main.pc-calculator-layout > .universal-output-panel,
-  main.pc-calculator-layout > #loanExternalOutput {
-    grid-column: 1 !important;
-  }
-
-  main.pc-calculator-layout > .pc-what-slot {
-    grid-row: 1 !important;
-  }
-
-  main.pc-calculator-layout > .calculator {
-    grid-row: 2 !important;
-  }
-
-  main.pc-calculator-layout > .history,
-  main.pc-calculator-layout > .age-history-box,
-  main.pc-calculator-layout > .bmi-history-box,
-  main.pc-calculator-layout > .discount-history-box,
-  main.pc-calculator-layout > .loan-history-box,
-  main.pc-calculator-layout > .percentage-history-box,
-  main.pc-calculator-layout > .compound-history-box {
-    grid-row: 3 !important;
-  }
-
-  main.pc-calculator-layout > .universal-output-panel,
-  main.pc-calculator-layout > #loanExternalOutput {
-    grid-row: 4 !important;
-  }
-
-  .universal-output-top,
-  #loanExternalOutput .loan-output-top {
-    grid-template-columns: 1fr !important;
-  }
-
-  .universal-copy-side,
-  #loanExternalOutput .loan-copy-side {
-    justify-content: flex-start !important;
-  }
-}
-/* =====================================================
-   PC ONLY: restore ? symbol after loan-style layout
-===================================================== */
-@media (min-width: 851px) {
-  main.pc-calculator-layout {
-    position: relative !important;
-    overflow: visible !important;
-  }
-
-  main.pc-calculator-layout > .pc-question-toggle {
-    display: flex !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-
-    position: absolute !important;
-    top: 16px !important;
-    right: 16px !important;
-
-    width: 58px !important;
-    height: 58px !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    background: #ff9fcb !important;
-    color: var(--black) !important;
-
-    border: 4px solid var(--black) !important;
-    box-shadow: 6px 6px 0 var(--black) !important;
-
-    font-family: inherit !important;
-    font-size: 30px !important;
-    font-weight: bold !important;
-    line-height: 1 !important;
-
-    cursor: pointer !important;
-    z-index: 999999999 !important;
-  }
-
-  main.pc-calculator-layout > .pc-question-toggle:hover,
-  main.pc-calculator-layout.pc-help-open > .pc-question-toggle {
-    background: var(--yellow) !important;
-  }
-
-  main.pc-calculator-layout:not(.pc-help-open) > .instruction-box {
-    display: none !important;
-  }
-
-  main.pc-calculator-layout.pc-help-open > .instruction-box {
-    display: block !important;
-
-    position: fixed !important;
-    top: 110px !important;
-    right: 90px !important;
-
-    width: min(520px, calc(100vw - 120px)) !important;
-    max-height: calc(100vh - 140px) !important;
-
-    margin: 0 !important;
-    padding: 20px !important;
-
-    background: var(--white) !important;
-
-    border: 5px solid var(--black) !important;
-    box-shadow: 9px 9px 0 var(--black) !important;
-
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-
-    z-index: 999999998 !important;
-    box-sizing: border-box !important;
-  }
-}
-/* =====================================================
-   PC ONLY: Copy button beside loan graph
-===================================================== */
-@media (min-width: 851px) {
-  #loanExternalOutput .loan-graph-row {
-    width: 100% !important;
-
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto !important;
-    gap: 16px !important;
-
-    align-items: start !important;
-
-    box-sizing: border-box !important;
-  }
-
-  #loanExternalOutput .loan-graph-row .loan-graph-panel {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-
-  #loanExternalOutput .loan-graph-copy-side {
-    display: flex !important;
-    align-items: flex-start !important;
-    justify-content: center !important;
-  }
-
-  #loanExternalOutput .loan-graph-copy-btn {
-    min-width: 90px !important;
-
-    padding: 10px 14px !important;
-
-    background: #ffb3c7 !important;
-    color: var(--black) !important;
-
-    border: 4px solid var(--black) !important;
-    box-shadow: 4px 4px 0 var(--black) !important;
-
-    font-family: inherit !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-
-    cursor: pointer !important;
-  }
-
-  #loanExternalOutput .loan-graph-copy-btn:hover {
-    background: var(--yellow) !important;
-    transform: translate(-2px, -2px) !important;
-    box-shadow: 6px 6px 0 var(--black) !important;
-  }
-}
-
-@media (min-width: 851px) and (max-width: 1180px) {
-  #loanExternalOutput .loan-graph-row {
-    grid-template-columns: 1fr !important;
-  }
-
-  #loanExternalOutput .loan-graph-copy-side {
-    justify-content: flex-start !important;
-  }
-}
-/* =====================================================
-   PC ONLY: FINAL ? SYMBOL DISPLAY + OPEN PANEL FIX
-===================================================== */
-@media (min-width: 851px) {
-  main.pc-calculator-layout {
-    position: relative !important;
-    overflow: visible !important;
-  }
-
-  main.pc-calculator-layout > .pc-question-toggle {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-
-    position: absolute !important;
-    top: 16px !important;
-    right: 16px !important;
-
-    width: 58px !important;
-    height: 58px !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    background: #ff9fcb !important;
-    color: var(--black) !important;
-
-    border: 4px solid var(--black) !important;
-    box-shadow: 6px 6px 0 var(--black) !important;
-
-    font-family: inherit !important;
-    font-size: 30px !important;
-    font-weight: bold !important;
-    line-height: 1 !important;
-
-    cursor: pointer !important;
-    z-index: 2147483647 !important;
-  }
-
-  main.pc-calculator-layout > .pc-question-toggle:hover,
-  main.pc-calculator-layout.pc-help-open > .pc-question-toggle {
-    background: var(--yellow) !important;
-  }
-
-  main.pc-calculator-layout:not(.pc-help-open) > .instruction-box {
-    display: none !important;
-  }
-
-  main.pc-calculator-layout.pc-help-open > .instruction-box {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-
-    position: fixed !important;
-
-    left: var(--pc-question-panel-left, 16px) !important;
-    top: var(--pc-question-panel-top, 110px) !important;
-    right: auto !important;
-
-    width: var(--pc-question-panel-width, 520px) !important;
-    max-width: calc(100vw - 32px) !important;
-    max-height: calc(100vh - 32px) !important;
-
-    margin: 0 !important;
-    padding: 20px !important;
-
-    background: var(--white) !important;
-
-    border: 5px solid var(--black) !important;
-    box-shadow: 9px 9px 0 var(--black) !important;
-
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-
-    z-index: 2147483646 !important;
-    box-sizing: border-box !important;
-  }
-}
-/* =====================================================
-   PC ONLY: FINAL FLOATING ? HELP OVERLAY
-   Panel opens left of ? and does not move layout
-===================================================== */
-@media (min-width: 851px) {
-  /* Hide old broken question buttons inside layout */
-  main.pc-calculator-layout > .pc-question-toggle {
-    display: none !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-  }
-
-  /* New fixed ? button */
-  #pcQuestionOverlayButton {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-
-    position: fixed !important;
-
-    left: var(--pc-final-question-left, calc(100vw - 86px)) !important;
-    top: var(--pc-final-question-top, 130px) !important;
-
-    width: 58px !important;
-    height: 58px !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    background: #ff9fcb !important;
-    color: var(--black) !important;
-
-    border: 4px solid var(--black) !important;
-    box-shadow: 6px 6px 0 var(--black) !important;
-
-    font-family: inherit !important;
-    font-size: 30px !important;
-    font-weight: bold !important;
-    line-height: 1 !important;
-
-    cursor: pointer !important;
-
-    z-index: 2147483647 !important;
-    box-sizing: border-box !important;
-  }
-
-  #pcQuestionOverlayButton:hover,
-  body.pc-final-help-open #pcQuestionOverlayButton {
-    background: var(--yellow) !important;
-  }
-
-  #pcQuestionOverlayButton[hidden] {
-    display: none !important;
-  }
-
-  /* Keep instruction box hidden without taking space */
   main.pc-calculator-layout > .instruction-box {
     display: none !important;
   }
 
-  /* Open as fixed overlay, same size as calculator */
-  body.pc-final-help-open main.pc-calculator-layout > .instruction-box {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-
-    position: fixed !important;
-
-    left: var(--pc-final-help-left, 12px) !important;
-    top: var(--pc-final-help-top, 130px) !important;
-
-    width: var(--pc-final-help-width, 700px) !important;
-    height: var(--pc-final-help-height, 620px) !important;
-
-    max-width: calc(100vw - 24px) !important;
-    max-height: calc(100vh - 24px) !important;
-
-    margin: 0 !important;
-    padding: 20px !important;
-
-    background: var(--white) !important;
-
-    border: 5px solid var(--black) !important;
-    box-shadow: 9px 9px 0 var(--black) !important;
-
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-
-    transform: none !important;
-
-    z-index: 2147483646 !important;
-    box-sizing: border-box !important;
-  }
-
-  body.pc-final-help-open main.pc-calculator-layout > .instruction-box,
-  body.pc-final-help-open main.pc-calculator-layout > .instruction-box * {
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-  }
-
-  body.pc-final-help-open main.pc-calculator-layout > .instruction-box > .instruction-what-box {
-    display: none !important;
-  }
-
-  body.pc-final-help-open main.pc-calculator-layout .instruction-main-title,
-  body.pc-final-help-open main.pc-calculator-layout .reference-main-title,
-  body.pc-final-help-open main.pc-calculator-layout .reference-box > h2 {
-    text-align: center !important;
-  }
-
-  body.pc-final-help-open main.pc-calculator-layout .reference-box {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-
-    overflow: visible !important;
-  }
-
-  body.pc-final-help-open main.pc-calculator-layout .reference-scroll {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    max-height: none !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    overflow: visible !important;
-  }
-
-  body.pc-final-help-open main.pc-calculator-layout .reference-card {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-}
-
-/* Phone mode: no PC ? overlay */
-@media (max-width: 850px) {
-  #pcQuestionOverlayButton {
-    display: none !important;
-  }
-}
-/* =====================================================
-   PC ONLY: close visual gap between ? and help panel
-===================================================== */
-@media (min-width: 851px) {
-  #pcQuestionOverlayButton {
-    left: var(--pc-final-question-left, calc(100vw - 86px)) !important;
-    top: var(--pc-final-question-top, 130px) !important;
-
-    margin: 0 !important;
-    transform: none !important;
-
-    z-index: 2147483647 !important;
-  }
-
-  body.pc-final-help-open main.pc-calculator-layout > .instruction-box {
-    left: var(--pc-final-help-left, 12px) !important;
-    top: var(--pc-final-help-top, 130px) !important;
-
-    width: var(--pc-final-help-width, 700px) !important;
-    height: var(--pc-final-help-height, 620px) !important;
-
-    margin: 0 !important;
-    transform: none !important;
-
-    z-index: 2147483646 !important;
-  }
-}
-/* =====================================================
-   PC ONLY: FINAL TIGHT ? GAP OVERRIDE
-   Forces ? and instruction panel to stay close
-===================================================== */
-@media (min-width: 851px) {
-  #pcQuestionOverlayButton {
-    position: fixed !important;
-
-    left: var(--tight-q-left, calc(100vw - 80px)) !important;
-    top: var(--tight-q-top, 130px) !important;
-
-    margin: 0 !important;
-    transform: none !important;
-
-    z-index: 2147483647 !important;
-  }
-
-  body.pc-final-help-open main.pc-calculator-layout > .instruction-box,
-  body.pc-help-open main.pc-calculator-layout > .instruction-box {
-    position: fixed !important;
-
-    left: var(--tight-panel-left, 10px) !important;
-    top: var(--tight-panel-top, 130px) !important;
-
-    width: var(--tight-panel-width, 700px) !important;
-    height: var(--tight-panel-height, 620px) !important;
-
-    margin: 0 !important;
-    transform: none !important;
-
-    max-width: calc(100vw - 20px) !important;
-    max-height: calc(100vh - 20px) !important;
-
-    z-index: 2147483646 !important;
-  }
-}
-/* =====================================================
-   PC ONLY: FINAL ? HELP OVERLAY ON TOP OF CALCULATOR
-   Does not move any layout item
-===================================================== */
-@media (min-width: 851px) {
-  main.pc-calculator-layout {
-    overflow: visible !important;
-  }
-
-  main.pc-calculator-layout > .pc-question-toggle {
-    display: none !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-  }
-
+  /* Fixed ? button created by pc.js */
   #pcQuestionOverlayButton {
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
     pointer-events: auto !important;
-
     position: fixed !important;
-
     left: var(--calc-help-btn-left, calc(100vw - 80px)) !important;
     top: var(--calc-help-btn-top, 130px) !important;
-
     width: 58px !important;
     height: 58px !important;
-
     align-items: center !important;
     justify-content: center !important;
-
     margin: 0 !important;
     padding: 0 !important;
-
     background: #ff9fcb !important;
     color: var(--black) !important;
-
     border: 4px solid var(--black) !important;
     box-shadow: 6px 6px 0 var(--black) !important;
-
     font-family: inherit !important;
     font-size: 30px !important;
     font-weight: bold !important;
     line-height: 1 !important;
-
     cursor: pointer !important;
-
     z-index: 2147483647 !important;
     box-sizing: border-box !important;
   }
@@ -2646,8 +451,10 @@
     display: none !important;
   }
 
-  main.pc-calculator-layout > .instruction-box {
+  main.pc-calculator-layout > .pc-question-toggle {
     display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
   }
 
   body.pc-calculator-help-open main.pc-calculator-layout > .instruction-box {
@@ -2655,31 +462,21 @@
     visibility: visible !important;
     opacity: 1 !important;
     pointer-events: auto !important;
-
     position: fixed !important;
-
     left: var(--calc-help-left, 10px) !important;
     top: var(--calc-help-top, 130px) !important;
-
     width: var(--calc-help-width, 700px) !important;
     height: var(--calc-help-height, 620px) !important;
-
     max-width: calc(100vw - 20px) !important;
     max-height: calc(100vh - 20px) !important;
-
     margin: 0 !important;
     padding: 20px !important;
-
     background: var(--white) !important;
-
     border: 5px solid var(--black) !important;
     box-shadow: 9px 9px 0 var(--black) !important;
-
     overflow-y: auto !important;
     overflow-x: hidden !important;
-
     transform: none !important;
-
     z-index: 2147483646 !important;
     box-sizing: border-box !important;
   }
@@ -2696,108 +493,130 @@
     display: none !important;
   }
 
-  body.pc-calculator-help-open main.pc-calculator-layout .instruction-main-title,
-  body.pc-calculator-help-open main.pc-calculator-layout .reference-main-title,
-  body.pc-calculator-help-open main.pc-calculator-layout .reference-box > h2 {
-    text-align: center !important;
-  }
-
   body.pc-calculator-help-open main.pc-calculator-layout .reference-box {
     width: 100% !important;
     max-width: 100% !important;
-
     margin: 0 !important;
     padding: 0 !important;
-
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-
     overflow: visible !important;
   }
 
   body.pc-calculator-help-open main.pc-calculator-layout .reference-scroll {
     width: 100% !important;
     max-width: 100% !important;
-
     max-height: none !important;
-
     margin: 0 !important;
     padding: 0 !important;
-
     overflow: visible !important;
   }
 
-  body.pc-calculator-help-open main.pc-calculator-layout .reference-card {
+  body.pc-calculator-help-open main.pc-calculator-layout .instruction-section:not(.instruction-what-box),
+  body.pc-calculator-help-open main.pc-calculator-layout .reference-card,
+  main.pc-calculator-layout .instruction-section:not(.instruction-what-box),
+  main.pc-calculator-layout .reference-card {
     width: 100% !important;
     max-width: 100% !important;
+    margin: 0 0 16px !important;
+    padding: 14px 12px !important;
+    color: var(--black) !important;
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
   }
-}
 
-@media (max-width: 850px) {
-  #pcQuestionOverlayButton {
-    display: none !important;
+  main.pc-calculator-layout .instruction-how-box,
+  main.pc-calculator-layout .reference-card:nth-child(1) {
+    background: #d3fff9 !important;
   }
-}
-/* =====================================================
-   PC ONLY: all pages use loan-page result table style
-===================================================== */
-@media (min-width: 851px) {
+
+  main.pc-calculator-layout .instruction-formula-box,
+  main.pc-calculator-layout .reference-card:nth-child(2) {
+    background: #fff4b8 !important;
+  }
+
+  main.pc-calculator-layout .instruction-example-box,
+  main.pc-calculator-layout .reference-card:nth-child(3) {
+    background: #d3ffd9 !important;
+  }
+
+  main.pc-calculator-layout .reference-card:nth-child(4) {
+    background: #ffd3d3 !important;
+  }
+
+  main.pc-calculator-layout .reference-card a {
+    display: inline-flex !important;
+    max-width: 100% !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-top: 8px !important;
+    padding: 6px 10px !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 3px 3px 0 var(--black) !important;
+    font-size: 13px !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+    text-decoration: none !important;
+    box-sizing: border-box !important;
+  }
+
+  main.pc-calculator-layout .reference-card a:hover {
+    background: var(--yellow) !important;
+  }
+
+  /* Bottom result tables: loan style for all pages */
   main.pc-calculator-layout > #universalLoanStyleOutput,
-  main.pc-calculator-layout > #loanExternalOutput {
+  main.pc-calculator-layout > #loanExternalOutput,
+  main.pc-calculator-layout > .universal-output-panel {
     grid-column: 1 / 3 !important;
     grid-row: 3 !important;
-
     width: 100% !important;
     max-width: 100% !important;
-
     margin: 0 !important;
     padding: 0 !important;
-
     display: flex !important;
     flex-direction: column !important;
     gap: 18px !important;
-
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-
     box-sizing: border-box !important;
     overflow: visible !important;
   }
 
   main.pc-calculator-layout > #universalLoanStyleOutput[hidden],
-  main.pc-calculator-layout > #loanExternalOutput[hidden] {
+  main.pc-calculator-layout > #loanExternalOutput[hidden],
+  main.pc-calculator-layout > .universal-output-panel[hidden] {
     display: none !important;
   }
 
   #universalLoanStyleOutput .loan-output-top,
-  #loanExternalOutput .loan-output-top {
+  #loanExternalOutput .loan-output-top,
+  .universal-output-panel .universal-output-top {
     width: 100% !important;
-
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) auto !important;
     gap: 16px !important;
-
     align-items: start !important;
-
     box-sizing: border-box !important;
   }
 
   #universalLoanStyleOutput .loan-result-panel,
   #loanExternalOutput .loan-result-panel,
-  #loanExternalOutput .loan-graph-panel {
+  #loanExternalOutput .loan-graph-panel,
+  .universal-output-panel .universal-result-panel {
     width: 100% !important;
     max-width: 100% !important;
-
     padding: 18px !important;
-
     background: #d3fff9 !important;
     color: var(--black) !important;
-
     border: 5px solid var(--black) !important;
     box-shadow: 8px 8px 0 var(--black) !important;
-
     box-sizing: border-box !important;
     overflow: hidden !important;
   }
@@ -2807,11 +626,10 @@
   }
 
   #universalLoanStyleOutput .loan-panel-title,
-  #loanExternalOutput .loan-panel-title {
+  #loanExternalOutput .loan-panel-title,
+  .universal-output-panel .universal-panel-title {
     margin: 0 0 14px !important;
-
     color: var(--black) !important;
-
     font-size: 30px !important;
     font-weight: bold !important;
     line-height: 1.2 !important;
@@ -2820,41 +638,35 @@
 
   #universalLoanStyleOutput .loan-result-body,
   #loanExternalOutput .loan-result-body,
-  #loanExternalOutput .loan-graph-body {
+  #loanExternalOutput .loan-graph-body,
+  .universal-output-panel .universal-result-body {
     width: 100% !important;
     max-width: 100% !important;
-
     overflow-x: auto !important;
     overflow-y: auto !important;
-
     box-sizing: border-box !important;
   }
 
   #universalLoanStyleOutput .loan-result-table-scroll,
-  #loanExternalOutput .loan-result-table-scroll {
+  #loanExternalOutput .loan-result-table-scroll,
+  .bottom-result-table-scroll {
     width: 100% !important;
     max-width: 100% !important;
-
     overflow-x: auto !important;
     overflow-y: auto !important;
-
     background: var(--white) !important;
-
     border: 4px solid var(--black) !important;
-
     box-sizing: border-box !important;
   }
 
   #universalLoanStyleOutput .loan-result-table,
-  #loanExternalOutput .loan-result-table {
+  #loanExternalOutput .loan-result-table,
+  .bottom-result-table {
     width: 100% !important;
     min-width: 700px !important;
-
     border-collapse: collapse !important;
-
     background: var(--white) !important;
     color: var(--black) !important;
-
     font-size: 17px !important;
     font-weight: bold !important;
     text-align: center !important;
@@ -2863,61 +675,83 @@
   #universalLoanStyleOutput .loan-result-table th,
   #universalLoanStyleOutput .loan-result-table td,
   #loanExternalOutput .loan-result-table th,
-  #loanExternalOutput .loan-result-table td {
+  #loanExternalOutput .loan-result-table td,
+  .bottom-result-table th,
+  .bottom-result-table td {
     padding: 12px 14px !important;
-
     border: 3px solid var(--black) !important;
-
     text-align: center !important;
     white-space: pre-line !important;
     vertical-align: middle !important;
   }
 
   #universalLoanStyleOutput .loan-result-table th,
-  #loanExternalOutput .loan-result-table th {
+  #loanExternalOutput .loan-result-table th,
+  .bottom-result-table th {
     background: var(--soft-yellow) !important;
   }
 
   #universalLoanStyleOutput .loan-result-table td,
-  #loanExternalOutput .loan-result-table td {
+  #loanExternalOutput .loan-result-table td,
+  .bottom-result-table td {
     background: var(--white) !important;
   }
 
-  #universalLoanStyleOutput .loan-result-table td:first-child {
+  #universalLoanStyleOutput .loan-result-table td:first-child,
+  .bottom-result-table td:first-child {
     background: #d3fff9 !important;
   }
 
   #universalLoanStyleOutput .loan-copy-side,
-  #loanExternalOutput .loan-copy-side {
+  #loanExternalOutput .loan-copy-side,
+  .universal-output-panel .universal-copy-side,
+  #loanExternalOutput .loan-graph-copy-side {
     display: flex !important;
     align-items: flex-start !important;
     justify-content: center !important;
   }
 
   #universalLoanStyleOutput .loan-copy-btn,
-  #loanExternalOutput .loan-copy-btn {
+  #loanExternalOutput .loan-copy-btn,
+  .universal-output-panel .universal-copy-btn,
+  #loanExternalOutput .loan-graph-copy-btn {
     min-width: 90px !important;
-
     padding: 10px 14px !important;
-
     background: #ffb3c7 !important;
     color: var(--black) !important;
-
     border: 4px solid var(--black) !important;
     box-shadow: 4px 4px 0 var(--black) !important;
-
     font-family: inherit !important;
     font-size: 16px !important;
     font-weight: bold !important;
-
     cursor: pointer !important;
   }
 
   #universalLoanStyleOutput .loan-copy-btn:hover,
-  #loanExternalOutput .loan-copy-btn:hover {
+  #loanExternalOutput .loan-copy-btn:hover,
+  .universal-output-panel .universal-copy-btn:hover,
+  #loanExternalOutput .loan-graph-copy-btn:hover {
     background: var(--yellow) !important;
     transform: translate(-2px, -2px) !important;
     box-shadow: 6px 6px 0 var(--black) !important;
+  }
+
+  #loanExternalOutput .loan-graph-row {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 16px !important;
+    align-items: start !important;
+    box-sizing: border-box !important;
+  }
+
+  #loanExternalOutput .loan-graph {
+    width: 100% !important;
+    max-width: 520px !important;
+    height: auto !important;
+    display: block !important;
+    margin: 0 auto !important;
+    background: var(--white) !important;
   }
 
   .calculator #result,
@@ -2926,54 +760,75 @@
   .calculator #loanResult,
   .calculator #discountResult,
   .calculator #percentageResult,
-  .calculator #compoundResult {
+  .calculator #compoundResult,
+  .calculator .result-copy-btn,
+  .calculator .copy-result-btn {
     display: none !important;
+  }
+
+  .basic-equation-history-item .history-text,
+  .basic-input-output-item .history-text {
+    line-height: 1.45 !important;
+    font-weight: bold !important;
   }
 }
 
 @media (min-width: 851px) and (max-width: 1180px) {
+  main.pc-calculator-layout {
+    grid-template-columns: 1fr !important;
+    max-width: calc(100vw - 24px) !important;
+  }
+
+  main.pc-calculator-layout > .pc-what-slot,
+  main.pc-calculator-layout > .history,
+  main.pc-calculator-layout > .age-history-box,
+  main.pc-calculator-layout > .bmi-history-box,
+  main.pc-calculator-layout > .discount-history-box,
+  main.pc-calculator-layout > .loan-history-box,
+  main.pc-calculator-layout > .percentage-history-box,
+  main.pc-calculator-layout > .compound-history-box,
+  main.pc-calculator-layout > .calculator,
+  main.pc-calculator-layout > #universalLoanStyleOutput,
+  main.pc-calculator-layout > #loanExternalOutput,
+  main.pc-calculator-layout > .universal-output-panel {
+    grid-column: 1 !important;
+  }
+
+  main.pc-calculator-layout > .pc-what-slot {
+    grid-row: 1 !important;
+  }
+
+  main.pc-calculator-layout > .calculator {
+    grid-row: 2 !important;
+  }
+
+  main.pc-calculator-layout > .history,
+  main.pc-calculator-layout > .age-history-box,
+  main.pc-calculator-layout > .bmi-history-box,
+  main.pc-calculator-layout > .discount-history-box,
+  main.pc-calculator-layout > .loan-history-box,
+  main.pc-calculator-layout > .percentage-history-box,
+  main.pc-calculator-layout > .compound-history-box {
+    grid-row: 3 !important;
+  }
+
+  main.pc-calculator-layout > #universalLoanStyleOutput,
+  main.pc-calculator-layout > #loanExternalOutput,
+  main.pc-calculator-layout > .universal-output-panel {
+    grid-row: 4 !important;
+  }
+
   #universalLoanStyleOutput .loan-output-top,
-  #loanExternalOutput .loan-output-top {
+  #loanExternalOutput .loan-output-top,
+  #loanExternalOutput .loan-graph-row,
+  .universal-output-panel .universal-output-top {
     grid-template-columns: 1fr !important;
   }
 
   #universalLoanStyleOutput .loan-copy-side,
-  #loanExternalOutput .loan-copy-side {
+  #loanExternalOutput .loan-copy-side,
+  #loanExternalOutput .loan-graph-copy-side,
+  .universal-output-panel .universal-copy-side {
     justify-content: flex-start !important;
-  }
-}
-/* =====================================================
-   BASIC CALCULATOR: input/output history style
-===================================================== */
-.basic-input-output-item .history-text {
-  line-height: 1.45 !important;
-}
-
-.basic-input-output-item strong {
-  color: var(--black) !important;
-}
-/* =====================================================
-   BASIC CALCULATOR: input equation history style
-===================================================== */
-.basic-equation-history-item .history-text {
-  line-height: 1.45 !important;
-  font-weight: bold !important;
-}
-/* =====================================================
-   PC ONLY: ? symbol beside What box
-===================================================== */
-@media (min-width: 851px) {
-  #pcQuestionOverlayButton {
-    position: fixed !important;
-
-    left: var(--calc-help-btn-left, calc(100vw - 80px)) !important;
-    top: var(--calc-help-btn-top, 130px) !important;
-
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-
-    z-index: 2147483647 !important;
   }
 }
