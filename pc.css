@@ -1929,3 +1929,48 @@
     box-shadow: var(--pc-shadow) !important;
   }
 }
+/* =====================================================
+   PC ONLY: center every text inside calculator box
+   Applies to all calculator pages
+===================================================== */
+@media (min-width: 851px) {
+  main.pc-calculator-layout > .calculator,
+  main.pc-calculator-layout > .calculator * {
+    text-align: center !important;
+  }
+
+  main.pc-calculator-layout > .calculator h1,
+  main.pc-calculator-layout > .calculator h2,
+  main.pc-calculator-layout > .calculator h3,
+  main.pc-calculator-layout > .calculator p,
+  main.pc-calculator-layout > .calculator label,
+  main.pc-calculator-layout > .calculator .subtitle,
+  main.pc-calculator-layout > .calculator .compound-tip,
+  main.pc-calculator-layout > .calculator .formula-card,
+  main.pc-calculator-layout > .calculator .compound-formula-card,
+  main.pc-calculator-layout > .calculator .compound-mini-row,
+  main.pc-calculator-layout > .calculator #result,
+  main.pc-calculator-layout > .calculator #bmiResult,
+  main.pc-calculator-layout > .calculator #loanResult,
+  main.pc-calculator-layout > .calculator #discountResult,
+  main.pc-calculator-layout > .calculator #percentageResult,
+  main.pc-calculator-layout > .calculator #compoundResult {
+    text-align: center !important;
+  }
+
+  main.pc-calculator-layout > .calculator input,
+  main.pc-calculator-layout > .calculator select,
+  main.pc-calculator-layout > .calculator textarea,
+  main.pc-calculator-layout > .calculator #display {
+    text-align: center !important;
+  }
+
+  main.pc-calculator-layout > .calculator input::placeholder,
+  main.pc-calculator-layout > .calculator textarea::placeholder {
+    text-align: center !important;
+  }
+
+  main.pc-calculator-layout > .calculator button {
+    text-align: center !important;
+  }
+}
