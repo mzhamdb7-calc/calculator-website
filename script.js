@@ -2242,229 +2242,6 @@ document.addEventListener("DOMContentLoaded", function () {
 })();
 
 /* =====================================================
-   FINAL CLEAN NAVBAR ARROW SCRIPT
-   health / finance:
-   normal = ▼
-   hover/open = ▲
-===================================================== */
-(function () {
-  function isPcMode() {
-    return window.matchMedia("(min-width: 851px)").matches;
-  }
-
-  function cleanLabel(text) {
-    return String(text || "")
-      .replace(/[▼▲▶◀⬇⬆⬅➡]/g, "")
-      .trim();
-  }
-
-  function setArrow(arrow, isOpen) {
-    if (!arrow) return;
-    arrow.textContent = isOpen ? "▲" : "▼";
-  }
-
-  function setupGroup(group) {
-    if (!group || group.dataset.finalArrowReady === "true") return;
-
-    const trigger =
-      group.querySelector(":scope > summary") ||
-      group.querySelector(":scope > .navbar-fixed-summary");
-
-    if (!trigger) return;
-
-    group.dataset.finalArrowReady = "true";
-
-    const label = cleanLabel(trigger.textContent);
-    trigger.textContent = label + " ";
-
-    const arrow = document.createElement("span");
-    arrow.className = "nav-menu-arrow";
-    arrow.textContent = "▼";
-    trigger.appendChild(arrow);
-
-    function groupIsOpen() {
-      return (
-        group.open ||
-        group.classList.contains("open") ||
-        group.classList.contains("active") ||
-        group.classList.contains("is-open")
-      );
-    }
-
-    group.addEventListener("mouseenter", function () {
-      if (!isPcMode()) return;
-      setArrow(arrow, true);
-    });
-
-    group.addEventListener("mouseleave", function () {
-      if (!isPcMode()) return;
-      setArrow(arrow, groupIsOpen());
-    });
-
-    group.addEventListener("toggle", function () {
-      setArrow(arrow, groupIsOpen());
-    });
-
-    trigger.addEventListener("click", function () {
-      setTimeout(function () {
-        setArrow(arrow, groupIsOpen());
-      }, 0);
-    });
-
-    setArrow(arrow, groupIsOpen());
-  }
-
-  function setupNavbarArrows() {
-    document
-      .querySelectorAll(
-        "#navbar .dropdown-content > details.nav-group, " +
-        "#navbar .dropdown-content > .nav-group, " +
-        "#navbar .dropdown-content > .navbar-fixed-group"
-      )
-      .forEach(setupGroup);
-  }
-
-  function start() {
-    setupNavbarArrows();
-
-    const navbar = document.getElementById("navbar");
-
-    if (navbar) {
-      const observer = new MutationObserver(setupNavbarArrows);
-
-      observer.observe(navbar, {
-        childList: true,
-        subtree: true
-      });
-    }
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
-})();
-
-/* =====================================================
-   FINAL REPAIR V2: health / finance arrow works with .nav-summary
-   normal = ▼
-   hover/open = ▲
-===================================================== */
-(function () {
-  function isPcMode() {
-    return window.matchMedia("(min-width: 851px)").matches;
-  }
-
-  function cleanLabel(text) {
-    return String(text || "")
-      .replace(/[▼▲▶◀⬇⬆⬅➡]/g, "")
-      .trim();
-  }
-
-  function isOpen(group) {
-    return (
-      group.matches(":hover") ||
-      group.open === true ||
-      group.classList.contains("open") ||
-      group.classList.contains("active") ||
-      group.classList.contains("is-open") ||
-      group.classList.contains("phone-sub-open")
-    );
-  }
-
-  function setArrow(group) {
-    const arrow = group.querySelector(":scope > summary .nav-menu-arrow, :scope > .nav-summary .nav-menu-arrow, :scope > .navbar-fixed-summary .nav-menu-arrow");
-    if (!arrow) return;
-
-    arrow.textContent = isOpen(group) ? "▲" : "▼";
-  }
-
-  function setupGroup(group) {
-    if (!group || group.dataset.arrowRepairV2 === "true") return;
-
-    const trigger =
-      group.querySelector(":scope > summary") ||
-      group.querySelector(":scope > .nav-summary") ||
-      group.querySelector(":scope > .navbar-fixed-summary");
-
-    if (!trigger) return;
-
-    group.dataset.arrowRepairV2 = "true";
-
-    let arrow = trigger.querySelector(".nav-menu-arrow");
-
-    if (!arrow) {
-      const label = cleanLabel(trigger.textContent);
-      trigger.textContent = label + " ";
-
-      arrow = document.createElement("span");
-      arrow.className = "nav-menu-arrow";
-      arrow.textContent = "▼";
-
-      trigger.appendChild(arrow);
-    }
-
-    group.addEventListener("mouseenter", function () {
-      if (!isPcMode()) return;
-      arrow.textContent = "▲";
-    });
-
-    group.addEventListener("mouseleave", function () {
-      if (!isPcMode()) return;
-      arrow.textContent = group.open || group.classList.contains("is-open") ? "▲" : "▼";
-    });
-
-    group.addEventListener("toggle", function () {
-      setArrow(group);
-    });
-
-    trigger.addEventListener("click", function () {
-      setTimeout(function () {
-        setArrow(group);
-      }, 0);
-    });
-
-    setArrow(group);
-  }
-
-  function setupAllNavbarArrows() {
-    document
-      .querySelectorAll(
-        "#navbar .dropdown-content > details.nav-group, " +
-        "#navbar .dropdown-content > .nav-group, " +
-        "#navbar .dropdown-content > .fixed-nav-group, " +
-        "#navbar .dropdown-content > .navbar-fixed-group"
-      )
-      .forEach(setupGroup);
-  }
-
-  function start() {
-    setupAllNavbarArrows();
-
-    const navbar = document.getElementById("navbar");
-
-    if (navbar && navbar.dataset.arrowObserverV2 !== "true") {
-      navbar.dataset.arrowObserverV2 = "true";
-
-      const observer = new MutationObserver(function () {
-        setupAllNavbarArrows();
-      });
-
-      observer.observe(navbar, {
-        childList: true,
-        subtree: true
-      });
-    }
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
-})();
-/* =====================================================
    PHONE FINAL FIX:
    calculator + info buttons toggle their own dropup
 ===================================================== */
@@ -2579,8 +2356,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 })();
 /* =====================================================
-   ADD REFERENCES BOX UNDER INSTRUCTIONS
-   Works on pages that already have .instruction-box
+   SAFE REFERENCE BOX UNDER INSTRUCTIONS
+   No loading loop
 ===================================================== */
 (function () {
   "use strict";
@@ -2593,35 +2370,27 @@ document.addEventListener("DOMContentLoaded", function () {
   function getReferenceData() {
     const title = getPageTitle();
 
-    if (title.includes("compound")) {
-      return [
-        ["Formula reference", "A = P(1 + r/n)ⁿᵗ"],
-        ["Interest reference", "Compound Interest = A − P"],
-        ["Meaning", "P = principal, r = annual rate, n = compounding frequency, t = years."]
-      ];
-    }
-
     if (title.includes("basic")) {
       return [
-        ["Math order", "Brackets first, then powers, multiplication/division, and addition/subtraction."],
-        ["Power reference", "xʸ means a number multiplied by itself y times."],
-        ["Square root", "√x gives the number that multiplies by itself to make x."]
+        ["Math order", "Brackets first, then powers, multiplication/division, then addition/subtraction."],
+        ["Power", "xʸ means multiplying a number by itself y times."],
+        ["Square root", "√x finds the number that gives x when multiplied by itself."]
       ];
     }
 
     if (title.includes("age")) {
       return [
-        ["Normal age", "Current year − birth year, adjusted if birthday has not passed."],
-        ["Asian age", "Current year − birth year + 1."],
-        ["Date reference", "Birth date cannot be after today."]
+        ["Normal age", "Normal age = current year − birth year, adjusted if birthday has not passed."],
+        ["Asian age", "Asian age = current year − birth year + 1."],
+        ["Date check", "Birth date cannot be after today."]
       ];
     }
 
     if (title.includes("bmi")) {
       return [
-        ["SI BMI formula", "BMI = weight kg ÷ height m²."],
-        ["US BMI formula", "BMI = 703 × weight lb ÷ height inch²."],
-        ["Waist-to-height", "W/H ratio = waist ÷ height."]
+        ["SI BMI", "BMI = weight kg ÷ height m²."],
+        ["US BMI", "BMI = 703 × weight lb ÷ height inch²."],
+        ["W/H ratio", "Waist-to-height ratio = waist ÷ height."]
       ];
     }
 
@@ -2643,9 +2412,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (title.includes("percentage")) {
       return [
-        ["Percentage formula", "Result = percentage ÷ 100 × number."],
-        ["Example", "20% of 150 = 20 ÷ 100 × 150 = 30."],
-        ["Meaning", "Percent means out of 100."]
+        ["Percentage", "Result = percentage ÷ 100 × number."],
+        ["Meaning", "Percent means out of 100."],
+        ["Example", "20% of 150 = 20 ÷ 100 × 150 = 30."]
+      ];
+    }
+
+    if (title.includes("compound")) {
+      return [
+        ["Future value", "A = P(1 + r/n)ⁿᵗ."],
+        ["Compound interest", "Compound Interest = A − P."],
+        ["Meaning", "P = principal, r = annual rate, n = compounding frequency, t = years."],
+        ["Example", "P = 1000, r = 5%, t = 10 years, n = 12 gives about 1,647.01 future value."]
       ];
     }
 
@@ -2669,57 +2447,39 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function addReferenceBox() {
-    const main = document.querySelector("main");
-    if (!main) return;
-
-    const instructionBox = main.querySelector(".instruction-box");
+    const instructionBox = document.querySelector("main .instruction-box");
     if (!instructionBox) return;
+
+    if (instructionBox.dataset.referenceReady === "true") return;
 
     const data = getReferenceData();
     if (!data.length) return;
 
-    let referenceBox = instructionBox.querySelector(".reference-box");
+    instructionBox.dataset.referenceReady = "true";
 
-    if (!referenceBox) {
-      referenceBox = document.createElement("div");
-      referenceBox.className = "reference-box";
-      instructionBox.appendChild(referenceBox);
-    }
+    const referenceBox = document.createElement("section");
+    referenceBox.className = "reference-box";
+    referenceBox.setAttribute("aria-label", "References");
 
-    referenceBox.innerHTML = "";
+    const heading = document.createElement("h2");
+    heading.textContent = "References";
 
-    const title = document.createElement("h2");
-    title.textContent = "References";
-    referenceBox.appendChild(title);
+    const scrollArea = document.createElement("div");
+    scrollArea.className = "reference-scroll";
 
     data.forEach(function (item) {
-      referenceBox.appendChild(createReferenceCard(item[0], item[1]));
+      scrollArea.appendChild(createReferenceCard(item[0], item[1]));
     });
-  }
 
-  function startReferenceBox() {
-    addReferenceBox();
+    referenceBox.appendChild(heading);
+    referenceBox.appendChild(scrollArea);
 
-    setTimeout(addReferenceBox, 150);
-    setTimeout(addReferenceBox, 500);
-
-    const main = document.querySelector("main");
-
-    if (main) {
-      const observer = new MutationObserver(function () {
-        addReferenceBox();
-      });
-
-      observer.observe(main, {
-        childList: true,
-        subtree: true
-      });
-    }
+    instructionBox.appendChild(referenceBox);
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startReferenceBox);
+    document.addEventListener("DOMContentLoaded", addReferenceBox);
   } else {
-    startReferenceBox();
+    addReferenceBox();
   }
 })();
