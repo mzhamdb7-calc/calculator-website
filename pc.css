@@ -1783,3 +1783,21 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     color: var(--black) !important;
   }
 }
+/* =====================================================
+   PC ONLY: Center Age Calculator bullet result text
+===================================================== */
+@media (min-width: 851px) {
+  body.age-page .age-bullet-result {
+    text-align: center !important;
+    list-style-position: inside !important;
+  }
+
+  body.age-page .age-bullet-result li {
+    text-align: center !important;
+    justify-content: center !important;
+  }
+
+  body.age-page .age-bullet-result strong {
+    text-align: center !important;
+  }
+}
