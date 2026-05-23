@@ -883,10 +883,13 @@
 }
 
 /* =====================================================
-   PC ONLY: ? help panel contains instructions/references
+   PC ONLY: ? help panel as top-layer overlay
+   It does NOT expand or move the calculator
 ===================================================== */
 @media (min-width: 851px) {
   main.pc-calculator-layout {
+    position: relative !important;
+
     grid-template-columns:
       minmax(0, var(--pc-left-width))
       minmax(0, var(--pc-center-width))
@@ -897,10 +900,10 @@
     grid-template-columns:
       minmax(0, var(--pc-left-width))
       minmax(0, var(--pc-center-width))
-      minmax(0, var(--pc-right-width)) !important;
+      66px !important;
   }
 
-  /* The ? button */
+  /* ? button beside calculator */
   main.pc-calculator-layout > .pc-question-toggle {
     grid-column: 3 !important;
     grid-row: 1 !important;
@@ -930,34 +933,31 @@
     line-height: 1 !important;
 
     cursor: pointer !important;
-    z-index: 30 !important;
+    z-index: 1000001 !important;
   }
 
-  main.pc-calculator-layout > .pc-question-toggle:hover {
-    background: var(--yellow) !important;
-    transform: translate(-2px, -2px) !important;
-    box-shadow: 7px 7px 0 var(--black) !important;
-  }
-
+  main.pc-calculator-layout > .pc-question-toggle:hover,
   main.pc-calculator-layout.pc-help-open > .pc-question-toggle {
-    justify-self: end !important;
     background: var(--yellow) !important;
   }
 
-  /* Closed: instruction/reference panel hidden */
+  /* closed: hide instruction panel */
   main.pc-calculator-layout:not(.pc-help-open) > .instruction-box {
     display: none !important;
   }
 
-  /* Open: instruction/reference panel appears under the ? area */
+  /* open: floating overlay, does not affect calculator layout */
   main.pc-calculator-layout.pc-help-open > .instruction-box {
-    grid-column: 3 !important;
-    grid-row: 1 / span 2 !important;
-
     display: block !important;
 
-    width: 100% !important;
-    max-width: 100% !important;
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+
+    width: min(360px, calc(100vw - 40px)) !important;
+    max-width: min(360px, calc(100vw - 40px)) !important;
+
+    max-height: calc(100vh - 40px) !important;
 
     margin: 0 !important;
     padding: 74px 0 0 !important;
@@ -966,84 +966,43 @@
     border: none !important;
     box-shadow: none !important;
 
-    overflow: visible !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    z-index: 1000000 !important;
     box-sizing: border-box !important;
   }
 
-  /* Keep content inside screen */
-  main.pc-calculator-layout.pc-help-open .instruction-box,
-  main.pc-calculator-layout.pc-help-open .instruction-box *,
+  /* keep every help item inside overlay */
+  main.pc-calculator-layout.pc-help-open > .instruction-box *,
   main.pc-calculator-layout.pc-help-open .reference-box,
-  main.pc-calculator-layout.pc-help-open .reference-box * {
+  main.pc-calculator-layout.pc-help-open .reference-scroll,
+  main.pc-calculator-layout.pc-help-open .reference-card {
     max-width: 100% !important;
     box-sizing: border-box !important;
     overflow-wrap: break-word !important;
     word-break: break-word !important;
   }
 
-  /* References as separate boxes again */
+  /* references back to separate item boxes */
   main.pc-calculator-layout.pc-help-open .reference-box {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    max-height: none !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-
     overflow: visible !important;
   }
 
   main.pc-calculator-layout.pc-help-open .reference-scroll {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    max-height: calc(100vh - 285px) !important;
-
-    margin: 0 !important;
+    max-height: none !important;
     padding: 0 8px 8px 0 !important;
-
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
+    overflow: visible !important;
   }
 
   main.pc-calculator-layout.pc-help-open .reference-card {
-    width: 100% !important;
-    max-width: 100% !important;
-
     margin: 0 0 16px !important;
     padding: 14px 12px !important;
 
     border: var(--pc-border) solid var(--black) !important;
     box-shadow: var(--pc-shadow) !important;
-
-    text-align: center !important;
-  }
-}
-
-/* Smaller PC screens */
-@media (min-width: 851px) and (max-width: 1180px) {
-  main.pc-calculator-layout {
-    grid-template-columns:
-      minmax(220px, 1fr)
-      minmax(420px, 1.4fr)
-      60px !important;
-  }
-
-  main.pc-calculator-layout.pc-help-open {
-    grid-template-columns:
-      minmax(220px, 1fr)
-      minmax(420px, 1.4fr)
-      minmax(220px, 1fr) !important;
-  }
-
-  main.pc-calculator-layout > .pc-question-toggle {
-    width: 54px !important;
-    height: 54px !important;
-    font-size: 28px !important;
   }
 }
