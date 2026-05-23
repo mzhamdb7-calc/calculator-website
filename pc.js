@@ -21,7 +21,7 @@
       const buttonRect = button.getBoundingClientRect();
       const calcRect = calculator.getBoundingClientRect();
 
-      const gap = 0;
+      const gap = 1;
       const screenPadding = 16;
 
       const panelWidth = Math.min(calcRect.width, window.innerWidth - screenPadding * 2);
