@@ -1,12 +1,13 @@
 /*
   Copyright © 2026 Hamdi. All rights reserved.
   PHONE MODE ONLY
-  Safe phone menu:
-  - no document-level click blocking
+  Clean phone menu:
+  - removes old duplicate arrows
+  - CSS-only arrows
   - calculator opens upward
   - info opens upward
   - opening one closes the other
-  - health/finance open upward
+  - health/finance opens upward
 */
 
 (function () {
@@ -45,10 +46,39 @@
     );
   }
 
-  function cleanLabel(text) {
+  function cleanArrowText(text) {
     return String(text || "")
       .replace(/[▼▲▶◀⬇⬆⬅➡]/g, "")
+      .replace(/\s+/g, " ")
       .trim();
+  }
+
+  function cleanOldArrows(root) {
+    const navbar = root || getNavbar();
+    if (!navbar) return;
+
+    navbar
+      .querySelectorAll(".phone-sub-arrow, .nav-menu-arrow")
+      .forEach(function (arrow) {
+        arrow.remove();
+      });
+
+    navbar
+      .querySelectorAll(
+        "#navbar > .dropdown > .dropbtn, " +
+        "#navbar .dropdown-content > details.nav-group > summary, " +
+        "#navbar .dropdown-content > .nav-group > summary, " +
+        "#navbar .dropdown-content > .fixed-nav-group > .nav-summary, " +
+        "#navbar .dropdown-content > .navbar-fixed-group > .navbar-fixed-summary"
+      )
+      .forEach(function (trigger) {
+        trigger.childNodes.forEach(function (node) {
+          if (node.nodeType === Node.TEXT_NODE) {
+            const cleaned = cleanArrowText(node.textContent);
+            node.textContent = cleaned ? cleaned + " " : "";
+          }
+        });
+      });
   }
 
   function installPhoneMenuCss() {
@@ -325,23 +355,74 @@
           background: var(--yellow) !important;
         }
 
-        html body #navbar .nav-group > summary::after,
-        html body #navbar .fixed-nav-group > .nav-summary::after,
-        html body #navbar .navbar-fixed-group > .navbar-fixed-summary::after {
+        /* Remove all old JS arrow spans */
+        html body #navbar .phone-sub-arrow,
+        html body #navbar .nav-menu-arrow {
+          display: none !important;
           content: none !important;
+        }
+
+        /* Remove browser default details arrow */
+        html body #navbar summary {
+          list-style: none !important;
+        }
+
+        html body #navbar summary::-webkit-details-marker {
           display: none !important;
         }
 
-        html body #navbar .phone-sub-arrow {
+        html body #navbar summary::marker {
+          content: "" !important;
+        }
+
+        /* Top menu arrows: calculator + info */
+        html body #navbar > .dropdown > .dropbtn::after {
+          content: "▼" !important;
           display: inline-block !important;
-          margin-left: 8px !important;
+          margin-left: 6px !important;
           color: var(--black) !important;
-          font-size: 14px !important;
+          font-size: 12px !important;
           font-weight: bold !important;
           line-height: 1 !important;
           background: transparent !important;
           border: none !important;
           box-shadow: none !important;
+          transform: none !important;
+        }
+
+        html body #navbar > .dropdown.phone-open > .dropbtn::after,
+        html body #navbar > .dropdown.mobile-open > .dropbtn::after,
+        html body #navbar > .dropdown.phone-dropup-open > .dropbtn::after {
+          content: "▲" !important;
+        }
+
+        /* Health / finance arrows */
+        html body #navbar .dropdown-content > details.nav-group > summary::after,
+        html body #navbar .dropdown-content > .nav-group > summary::after,
+        html body #navbar .dropdown-content > .fixed-nav-group > .nav-summary::after,
+        html body #navbar .dropdown-content > .navbar-fixed-group > .navbar-fixed-summary::after {
+          content: "▼" !important;
+          display: inline-block !important;
+          margin-left: 6px !important;
+          color: var(--black) !important;
+          font-size: 12px !important;
+          font-weight: bold !important;
+          line-height: 1 !important;
+          background: transparent !important;
+          border: none !important;
+          box-shadow: none !important;
+          transform: none !important;
+        }
+
+        html body #navbar .dropdown-content > details.nav-group[open] > summary::after,
+        html body #navbar .dropdown-content > .nav-group[open] > summary::after,
+        html body #navbar .dropdown-content > .nav-group.phone-sub-open > summary::after,
+        html body #navbar .dropdown-content > .nav-group.is-open > summary::after,
+        html body #navbar .dropdown-content > .fixed-nav-group.phone-sub-open > .nav-summary::after,
+        html body #navbar .dropdown-content > .fixed-nav-group.is-open > .nav-summary::after,
+        html body #navbar .dropdown-content > .navbar-fixed-group.phone-sub-open > .navbar-fixed-summary::after,
+        html body #navbar .dropdown-content > .navbar-fixed-group.is-open > .navbar-fixed-summary::after {
+          content: "▲" !important;
         }
 
         html body main,
@@ -364,39 +445,6 @@
     document.head.appendChild(style);
   }
 
-  function addPhoneArrow(trigger) {
-    if (!trigger) return null;
-
-    trigger.querySelectorAll(".phone-sub-arrow, .nav-menu-arrow").forEach(function (oldArrow) {
-      oldArrow.remove();
-    });
-
-    trigger.textContent = cleanLabel(trigger.textContent) + " ";
-
-    const arrow = document.createElement("span");
-    arrow.className = "phone-sub-arrow";
-    arrow.textContent = "▼";
-    trigger.appendChild(arrow);
-
-    return arrow;
-  }
-
-  function updatePhoneArrow(group) {
-    const trigger = getSubmenuTrigger(group);
-    if (!trigger) return;
-
-    let arrow = trigger.querySelector(".phone-sub-arrow");
-
-    if (!arrow) {
-      arrow = addPhoneArrow(trigger);
-    }
-
-    if (!arrow) return;
-
-    arrow.textContent =
-      group.classList.contains("phone-sub-open") || group.open ? "▲" : "▼";
-  }
-
   function closeSubmenus(dropdown) {
     if (!dropdown) return;
 
@@ -408,8 +456,6 @@
         group.open = false;
         group.removeAttribute("open");
       }
-
-      updatePhoneArrow(group);
     });
   }
 
@@ -478,8 +524,6 @@
         other.open = false;
         other.removeAttribute("open");
       }
-
-      updatePhoneArrow(other);
     });
 
     const willOpen = !(group.classList.contains("phone-sub-open") || group.open);
@@ -496,8 +540,6 @@
         group.removeAttribute("open");
       }
     }
-
-    updatePhoneArrow(group);
   }
 
   function setupPhoneMenu() {
@@ -507,6 +549,8 @@
     if (!navbar || navbar.dataset.safePhoneReady === "true") return;
 
     navbar.dataset.safePhoneReady = "true";
+
+    cleanOldArrows(navbar);
 
     topDropdowns(navbar).forEach(function (dropdown) {
       const button = dropdown.querySelector(":scope > .dropbtn");
@@ -518,6 +562,7 @@
         event.preventDefault();
         event.stopPropagation();
 
+        cleanOldArrows(navbar);
         toggleDropdown(dropdown);
       });
     });
@@ -526,7 +571,7 @@
       const trigger = getSubmenuTrigger(group);
       if (!trigger) return;
 
-      addPhoneArrow(trigger);
+      cleanOldArrows(navbar);
 
       trigger.addEventListener("click", function (event) {
         if (!isPhone()) return;
@@ -534,6 +579,7 @@
         event.preventDefault();
         event.stopPropagation();
 
+        cleanOldArrows(navbar);
         toggleSubmenu(group);
       });
     });
@@ -546,6 +592,8 @@
     });
 
     window.addEventListener("resize", function () {
+      cleanOldArrows(navbar);
+
       if (!isPhone()) {
         closeAll(navbar, null);
       }
