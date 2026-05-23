@@ -5143,3 +5143,134 @@ document.addEventListener("DOMContentLoaded", function () {
     start();
   }
 })();
+/* =====================================================
+   PC ONLY: move ? symbol beside "What does this calculator do?"
+   Keeps help overlay on top of calculator box
+===================================================== */
+(function () {
+  "use strict";
+
+  const BUTTON_ID = "pcQuestionOverlayButton";
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function isExcludedPage() {
+    return (
+      document.body.classList.contains("index-page") ||
+      document.body.classList.contains("about-page") ||
+      document.body.classList.contains("privacy-page") ||
+      document.body.classList.contains("contact-page") ||
+      document.body.classList.contains("info-page")
+    );
+  }
+
+  function getMain() {
+    return (
+      document.querySelector("main.pc-calculator-layout") ||
+      document.querySelector("main.has-instructions") ||
+      document.querySelector("main")
+    );
+  }
+
+  function getWhatBox(main) {
+    return (
+      main.querySelector(":scope > .pc-what-slot") ||
+      main.querySelector(":scope > .pc-what-slot .instruction-what-box") ||
+      main.querySelector(".instruction-what-box")
+    );
+  }
+
+  function repositionQuestionBesideWhatBox() {
+    if (!isPc() || isExcludedPage()) return;
+
+    const main = getMain();
+    const button = document.getElementById(BUTTON_ID);
+
+    if (!main || !button) return;
+
+    const calculator = main.querySelector(":scope > .calculator");
+    const instructionBox = main.querySelector(":scope > .instruction-box");
+    const whatBox = getWhatBox(main);
+
+    if (!calculator || !instructionBox || !whatBox) return;
+
+    const whatRect = whatBox.getBoundingClientRect();
+    const calcRect = calculator.getBoundingClientRect();
+
+    const screenPadding = 10;
+    const buttonSize = 58;
+    const gap = 8;
+
+    /* Position ? beside What box */
+    let buttonLeft = whatRect.right + gap;
+    let buttonTop = whatRect.top + Math.max(0, (whatRect.height - buttonSize) / 2);
+
+    /* If no space outside, keep it inside the right side of What box */
+    if (buttonLeft + buttonSize > window.innerWidth - screenPadding) {
+      buttonLeft = whatRect.right - buttonSize - 12;
+    }
+
+    if (buttonLeft < screenPadding) {
+      buttonLeft = screenPadding;
+    }
+
+    if (buttonTop < screenPadding) {
+      buttonTop = screenPadding;
+    }
+
+    /* Keep instruction/reference overlay same size as calculator */
+    let overlayLeft = calcRect.left;
+    let overlayTop = calcRect.top;
+    let overlayWidth = calcRect.width;
+    let overlayHeight = calcRect.height;
+
+    overlayWidth = Math.min(overlayWidth, window.innerWidth - screenPadding * 2);
+    overlayHeight = Math.min(overlayHeight, window.innerHeight - screenPadding * 2);
+
+    if (overlayLeft + overlayWidth > window.innerWidth - screenPadding) {
+      overlayLeft = window.innerWidth - screenPadding - overlayWidth;
+    }
+
+    if (overlayTop + overlayHeight > window.innerHeight - screenPadding) {
+      overlayTop = window.innerHeight - screenPadding - overlayHeight;
+    }
+
+    if (overlayLeft < screenPadding) overlayLeft = screenPadding;
+    if (overlayTop < screenPadding) overlayTop = screenPadding;
+
+    document.documentElement.style.setProperty("--calc-help-btn-left", buttonLeft + "px");
+    document.documentElement.style.setProperty("--calc-help-btn-top", buttonTop + "px");
+
+    document.documentElement.style.setProperty("--calc-help-left", overlayLeft + "px");
+    document.documentElement.style.setProperty("--calc-help-top", overlayTop + "px");
+    document.documentElement.style.setProperty("--calc-help-width", overlayWidth + "px");
+    document.documentElement.style.setProperty("--calc-help-height", overlayHeight + "px");
+
+    button.hidden = false;
+  }
+
+  function start() {
+    repositionQuestionBesideWhatBox();
+
+    window.addEventListener("resize", repositionQuestionBesideWhatBox);
+    window.addEventListener("scroll", repositionQuestionBesideWhatBox, { passive: true });
+
+    document.addEventListener("click", function () {
+      setTimeout(repositionQuestionBesideWhatBox, 0);
+      setTimeout(repositionQuestionBesideWhatBox, 100);
+      setTimeout(repositionQuestionBesideWhatBox, 300);
+    });
+
+    setTimeout(repositionQuestionBesideWhatBox, 100);
+    setTimeout(repositionQuestionBesideWhatBox, 500);
+    setTimeout(repositionQuestionBesideWhatBox, 1000);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
