@@ -27,7 +27,7 @@
     );
   }
 
-  function isOpen(group) {
+  function groupIsOpen(group) {
     return (
       group.matches(":hover") ||
       group.open === true ||
@@ -37,15 +37,14 @@
     );
   }
 
-  function setArrow(group) {
-    const arrow = group.querySelector(
-      ":scope > summary .nav-menu-arrow, " +
-      ":scope > .nav-summary .nav-menu-arrow, " +
-      ":scope > .navbar-fixed-summary .nav-menu-arrow"
-    );
+  function updateArrow(group) {
+    const trigger = getTrigger(group);
+    if (!trigger) return;
 
+    const arrow = trigger.querySelector(".nav-menu-arrow");
     if (!arrow) return;
-    arrow.textContent = isOpen(group) ? "▲" : "▼";
+
+    arrow.textContent = groupIsOpen(group) ? "▲" : "▼";
   }
 
   function setupGroup(group) {
@@ -74,25 +73,28 @@
 
     group.addEventListener("mouseleave", function () {
       if (!isPcMode()) return;
-      setArrow(group);
+      updateArrow(group);
     });
 
     group.addEventListener("toggle", function () {
       if (!isPcMode()) return;
-      setArrow(group);
+      updateArrow(group);
     });
 
     trigger.addEventListener("click", function () {
       if (!isPcMode()) return;
+
       setTimeout(function () {
-        setArrow(group);
+        updateArrow(group);
       }, 0);
     });
 
-    setArrow(group);
+    updateArrow(group);
   }
 
   function setupPcNavbarArrows() {
+    if (!isPcMode()) return;
+
     document
       .querySelectorAll(
         "#navbar .dropdown-content > details.nav-group, " +
@@ -103,9 +105,26 @@
       .forEach(setupGroup);
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", setupPcNavbarArrows);
-  } else {
+  function resetPhoneArrows() {
+    if (isPcMode()) return;
+
+    document.querySelectorAll("#navbar .nav-menu-arrow").forEach(function (arrow) {
+      arrow.textContent = "▼";
+    });
+  }
+
+  function start() {
     setupPcNavbarArrows();
+
+    window.addEventListener("resize", function () {
+      setupPcNavbarArrows();
+      resetPhoneArrows();
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
   }
 })();
