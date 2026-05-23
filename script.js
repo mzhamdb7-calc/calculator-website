@@ -2686,3 +2686,121 @@ document.addEventListener("DOMContentLoaded", function () {
     startGraphCopyButton();
   }
 })();
+/* =====================================================
+   PC ONLY: FINAL ? SYMBOL FUNCTION FIX
+   Click ? = open instructions/references
+   Click ? again = close
+===================================================== */
+(function () {
+  "use strict";
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function isExcludedPage() {
+    return (
+      document.body.classList.contains("index-page") ||
+      document.body.classList.contains("about-page") ||
+      document.body.classList.contains("privacy-page") ||
+      document.body.classList.contains("contact-page") ||
+      document.body.classList.contains("info-page")
+    );
+  }
+
+  function positionHelpBox(main) {
+    if (!isPc()) return;
+
+    const button = main.querySelector(":scope > .pc-question-toggle");
+    const box = main.querySelector(":scope > .instruction-box");
+
+    if (!button || !box) return;
+
+    const buttonRect = button.getBoundingClientRect();
+
+    const gap = 8;
+    const screenPadding = 16;
+    const boxWidth = Math.min(520, window.innerWidth - 32);
+
+    let left = buttonRect.left - boxWidth - gap;
+
+    if (left < screenPadding) {
+      left = screenPadding;
+    }
+
+    let top = buttonRect.top;
+
+    if (top + 520 > window.innerHeight) {
+      top = Math.max(screenPadding, window.innerHeight - 560);
+    }
+
+    document.documentElement.style.setProperty("--pc-question-panel-left", left + "px");
+    document.documentElement.style.setProperty("--pc-question-panel-top", top + "px");
+    document.documentElement.style.setProperty("--pc-question-panel-width", boxWidth + "px");
+  }
+
+  function setupQuestionButton() {
+    if (!isPc() || isExcludedPage()) return;
+
+    document.querySelectorAll("main.pc-calculator-layout").forEach(function (main) {
+      const instructionBox = main.querySelector(":scope > .instruction-box");
+      if (!instructionBox) return;
+
+      let button = main.querySelector(":scope > .pc-question-toggle");
+
+      if (!button) {
+        button = document.createElement("button");
+        button.type = "button";
+        button.className = "pc-question-toggle";
+        button.textContent = "?";
+        button.setAttribute("aria-label", "Open instructions and references");
+        button.setAttribute("aria-expanded", "false");
+
+        main.appendChild(button);
+      }
+
+      positionHelpBox(main);
+    });
+  }
+
+  document.addEventListener(
+    "click",
+    function (event) {
+      const button = event.target.closest(".pc-question-toggle");
+      if (!button || !isPc()) return;
+
+      const main = button.closest("main.pc-calculator-layout");
+      if (!main) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const willOpen = !main.classList.contains("pc-help-open");
+
+      main.classList.toggle("pc-help-open", willOpen);
+      button.setAttribute("aria-expanded", willOpen ? "true" : "false");
+
+      positionHelpBox(main);
+    },
+    true
+  );
+
+  function start() {
+    setupQuestionButton();
+
+    window.addEventListener("resize", setupQuestionButton);
+    window.addEventListener("scroll", function () {
+      document.querySelectorAll("main.pc-calculator-layout").forEach(positionHelpBox);
+    });
+
+    setTimeout(setupQuestionButton, 100);
+    setTimeout(setupQuestionButton, 400);
+    setTimeout(setupQuestionButton, 1000);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
