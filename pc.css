@@ -723,3 +723,136 @@
     background: var(--yellow) !important;
   }
 }
+/* =====================================================
+   PC FINAL: consistent side box sizes
+   Applies to What, Result/History, Instructions, Formula,
+   Example, and References side boxes
+===================================================== */
+@media (min-width: 851px) {
+  :root {
+    --pc-side-width: 340px;
+    --pc-side-border: 4px;
+    --pc-side-shadow: 5px 5px 0 var(--black);
+    --pc-side-item-min-height: 118px;
+  }
+
+  /* Keep left and right columns the same width */
+  main.has-instructions,
+  .calculator-container.has-instructions,
+  .age-calculator-container.has-instructions,
+  .bmi-calculator-container.has-instructions,
+  .discount-calculator-container.has-instructions,
+  .loan-calculator-container.has-instructions,
+  .percentage-calculator-container.has-instructions,
+  .compound-interest-container.has-instructions,
+  .compound-calculator-container.has-instructions {
+    grid-template-columns: var(--pc-side-width) minmax(620px, 780px) var(--pc-side-width) !important;
+  }
+
+  /* Left What box holder */
+  main.has-instructions > .pc-what-slot {
+    width: var(--pc-side-width) !important;
+    max-width: var(--pc-side-width) !important;
+  }
+
+  /* Left result/history boxes */
+  main.has-instructions > .history,
+  main.has-instructions > .age-history-box,
+  main.has-instructions > .bmi-history-box,
+  main.has-instructions > .discount-history-box,
+  main.has-instructions > .loan-history-box,
+  main.has-instructions > .percentage-history-box,
+  main.has-instructions > .compound-history-box {
+    width: var(--pc-side-width) !important;
+    max-width: var(--pc-side-width) !important;
+
+    border: var(--pc-side-border) solid var(--black) !important;
+    box-shadow: var(--pc-side-shadow) !important;
+
+    box-sizing: border-box !important;
+  }
+
+  /* Right instruction column */
+  main.has-instructions > .instruction-box {
+    width: var(--pc-side-width) !important;
+    max-width: var(--pc-side-width) !important;
+
+    box-sizing: border-box !important;
+  }
+
+  /* All small side content boxes */
+  main.has-instructions .pc-what-slot .instruction-what-box,
+  main.has-instructions .instruction-box .instruction-section:not(.instruction-what-box),
+  main.has-instructions .reference-card {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-height: var(--pc-side-item-min-height) !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 0 16px !important;
+    padding: 14px 12px !important;
+
+    border: var(--pc-side-border) solid var(--black) !important;
+    box-shadow: var(--pc-side-shadow) !important;
+
+    box-sizing: border-box !important;
+
+    text-align: center !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+  }
+
+  /* Titles: Instructions and References */
+  main.has-instructions .instruction-main-title,
+  main.has-instructions .reference-main-title,
+  main.has-instructions .instruction-box > h2,
+  main.has-instructions .reference-box > h2 {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-height: 56px !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    margin: 0 0 16px !important;
+    padding: 10px 12px !important;
+
+    border: var(--pc-side-border) solid var(--black) !important;
+    box-shadow: var(--pc-side-shadow) !important;
+
+    box-sizing: border-box !important;
+  }
+
+  /* Reference scroll box same width and clean */
+  main.has-instructions .reference-box,
+  main.has-instructions .reference-scroll {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  main.has-instructions .reference-scroll {
+    max-height: 360px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Consistent text sizes */
+  main.has-instructions .instruction-section h3,
+  main.has-instructions .reference-card h3 {
+    font-size: 18px !important;
+    line-height: 1.2 !important;
+  }
+
+  main.has-instructions .instruction-section p,
+  main.has-instructions .reference-card p {
+    font-size: 15px !important;
+    line-height: 1.35 !important;
+  }
+}
