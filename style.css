@@ -6305,3 +6305,138 @@ body.menu-scrolled #navbar.open .dropdown-content .navbar-fixed-group > .navbar-
     font-size: 12px !important;
   }
 }
+/* =====================================================
+   PC ONLY: What box above Result/History
+===================================================== */
+@media (min-width: 851px) {
+  .calculator-container.has-instructions,
+  .age-calculator-container.has-instructions,
+  .bmi-calculator-container.has-instructions,
+  .discount-calculator-container.has-instructions,
+  .loan-calculator-container.has-instructions,
+  .percentage-calculator-container.has-instructions,
+  .compound-interest-container.has-instructions,
+  .compound-calculator-container.has-instructions {
+    width: 100% !important;
+    max-width: 1540px !important;
+
+    display: grid !important;
+    grid-template-columns: 340px minmax(620px, 780px) 340px !important;
+    grid-template-rows: auto auto !important;
+
+    gap: 22px 35px !important;
+
+    justify-content: center !important;
+    align-items: start !important;
+
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  /* Left top: What box */
+  .pc-what-slot {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+
+    width: 340px !important;
+    max-width: 340px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    justify-self: center !important;
+    align-self: start !important;
+
+    box-sizing: border-box !important;
+  }
+
+  .pc-what-slot .instruction-what-box {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 !important;
+
+    box-sizing: border-box !important;
+  }
+
+  /* Left bottom: Result/History box */
+  .calculator-container.has-instructions .history,
+  .age-calculator-container.has-instructions .age-history-box,
+  .bmi-calculator-container.has-instructions .bmi-history-box,
+  .discount-calculator-container.has-instructions .discount-history-box,
+  .loan-calculator-container.has-instructions .loan-history-box,
+  .percentage-calculator-container.has-instructions .percentage-history-box,
+  .compound-interest-container.has-instructions .compound-history-box,
+  .compound-calculator-container.has-instructions .compound-history-box {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+
+    width: 340px !important;
+    max-width: 340px !important;
+
+    margin: 0 !important;
+
+    justify-self: center !important;
+    align-self: start !important;
+  }
+
+  /* Center: calculator */
+  .calculator-container.has-instructions .calculator,
+  .age-calculator-container.has-instructions .calculator,
+  .bmi-calculator-container.has-instructions .calculator,
+  .discount-calculator-container.has-instructions .calculator,
+  .loan-calculator-container.has-instructions .calculator,
+  .percentage-calculator-container.has-instructions .calculator,
+  .compound-interest-container.has-instructions .calculator,
+  .compound-calculator-container.has-instructions .calculator {
+    grid-column: 2 !important;
+    grid-row: 1 / span 2 !important;
+
+    justify-self: center !important;
+    align-self: start !important;
+
+    margin: 0 !important;
+  }
+
+  /* Right: instruction + references without What box */
+  .calculator-container.has-instructions .instruction-box,
+  .age-calculator-container.has-instructions .instruction-box,
+  .bmi-calculator-container.has-instructions .instruction-box,
+  .discount-calculator-container.has-instructions .instruction-box,
+  .loan-calculator-container.has-instructions .instruction-box,
+  .percentage-calculator-container.has-instructions .instruction-box,
+  .compound-interest-container.has-instructions .instruction-box,
+  .compound-calculator-container.has-instructions .instruction-box {
+    grid-column: 3 !important;
+    grid-row: 1 / span 2 !important;
+
+    width: 340px !important;
+    max-width: 340px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    justify-self: center !important;
+    align-self: start !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* PHONE: keep What box inside instruction area */
+@media (max-width: 850px) {
+  .pc-what-slot {
+    display: contents !important;
+  }
+
+  .instruction-what-box {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}

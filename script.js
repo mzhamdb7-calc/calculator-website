@@ -2646,3 +2646,85 @@ document.addEventListener("DOMContentLoaded", function () {
     start();
   }
 })();
+/* =====================================================
+   PC ONLY: move "What does this calculator do?" box
+   to the left side above Result/History
+===================================================== */
+(function () {
+  "use strict";
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function getMain() {
+    return document.querySelector("main.has-instructions");
+  }
+
+  function getInstructionBox(main) {
+    return main ? main.querySelector(".instruction-box") : null;
+  }
+
+  function getWhatBox(main) {
+    return main ? main.querySelector(".instruction-what-box") : null;
+  }
+
+  function getFirstLeftBox(main) {
+    if (!main) return null;
+
+    return (
+      main.querySelector(".history") ||
+      main.querySelector(".age-history-box") ||
+      main.querySelector(".bmi-history-box") ||
+      main.querySelector(".discount-history-box") ||
+      main.querySelector(".loan-history-box") ||
+      main.querySelector(".percentage-history-box") ||
+      main.querySelector(".compound-history-box")
+    );
+  }
+
+  function moveWhatBoxForPc() {
+    const main = getMain();
+    if (!main) return;
+
+    const instructionBox = getInstructionBox(main);
+    const whatBox = getWhatBox(main);
+    const leftBox = getFirstLeftBox(main);
+
+    if (!instructionBox || !whatBox || !leftBox) return;
+
+    let slot = main.querySelector(".pc-what-slot");
+
+    if (!slot) {
+      slot = document.createElement("aside");
+      slot.className = "pc-what-slot";
+      slot.setAttribute("aria-label", "What this calculator does");
+
+      main.insertBefore(slot, leftBox);
+    }
+
+    if (isPc()) {
+      if (!slot.contains(whatBox)) {
+        slot.appendChild(whatBox);
+      }
+    } else {
+      const instructionTitle = instructionBox.querySelector(".instruction-main-title, h2");
+
+      if (instructionTitle && !instructionBox.contains(whatBox)) {
+        instructionBox.insertBefore(whatBox, instructionTitle);
+      }
+    }
+  }
+
+  function start() {
+    moveWhatBoxForPc();
+
+    window.addEventListener("resize", moveWhatBoxForPc);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
