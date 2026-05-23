@@ -838,3 +838,49 @@
     start();
   }
 })();
+/* =====================================================
+   PC ONLY: Basic Calculator history title = Input
+===================================================== */
+(function () {
+  "use strict";
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function isBasicPage() {
+    return (
+      document.body.classList.contains("basic-page") ||
+      document.body.dataset.page === "basic" ||
+      !!document.getElementById("display")
+    );
+  }
+
+  function renameBasicHistoryTitle() {
+    if (!isPc() || !isBasicPage()) return;
+
+    const title =
+      document.querySelector(".history .history-top h3") ||
+      document.querySelector(".history h3");
+
+    if (title) {
+      title.textContent = "Input";
+    }
+  }
+
+  function start() {
+    renameBasicHistoryTitle();
+
+    window.addEventListener("resize", renameBasicHistoryTitle);
+
+    setTimeout(renameBasicHistoryTitle, 200);
+    setTimeout(renameBasicHistoryTitle, 700);
+    setTimeout(renameBasicHistoryTitle, 1200);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
