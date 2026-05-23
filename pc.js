@@ -218,7 +218,7 @@
   }
 })();
 /* =====================================================
-   PC ONLY: force-create ? help button
+   PC ONLY: make ? help panel closer to ? symbol
 ===================================================== */
 (function () {
   "use strict";
@@ -227,135 +227,56 @@
     return window.matchMedia("(min-width: 851px)").matches;
   }
 
-  function isExcludedPage() {
-    return (
-      document.body.classList.contains("index-page") ||
-      document.body.classList.contains("about-page") ||
-      document.body.classList.contains("privacy-page") ||
-      document.body.classList.contains("contact-page") ||
-      document.body.classList.contains("info-page")
-    );
-  }
-
-  function getHistoryBox(main) {
-    return (
-      main.querySelector(":scope > .history") ||
-      main.querySelector(":scope > .age-history-box") ||
-      main.querySelector(":scope > .bmi-history-box") ||
-      main.querySelector(":scope > .discount-history-box") ||
-      main.querySelector(":scope > .loan-history-box") ||
-      main.querySelector(":scope > .percentage-history-box") ||
-      main.querySelector(":scope > .compound-history-box")
-    );
-  }
-
-  function isCalculatorPage(main) {
-    if (!main || isExcludedPage()) return false;
-    if (main.classList.contains("calculator-box")) return false;
-
-    return !!(
-      main.querySelector(":scope > .calculator") &&
-      main.querySelector(":scope > .instruction-box") &&
-      getHistoryBox(main)
-    );
-  }
-
-  function positionHelpPanel(main) {
+  function makeQuestionPanelCloser() {
     if (!isPc()) return;
 
-    const button = main.querySelector(":scope > .pc-question-toggle");
-    const calculator = main.querySelector(":scope > .calculator");
+    document.querySelectorAll("main.pc-calculator-layout").forEach(function (main) {
+      const button = main.querySelector(":scope > .pc-question-toggle");
+      const calculator = main.querySelector(":scope > .calculator");
+      const instructionBox = main.querySelector(":scope > .instruction-box");
 
-    if (!button || !calculator) return;
+      if (!button || !calculator || !instructionBox) return;
 
-    const buttonRect = button.getBoundingClientRect();
-    const calcRect = calculator.getBoundingClientRect();
+      const buttonRect = button.getBoundingClientRect();
+      const calcRect = calculator.getBoundingClientRect();
 
-    const gap = 4;
-    const screenPadding = 16;
+      const gap = 0;
+      const screenPadding = 16;
 
-    const panelWidth = Math.min(calcRect.width, window.innerWidth - screenPadding * 2);
+      const panelWidth = Math.min(calcRect.width, window.innerWidth - screenPadding * 2);
 
-    let panelLeft = buttonRect.left - panelWidth - gap;
+      let panelLeft = buttonRect.left - panelWidth - gap;
 
-    if (panelLeft < screenPadding) {
-      panelLeft = screenPadding;
-    }
+      if (panelLeft < screenPadding) {
+        panelLeft = screenPadding;
+      }
 
-    let panelTop = buttonRect.top;
-    let panelHeight = Math.min(calcRect.height, window.innerHeight - panelTop - screenPadding);
+      let panelTop = buttonRect.top;
+      let panelHeight = Math.min(calcRect.height, window.innerHeight - panelTop - screenPadding);
 
-    if (panelHeight < 320) {
-      panelTop = screenPadding;
-      panelHeight = Math.min(calcRect.height, window.innerHeight - screenPadding * 2);
-    }
+      if (panelHeight < 320) {
+        panelTop = screenPadding;
+        panelHeight = Math.min(calcRect.height, window.innerHeight - screenPadding * 2);
+      }
 
-    document.documentElement.style.setProperty("--pc-help-left", panelLeft + "px");
-    document.documentElement.style.setProperty("--pc-help-top", panelTop + "px");
-    document.documentElement.style.setProperty("--pc-help-width", panelWidth + "px");
-    document.documentElement.style.setProperty("--pc-help-height", panelHeight + "px");
+      document.documentElement.style.setProperty("--pc-help-left", panelLeft + "px");
+      document.documentElement.style.setProperty("--pc-help-top", panelTop + "px");
+      document.documentElement.style.setProperty("--pc-help-width", panelWidth + "px");
+      document.documentElement.style.setProperty("--pc-help-height", panelHeight + "px");
+    });
   }
 
-  function createQuestionButton(main) {
-    if (!isCalculatorPage(main)) return;
+  window.addEventListener("resize", makeQuestionPanelCloser);
+  window.addEventListener("scroll", makeQuestionPanelCloser);
 
-    main.classList.add("pc-calculator-layout");
-
-    const instructionBox = main.querySelector(":scope > .instruction-box");
-    if (!instructionBox) return;
-
-    let button = main.querySelector(":scope > .pc-question-toggle");
-
-    if (!button) {
-      button = document.createElement("button");
-      button.type = "button";
-      button.className = "pc-question-toggle";
-      button.textContent = "?";
-      button.setAttribute("aria-label", "Open instructions and references");
-      button.setAttribute("aria-expanded", "false");
-
-      main.insertBefore(button, instructionBox);
-    }
-
-    if (button.dataset.forceQuestionReady !== "true") {
-      button.dataset.forceQuestionReady = "true";
-
-      button.addEventListener("click", function (event) {
-        if (!isPc()) return;
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        const willOpen = !main.classList.contains("pc-help-open");
-
-        main.classList.toggle("pc-help-open", willOpen);
-        button.setAttribute("aria-expanded", willOpen ? "true" : "false");
-
-        positionHelpPanel(main);
-      });
-    }
-
-    positionHelpPanel(main);
-  }
-
-  function startQuestionFix() {
-    if (!isPc()) return;
-
-    document.querySelectorAll("main").forEach(createQuestionButton);
-  }
-
-  window.addEventListener("resize", startQuestionFix);
-  window.addEventListener("scroll", function () {
-    document.querySelectorAll("main.pc-calculator-layout").forEach(positionHelpPanel);
+  document.addEventListener("click", function () {
+    setTimeout(makeQuestionPanelCloser, 0);
+    setTimeout(makeQuestionPanelCloser, 100);
   });
 
-  setTimeout(startQuestionFix, 100);
-  setTimeout(startQuestionFix, 400);
-  setTimeout(startQuestionFix, 1000);
-
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startQuestionFix);
+    document.addEventListener("DOMContentLoaded", makeQuestionPanelCloser);
   } else {
-    startQuestionFix();
+    makeQuestionPanelCloser();
   }
 })();
