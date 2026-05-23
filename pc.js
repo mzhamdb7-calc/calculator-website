@@ -1,124 +1,28 @@
 /*
   Copyright © 2026 Hamdi. All rights reserved.
   PC MODE ONLY
-  Health / finance arrows:
-  closed = ▼
-  hover/open = ▲
+  Clean old JS arrows.
+  Arrow direction is now controlled by CSS only.
 */
 
 (function () {
   "use strict";
 
-  function isPcMode() {
-    return window.matchMedia("(min-width: 851px)").matches;
-  }
-
-  function cleanLabel(text) {
-    return String(text || "")
-      .replace(/[▼▲▶◀⬇⬆⬅➡]/g, "")
-      .trim();
-  }
-
-  function getTrigger(group) {
-    return (
-      group.querySelector(":scope > summary") ||
-      group.querySelector(":scope > .nav-summary") ||
-      group.querySelector(":scope > .navbar-fixed-summary")
-    );
-  }
-
-  function groupIsOpen(group) {
-    return (
-      group.matches(":hover") ||
-      group.open === true ||
-      group.classList.contains("open") ||
-      group.classList.contains("active") ||
-      group.classList.contains("is-open")
-    );
-  }
-
-  function updateArrow(group) {
-    const trigger = getTrigger(group);
-    if (!trigger) return;
-
-    const arrow = trigger.querySelector(".nav-menu-arrow");
-    if (!arrow) return;
-
-    arrow.textContent = groupIsOpen(group) ? "▲" : "▼";
-  }
-
-  function setupGroup(group) {
-    if (!group || group.dataset.pcArrowReady === "true") return;
-
-    const trigger = getTrigger(group);
-    if (!trigger) return;
-
-    group.dataset.pcArrowReady = "true";
-
-    trigger.querySelectorAll(".nav-menu-arrow").forEach(function (oldArrow) {
-      oldArrow.remove();
-    });
-
-    trigger.textContent = cleanLabel(trigger.textContent) + " ";
-
-    const arrow = document.createElement("span");
-    arrow.className = "nav-menu-arrow";
-    arrow.textContent = "▼";
-    trigger.appendChild(arrow);
-
-    group.addEventListener("mouseenter", function () {
-      if (!isPcMode()) return;
-      arrow.textContent = "▲";
-    });
-
-    group.addEventListener("mouseleave", function () {
-      if (!isPcMode()) return;
-      updateArrow(group);
-    });
-
-    group.addEventListener("toggle", function () {
-      if (!isPcMode()) return;
-      updateArrow(group);
-    });
-
-    trigger.addEventListener("click", function () {
-      if (!isPcMode()) return;
-
-      setTimeout(function () {
-        updateArrow(group);
-      }, 0);
-    });
-
-    updateArrow(group);
-  }
-
-  function setupPcNavbarArrows() {
-    if (!isPcMode()) return;
-
+  function removeOldArrowSpans() {
     document
-      .querySelectorAll(
-        "#navbar .dropdown-content > details.nav-group, " +
-        "#navbar .dropdown-content > .nav-group, " +
-        "#navbar .dropdown-content > .fixed-nav-group, " +
-        "#navbar .dropdown-content > .navbar-fixed-group"
-      )
-      .forEach(setupGroup);
-  }
-
-  function resetPhoneArrows() {
-    if (isPcMode()) return;
-
-    document.querySelectorAll("#navbar .nav-menu-arrow").forEach(function (arrow) {
-      arrow.textContent = "▼";
-    });
+      .querySelectorAll("#navbar .nav-menu-arrow, #navbar .phone-sub-arrow")
+      .forEach(function (arrow) {
+        arrow.remove();
+      });
   }
 
   function start() {
-    setupPcNavbarArrows();
+    removeOldArrowSpans();
 
-    window.addEventListener("resize", function () {
-      setupPcNavbarArrows();
-      resetPhoneArrows();
+    window.addEventListener("resize", removeOldArrowSpans);
+
+    document.addEventListener("click", function () {
+      setTimeout(removeOldArrowSpans, 0);
     });
   }
 
