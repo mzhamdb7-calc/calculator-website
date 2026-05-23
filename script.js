@@ -2637,8 +2637,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function start() {
     renderInstructionLayout();
-    setTimeout(renderInstructionLayout, 150);
-    setTimeout(renderInstructionLayout, 500);
+        
   }
 
   if (document.readyState === "loading") {

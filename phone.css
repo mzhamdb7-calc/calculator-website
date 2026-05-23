@@ -466,3 +466,98 @@
     background: var(--yellow) !important;
   }
 }
+/* =====================================================
+   PHONE HARD RESET: make phone screen responsive again
+===================================================== */
+@media screen and (max-width: 850px) {
+  html,
+  body {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    touch-action: auto !important;
+  }
+
+  body {
+    padding-bottom: 95px !important;
+  }
+
+  main,
+  .calculator-container,
+  .age-calculator-container,
+  .bmi-calculator-container,
+  .discount-calculator-container,
+  .loan-calculator-container,
+  .percentage-calculator-container,
+  .compound-interest-container,
+  .compound-calculator-container,
+  .about-container,
+  .calculator-box,
+  main.has-instructions {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 20px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+
+  .history,
+  .age-history-box,
+  .bmi-history-box,
+  .discount-history-box,
+  .loan-history-box,
+  .percentage-history-box,
+  .compound-history-box,
+  .calculator,
+  .instruction-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  .calculator {
+    padding: 22px !important;
+  }
+
+  .calculator h1 {
+    font-size: 34px !important;
+  }
+
+  .calculator label,
+  .calculator input[type="date"],
+  .calculator input[type="number"],
+  .calculator input[type="text"],
+  .calculator select,
+  .main-btn,
+  .calculator > button {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 450px !important;
+    box-sizing: border-box !important;
+  }
+
+  .instruction-box {
+    overflow: visible !important;
+  }
+
+  .instruction-section,
+  .reference-box,
+  .reference-scroll,
+  .reference-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .reference-scroll {
+    max-height: 300px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+}
