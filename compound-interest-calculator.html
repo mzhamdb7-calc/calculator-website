@@ -1,8 +1,9 @@
-<!DOCTYPE html>
 <!--
   Copyright © 2026 Hamdi. All rights reserved.
   Do not copy, modify, redistribute, or reuse this project without permission.
 -->
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -10,12 +11,14 @@
   <title>Compound Interest Calculator</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Free compound interest calculator to calculate future value, total interest earned, and compound interest formula examples.">
+  <meta name="description" content="Free compound interest calculator to calculate future value, compound interest earned, and principal amount.">
 
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="pc.css" media="screen and (min-width: 851px)">
   <link rel="stylesheet" href="phone.css" media="screen and (max-width: 850px)">
+
   <link rel="icon" href="favicon.ico">
 
   <script>
@@ -27,16 +30,11 @@
   </script>
 </head>
 
-<body>
+<body class="compound-page">
 
   <!-- Go Up Button -->
   <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
     ↑
-  </button>
-
-  <!-- MENU Button shown after scroll -->
-  <button id="menuIcon" type="button" onclick="toggleMenu()" aria-label="Open menu">
-    MENU
   </button>
 
   <!-- Navbar -->
@@ -45,7 +43,7 @@
     <a href="index.html">home</a>
 
     <div class="dropdown">
-      <button type="button" class="dropbtn">
+      <button type="button" class="dropbtn" aria-expanded="false">
         calculator
       </button>
 
@@ -78,7 +76,7 @@
     </div>
 
     <div class="dropdown about-dropdown">
-      <button type="button" class="dropbtn">
+      <button type="button" class="dropbtn" aria-expanded="false">
         info
       </button>
 
@@ -92,11 +90,12 @@
   </nav>
 
   <!-- Main Content -->
-  <main class="percentage-calculator-container compound-interest-container has-instructions">
+  <main class="compound-calculator-container compound-interest-container has-instructions">
 
-    <aside class="percentage-history-box compound-history-box" aria-label="Compound interest history">
+    <!-- Result / History -->
+    <aside class="compound-history-box" aria-label="Compound interest result history">
 
-      <div class="percentage-history-top">
+      <div class="compound-history-top">
         <h3>Result</h3>
 
         <button class="clear-btn" type="button" id="clearCompoundHistoryBtn">
@@ -104,19 +103,20 @@
         </button>
       </div>
 
-      <ul id="percentageHistoryList"></ul>
+      <ul id="compoundHistoryList"></ul>
 
     </aside>
 
+    <!-- Calculator -->
     <section class="calculator" aria-label="Compound Interest Calculator">
 
       <h1>Compound Interest Calculator</h1>
 
       <p class="subtitle">
-        Calculate future value and total compound interest.
+        Calculate future value, compound interest, and principal amount.
       </p>
 
-      <label for="principal">Principal Amount </label>
+      <label for="principal">Principal Amount</label>
       <input
         type="number"
         id="principal"
@@ -136,7 +136,7 @@
         placeholder="Example: 5"
       >
 
-      <label for="years">Time in Years </label>
+      <label for="years">Time in Years</label>
       <input
         type="number"
         id="years"
@@ -146,7 +146,7 @@
         placeholder="Example: 10"
       >
 
-      <label for="frequency">Compounding Frequency </label>
+      <label for="frequency">Compounding Frequency</label>
       <select id="frequency">
         <option value="1">annually</option>
         <option value="2">semi-annually</option>
@@ -163,39 +163,73 @@
         calculate compound interest
       </button>
 
-      <h2 id="percentageResult" aria-live="polite"></h2>
+      <h2 id="compoundResult" aria-live="polite"></h2>
 
     </section>
 
+    <!-- Instructions + References -->
     <aside class="instruction-box" aria-label="Instructions">
 
-  <h2>Instructions</h2>
+      <div class="instruction-section instruction-what-box">
+        <h3>What does this calculator do?</h3>
+        <p>
+          This calculator helps you estimate how much your money can grow over time when interest is added repeatedly.
+        </p>
+      </div>
 
-  <ul>
-    <li>
-      <strong>What does this calculator do?</strong><br>
-      This calculator helps you estimate how much your money can grow over time when interest is added repeatedly.
-    </li>
+      <h2 class="instruction-main-title">Instructions</h2>
 
-    <li>
-      <strong>How to use it</strong><br>
-      Enter the principal amount, annual interest rate, time in years, and compounding frequency. Then press calculate compound interest.
-    </li>
+      <div class="instruction-section instruction-how-box">
+        <h3>How to use it</h3>
+        <p>
+          Enter the principal amount, annual interest rate, time in years, and compounding frequency. Then press calculate compound interest.
+        </p>
+      </div>
 
-    <li>
-      <strong>Formula used</strong><br>
-      A = P(1 + r/n)<sup>nt</sup><br>
-      Compound Interest = A − P
-    </li>
+      <div class="instruction-section instruction-formula-box">
+        <h3>Formula used</h3>
+        <p>
+          A = P(1 + r/n)<sup>nt</sup><br>
+          Compound Interest = A − P
+        </p>
+      </div>
 
-    <li>
-      <strong>Example calculation</strong><br>
-      If P = 1000, r = 5%, t = 10 years, and n = monthly, the future value is about 1,647.01 and the compound interest is about 647.01.
-    </li>
-  </ul>
+      <div class="instruction-section instruction-example-box">
+        <h3>Example calculation</h3>
+        <p>
+          If P = 1000, r = 5%, t = 10 years, and n = monthly, the future value is about 1,647.01 and the compound interest is about 647.01.
+        </p>
+      </div>
 
-</aside>
-    
+      <section class="reference-box" aria-label="References">
+        <h2 class="reference-main-title">References</h2>
+
+        <div class="reference-scroll">
+
+          <div class="reference-card">
+            <h3>Compound interest formula</h3>
+            <p>
+              The standard compound interest formula is A = P(1 + r/n)<sup>nt</sup>.
+            </p>
+            <a href="https://www.investopedia.com/terms/c/compoundinterest.asp" target="_blank" rel="noopener noreferrer">
+              Open source
+            </a>
+          </div>
+
+          <div class="reference-card">
+            <h3>Interest meaning</h3>
+            <p>
+              Compound interest means interest is calculated on the principal and also on previous interest.
+            </p>
+            <a href="https://www.investopedia.com/articles/investing/020614/learn-simple-and-compound-interest.asp" target="_blank" rel="noopener noreferrer">
+              Open source
+            </a>
+          </div>
+
+        </div>
+      </section>
+
+    </aside>
 
   </main>
 
@@ -214,8 +248,10 @@
       const rateInput = document.getElementById("rate");
       const yearsInput = document.getElementById("years");
       const frequencyInput = document.getElementById("frequency");
-      const resultElement = document.getElementById("percentageResult");
-      const historyList = document.getElementById("percentageHistoryList");
+
+      const resultElement = document.getElementById("compoundResult");
+      const historyList = document.getElementById("compoundHistoryList");
+
       const calculateButton = document.getElementById("calculateCompoundBtn");
       const clearButton = document.getElementById("clearCompoundHistoryBtn");
 
@@ -264,6 +300,7 @@
 
         const original = button.dataset.originalText || button.textContent;
         button.dataset.originalText = original;
+
         button.textContent = status;
 
         setTimeout(function () {
@@ -339,6 +376,7 @@
 
           li.appendChild(text);
           li.appendChild(copyButton);
+
           historyList.appendChild(li);
         });
       }
@@ -375,10 +413,10 @@
         resultElement.textContent = resultText;
 
         saveHistory(
-  "Future Value: " + money(futureValue) +
-  " | Compound Interest: " + money(compoundInterest) +
-  " | Principal: " + money(principal)
-);
+          "Future Value: " + money(futureValue) +
+          " | Compound Interest: " + money(compoundInterest) +
+          " | Principal: " + money(principal)
+        );
       }
 
       if (calculateButton) {
