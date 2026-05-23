@@ -5,7 +5,7 @@
   - calculator opens upward
   - info opens upward
   - opening one closes the other
-  - health/finance open upward
+  - health/finance opens upward
 */
 
 (function () {
@@ -215,7 +215,9 @@
         }
 
         html body #navbar .dropdown-content > a,
-        html body #navbar .dropdown-content > .nav-group > summary {
+        html body #navbar .dropdown-content > .nav-group > summary,
+        html body #navbar .dropdown-content > .fixed-nav-group > .nav-summary,
+        html body #navbar .dropdown-content > .navbar-fixed-group > .navbar-fixed-summary {
           width: 100% !important;
           height: 42px !important;
 
@@ -230,12 +232,14 @@
           border-bottom: 3px solid var(--black) !important;
           box-shadow: none !important;
 
+          font-family: inherit !important;
           font-size: 15px !important;
           font-weight: bold !important;
           text-align: center !important;
           text-decoration: none !important;
 
           box-sizing: border-box !important;
+          cursor: pointer !important;
         }
 
         html body #navbar .dropdown-content > *:last-child,
@@ -243,24 +247,36 @@
           border-bottom: none !important;
         }
 
-        html body #navbar .dropdown-content .nav-group {
+        html body #navbar .dropdown-content .nav-group,
+        html body #navbar .dropdown-content .fixed-nav-group,
+        html body #navbar .dropdown-content .navbar-fixed-group {
           position: relative !important;
           height: 42px !important;
           overflow: visible !important;
         }
 
         html body #navbar .nav-group > .nav-group-links,
+        html body #navbar .fixed-nav-group > .nav-group-links,
+        html body #navbar .navbar-fixed-group > .nav-group-links,
         html body #navbar .nav-group:hover > .nav-group-links,
-        html body #navbar .nav-group:focus-within > .nav-group-links {
+        html body #navbar .fixed-nav-group:hover > .nav-group-links,
+        html body #navbar .navbar-fixed-group:hover > .nav-group-links,
+        html body #navbar .nav-group:focus-within > .nav-group-links,
+        html body #navbar .fixed-nav-group:focus-within > .nav-group-links,
+        html body #navbar .navbar-fixed-group:focus-within > .nav-group-links {
           display: none !important;
         }
 
         html body #navbar .nav-group.phone-sub-open > .nav-group-links,
+        html body #navbar .fixed-nav-group.phone-sub-open > .nav-group-links,
+        html body #navbar .navbar-fixed-group.phone-sub-open > .nav-group-links,
         html body #navbar .nav-group[open] > .nav-group-links {
           display: block !important;
         }
 
-        html body #navbar .nav-group > .nav-group-links {
+        html body #navbar .nav-group > .nav-group-links,
+        html body #navbar .fixed-nav-group > .nav-group-links,
+        html body #navbar .navbar-fixed-group > .nav-group-links {
           position: absolute !important;
 
           top: auto !important;
@@ -304,13 +320,17 @@
         }
 
         html body #navbar .nav-group.phone-sub-open > summary,
+        html body #navbar .fixed-nav-group.phone-sub-open > .nav-summary,
+        html body #navbar .navbar-fixed-group.phone-sub-open > .navbar-fixed-summary,
         html body #navbar .nav-group[open] > summary,
         html body #navbar .dropdown-content a:hover,
         html body #navbar .nav-group-links a:hover {
           background: var(--yellow) !important;
         }
 
-        html body #navbar .nav-group > summary::after {
+        html body #navbar .nav-group > summary::after,
+        html body #navbar .fixed-nav-group > .nav-summary::after,
+        html body #navbar .navbar-fixed-group > .navbar-fixed-summary::after {
           content: none !important;
           display: none !important;
         }
@@ -358,21 +378,32 @@
     return Array.from(navbar.querySelectorAll(":scope > .dropdown"));
   }
 
+  function getGroupTrigger(group) {
+    return (
+      group.querySelector(":scope > summary") ||
+      group.querySelector(":scope > .nav-summary") ||
+      group.querySelector(":scope > .navbar-fixed-summary")
+    );
+  }
+
   function closeSubmenus(dropdown) {
     if (!dropdown) return;
 
-    dropdown.querySelectorAll(".nav-group").forEach(function (group) {
-      group.classList.remove("phone-sub-open", "is-open", "open", "active");
-      group.dataset.phoneOpen = "false";
+    dropdown
+      .querySelectorAll(".nav-group, .fixed-nav-group, .navbar-fixed-group")
+      .forEach(function (group) {
+        group.classList.remove("phone-sub-open", "is-open", "open", "active");
+        group.dataset.phoneOpen = "false";
 
-      if (group.tagName && group.tagName.toLowerCase() === "details") {
-        group.open = false;
-        group.removeAttribute("open");
-      }
+        if (group.tagName && group.tagName.toLowerCase() === "details") {
+          group.open = false;
+          group.removeAttribute("open");
+        }
 
-      const arrow = group.querySelector(":scope > summary .phone-sub-arrow");
-      if (arrow) arrow.textContent = "▼";
-    });
+        const trigger = getGroupTrigger(group);
+        const arrow = trigger ? trigger.querySelector(".phone-sub-arrow") : null;
+        if (arrow) arrow.textContent = "▼";
+      });
   }
 
   function closeDropdown(dropdown) {
@@ -431,23 +462,27 @@
   }
 
   function setupSubmenuArrow(group) {
-    const summary = group.querySelector(":scope > summary");
-    if (!summary) return;
+    const trigger = getGroupTrigger(group);
+    if (!trigger) return;
 
-    let arrow = summary.querySelector(".phone-sub-arrow");
+    let arrow = trigger.querySelector(".phone-sub-arrow");
 
     if (!arrow) {
-      summary.textContent = cleanLabel(summary.textContent) + " ";
+      trigger.textContent = cleanLabel(trigger.textContent) + " ";
 
       arrow = document.createElement("span");
       arrow.className = "phone-sub-arrow";
       arrow.textContent = "▼";
 
-      summary.appendChild(arrow);
+      trigger.appendChild(arrow);
     }
 
     arrow.textContent =
-      group.classList.contains("phone-sub-open") || group.open ? "▲" : "▼";
+      group.classList.contains("phone-sub-open") ||
+      group.classList.contains("is-open") ||
+      group.open
+        ? "▲"
+        : "▼";
   }
 
   function toggleSubmenu(group) {
@@ -456,21 +491,27 @@
     const dropdown = group.closest(".dropdown");
     if (!dropdown) return;
 
-    dropdown.querySelectorAll(".nav-group").forEach(function (other) {
-      if (other !== group) {
-        other.classList.remove("phone-sub-open", "is-open", "open", "active");
-        other.dataset.phoneOpen = "false";
+    dropdown
+      .querySelectorAll(".nav-group, .fixed-nav-group, .navbar-fixed-group")
+      .forEach(function (other) {
+        if (other !== group) {
+          other.classList.remove("phone-sub-open", "is-open", "open", "active");
+          other.dataset.phoneOpen = "false";
 
-        if (other.tagName && other.tagName.toLowerCase() === "details") {
-          other.open = false;
-          other.removeAttribute("open");
+          if (other.tagName && other.tagName.toLowerCase() === "details") {
+            other.open = false;
+            other.removeAttribute("open");
+          }
+
+          setupSubmenuArrow(other);
         }
+      });
 
-        setupSubmenuArrow(other);
-      }
-    });
-
-    const willOpen = !(group.classList.contains("phone-sub-open") || group.open);
+    const willOpen = !(
+      group.classList.contains("phone-sub-open") ||
+      group.classList.contains("is-open") ||
+      group.open
+    );
 
     group.classList.toggle("phone-sub-open", willOpen);
     group.classList.toggle("is-open", willOpen);
@@ -510,21 +551,23 @@
       });
     });
 
-    navbar.querySelectorAll(".nav-group").forEach(function (group) {
-      setupSubmenuArrow(group);
+    navbar
+      .querySelectorAll(".nav-group, .fixed-nav-group, .navbar-fixed-group")
+      .forEach(function (group) {
+        setupSubmenuArrow(group);
 
-      const summary = group.querySelector(":scope > summary");
-      if (!summary) return;
+        const trigger = getGroupTrigger(group);
+        if (!trigger) return;
 
-      summary.addEventListener("click", function (event) {
-        if (!isPhone()) return;
+        trigger.addEventListener("click", function (event) {
+          if (!isPhone()) return;
 
-        event.preventDefault();
-        event.stopPropagation();
+          event.preventDefault();
+          event.stopPropagation();
 
-        toggleSubmenu(group);
+          toggleSubmenu(group);
+        });
       });
-    });
 
     document.addEventListener("click", function (event) {
       if (!isPhone()) return;
