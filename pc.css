@@ -644,3 +644,32 @@
     background: var(--yellow) !important;
   }
 }
+
+/* =====================================================
+   PC ONLY: small gap between What box and Result/History
+   Applies to all calculator pages using pc-calculator-layout
+===================================================== */
+@media (min-width: 851px) {
+  main.pc-calculator-layout {
+    row-gap: 8px !important;
+    column-gap: var(--pc-gap) !important;
+  }
+
+  main.pc-calculator-layout > .pc-what-slot {
+    margin-bottom: 0 !important;
+  }
+
+  main.pc-calculator-layout > .pc-what-slot .instruction-what-box {
+    margin-bottom: 0 !important;
+  }
+
+  main.pc-calculator-layout > .history,
+  main.pc-calculator-layout > .age-history-box,
+  main.pc-calculator-layout > .bmi-history-box,
+  main.pc-calculator-layout > .discount-history-box,
+  main.pc-calculator-layout > .loan-history-box,
+  main.pc-calculator-layout > .percentage-history-box,
+  main.pc-calculator-layout > .compound-history-box {
+    margin-top: 0 !important;
+  }
+}
