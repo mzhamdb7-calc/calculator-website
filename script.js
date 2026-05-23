@@ -4655,3 +4655,121 @@ document.addEventListener("DOMContentLoaded", function () {
     startBasicEquationHistory();
   }
 })();
+/* =====================================================
+   BASIC CALCULATOR ONLY: result copy button copies number only
+===================================================== */
+(function () {
+  "use strict";
+
+  function isBasicPage() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    return title.includes("basic") || !!document.getElementById("display");
+  }
+
+  function getBasicNumberValue() {
+    const display = document.getElementById("display");
+
+    if (display && String(display.value || "").trim()) {
+      return String(display.value || "").trim();
+    }
+
+    const result =
+      document.getElementById("result") ||
+      document.querySelector("#universalLoanStyleOutput .loan-result-table td:last-child") ||
+      document.querySelector(".universal-output-panel table td:last-child");
+
+    if (result) {
+      return String(result.textContent || "").trim();
+    }
+
+    return "";
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function copyNumberOnly(button) {
+    const value = getBasicNumberValue();
+
+    if (!value || value === "Error") return;
+
+    function copied() {
+      const oldText = button.textContent;
+      button.textContent = "Copied!";
+
+      setTimeout(function () {
+        button.textContent = oldText;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(value).then(copied).catch(function () {
+        fallbackCopy(value);
+        copied();
+      });
+    } else {
+      fallbackCopy(value);
+      copied();
+    }
+  }
+
+  function fixBasicResultCopyButton() {
+    if (!isBasicPage()) return;
+
+    document
+      .querySelectorAll(
+        "#universalLoanStyleOutput .loan-copy-btn, " +
+        ".universal-output-panel .universal-copy-btn, " +
+        ".result-copy-btn"
+      )
+      .forEach(function (button) {
+        if (button.dataset.basicNumberOnlyReady === "true") return;
+
+        button.dataset.basicNumberOnlyReady = "true";
+
+        button.addEventListener(
+          "click",
+          function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+
+            copyNumberOnly(button);
+          },
+          true
+        );
+      });
+  }
+
+  function start() {
+    fixBasicResultCopyButton();
+
+    document.addEventListener("click", function () {
+      setTimeout(fixBasicResultCopyButton, 0);
+      setTimeout(fixBasicResultCopyButton, 150);
+      setTimeout(fixBasicResultCopyButton, 400);
+    });
+
+    setTimeout(fixBasicResultCopyButton, 300);
+    setTimeout(fixBasicResultCopyButton, 1000);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
