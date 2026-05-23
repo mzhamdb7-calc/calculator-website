@@ -3,14 +3,21 @@
   PC MODE ONLY
 */
 
+/* =====================================================
+   PC NAVBAR DROPDOWNS
+===================================================== */
 @media (min-width: 851px) {
-  #navbar {
+  #navbar,
+  #navbar > .dropdown,
+  #navbar .dropdown-content,
+  #navbar .dropdown-content > .nav-group,
+  #navbar .dropdown-content > .fixed-nav-group,
+  #navbar .dropdown-content > .navbar-fixed-group {
     overflow: visible !important;
   }
 
   #navbar > .dropdown {
     position: relative !important;
-    overflow: visible !important;
   }
 
   #navbar > .dropdown:hover > .dropdown-content,
@@ -20,11 +27,16 @@
   }
 
   #navbar .dropdown-content {
+    display: none !important;
+    position: absolute !important;
     top: 62px !important;
     left: -3px !important;
     right: auto !important;
     width: 250px !important;
-    overflow: visible !important;
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+    z-index: 9999999 !important;
   }
 
   #navbar .about-dropdown-content {
@@ -32,11 +44,51 @@
     right: -3px !important;
   }
 
+  #navbar .dropdown-content > a,
+  #navbar .dropdown-content > .nav-group > summary,
+  #navbar .dropdown-content > .fixed-nav-group > .nav-summary,
+  #navbar .dropdown-content > .navbar-fixed-group > .navbar-fixed-summary {
+    width: 100% !important;
+    height: 50px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 10px !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+  }
+
+  #navbar .dropdown-content > a:hover,
+  #navbar .dropdown-content > .nav-group:hover > summary,
+  #navbar .dropdown-content > .fixed-nav-group:hover > .nav-summary,
+  #navbar .dropdown-content > .navbar-fixed-group:hover > .navbar-fixed-summary {
+    background: var(--yellow) !important;
+  }
+
+  #navbar .dropdown-content > *:last-child,
+  #navbar .dropdown-content > *:last-child > summary,
+  #navbar .dropdown-content > *:last-child > .nav-summary,
+  #navbar .dropdown-content > *:last-child > .navbar-fixed-summary {
+    border-bottom: none !important;
+  }
+
   #navbar .dropdown-content > .nav-group,
   #navbar .dropdown-content > .fixed-nav-group,
   #navbar .dropdown-content > .navbar-fixed-group {
     position: relative !important;
-    overflow: visible !important;
+    width: 100% !important;
+    height: 50px !important;
+    background: var(--white) !important;
   }
 
   #navbar .dropdown-content > .nav-group > .nav-group-links,
@@ -66,19 +118,33 @@
     display: block !important;
   }
 
-  #navbar .dropdown-content > .nav-group:hover > summary,
-  #navbar .dropdown-content > .nav-group:focus-within > summary,
-  #navbar .dropdown-content > .nav-group[open] > summary,
-  #navbar .dropdown-content > .fixed-nav-group:hover > .nav-summary,
-  #navbar .dropdown-content > .fixed-nav-group:focus-within > .nav-summary,
-  #navbar .dropdown-content > .fixed-nav-group.is-open > .nav-summary,
-  #navbar .dropdown-content > .navbar-fixed-group:hover > .navbar-fixed-summary,
-  #navbar .dropdown-content > .navbar-fixed-group:focus-within > .navbar-fixed-summary,
-  #navbar .dropdown-content > .navbar-fixed-group.is-open > .navbar-fixed-summary {
+  #navbar .nav-group-links a {
+    width: 100% !important;
+    height: 47px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 10px !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
+    font-size: 17px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+
+  #navbar .nav-group-links a:hover {
     background: var(--yellow) !important;
   }
 
-  /* Remove old duplicate CSS arrows from health/finance */
+  #navbar .nav-group-links a:last-child {
+    border-bottom: none !important;
+  }
+
   #navbar .dropdown-content details.nav-group > summary::after,
   #navbar .dropdown-content .nav-group > summary::after,
   #navbar .dropdown-content .fixed-nav-group > .nav-summary::after,
@@ -87,7 +153,6 @@
     display: none !important;
   }
 
-  /* Real JS arrow */
   #navbar .nav-menu-arrow {
     display: inline-block !important;
     margin-left: 8px !important;
@@ -100,355 +165,32 @@
     box-shadow: none !important;
   }
 }
-/* =====================================================
-   PC ONLY: SAME ORIENTATION FOR ALL INSTRUCTION PAGES
-   LEFT: What box + Result/History
-   CENTER: Calculator
-   RIGHT: Instructions + Formula + Example + References
-===================================================== */
-@media (min-width: 851px) {
-  main.has-instructions,
-  .calculator-container.has-instructions,
-  .age-calculator-container.has-instructions,
-  .bmi-calculator-container.has-instructions,
-  .discount-calculator-container.has-instructions,
-  .loan-calculator-container.has-instructions,
-  .percentage-calculator-container.has-instructions,
-  .compound-interest-container.has-instructions,
-  .compound-calculator-container.has-instructions {
-    width: 100% !important;
-    max-width: 1540px !important;
-
-    margin: 130px auto 80px !important;
-    padding: 16px 26px !important;
-
-    display: grid !important;
-    grid-template-columns: 340px minmax(620px, 780px) 340px !important;
-    grid-template-rows: auto auto !important;
-
-    gap: 22px 35px !important;
-
-    justify-content: center !important;
-    align-items: start !important;
-
-    box-sizing: border-box !important;
-  }
-
-  /* LEFT TOP: What does this calculator do? */
-  .pc-what-slot {
-    grid-column: 1 !important;
-    grid-row: 1 !important;
-
-    width: 340px !important;
-    max-width: 340px !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-
-    justify-self: center !important;
-    align-self: start !important;
-
-    box-sizing: border-box !important;
-  }
-
-  .pc-what-slot .instruction-what-box {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 !important;
-    padding: 14px 12px !important;
-
-    background: #ffd3d3 !important;
-    color: var(--black) !important;
-
-    border: 4px solid var(--black) !important;
-    box-shadow: 5px 5px 0 var(--black) !important;
-
-    text-align: center !important;
-    box-sizing: border-box !important;
-  }
-
-  .pc-what-slot .instruction-what-box h3 {
-    margin: 0 0 8px !important;
-    font-size: 18px !important;
-    line-height: 1.2 !important;
-  }
-
-  .pc-what-slot .instruction-what-box p {
-    margin: 0 !important;
-    font-size: 15px !important;
-    line-height: 1.35 !important;
-  }
-
-  /* LEFT BOTTOM: Result / History box */
-  .calculator-container.has-instructions .history,
-  .age-calculator-container.has-instructions .age-history-box,
-  .bmi-calculator-container.has-instructions .bmi-history-box,
-  .discount-calculator-container.has-instructions .discount-history-box,
-  .loan-calculator-container.has-instructions .loan-history-box,
-  .percentage-calculator-container.has-instructions .percentage-history-box,
-  .compound-interest-container.has-instructions .compound-history-box,
-  .compound-calculator-container.has-instructions .compound-history-box,
-  main.has-instructions .history,
-  main.has-instructions .age-history-box,
-  main.has-instructions .bmi-history-box,
-  main.has-instructions .discount-history-box,
-  main.has-instructions .loan-history-box,
-  main.has-instructions .percentage-history-box,
-  main.has-instructions .compound-history-box {
-    grid-column: 1 !important;
-    grid-row: 2 !important;
-
-    width: 340px !important;
-    max-width: 340px !important;
-
-    margin: 0 !important;
-
-    justify-self: center !important;
-    align-self: start !important;
-
-    box-sizing: border-box !important;
-  }
-
-  /* CENTER: Calculator box */
-  .calculator-container.has-instructions .calculator,
-  .age-calculator-container.has-instructions .calculator,
-  .bmi-calculator-container.has-instructions .calculator,
-  .discount-calculator-container.has-instructions .calculator,
-  .loan-calculator-container.has-instructions .calculator,
-  .percentage-calculator-container.has-instructions .calculator,
-  .compound-interest-container.has-instructions .calculator,
-  .compound-calculator-container.has-instructions .calculator,
-  main.has-instructions .calculator {
-    grid-column: 2 !important;
-    grid-row: 1 / span 2 !important;
-
-    width: 100% !important;
-    max-width: 780px !important;
-
-    margin: 0 !important;
-
-    justify-self: center !important;
-    align-self: start !important;
-
-    box-sizing: border-box !important;
-  }
-
-  /* RIGHT: Instruction / Formula / Example / Reference column */
-  .calculator-container.has-instructions .instruction-box,
-  .age-calculator-container.has-instructions .instruction-box,
-  .bmi-calculator-container.has-instructions .instruction-box,
-  .discount-calculator-container.has-instructions .instruction-box,
-  .loan-calculator-container.has-instructions .instruction-box,
-  .percentage-calculator-container.has-instructions .instruction-box,
-  .compound-interest-container.has-instructions .instruction-box,
-  .compound-calculator-container.has-instructions .instruction-box,
-  main.has-instructions .instruction-box {
-    grid-column: 3 !important;
-    grid-row: 1 / span 2 !important;
-
-    width: 340px !important;
-    max-width: 340px !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-
-    justify-self: center !important;
-    align-self: start !important;
-
-    box-sizing: border-box !important;
-    overflow: visible !important;
-  }
-
-  /* Hide What box if it is still inside right instruction column */
-  .instruction-box > .instruction-what-box {
-    display: none !important;
-  }
-
-  /* Instruction title */
-  .instruction-main-title,
-  .instruction-box > h2:not(.reference-main-title),
-  .reference-main-title,
-  .reference-box > h2 {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 0 14px !important;
-    padding: 10px 12px !important;
-
-    background: var(--white) !important;
-    color: var(--black) !important;
-
-    border: 4px solid var(--black) !important;
-    box-shadow: 5px 5px 0 var(--black) !important;
-
-    font-size: 22px !important;
-    font-weight: bold !important;
-    line-height: 1.2 !important;
-    text-align: left !important;
-
-    box-sizing: border-box !important;
-  }
-
-  /* Right-side item boxes */
-  .instruction-box .instruction-section:not(.instruction-what-box),
-  .reference-card {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 0 16px !important;
-    padding: 14px 12px !important;
-
-    color: var(--black) !important;
-
-    border: 4px solid var(--black) !important;
-    box-shadow: 5px 5px 0 var(--black) !important;
-
-    text-align: center !important;
-
-    box-sizing: border-box !important;
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-  }
-
-  .instruction-how-box {
-    background: #d3fff9 !important;
-  }
-
-  .instruction-formula-box {
-    background: #fff4b8 !important;
-  }
-
-  .instruction-example-box {
-    background: #d3ffd9 !important;
-  }
-
-  .reference-card {
-    background: #d3fff9 !important;
-  }
-
-  .reference-card:nth-child(2) {
-    background: #fff4b8 !important;
-  }
-
-  .reference-card:nth-child(3) {
-    background: #d3ffd9 !important;
-  }
-
-  .instruction-section h3,
-  .reference-card h3 {
-    margin: 0 0 7px !important;
-
-    color: var(--black) !important;
-
-    font-size: 18px !important;
-    font-weight: bold !important;
-    line-height: 1.2 !important;
-  }
-
-  .instruction-section p,
-  .reference-card p {
-    margin: 0 !important;
-
-    color: var(--black) !important;
-
-    font-size: 15px !important;
-    font-weight: bold !important;
-    line-height: 1.35 !important;
-  }
-
-  .reference-box {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-
-    box-sizing: border-box !important;
-    overflow: hidden !important;
-  }
-
-  .reference-scroll {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    max-height: 360px !important;
-
-    padding: 0 8px 8px 0 !important;
-
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-
-    box-sizing: border-box !important;
-  }
-
-  .reference-card a {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    margin-top: 8px !important;
-    padding: 6px 10px !important;
-
-    background: var(--white) !important;
-    color: var(--black) !important;
-
-    border: 3px solid var(--black) !important;
-    box-shadow: 3px 3px 0 var(--black) !important;
-
-    font-size: 13px !important;
-    font-weight: bold !important;
-    text-decoration: none !important;
-  }
-
-  .reference-card a:hover {
-    background: var(--yellow) !important;
-  }
-}
 
 /* =====================================================
-   PC FINAL ORIENTATION FOR ALL INSTRUCTION PAGES
-   LEFT: What box + Result/History
-   CENTER: Calculator
-   RIGHT: Instructions + Formula + Example + References
+   PC FINAL: consistent side boxes on every instruction page
 ===================================================== */
 @media (min-width: 851px) {
-  main.has-instructions,
-  .calculator-container.has-instructions,
-  .age-calculator-container.has-instructions,
-  .bmi-calculator-container.has-instructions,
-  .discount-calculator-container.has-instructions,
-  .loan-calculator-container.has-instructions,
-  .percentage-calculator-container.has-instructions,
-  .compound-interest-container.has-instructions,
-  .compound-calculator-container.has-instructions {
+  :root {
+    --pc-side-width: 340px;
+    --pc-center-min: 620px;
+    --pc-center-max: 780px;
+    --pc-side-border: 4px;
+    --pc-side-shadow: 5px 5px 0 var(--black);
+    --pc-side-title-height: 56px;
+    --pc-side-item-height: 128px;
+  }
+
+  main.has-instructions {
     width: 100% !important;
     max-width: 1540px !important;
-
     margin: 130px auto 80px !important;
     padding: 16px 26px !important;
-
     display: grid !important;
-    grid-template-columns: 340px minmax(620px, 780px) 340px !important;
+    grid-template-columns: var(--pc-side-width) minmax(var(--pc-center-min), var(--pc-center-max)) var(--pc-side-width) !important;
     grid-template-rows: auto auto !important;
-
     gap: 22px 35px !important;
-
     justify-content: center !important;
     align-items: start !important;
-
     box-sizing: border-box !important;
   }
 
@@ -457,64 +199,21 @@
     box-sizing: border-box !important;
   }
 
-  /* LEFT TOP: What does this calculator do? */
   main.has-instructions > .pc-what-slot {
     grid-column: 1 !important;
     grid-row: 1 !important;
-
-    width: 340px !important;
-    max-width: 340px !important;
-
+    width: var(--pc-side-width) !important;
+    max-width: var(--pc-side-width) !important;
     margin: 0 !important;
     padding: 0 !important;
-
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-
     justify-self: center !important;
     align-self: start !important;
-
     box-sizing: border-box !important;
   }
 
-  .pc-what-slot .instruction-what-box {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 !important;
-    padding: 14px 12px !important;
-
-    background: #ffd3d3 !important;
-    color: var(--black) !important;
-
-    border: 4px solid var(--black) !important;
-    box-shadow: 5px 5px 0 var(--black) !important;
-
-    text-align: center !important;
-    box-sizing: border-box !important;
-
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-  }
-
-  .pc-what-slot .instruction-what-box h3 {
-    margin: 0 0 8px !important;
-    color: var(--black) !important;
-    font-size: 18px !important;
-    font-weight: bold !important;
-    line-height: 1.2 !important;
-  }
-
-  .pc-what-slot .instruction-what-box p {
-    margin: 0 !important;
-    color: var(--black) !important;
-    font-size: 15px !important;
-    font-weight: bold !important;
-    line-height: 1.35 !important;
-  }
-
-  /* LEFT BOTTOM: Result / History */
   main.has-instructions > .history,
   main.has-instructions > .age-history-box,
   main.has-instructions > .bmi-history-box,
@@ -524,105 +223,97 @@
   main.has-instructions > .compound-history-box {
     grid-column: 1 !important;
     grid-row: 2 !important;
-
-    width: 340px !important;
-    max-width: 340px !important;
-
+    width: var(--pc-side-width) !important;
+    max-width: var(--pc-side-width) !important;
+    min-height: 420px !important;
+    max-height: 520px !important;
     margin: 0 !important;
-
+    padding: 20px !important;
+    border: var(--pc-side-border) solid var(--black) !important;
+    box-shadow: var(--pc-side-shadow) !important;
+    transform: none !important;
     justify-self: center !important;
     align-self: start !important;
-
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
     box-sizing: border-box !important;
   }
 
-  /* CENTER: Calculator */
   main.has-instructions > .calculator {
     grid-column: 2 !important;
     grid-row: 1 / span 2 !important;
-
     width: 100% !important;
-    max-width: 780px !important;
-
+    max-width: var(--pc-center-max) !important;
     margin: 0 !important;
-
     justify-self: center !important;
     align-self: start !important;
-
     box-sizing: border-box !important;
   }
 
-  /* RIGHT: Instructions + References */
   main.has-instructions > .instruction-box {
     grid-column: 3 !important;
     grid-row: 1 / span 2 !important;
-
-    width: 340px !important;
-    max-width: 340px !important;
-
+    width: var(--pc-side-width) !important;
+    max-width: var(--pc-side-width) !important;
     margin: 0 !important;
     padding: 0 !important;
-
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-
     justify-self: center !important;
     align-self: start !important;
-
     box-sizing: border-box !important;
     overflow: visible !important;
   }
 
-  /* Hide What box if old code leaves it inside the right column */
   main.has-instructions > .instruction-box > .instruction-what-box {
     display: none !important;
   }
 
-  /* Titles: Instructions + References */
-  main.has-instructions .instruction-main-title,
-  main.has-instructions .reference-main-title,
-  main.has-instructions .instruction-box > h2,
-  main.has-instructions .reference-box > h2 {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 0 14px !important;
-    padding: 10px 12px !important;
-
-    background: var(--white) !important;
-    color: var(--black) !important;
-
-    border: 4px solid var(--black) !important;
-    box-shadow: 5px 5px 0 var(--black) !important;
-
-    font-size: 22px !important;
-    font-weight: bold !important;
-    line-height: 1.2 !important;
-    text-align: left !important;
-
-    box-sizing: border-box !important;
-  }
-
-  /* Right-side boxes */
+  main.has-instructions .pc-what-slot .instruction-what-box,
   main.has-instructions .instruction-box .instruction-section:not(.instruction-what-box),
   main.has-instructions .reference-card {
     width: 100% !important;
     max-width: 100% !important;
-
+    min-height: var(--pc-side-item-height) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
     margin: 0 0 16px !important;
     padding: 14px 12px !important;
-
     color: var(--black) !important;
-
-    border: 4px solid var(--black) !important;
-    box-shadow: 5px 5px 0 var(--black) !important;
-
+    border: var(--pc-side-border) solid var(--black) !important;
+    box-shadow: var(--pc-side-shadow) !important;
     text-align: center !important;
-
     box-sizing: border-box !important;
     overflow-wrap: break-word !important;
     word-break: break-word !important;
+  }
+
+  main.has-instructions .instruction-main-title,
+  main.has-instructions .reference-main-title,
+  main.has-instructions .reference-box > h2 {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: var(--pc-side-title-height) !important;
+    display: flex !important;
+    align-items: center !important;
+    margin: 0 0 16px !important;
+    padding: 10px 12px !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border: var(--pc-side-border) solid var(--black) !important;
+    box-shadow: var(--pc-side-shadow) !important;
+    font-size: 22px !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+    text-align: left !important;
+    box-sizing: border-box !important;
+  }
+
+  main.has-instructions .instruction-what-box {
+    background: #ffd3d3 !important;
   }
 
   main.has-instructions .instruction-how-box {
@@ -652,9 +343,7 @@
   main.has-instructions .instruction-section h3,
   main.has-instructions .reference-card h3 {
     margin: 0 0 7px !important;
-
     color: var(--black) !important;
-
     font-size: 18px !important;
     font-weight: bold !important;
     line-height: 1.2 !important;
@@ -663,9 +352,7 @@
   main.has-instructions .instruction-section p,
   main.has-instructions .reference-card p {
     margin: 0 !important;
-
     color: var(--black) !important;
-
     font-size: 15px !important;
     font-weight: bold !important;
     line-height: 1.35 !important;
@@ -674,14 +361,11 @@
   main.has-instructions .reference-box {
     width: 100% !important;
     max-width: 100% !important;
-
     margin: 0 !important;
     padding: 0 !important;
-
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-
     box-sizing: border-box !important;
     overflow: hidden !important;
   }
@@ -689,14 +373,10 @@
   main.has-instructions .reference-scroll {
     width: 100% !important;
     max-width: 100% !important;
-
     max-height: 360px !important;
-
     padding: 0 8px 8px 0 !important;
-
     overflow-y: auto !important;
     overflow-x: hidden !important;
-
     box-sizing: border-box !important;
   }
 
@@ -704,16 +384,12 @@
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-
     margin-top: 8px !important;
     padding: 6px 10px !important;
-
     background: var(--white) !important;
     color: var(--black) !important;
-
     border: 3px solid var(--black) !important;
     box-shadow: 3px 3px 0 var(--black) !important;
-
     font-size: 13px !important;
     font-weight: bold !important;
     text-decoration: none !important;
@@ -721,138 +397,5 @@
 
   main.has-instructions .reference-card a:hover {
     background: var(--yellow) !important;
-  }
-}
-/* =====================================================
-   PC FINAL: consistent side box sizes
-   Applies to What, Result/History, Instructions, Formula,
-   Example, and References side boxes
-===================================================== */
-@media (min-width: 851px) {
-  :root {
-    --pc-side-width: 340px;
-    --pc-side-border: 4px;
-    --pc-side-shadow: 5px 5px 0 var(--black);
-    --pc-side-item-min-height: 118px;
-  }
-
-  /* Keep left and right columns the same width */
-  main.has-instructions,
-  .calculator-container.has-instructions,
-  .age-calculator-container.has-instructions,
-  .bmi-calculator-container.has-instructions,
-  .discount-calculator-container.has-instructions,
-  .loan-calculator-container.has-instructions,
-  .percentage-calculator-container.has-instructions,
-  .compound-interest-container.has-instructions,
-  .compound-calculator-container.has-instructions {
-    grid-template-columns: var(--pc-side-width) minmax(620px, 780px) var(--pc-side-width) !important;
-  }
-
-  /* Left What box holder */
-  main.has-instructions > .pc-what-slot {
-    width: var(--pc-side-width) !important;
-    max-width: var(--pc-side-width) !important;
-  }
-
-  /* Left result/history boxes */
-  main.has-instructions > .history,
-  main.has-instructions > .age-history-box,
-  main.has-instructions > .bmi-history-box,
-  main.has-instructions > .discount-history-box,
-  main.has-instructions > .loan-history-box,
-  main.has-instructions > .percentage-history-box,
-  main.has-instructions > .compound-history-box {
-    width: var(--pc-side-width) !important;
-    max-width: var(--pc-side-width) !important;
-
-    border: var(--pc-side-border) solid var(--black) !important;
-    box-shadow: var(--pc-side-shadow) !important;
-
-    box-sizing: border-box !important;
-  }
-
-  /* Right instruction column */
-  main.has-instructions > .instruction-box {
-    width: var(--pc-side-width) !important;
-    max-width: var(--pc-side-width) !important;
-
-    box-sizing: border-box !important;
-  }
-
-  /* All small side content boxes */
-  main.has-instructions .pc-what-slot .instruction-what-box,
-  main.has-instructions .instruction-box .instruction-section:not(.instruction-what-box),
-  main.has-instructions .reference-card {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    min-height: var(--pc-side-item-min-height) !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    margin: 0 0 16px !important;
-    padding: 14px 12px !important;
-
-    border: var(--pc-side-border) solid var(--black) !important;
-    box-shadow: var(--pc-side-shadow) !important;
-
-    box-sizing: border-box !important;
-
-    text-align: center !important;
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-  }
-
-  /* Titles: Instructions and References */
-  main.has-instructions .instruction-main-title,
-  main.has-instructions .reference-main-title,
-  main.has-instructions .instruction-box > h2,
-  main.has-instructions .reference-box > h2 {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    min-height: 56px !important;
-
-    display: flex !important;
-    align-items: center !important;
-
-    margin: 0 0 16px !important;
-    padding: 10px 12px !important;
-
-    border: var(--pc-side-border) solid var(--black) !important;
-    box-shadow: var(--pc-side-shadow) !important;
-
-    box-sizing: border-box !important;
-  }
-
-  /* Reference scroll box same width and clean */
-  main.has-instructions .reference-box,
-  main.has-instructions .reference-scroll {
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-  }
-
-  main.has-instructions .reference-scroll {
-    max-height: 360px !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-  }
-
-  /* Consistent text sizes */
-  main.has-instructions .instruction-section h3,
-  main.has-instructions .reference-card h3 {
-    font-size: 18px !important;
-    line-height: 1.2 !important;
-  }
-
-  main.has-instructions .instruction-section p,
-  main.has-instructions .reference-card p {
-    font-size: 15px !important;
-    line-height: 1.35 !important;
   }
 }
