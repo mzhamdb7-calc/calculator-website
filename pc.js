@@ -616,3 +616,225 @@
     start();
   }
 })();
+/* =====================================================
+   PC ONLY: FINAL MENU ARROW + INDEX CARD HOVER FIX
+   - Side menu arrows change direction on hover/open
+   - Calculator/info menu auto expands on hover
+   - Health/finance submenu auto expands on hover
+   - Index health/finance cards auto expand on hover
+===================================================== */
+(function () {
+  "use strict";
+
+  const PC_QUERY = "(min-width: 851px)";
+
+  function isPc() {
+    return window.matchMedia(PC_QUERY).matches;
+  }
+
+  function closeOtherTopDropdowns(current) {
+    document.querySelectorAll("#navbar > .dropdown").forEach(function (dropdown) {
+      if (dropdown !== current) {
+        dropdown.classList.remove("pc-hover-open", "menu-open");
+
+        const button = dropdown.querySelector(":scope > .dropbtn");
+        if (button) button.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  function closeOtherNavGroups(current) {
+    document.querySelectorAll("#navbar .nav-group").forEach(function (group) {
+      if (group !== current) {
+        group.classList.remove("pc-sub-hover-open", "is-open");
+
+        if (group.tagName.toLowerCase() === "details") {
+          group.open = false;
+        }
+      }
+    });
+  }
+
+  function openTopDropdown(dropdown) {
+    if (!isPc()) return;
+
+    closeOtherTopDropdowns(dropdown);
+
+    dropdown.classList.add("pc-hover-open", "menu-open");
+
+    const button = dropdown.querySelector(":scope > .dropbtn");
+    if (button) button.setAttribute("aria-expanded", "true");
+  }
+
+  function closeTopDropdown(dropdown) {
+    if (!isPc()) return;
+
+    dropdown.classList.remove("pc-hover-open", "menu-open");
+
+    const button = dropdown.querySelector(":scope > .dropbtn");
+    if (button) button.setAttribute("aria-expanded", "false");
+
+    dropdown.querySelectorAll(".nav-group").forEach(function (group) {
+      group.classList.remove("pc-sub-hover-open", "is-open");
+
+      if (group.tagName.toLowerCase() === "details") {
+        group.open = false;
+      }
+    });
+  }
+
+  function openNavGroup(group) {
+    if (!isPc()) return;
+
+    closeOtherNavGroups(group);
+
+    group.classList.add("pc-sub-hover-open", "is-open");
+
+    if (group.tagName.toLowerCase() === "details") {
+      group.open = true;
+    }
+  }
+
+  function closeNavGroup(group) {
+    if (!isPc()) return;
+
+    group.classList.remove("pc-sub-hover-open", "is-open");
+
+    if (group.tagName.toLowerCase() === "details") {
+      group.open = false;
+    }
+  }
+
+  function setupNavbarHover() {
+    const navbar = document.getElementById("navbar");
+    if (!navbar) return;
+
+    navbar.querySelectorAll(":scope > .dropdown").forEach(function (dropdown) {
+      if (dropdown.dataset.pcFinalHoverReady === "true") return;
+      dropdown.dataset.pcFinalHoverReady = "true";
+
+      dropdown.addEventListener("mouseenter", function () {
+        openTopDropdown(dropdown);
+      });
+
+      dropdown.addEventListener("mouseleave", function () {
+        closeTopDropdown(dropdown);
+      });
+
+      dropdown.addEventListener("focusin", function () {
+        openTopDropdown(dropdown);
+      });
+
+      dropdown.addEventListener("focusout", function () {
+        setTimeout(function () {
+          if (!dropdown.contains(document.activeElement)) {
+            closeTopDropdown(dropdown);
+          }
+        }, 80);
+      });
+    });
+
+    navbar.querySelectorAll(".nav-group").forEach(function (group) {
+      if (group.dataset.pcFinalSubHoverReady === "true") return;
+      group.dataset.pcFinalSubHoverReady = "true";
+
+      group.addEventListener("mouseenter", function () {
+        openNavGroup(group);
+      });
+
+      group.addEventListener("mouseleave", function () {
+        closeNavGroup(group);
+      });
+
+      group.addEventListener("focusin", function () {
+        openNavGroup(group);
+      });
+
+      group.addEventListener("focusout", function () {
+        setTimeout(function () {
+          if (!group.contains(document.activeElement)) {
+            closeNavGroup(group);
+          }
+        }, 80);
+      });
+    });
+  }
+
+  function setupIndexCardHover() {
+    document.querySelectorAll(".calculator-box .group-card").forEach(function (card) {
+      if (card.dataset.pcCardHoverReady === "true") return;
+      card.dataset.pcCardHoverReady = "true";
+
+      card.addEventListener("mouseenter", function () {
+        if (!isPc()) return;
+
+        document.querySelectorAll(".calculator-box .group-card").forEach(function (other) {
+          if (other !== card && other.tagName.toLowerCase() === "details") {
+            other.open = false;
+          }
+        });
+
+        if (card.tagName.toLowerCase() === "details") {
+          card.open = true;
+        }
+
+        card.classList.add("pc-card-open");
+      });
+
+      card.addEventListener("mouseleave", function () {
+        if (!isPc()) return;
+
+        if (card.tagName.toLowerCase() === "details") {
+          card.open = false;
+        }
+
+        card.classList.remove("pc-card-open");
+      });
+
+      card.addEventListener("focusin", function () {
+        if (!isPc()) return;
+
+        if (card.tagName.toLowerCase() === "details") {
+          card.open = true;
+        }
+
+        card.classList.add("pc-card-open");
+      });
+
+      card.addEventListener("focusout", function () {
+        if (!isPc()) return;
+
+        setTimeout(function () {
+          if (!card.contains(document.activeElement)) {
+            if (card.tagName.toLowerCase() === "details") {
+              card.open = false;
+            }
+
+            card.classList.remove("pc-card-open");
+          }
+        }, 80);
+      });
+    });
+  }
+
+  function start() {
+    setupNavbarHover();
+    setupIndexCardHover();
+
+    window.addEventListener("resize", function () {
+      setupNavbarHover();
+      setupIndexCardHover();
+    });
+
+    setTimeout(setupNavbarHover, 200);
+    setTimeout(setupIndexCardHover, 200);
+    setTimeout(setupNavbarHover, 800);
+    setTimeout(setupIndexCardHover, 800);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();

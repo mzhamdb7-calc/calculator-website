@@ -824,3 +824,150 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     justify-content: flex-start !important;
   }
 }
+/* =====================================================
+   PC ONLY: FINAL MENU ARROW + INDEX CARD HOVER FIX
+===================================================== */
+@media (min-width: 851px) {
+  /* Top calculator/info arrows */
+  #navbar > .dropdown > .dropbtn::after {
+    content: "▼" !important;
+  }
+
+  #navbar > .dropdown:hover > .dropbtn::after,
+  #navbar > .dropdown:focus-within > .dropbtn::after,
+  #navbar > .dropdown.menu-open > .dropbtn::after,
+  #navbar > .dropdown.pc-hover-open > .dropbtn::after {
+    content: "▲" !important;
+  }
+
+  /* Health/finance arrows inside menu */
+  #navbar .dropdown-content > details.nav-group > summary::after,
+  #navbar .dropdown-content > .nav-group > summary::after {
+    content: "▼" !important;
+  }
+
+  #navbar .dropdown-content > details.nav-group:hover > summary::after,
+  #navbar .dropdown-content > details.nav-group:focus-within > summary::after,
+  #navbar .dropdown-content > details.nav-group[open] > summary::after,
+  #navbar .dropdown-content > details.nav-group.pc-sub-hover-open > summary::after,
+  #navbar .dropdown-content > .nav-group:hover > summary::after,
+  #navbar .dropdown-content > .nav-group:focus-within > summary::after,
+  #navbar .dropdown-content > .nav-group[open] > summary::after,
+  #navbar .dropdown-content > .nav-group.pc-sub-hover-open > summary::after,
+  #navbar .dropdown-content > .nav-group.is-open > summary::after {
+    content: "▲" !important;
+  }
+
+  /* Force dropdown open on hover/class */
+  #navbar > .dropdown:hover > .dropdown-content,
+  #navbar > .dropdown:focus-within > .dropdown-content,
+  #navbar > .dropdown.menu-open > .dropdown-content,
+  #navbar > .dropdown.pc-hover-open > .dropdown-content {
+    display: block !important;
+  }
+
+  #navbar .nav-group:hover > .nav-group-links,
+  #navbar .nav-group:focus-within > .nav-group-links,
+  #navbar .nav-group[open] > .nav-group-links,
+  #navbar .nav-group.pc-sub-hover-open > .nav-group-links,
+  #navbar .nav-group.is-open > .nav-group-links {
+    display: block !important;
+  }
+
+  /* Scrolled side menu arrows */
+  body.menu-scrolled #navbar.open > .dropdown > .dropbtn::after {
+    content: "▼" !important;
+  }
+
+  body.menu-scrolled #navbar.open > .dropdown:hover > .dropbtn::after,
+  body.menu-scrolled #navbar.open > .dropdown:focus-within > .dropbtn::after,
+  body.menu-scrolled #navbar.open > .dropdown.menu-open > .dropbtn::after,
+  body.menu-scrolled #navbar.open > .dropdown.pc-hover-open > .dropbtn::after {
+    content: "▲" !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group > summary::after {
+    content: "▼" !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group:hover > summary::after,
+  body.menu-scrolled #navbar.open .nav-group:focus-within > summary::after,
+  body.menu-scrolled #navbar.open .nav-group[open] > summary::after,
+  body.menu-scrolled #navbar.open .nav-group.pc-sub-hover-open > summary::after,
+  body.menu-scrolled #navbar.open .nav-group.is-open > summary::after {
+    content: "▲" !important;
+  }
+
+  body.menu-scrolled #navbar.open > .dropdown:hover > .dropdown-content,
+  body.menu-scrolled #navbar.open > .dropdown:focus-within > .dropdown-content,
+  body.menu-scrolled #navbar.open > .dropdown.menu-open > .dropdown-content,
+  body.menu-scrolled #navbar.open > .dropdown.pc-hover-open > .dropdown-content {
+    display: block !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-group:hover > .nav-group-links,
+  body.menu-scrolled #navbar.open .nav-group:focus-within > .nav-group-links,
+  body.menu-scrolled #navbar.open .nav-group[open] > .nav-group-links,
+  body.menu-scrolled #navbar.open .nav-group.pc-sub-hover-open > .nav-group-links,
+  body.menu-scrolled #navbar.open .nav-group.is-open > .nav-group-links {
+    display: block !important;
+  }
+
+  /* Index calculator cards auto expand on hover */
+  .calculator-box .group-card {
+    overflow: hidden !important;
+  }
+
+  .calculator-box .group-card:hover,
+  .calculator-box .group-card:focus-within,
+  .calculator-box .group-card[open],
+  .calculator-box .group-card.pc-card-open {
+    overflow: visible !important;
+    background: var(--yellow) !important;
+    transform: translate(-3px, -3px) rotate(-1deg) !important;
+    box-shadow: 9px 9px 0 var(--black) !important;
+  }
+
+  .calculator-box .group-card > summary::after {
+    content: " ▼" !important;
+  }
+
+  .calculator-box .group-card:hover > summary::after,
+  .calculator-box .group-card:focus-within > summary::after,
+  .calculator-box .group-card[open] > summary::after,
+  .calculator-box .group-card.pc-card-open > summary::after {
+    content: " ▲" !important;
+  }
+
+  .calculator-box .group-card > .group-links {
+    display: none !important;
+  }
+
+  .calculator-box .group-card:hover > .group-links,
+  .calculator-box .group-card:focus-within > .group-links,
+  .calculator-box .group-card[open] > .group-links,
+  .calculator-box .group-card.pc-card-open > .group-links {
+    display: block !important;
+  }
+
+  .calculator-box .group-links a {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    min-height: 55px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border-top: 4px solid var(--black) !important;
+
+    font-size: 24px !important;
+    font-weight: bold !important;
+    text-decoration: none !important;
+  }
+
+  .calculator-box .group-links a:hover {
+    background: var(--yellow) !important;
+  }
+}
