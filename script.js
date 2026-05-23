@@ -2438,3 +2438,308 @@
     startStableResultFix();
   }
 })();
+/* =====================================================
+   AGE CALCULATOR ONLY: result in bullet form
+   Replaces age result table with bullet list
+===================================================== */
+(function () {
+  "use strict";
+
+  const PANEL_ID = "stableBasicAgeOutput";
+
+  function isAgePage() {
+    return (
+      document.body.classList.contains("age-page") ||
+      document.body.dataset.page === "age" ||
+      !!document.getElementById("birthdate")
+    );
+  }
+
+  function todayValue() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+
+    return year + "-" + month + "-" + day;
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function getMain() {
+    return document.querySelector("main.pc-calculator-layout") || document.querySelector("main");
+  }
+
+  function getCalculator() {
+    const main = getMain();
+    return main ? main.querySelector(".calculator") : null;
+  }
+
+  function ensureDateToCalculateInput() {
+    const birthdate = document.getElementById("birthdate");
+    if (!birthdate) return null;
+
+    let target = document.getElementById("dateToCalculate");
+
+    if (!target) {
+      const label = document.createElement("label");
+      label.setAttribute("for", "dateToCalculate");
+      label.textContent = "Date to calculate:";
+
+      target = document.createElement("input");
+      target.type = "date";
+      target.id = "dateToCalculate";
+      target.setAttribute("aria-label", "Date to calculate");
+
+      birthdate.insertAdjacentElement("afterend", target);
+      target.insertAdjacentElement("beforebegin", label);
+    }
+
+    if (!target.value) {
+      target.value = todayValue();
+    }
+
+    return target;
+  }
+
+  function calculateNormalAge(birthdateValue, targetValue) {
+    const birth = new Date(birthdateValue + "T00:00:00");
+    const target = new Date(targetValue + "T00:00:00");
+
+    if (birth > target) return "";
+
+    let years = target.getFullYear() - birth.getFullYear();
+
+    const birthdayThisYear = new Date(
+      target.getFullYear(),
+      birth.getMonth(),
+      birth.getDate()
+    );
+
+    if (target < birthdayThisYear) {
+      years -= 1;
+    }
+
+    return years;
+  }
+
+  function calculateAsianAge(birthdateValue, targetValue) {
+    const birthYear = Number(birthdateValue.split("-")[0]);
+    const targetYear = Number(targetValue.split("-")[0]);
+
+    if (!birthYear || !targetYear || birthYear > targetYear) return "";
+
+    return targetYear - birthYear + 1;
+  }
+
+  function getOrCreateAgeBulletPanel() {
+    const calculator = getCalculator();
+    if (!calculator) return null;
+
+    let panel = document.getElementById(PANEL_ID);
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = PANEL_ID;
+      panel.className = "stable-result-output age-bullet-output";
+      panel.setAttribute("aria-label", "Age calculator result");
+
+      panel.innerHTML =
+        '<div class="stable-result-top">' +
+          '<div class="stable-result-panel">' +
+            '<h2 class="stable-result-title">Result</h2>' +
+            '<div class="stable-result-body"></div>' +
+          '</div>' +
+          '<div class="stable-copy-side">' +
+            '<button type="button" class="stable-copy-btn">Copy</button>' +
+          '</div>' +
+        '</div>';
+
+      calculator.insertAdjacentElement("afterend", panel);
+    }
+
+    panel.classList.add("age-bullet-output");
+
+    return panel;
+  }
+
+  function hideOldAgePanels() {
+    const oldPanel = document.getElementById("universalLoanStyleOutput");
+
+    if (oldPanel) {
+      oldPanel.hidden = true;
+      oldPanel.style.setProperty("display", "none", "important");
+    }
+
+    const result = document.getElementById("result") || document.getElementById("ageResult");
+
+    if (result) {
+      result.style.display = "none";
+    }
+  }
+
+  function copyText(text, button) {
+    if (!text) return;
+
+    function copied() {
+      const oldText = button.textContent;
+      button.textContent = "Copied!";
+
+      setTimeout(function () {
+        button.textContent = oldText;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(copied).catch(function () {
+        fallbackCopy(text);
+        copied();
+      });
+    } else {
+      fallbackCopy(text);
+      copied();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function renderAgeBulletResult() {
+    if (!isAgePage()) return;
+
+    document.body.classList.add("age-page", "stable-result-page");
+    document.body.dataset.page = "age";
+
+    const birthdateInput = document.getElementById("birthdate");
+    const targetInput = ensureDateToCalculateInput();
+    const panel = getOrCreateAgeBulletPanel();
+
+    if (!birthdateInput || !targetInput || !panel) return;
+
+    const birthdate = String(birthdateInput.value || "").trim();
+
+    if (!birthdate) {
+      panel.hidden = true;
+      return;
+    }
+
+    if (!targetInput.value) {
+      targetInput.value = todayValue();
+    }
+
+    const targetDate = String(targetInput.value || "").trim();
+
+    const normalAge = calculateNormalAge(birthdate, targetDate);
+    const asianAge = calculateAsianAge(birthdate, targetDate);
+
+    if (normalAge === "" || asianAge === "") {
+      panel.hidden = true;
+      return;
+    }
+
+    hideOldAgePanels();
+
+    const body = panel.querySelector(".stable-result-body");
+    if (!body) return;
+
+    body.innerHTML =
+      '<ul class="age-bullet-result">' +
+        '<li><strong>Birthdate:</strong> ' + escapeHtml(birthdate) + '</li>' +
+        '<li><strong>Date to calculate:</strong> ' + escapeHtml(targetDate) + '</li>' +
+        '<li><strong>Normal age:</strong> ' + normalAge + ' years old</li>' +
+        '<li><strong>Asian age:</strong> ' + asianAge + ' years old</li>' +
+      '</ul>';
+
+    panel.hidden = false;
+
+    const copyBtn = panel.querySelector(".stable-copy-btn");
+
+    if (copyBtn) {
+      copyBtn.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        copyText(
+          "• Birthdate: " + birthdate + "\n" +
+          "• Date to calculate: " + targetDate + "\n" +
+          "• Normal age: " + normalAge + " years old\n" +
+          "• Asian age: " + asianAge + " years old",
+          copyBtn
+        );
+      };
+    }
+  }
+
+  function startAgeBulletResult() {
+    if (!isAgePage()) return;
+
+    ensureDateToCalculateInput();
+
+    /*
+      This overrides older calculateAge code.
+      Important: remove old inline script from age-calculator.html if it still exists.
+    */
+    window.calculateAge = function () {
+      renderAgeBulletResult();
+    };
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (text.includes("calculate") || onclick.includes("calculateAge")) {
+          setTimeout(renderAgeBulletResult, 0);
+          setTimeout(renderAgeBulletResult, 200);
+          setTimeout(renderAgeBulletResult, 600);
+          setTimeout(renderAgeBulletResult, 1000);
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key === "Enter") {
+          setTimeout(renderAgeBulletResult, 0);
+          setTimeout(renderAgeBulletResult, 200);
+          setTimeout(renderAgeBulletResult, 600);
+        }
+      },
+      true
+    );
+
+    setTimeout(hideOldAgePanels, 300);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startAgeBulletResult);
+  } else {
+    startAgeBulletResult();
+  }
+})();

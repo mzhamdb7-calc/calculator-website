@@ -1736,3 +1736,50 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     background: #d3fff9 !important;
   }
 }
+/* =====================================================
+   PC ONLY: Age result bullet form
+===================================================== */
+@media (min-width: 851px) {
+  body.age-page #universalLoanStyleOutput {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  .age-bullet-output .loan-result-table,
+  .age-bullet-output .loan-result-table-scroll {
+    display: none !important;
+  }
+
+  .age-bullet-result {
+    width: 100% !important;
+    min-width: 700px !important;
+    min-height: 130px !important;
+
+    margin: 0 !important;
+    padding: 22px 34px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    list-style-position: outside !important;
+
+    font-size: 26px !important;
+    font-weight: bold !important;
+    line-height: 1.55 !important;
+
+    box-sizing: border-box !important;
+  }
+
+  .age-bullet-result li {
+    margin: 8px 0 !important;
+    text-align: left !important;
+  }
+
+  .age-bullet-result strong {
+    color: var(--black) !important;
+  }
+}
