@@ -373,14 +373,11 @@
 
         resultElement.textContent = resultText;
 
-        saveHistory(
-          "P=" + money(principal) +
-          ", r=" + annualRate + "%" +
-          ", t=" + years + " years" +
-          ", n=" + frequency +
-          " → A=" + money(futureValue) +
-          ", CI=" + money(compoundInterest)
-        );
+       saveHistory(
+  "Future Value: " + money(futureValue) +
+  " | Compound Interest: " + money(compoundInterest) +
+  " | Principal: " + money(principal)
+);
       }
 
       if (calculateButton) {
