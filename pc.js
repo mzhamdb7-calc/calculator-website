@@ -1970,3 +1970,340 @@
     startAgeRangeHistory();
   }
 })();
+/* =====================================================
+   PC ONLY: FORCE AGE INPUT HISTORY RANGE FORMAT
+   Final format: dd/mm/yyyy to dd/mm/yyyy
+   Overrides old ageHistory / showAgeHistory / inputHistory_age systems
+===================================================== */
+(function () {
+  "use strict";
+
+  const STORAGE_KEY = "ageInputRangeFinal";
+  const MAX_ITEMS = 50;
+
+  let rendering = false;
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function isAgePage() {
+    return (
+      document.body.classList.contains("age-page") ||
+      document.body.dataset.page === "age" ||
+      !!document.getElementById("birthdate")
+    );
+  }
+
+  function todayValue() {
+    const today = new Date();
+    const y = today.getFullYear();
+    const m = String(today.getMonth() + 1).padStart(2, "0");
+    const d = String(today.getDate()).padStart(2, "0");
+    return y + "-" + m + "-" + d;
+  }
+
+  function formatDDMMYYYY(value) {
+    if (!value) return "";
+
+    const parts = String(value).trim().split("-");
+
+    if (parts.length === 3) {
+      return parts[2] + "/" + parts[1] + "/" + parts[0];
+    }
+
+    return value;
+  }
+
+  function getValue(id) {
+    const el = document.getElementById(id);
+    return el ? String(el.value || "").trim() : "";
+  }
+
+  function getTargetDate() {
+    let target = document.getElementById("dateToCalculate");
+
+    if (!target) {
+      const birthdate = document.getElementById("birthdate");
+
+      if (birthdate) {
+        const label = document.createElement("label");
+        label.setAttribute("for", "dateToCalculate");
+        label.textContent = "Date to calculate:";
+
+        target = document.createElement("input");
+        target.type = "date";
+        target.id = "dateToCalculate";
+        target.setAttribute("aria-label", "Date to calculate");
+
+        birthdate.insertAdjacentElement("afterend", target);
+        target.insertAdjacentElement("beforebegin", label);
+      }
+    }
+
+    if (target && !target.value) {
+      target.value = todayValue();
+    }
+
+    return target ? String(target.value || "").trim() : todayValue();
+  }
+
+  function loadHistory() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      return Array.isArray(saved) ? saved : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveHistory(history) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(history.slice(-MAX_ITEMS)));
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function clearOldAgeHistoryStorage() {
+    localStorage.removeItem("ageHistory");
+    localStorage.removeItem("ageFastInputHistory");
+    localStorage.removeItem("inputHistory_age");
+    localStorage.removeItem("ageInputHistoryWithTargetDate");
+  }
+
+  function copyText(text, button) {
+    if (!text) return;
+
+    function done() {
+      const old = button.textContent;
+      button.textContent = "copied";
+
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done).catch(function () {
+        fallbackCopy(text);
+        done();
+      });
+    } else {
+      fallbackCopy(text);
+      done();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function renderFinalAgeInputHistory() {
+    if (!isPc() || !isAgePage()) return;
+
+    const list = document.getElementById("ageHistoryList");
+    if (!list) return;
+
+    rendering = true;
+
+    const history = loadHistory();
+
+    list.innerHTML = "";
+
+    history.slice().reverse().forEach(function (item) {
+      if (!item || !item.birthdate || !item.targetDate) return;
+
+      const displayText =
+        formatDDMMYYYY(item.birthdate) +
+        " to " +
+        formatDDMMYYYY(item.targetDate);
+
+      const li = document.createElement("li");
+      li.className = "history-item age-final-range-history-item";
+
+      const text = document.createElement("span");
+      text.className = "history-text";
+      text.textContent = displayText;
+
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "history-copy-btn";
+      copyBtn.textContent = "copy";
+
+      copyBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        copyText(displayText, copyBtn);
+      });
+
+      li.appendChild(text);
+      li.appendChild(copyBtn);
+      list.appendChild(li);
+    });
+
+    rendering = false;
+  }
+
+  function addFinalAgeInputHistory() {
+    if (!isPc() || !isAgePage()) return;
+
+    const birthdate = getValue("birthdate");
+    if (!birthdate) return;
+
+    const targetDate = getTargetDate();
+
+    clearOldAgeHistoryStorage();
+
+    const history = loadHistory();
+
+    const item = {
+      birthdate: birthdate,
+      targetDate: targetDate
+    };
+
+    const last = history[history.length - 1];
+
+    if (
+      !last ||
+      last.birthdate !== item.birthdate ||
+      last.targetDate !== item.targetDate
+    ) {
+      history.push(item);
+    }
+
+    saveHistory(history);
+    renderFinalAgeInputHistory();
+  }
+
+  function clearFinalAgeInputHistory() {
+    localStorage.removeItem(STORAGE_KEY);
+    clearOldAgeHistoryStorage();
+    renderFinalAgeInputHistory();
+  }
+
+  function renameAgeHistoryTitle() {
+    const title =
+      document.querySelector(".age-history-box .age-history-top h3") ||
+      document.querySelector(".age-history-box h3");
+
+    if (title) {
+      title.textContent = "Input";
+    }
+  }
+
+  function overrideOldGlobalAgeHistoryFunctions() {
+    window.showAgeHistory = renderFinalAgeInputHistory;
+
+    window.saveAgeHistory = function () {
+      addFinalAgeInputHistory();
+    };
+
+    window.clearAgeHistory = function () {
+      clearFinalAgeInputHistory();
+
+      const result = document.getElementById("result") || document.getElementById("ageResult");
+      if (result) result.innerText = "";
+    };
+  }
+
+  function watchOldHistoryRewrite() {
+    const list = document.getElementById("ageHistoryList");
+    if (!list || list.dataset.finalRangeObserverReady === "true") return;
+
+    list.dataset.finalRangeObserverReady = "true";
+
+    const observer = new MutationObserver(function () {
+      if (rendering) return;
+
+      const txt = list.textContent || "";
+
+      if (
+        txt.includes("Birthdate:") ||
+        txt.includes("Date to calculate:") ||
+        txt.includes("Normal age") ||
+        txt.includes("Asian age") ||
+        txt.includes("→")
+      ) {
+        setTimeout(renderFinalAgeInputHistory, 0);
+      }
+    });
+
+    observer.observe(list, {
+      childList: true,
+      subtree: true,
+      characterData: true
+    });
+  }
+
+  function startFinalAgeRangeHistory() {
+    if (!isPc() || !isAgePage()) return;
+
+    document.body.classList.add("age-page");
+    document.body.dataset.page = "age";
+
+    renameAgeHistoryTitle();
+    overrideOldGlobalAgeHistoryFunctions();
+    clearOldAgeHistoryStorage();
+    renderFinalAgeInputHistory();
+    watchOldHistoryRewrite();
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (text.includes("calculate") || onclick.includes("calculateAge")) {
+          setTimeout(addFinalAgeInputHistory, 0);
+          setTimeout(addFinalAgeInputHistory, 150);
+          setTimeout(addFinalAgeInputHistory, 400);
+          setTimeout(renderFinalAgeInputHistory, 800);
+          setTimeout(renderFinalAgeInputHistory, 1300);
+        }
+
+        if (text.includes("clear")) {
+          setTimeout(clearFinalAgeInputHistory, 0);
+          setTimeout(clearFinalAgeInputHistory, 150);
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key === "Enter") {
+          setTimeout(addFinalAgeInputHistory, 0);
+          setTimeout(addFinalAgeInputHistory, 200);
+          setTimeout(renderFinalAgeInputHistory, 700);
+        }
+      },
+      true
+    );
+
+    setTimeout(renderFinalAgeInputHistory, 300);
+    setTimeout(renderFinalAgeInputHistory, 1000);
+    setTimeout(renderFinalAgeInputHistory, 1600);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startFinalAgeRangeHistory);
+  } else {
+    startFinalAgeRangeHistory();
+  }
+})();
