@@ -3,21 +3,14 @@
   PC MODE ONLY
 */
 
-/* =====================================================
-   PC NAVBAR DROPDOWNS
-===================================================== */
 @media (min-width: 851px) {
-  #navbar,
-  #navbar > .dropdown,
-  #navbar .dropdown-content,
-  #navbar .dropdown-content > .nav-group,
-  #navbar .dropdown-content > .fixed-nav-group,
-  #navbar .dropdown-content > .navbar-fixed-group {
+  #navbar {
     overflow: visible !important;
   }
 
   #navbar > .dropdown {
     position: relative !important;
+    overflow: visible !important;
   }
 
   #navbar > .dropdown:hover > .dropdown-content,
@@ -27,16 +20,11 @@
   }
 
   #navbar .dropdown-content {
-    display: none !important;
-    position: absolute !important;
     top: 62px !important;
     left: -3px !important;
     right: auto !important;
     width: 250px !important;
-    background: var(--white) !important;
-    border: 3px solid var(--black) !important;
-    box-shadow: 5px 5px 0 var(--black) !important;
-    z-index: 9999999 !important;
+    overflow: visible !important;
   }
 
   #navbar .about-dropdown-content {
@@ -44,51 +32,11 @@
     right: -3px !important;
   }
 
-  #navbar .dropdown-content > a,
-  #navbar .dropdown-content > .nav-group > summary,
-  #navbar .dropdown-content > .fixed-nav-group > .nav-summary,
-  #navbar .dropdown-content > .navbar-fixed-group > .navbar-fixed-summary {
-    width: 100% !important;
-    height: 50px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 0 10px !important;
-    background: var(--white) !important;
-    color: var(--black) !important;
-    border: none !important;
-    border-bottom: 3px solid var(--black) !important;
-    box-shadow: none !important;
-    font-size: 20px !important;
-    font-weight: bold !important;
-    line-height: 1 !important;
-    text-align: center !important;
-    text-decoration: none !important;
-    cursor: pointer !important;
-    box-sizing: border-box !important;
-  }
-
-  #navbar .dropdown-content > a:hover,
-  #navbar .dropdown-content > .nav-group:hover > summary,
-  #navbar .dropdown-content > .fixed-nav-group:hover > .nav-summary,
-  #navbar .dropdown-content > .navbar-fixed-group:hover > .navbar-fixed-summary {
-    background: var(--yellow) !important;
-  }
-
-  #navbar .dropdown-content > *:last-child,
-  #navbar .dropdown-content > *:last-child > summary,
-  #navbar .dropdown-content > *:last-child > .nav-summary,
-  #navbar .dropdown-content > *:last-child > .navbar-fixed-summary {
-    border-bottom: none !important;
-  }
-
   #navbar .dropdown-content > .nav-group,
   #navbar .dropdown-content > .fixed-nav-group,
   #navbar .dropdown-content > .navbar-fixed-group {
     position: relative !important;
-    width: 100% !important;
-    height: 50px !important;
-    background: var(--white) !important;
+    overflow: visible !important;
   }
 
   #navbar .dropdown-content > .nav-group > .nav-group-links,
@@ -118,33 +66,19 @@
     display: block !important;
   }
 
-  #navbar .nav-group-links a {
-    width: 100% !important;
-    height: 47px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 0 10px !important;
-    background: var(--white) !important;
-    color: var(--black) !important;
-    border: none !important;
-    border-bottom: 3px solid var(--black) !important;
-    box-shadow: none !important;
-    font-size: 17px !important;
-    font-weight: bold !important;
-    line-height: 1 !important;
-    text-align: center !important;
-    text-decoration: none !important;
-  }
-
-  #navbar .nav-group-links a:hover {
+  #navbar .dropdown-content > .nav-group:hover > summary,
+  #navbar .dropdown-content > .nav-group:focus-within > summary,
+  #navbar .dropdown-content > .nav-group[open] > summary,
+  #navbar .dropdown-content > .fixed-nav-group:hover > .nav-summary,
+  #navbar .dropdown-content > .fixed-nav-group:focus-within > .nav-summary,
+  #navbar .dropdown-content > .fixed-nav-group.is-open > .nav-summary,
+  #navbar .dropdown-content > .navbar-fixed-group:hover > .navbar-fixed-summary,
+  #navbar .dropdown-content > .navbar-fixed-group:focus-within > .navbar-fixed-summary,
+  #navbar .dropdown-content > .navbar-fixed-group.is-open > .navbar-fixed-summary {
     background: var(--yellow) !important;
   }
 
-  #navbar .nav-group-links a:last-child {
-    border-bottom: none !important;
-  }
-
+  /* Remove old duplicate CSS arrows from health/finance */
   #navbar .dropdown-content details.nav-group > summary::after,
   #navbar .dropdown-content .nav-group > summary::after,
   #navbar .dropdown-content .fixed-nav-group > .nav-summary::after,
@@ -153,6 +87,7 @@
     display: none !important;
   }
 
+  /* Real JS arrow */
   #navbar .nav-menu-arrow {
     display: inline-block !important;
     margin-left: 8px !important;
@@ -167,7 +102,10 @@
 }
 
 /* =====================================================
-   PC FINAL: consistent side boxes on every instruction page
+   PC FINAL: keep only this instruction layout command
+   LEFT: What + Result/History
+   CENTER: Calculator
+   RIGHT: Instructions + References
 ===================================================== */
 @media (min-width: 851px) {
   :root {
@@ -211,7 +149,6 @@
     box-shadow: none !important;
     justify-self: center !important;
     align-self: start !important;
-    box-sizing: border-box !important;
   }
 
   main.has-instructions > .history,
@@ -262,8 +199,8 @@
     box-shadow: none !important;
     justify-self: center !important;
     align-self: start !important;
-    box-sizing: border-box !important;
     overflow: visible !important;
+    box-sizing: border-box !important;
   }
 
   main.has-instructions > .instruction-box > .instruction-what-box {
@@ -312,33 +249,13 @@
     box-sizing: border-box !important;
   }
 
-  main.has-instructions .instruction-what-box {
-    background: #ffd3d3 !important;
-  }
-
-  main.has-instructions .instruction-how-box {
-    background: #d3fff9 !important;
-  }
-
-  main.has-instructions .instruction-formula-box {
-    background: #fff4b8 !important;
-  }
-
-  main.has-instructions .instruction-example-box {
-    background: #d3ffd9 !important;
-  }
-
-  main.has-instructions .reference-card {
-    background: #d3fff9 !important;
-  }
-
-  main.has-instructions .reference-card:nth-child(2) {
-    background: #fff4b8 !important;
-  }
-
-  main.has-instructions .reference-card:nth-child(3) {
-    background: #d3ffd9 !important;
-  }
+  main.has-instructions .instruction-what-box { background: #ffd3d3 !important; }
+  main.has-instructions .instruction-how-box { background: #d3fff9 !important; }
+  main.has-instructions .instruction-formula-box { background: #fff4b8 !important; }
+  main.has-instructions .instruction-example-box { background: #d3ffd9 !important; }
+  main.has-instructions .reference-card { background: #d3fff9 !important; }
+  main.has-instructions .reference-card:nth-child(2) { background: #fff4b8 !important; }
+  main.has-instructions .reference-card:nth-child(3) { background: #d3ffd9 !important; }
 
   main.has-instructions .instruction-section h3,
   main.has-instructions .reference-card h3 {
@@ -366,8 +283,8 @@
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-    box-sizing: border-box !important;
     overflow: hidden !important;
+    box-sizing: border-box !important;
   }
 
   main.has-instructions .reference-scroll {
