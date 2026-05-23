@@ -1619,3 +1619,102 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 })();
 
+
+/* =====================================================
+   LATEST PC ORIENTATION FOR CALCULATOR PAGES ONLY
+   Excludes index/about/privacy/contact
+   LEFT: What + Result/History
+   CENTER: Calculator
+   RIGHT: Instructions + References
+===================================================== */
+(function () {
+  "use strict";
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function isExcludedPage(main) {
+    return (
+      main.classList.contains("calculator-box") ||
+      document.body.classList.contains("about-page") ||
+      document.body.classList.contains("privacy-page") ||
+      document.body.classList.contains("contact-page") ||
+      document.body.classList.contains("info-page")
+    );
+  }
+
+  function getLeftBox(main) {
+    return (
+      main.querySelector(":scope > .history") ||
+      main.querySelector(":scope > .age-history-box") ||
+      main.querySelector(":scope > .bmi-history-box") ||
+      main.querySelector(":scope > .discount-history-box") ||
+      main.querySelector(":scope > .loan-history-box") ||
+      main.querySelector(":scope > .percentage-history-box") ||
+      main.querySelector(":scope > .compound-history-box")
+    );
+  }
+
+  function syncPcOrientation() {
+    document.querySelectorAll("main.has-instructions").forEach(function (main) {
+      if (isExcludedPage(main)) return;
+
+      const instructionBox = main.querySelector(":scope > .instruction-box");
+      const leftBox = getLeftBox(main);
+
+      if (!instructionBox || !leftBox) return;
+
+      let whatBox =
+        main.querySelector(":scope > .pc-what-slot .instruction-what-box") ||
+        instructionBox.querySelector(":scope > .instruction-what-box");
+
+      if (!whatBox) return;
+
+      /* remove duplicate What boxes */
+      main.querySelectorAll(".instruction-what-box").forEach(function (box) {
+        if (box !== whatBox) {
+          box.remove();
+        }
+      });
+
+      let slot = main.querySelector(":scope > .pc-what-slot");
+
+      if (isPc()) {
+        if (!slot) {
+          slot = document.createElement("aside");
+          slot.className = "pc-what-slot";
+          slot.setAttribute("aria-label", "What this calculator does");
+          main.insertBefore(slot, leftBox);
+        }
+
+        if (!slot.contains(whatBox)) {
+          slot.appendChild(whatBox);
+        }
+      } else {
+        const title =
+          instructionBox.querySelector(":scope > .instruction-main-title") ||
+          instructionBox.querySelector(":scope > h2");
+
+        if (title && !instructionBox.contains(whatBox)) {
+          instructionBox.insertBefore(whatBox, title);
+        }
+
+        if (slot && slot.children.length === 0) {
+          slot.remove();
+        }
+      }
+    });
+  }
+
+  function start() {
+    syncPcOrientation();
+    window.addEventListener("resize", syncPcOrientation);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();

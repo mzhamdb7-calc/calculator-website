@@ -56,7 +56,297 @@
   #navbar .dropdown-content > .navbar-fixed-group > .navbar-fixed-summary::after {
     content: "▼" !important;
     display: inline-block !important;
-    margin-left: 8px !important;
+    margin-
+    /* =====================================================
+   LATEST PC ORIENTATION FOR CALCULATOR PAGES ONLY
+   Excludes index/about/privacy/contact
+===================================================== */
+@media (min-width: 851px) {
+  :root {
+    --pc-left-width: 340px;
+    --pc-center-width: 730px;
+    --pc-right-width: 340px;
+    --pc-gap: 35px;
+    --pc-border: 4px;
+    --pc-shadow: 5px 5px 0 var(--black);
+  }
+
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) {
+    width: 100% !important;
+    max-width: 1540px !important;
+
+    margin: 130px auto 80px !important;
+    padding: 16px 26px !important;
+
+    display: grid !important;
+    grid-template-columns: var(--pc-left-width) var(--pc-center-width) var(--pc-right-width) !important;
+    grid-template-rows: auto auto !important;
+
+    gap: 22px var(--pc-gap) !important;
+
+    justify-content: center !important;
+    align-items: start !important;
+
+    box-sizing: border-box !important;
+  }
+
+  /* LEFT TOP: What box */
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) > .pc-what-slot {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+
+    width: var(--pc-left-width) !important;
+    max-width: var(--pc-left-width) !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    justify-self: center !important;
+    align-self: start !important;
+  }
+
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) > .pc-what-slot .instruction-what-box {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-height: 105px !important;
+
+    margin: 0 !important;
+    padding: 14px 12px !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+
+    background: #ffd3d3 !important;
+    color: var(--black) !important;
+
+    border: var(--pc-border) solid var(--black) !important;
+    box-shadow: var(--pc-shadow) !important;
+
+    text-align: center !important;
+    box-sizing: border-box !important;
+  }
+
+  /* LEFT BOTTOM: Result / History */
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) > .history,
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) > .age-history-box,
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) > .bmi-history-box,
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) > .discount-history-box,
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) > .loan-history-box,
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) > .percentage-history-box,
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) > .compound-history-box {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+
+    width: var(--pc-left-width) !important;
+    max-width: var(--pc-left-width) !important;
+
+    min-height: 520px !important;
+    max-height: 520px !important;
+
+    margin: 0 !important;
+    padding: 20px !important;
+
+    background: var(--soft-yellow) !important;
+
+    border: var(--pc-border) solid var(--black) !important;
+    box-shadow: var(--pc-shadow) !important;
+    transform: none !important;
+
+    justify-self: center !important;
+    align-self: start !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    box-sizing: border-box !important;
+  }
+
+  /* CENTER: Calculator */
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) > .calculator {
+    grid-column: 2 !important;
+    grid-row: 1 / span 2 !important;
+
+    width: 100% !important;
+    max-width: var(--pc-center-width) !important;
+
+    margin: 0 !important;
+
+    justify-self: center !important;
+    align-self: start !important;
+
+    box-sizing: border-box !important;
+  }
+
+  /* RIGHT: Instructions / Formula / Example / References */
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) > .instruction-box {
+    grid-column: 3 !important;
+    grid-row: 1 / span 2 !important;
+
+    width: var(--pc-right-width) !important;
+    max-width: var(--pc-right-width) !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    justify-self: center !important;
+    align-self: start !important;
+
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  /* hide What if old code leaves it inside right column */
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) > .instruction-box > .instruction-what-box {
+    display: none !important;
+  }
+
+  /* Titles */
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) .instruction-main-title,
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) .reference-main-title,
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) .reference-box > h2 {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-height: 56px !important;
+
+    margin: 0 0 16px !important;
+    padding: 10px 12px !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: var(--pc-border) solid var(--black) !important;
+    box-shadow: var(--pc-shadow) !important;
+
+    font-size: 22px !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+    text-align: left !important;
+
+    box-sizing: border-box !important;
+  }
+
+  /* Right-side item boxes */
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) .instruction-box .instruction-section:not(.instruction-what-box),
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) .reference-card {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-height: 118px !important;
+
+    margin: 0 0 16px !important;
+    padding: 14px 12px !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    color: var(--black) !important;
+
+    border: var(--pc-border) solid var(--black) !important;
+    box-shadow: var(--pc-shadow) !important;
+
+    text-align: center !important;
+    box-sizing: border-box !important;
+
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+  }
+
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) .instruction-how-box {
+    background: #d3fff9 !important;
+  }
+
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) .instruction-formula-box {
+    background: #fff4b8 !important;
+  }
+
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) .instruction-example-box {
+    background: #d3ffd9 !important;
+  }
+
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) .reference-card {
+    background: #d3fff9 !important;
+  }
+
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) .reference-card:nth-child(2) {
+    background: #fff4b8 !important;
+  }
+
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) .reference-card:nth-child(3) {
+    background: #d3ffd9 !important;
+  }
+
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) .reference-box {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  body:not(.about-page):not(.privacy-page):not(.contact-page):not(.info-page)
+  main.has-instructions:not(.calculator-box) .reference-scroll {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    max-height: 360px !important;
+
+    padding: 0 8px 8px 0 !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    box-sizing: border-box !important;
+  }
+}: 8px !important;
     color: var(--black) !important;
     font-size: 14px !important;
     font-weight: bold !important;
