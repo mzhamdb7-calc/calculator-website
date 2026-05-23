@@ -2952,3 +2952,10 @@
 .basic-input-output-item strong {
   color: var(--black) !important;
 }
+/* =====================================================
+   BASIC CALCULATOR: input equation history style
+===================================================== */
+.basic-equation-history-item .history-text {
+  line-height: 1.45 !important;
+  font-weight: bold !important;
+}

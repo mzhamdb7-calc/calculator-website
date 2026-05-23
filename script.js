@@ -4427,3 +4427,231 @@ document.addEventListener("DOMContentLoaded", function () {
     startBasicInputOutputHistory();
   }
 })();
+
+/* =====================================================
+   BASIC CALCULATOR ONLY: history shows input equation
+   Example:
+   Equation: 8+2
+===================================================== */
+(function () {
+  "use strict";
+
+  const STORAGE_KEY = "basicEquationHistory";
+  const MAX_ITEMS = 50;
+
+  let lastEquationBeforeCalculate = "";
+  let rendering = false;
+
+  function isBasicPage() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    return title.includes("basic") || !!document.getElementById("display");
+  }
+
+  function getDisplayValue() {
+    const display = document.getElementById("display");
+    return display ? String(display.value || "").trim() : "";
+  }
+
+  function loadEquationHistory() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      return Array.isArray(saved) ? saved : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveEquationHistory(history) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(history.slice(-MAX_ITEMS)));
+  }
+
+  function copyText(text, button) {
+    if (!text) return;
+
+    function done() {
+      const old = button.textContent;
+      button.textContent = "copied";
+
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done).catch(function () {
+        fallbackCopy(text);
+        done();
+      });
+    } else {
+      fallbackCopy(text);
+      done();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function renderEquationHistory() {
+    if (!isBasicPage()) return;
+
+    const list = document.getElementById("historyList");
+    if (!list) return;
+
+    rendering = true;
+
+    const history = loadEquationHistory();
+
+    list.innerHTML = "";
+
+    history.slice().reverse().forEach(function (equation) {
+      const li = document.createElement("li");
+      li.className = "history-item basic-equation-history-item";
+
+      const text = document.createElement("span");
+      text.className = "history-text";
+      text.textContent = "Equation: " + equation;
+
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "history-copy-btn";
+      copyBtn.textContent = "copy";
+
+      copyBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        copyText(equation, copyBtn);
+      });
+
+      li.appendChild(text);
+      li.appendChild(copyBtn);
+      list.appendChild(li);
+    });
+
+    rendering = false;
+  }
+
+  function addEquationHistory(equation) {
+    if (!equation || equation === "Error") return;
+
+    const history = loadEquationHistory();
+    const last = history[history.length - 1];
+
+    if (last !== equation) {
+      history.push(equation);
+    }
+
+    saveEquationHistory(history);
+    renderEquationHistory();
+  }
+
+  function captureEquation() {
+    const equation = getDisplayValue();
+
+    if (equation && equation !== "Error") {
+      lastEquationBeforeCalculate = equation;
+    }
+  }
+
+  function saveCapturedEquation() {
+    addEquationHistory(lastEquationBeforeCalculate);
+  }
+
+  function clearEquationHistory() {
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem("calcHistory");
+    localStorage.removeItem("basicInputOutputHistory");
+
+    renderEquationHistory();
+  }
+
+  function renameHistoryTitle() {
+    const title = document.querySelector(".history h3");
+
+    if (title) {
+      title.textContent = "Input Equation";
+    }
+  }
+
+  function startBasicEquationHistory() {
+    if (!isBasicPage()) return;
+
+    renameHistoryTitle();
+    renderEquationHistory();
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+
+        if (text === "=") {
+          captureEquation();
+
+          setTimeout(saveCapturedEquation, 0);
+          setTimeout(saveCapturedEquation, 120);
+          setTimeout(renderEquationHistory, 300);
+          setTimeout(renderEquationHistory, 700);
+        }
+
+        if (text.includes("clear")) {
+          setTimeout(clearEquationHistory, 0);
+          setTimeout(clearEquationHistory, 120);
+          setTimeout(clearEquationHistory, 300);
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key === "Enter" || event.key === "=") {
+          captureEquation();
+
+          setTimeout(saveCapturedEquation, 0);
+          setTimeout(saveCapturedEquation, 120);
+          setTimeout(renderEquationHistory, 300);
+          setTimeout(renderEquationHistory, 700);
+        }
+      },
+      true
+    );
+
+    const list = document.getElementById("historyList");
+
+    if (list) {
+      const observer = new MutationObserver(function () {
+        if (rendering) return;
+
+        setTimeout(renderEquationHistory, 50);
+      });
+
+      observer.observe(list, {
+        childList: true
+      });
+    }
+
+    setTimeout(renderEquationHistory, 300);
+    setTimeout(renderEquationHistory, 1000);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startBasicEquationHistory);
+  } else {
+    startBasicEquationHistory();
+  }
+})();
