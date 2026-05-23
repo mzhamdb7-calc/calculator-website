@@ -1801,3 +1801,16 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     text-align: center !important;
   }
 }
+/* =====================================================
+   PC ONLY: Age input history birthdate + target date style
+===================================================== */
+@media (min-width: 851px) {
+  .age-input-target-history-item .history-text {
+    line-height: 1.45 !important;
+    font-weight: bold !important;
+  }
+
+  .age-input-target-history-item strong {
+    color: var(--black) !important;
+  }
+}
