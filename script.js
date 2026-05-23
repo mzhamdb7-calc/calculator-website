@@ -4187,3 +4187,391 @@
     startBmiCorrectUnits();
   }
 })();
+/* =====================================================
+   BMI CALCULATOR: USE SI/US BUTTON AS UNIT INDICATOR
+   - Reads #unitToggleBtn
+   - If current mode is SI: kg / cm
+   - If current mode is US: lb / in
+   - Fixes wrong US unit in BMI input history
+===================================================== */
+(function () {
+  "use strict";
+
+  const HISTORY_KEY = "bmiInputHistoryOnlyFinal";
+  const MAX_ITEMS = 50;
+
+  function isBmiPage() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    return (
+      document.body.classList.contains("bmi-page") ||
+      document.body.dataset.page === "bmi" ||
+      title.includes("bmi") ||
+      !!document.getElementById("bmiHistoryList")
+    );
+  }
+
+  function getValue(id) {
+    const el = document.getElementById(id);
+    return el ? String(el.value || "").trim() : "";
+  }
+
+  function getNumber(ids) {
+    for (const id of ids) {
+      const raw = getValue(id).replace(/,/g, "");
+      const num = Number(raw);
+
+      if (Number.isFinite(num)) return num;
+    }
+
+    return NaN;
+  }
+
+  function getButtonText() {
+    const btn = document.getElementById("unitToggleBtn");
+    if (!btn) return "";
+
+    return (
+      btn.textContent + " " +
+      btn.value + " " +
+      (btn.dataset.unit || "") + " " +
+      (btn.dataset.currentUnit || "") + " " +
+      (btn.getAttribute("aria-label") || "")
+    ).toLowerCase();
+  }
+
+  function getCurrentBmiUnit() {
+    const btn = document.getElementById("unitToggleBtn");
+
+    if (btn) {
+      const text = getButtonText();
+
+      /*
+        If your button shows CURRENT mode:
+        SI = SI mode
+        US = US mode
+      */
+      if (text.trim() === "si" || text.includes("current si") || text.includes("mode si")) {
+        return "SI";
+      }
+
+      if (text.trim() === "us" || text.includes("current us") || text.includes("mode us")) {
+        return "US";
+      }
+
+      /*
+        If your button says "Switch to US",
+        current mode is SI.
+      */
+      if (text.includes("switch to us") || text.includes("change to us")) {
+        return "SI";
+      }
+
+      /*
+        If your button says "Switch to SI",
+        current mode is US.
+      */
+      if (text.includes("switch to si") || text.includes("change to si")) {
+        return "US";
+      }
+
+      /*
+        If button contains only one clear unit word.
+      */
+      if (text.includes("si") && !text.includes("us")) {
+        return "SI";
+      }
+
+      if (text.includes("us") && !text.includes("si")) {
+        return "US";
+      }
+
+      /*
+        Class fallback.
+      */
+      if (
+        btn.classList.contains("si") ||
+        btn.classList.contains("si-mode") ||
+        btn.classList.contains("metric")
+      ) {
+        return "SI";
+      }
+
+      if (
+        btn.classList.contains("us") ||
+        btn.classList.contains("us-mode") ||
+        btn.classList.contains("imperial")
+      ) {
+        return "US";
+      }
+    }
+
+    /*
+      Body fallback.
+    */
+    if (
+      document.body.classList.contains("us-unit") ||
+      document.body.classList.contains("us-mode") ||
+      document.body.dataset.bmiUnit === "us"
+    ) {
+      return "US";
+    }
+
+    return "SI";
+  }
+
+  function getUnits() {
+    const currentUnit = getCurrentBmiUnit();
+
+    if (currentUnit === "US") {
+      return {
+        unit: "US",
+        weightUnit: "lb",
+        heightUnit: "in",
+        waistUnit: "in"
+      };
+    }
+
+    return {
+      unit: "SI",
+      weightUnit: "kg",
+      heightUnit: "cm",
+      waistUnit: "cm"
+    };
+  }
+
+  function loadHistory() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+      return Array.isArray(saved) ? saved : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveHistory(history) {
+    try {
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-MAX_ITEMS)));
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function copyText(text, button) {
+    if (!text) return;
+
+    function copied() {
+      const old = button.textContent;
+      button.textContent = "copied";
+
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(copied).catch(function () {
+        fallbackCopy(text);
+        copied();
+      });
+    } else {
+      fallbackCopy(text);
+      copied();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function normalizeItem(item) {
+    const units = getUnits();
+
+    return {
+      weight: item && item.weight ? item.weight : "-",
+      height: item && item.height ? item.height : "-",
+      waist: item && item.waist ? item.waist : "-",
+      unit: item && item.unit && item.unit !== "undefined" ? item.unit : units.unit,
+      weightUnit: item && item.weightUnit && item.weightUnit !== "undefined" ? item.weightUnit : units.weightUnit,
+      heightUnit: item && item.heightUnit && item.heightUnit !== "undefined" ? item.heightUnit : units.heightUnit,
+      waistUnit: item && item.waistUnit && item.waistUnit !== "undefined" ? item.waistUnit : units.waistUnit
+    };
+  }
+
+  function renderBmiHistoryUsingButtonUnit() {
+    if (!isBmiPage()) return;
+
+    const list = document.getElementById("bmiHistoryList");
+    if (!list) return;
+
+    const title =
+      document.querySelector(".bmi-history-box .bmi-history-top h3") ||
+      document.querySelector(".bmi-history-box h3");
+
+    if (title) {
+      title.textContent = "Input";
+    }
+
+    const history = loadHistory().map(normalizeItem);
+    saveHistory(history);
+
+    list.innerHTML = "";
+
+    history.slice().reverse().forEach(function (item) {
+      const waistLine =
+        item.waist && item.waist !== "-"
+          ? "<br><strong>Waist:</strong> " + item.waist + " " + item.waistUnit
+          : "";
+
+      const copyValue =
+        "Weight: " + item.weight + " " + item.weightUnit + "\n" +
+        "Height: " + item.height + " " + item.heightUnit + "\n" +
+        (item.waist && item.waist !== "-"
+          ? "Waist: " + item.waist + " " + item.waistUnit + "\n"
+          : "") +
+        "Unit: " + item.unit;
+
+      const li = document.createElement("li");
+      li.className = "history-item bmi-input-unit-history-item";
+
+      const text = document.createElement("span");
+      text.className = "history-text";
+      text.innerHTML =
+        "<strong>Weight:</strong> " + item.weight + " " + item.weightUnit + "<br>" +
+        "<strong>Height:</strong> " + item.height + " " + item.heightUnit +
+        waistLine + "<br>" +
+        "<strong>Unit:</strong> " + item.unit;
+
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "history-copy-btn";
+      copyBtn.textContent = "copy";
+
+      copyBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        copyText(copyValue, copyBtn);
+      });
+
+      li.appendChild(text);
+      li.appendChild(copyBtn);
+      list.appendChild(li);
+    });
+  }
+
+  function addBmiHistoryUsingButtonUnit() {
+    if (!isBmiPage()) return;
+
+    const weight = getNumber(["weight", "bmiWeight"]);
+    const height = getNumber(["height", "bmiHeight"]);
+    const waist = getNumber(["waist", "waistSize", "bmiWaist"]);
+
+    if (
+      !Number.isFinite(weight) ||
+      !Number.isFinite(height) ||
+      weight <= 0 ||
+      height <= 0
+    ) {
+      return;
+    }
+
+    const units = getUnits();
+
+    const item = {
+      weight: String(weight),
+      height: String(height),
+      waist: Number.isFinite(waist) && waist > 0 ? String(waist) : "-",
+      unit: units.unit,
+      weightUnit: units.weightUnit,
+      heightUnit: units.heightUnit,
+      waistUnit: units.waistUnit
+    };
+
+    const history = loadHistory();
+    const last = history[history.length - 1];
+
+    if (
+      !last ||
+      last.weight !== item.weight ||
+      last.height !== item.height ||
+      last.waist !== item.waist ||
+      last.unit !== item.unit
+    ) {
+      history.push(item);
+    }
+
+    saveHistory(history);
+    renderBmiHistoryUsingButtonUnit();
+  }
+
+  function clearBmiHistoryUsingButtonUnit() {
+    localStorage.removeItem(HISTORY_KEY);
+    localStorage.removeItem("bmiHistory");
+    localStorage.removeItem("inputHistory_bmi");
+
+    renderBmiHistoryUsingButtonUnit();
+  }
+
+  function startBmiButtonUnitHistory() {
+    if (!isBmiPage()) return;
+
+    document.body.classList.add("bmi-page");
+    document.body.dataset.page = "bmi";
+
+    window.clearBMIHistory = clearBmiHistoryUsingButtonUnit;
+    window.clearBmiHistory = clearBmiHistoryUsingButtonUnit;
+
+    renderBmiHistoryUsingButtonUnit();
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (
+          text.includes("calculate") ||
+          onclick.includes("calculateBMI")
+        ) {
+          setTimeout(addBmiHistoryUsingButtonUnit, 0);
+          setTimeout(addBmiHistoryUsingButtonUnit, 200);
+          setTimeout(renderBmiHistoryUsingButtonUnit, 600);
+        }
+
+        if (button.id === "unitToggleBtn") {
+          setTimeout(renderBmiHistoryUsingButtonUnit, 100);
+          setTimeout(renderBmiHistoryUsingButtonUnit, 400);
+        }
+
+        if (text.includes("clear")) {
+          setTimeout(clearBmiHistoryUsingButtonUnit, 0);
+        }
+      },
+      true
+    );
+
+    setTimeout(renderBmiHistoryUsingButtonUnit, 500);
+    setTimeout(renderBmiHistoryUsingButtonUnit, 1200);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startBmiButtonUnitHistory);
+  } else {
+    startBmiButtonUnitHistory();
+  }
+})();
