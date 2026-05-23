@@ -1861,3 +1861,196 @@
     startAgeDateToCalculate();
   }
 })();
+/* =====================================================
+   BASIC CALCULATOR ONLY: result shows "= answer"
+   No table for basic calculator result
+===================================================== */
+(function () {
+  "use strict";
+
+  function isBasicPage() {
+    return (
+      document.body.classList.contains("basic-page") ||
+      document.body.dataset.page === "basic" ||
+      !!document.getElementById("display")
+    );
+  }
+
+  function getAnswer() {
+    const display = document.getElementById("display");
+    return display ? String(display.value || "").trim() : "";
+  }
+
+  function getOrCreateBasicResultPanel() {
+    const main =
+      document.querySelector("main.pc-calculator-layout") ||
+      document.querySelector("main");
+
+    const calculator = main ? main.querySelector(".calculator") : null;
+
+    if (!main || !calculator) return null;
+
+    let panel = document.getElementById("universalLoanStyleOutput");
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = "universalLoanStyleOutput";
+      panel.className = "loan-style-output-panel basic-equal-output-panel";
+      panel.setAttribute("aria-label", "Basic calculator result");
+
+      panel.innerHTML = `
+        <div class="loan-output-top">
+          <div class="loan-result-panel">
+            <h2 class="loan-panel-title">Result</h2>
+            <div class="loan-result-body"></div>
+          </div>
+
+          <div class="loan-copy-side">
+            <button type="button" class="loan-copy-btn">Copy</button>
+          </div>
+        </div>
+      `;
+
+      calculator.insertAdjacentElement("afterend", panel);
+    }
+
+    panel.classList.add("basic-equal-output-panel");
+
+    return panel;
+  }
+
+  function renderBasicEqualAnswer() {
+    if (!isBasicPage()) return;
+
+    const answer = getAnswer();
+    const panel = getOrCreateBasicResultPanel();
+
+    if (!panel) return;
+
+    if (!answer || answer === "Error") {
+      panel.hidden = true;
+      return;
+    }
+
+    const body = panel.querySelector(".loan-result-body");
+    if (!body) return;
+
+    body.innerHTML = `
+      <div class="basic-equal-result">
+        <span class="basic-equal-symbol">=</span>
+        <span class="basic-equal-answer">${answer}</span>
+      </div>
+    `;
+
+    panel.hidden = false;
+  }
+
+  function copyBasicAnswer(button) {
+    const answer = getAnswer();
+
+    if (!answer || answer === "Error") return;
+
+    function copied() {
+      const oldText = button.textContent;
+      button.textContent = "Copied!";
+
+      setTimeout(function () {
+        button.textContent = oldText;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(answer).then(copied).catch(function () {
+        fallbackCopy(answer);
+        copied();
+      });
+    } else {
+      fallbackCopy(answer);
+      copied();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function fixBasicCopyButton() {
+    if (!isBasicPage()) return;
+
+    const panel = document.getElementById("universalLoanStyleOutput");
+    if (!panel) return;
+
+    const button = panel.querySelector(".loan-copy-btn");
+    if (!button || button.dataset.basicEqualNoTableCopyReady === "true") return;
+
+    button.dataset.basicEqualNoTableCopyReady = "true";
+
+    button.addEventListener(
+      "click",
+      function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        copyBasicAnswer(button);
+      },
+      true
+    );
+  }
+
+  function afterCalculate() {
+    setTimeout(renderBasicEqualAnswer, 0);
+    setTimeout(renderBasicEqualAnswer, 150);
+    setTimeout(renderBasicEqualAnswer, 400);
+    setTimeout(fixBasicCopyButton, 450);
+  }
+
+  function startBasicEqualNoTable() {
+    if (!isBasicPage()) return;
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim();
+
+        if (text === "=") {
+          afterCalculate();
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key === "Enter" || event.key === "=") {
+          afterCalculate();
+        }
+      },
+      true
+    );
+
+    setTimeout(fixBasicCopyButton, 500);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startBasicEqualNoTable);
+  } else {
+    startBasicEqualNoTable();
+  }
+})();
