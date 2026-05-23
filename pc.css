@@ -2147,3 +2147,79 @@
     justify-content: flex-start !important;
   }
 }
+/* =====================================================
+   PC ONLY: restore ? symbol after loan-style layout
+===================================================== */
+@media (min-width: 851px) {
+  main.pc-calculator-layout {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  main.pc-calculator-layout > .pc-question-toggle {
+    display: flex !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+
+    position: absolute !important;
+    top: 16px !important;
+    right: 16px !important;
+
+    width: 58px !important;
+    height: 58px !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: #ff9fcb !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 6px 6px 0 var(--black) !important;
+
+    font-family: inherit !important;
+    font-size: 30px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    cursor: pointer !important;
+    z-index: 999999999 !important;
+  }
+
+  main.pc-calculator-layout > .pc-question-toggle:hover,
+  main.pc-calculator-layout.pc-help-open > .pc-question-toggle {
+    background: var(--yellow) !important;
+  }
+
+  main.pc-calculator-layout:not(.pc-help-open) > .instruction-box {
+    display: none !important;
+  }
+
+  main.pc-calculator-layout.pc-help-open > .instruction-box {
+    display: block !important;
+
+    position: fixed !important;
+    top: 110px !important;
+    right: 90px !important;
+
+    width: min(520px, calc(100vw - 120px)) !important;
+    max-height: calc(100vh - 140px) !important;
+
+    margin: 0 !important;
+    padding: 20px !important;
+
+    background: var(--white) !important;
+
+    border: 5px solid var(--black) !important;
+    box-shadow: 9px 9px 0 var(--black) !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    z-index: 999999998 !important;
+    box-sizing: border-box !important;
+  }
+}

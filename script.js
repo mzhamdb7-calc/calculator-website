@@ -2467,3 +2467,77 @@ document.addEventListener("DOMContentLoaded", function () {
     startUniversalLoanStyle();
   }
 })();
+/* =====================================================
+   PC ONLY: restore ? help button
+   Opens instructions/references, closes on second click
+===================================================== */
+(function () {
+  "use strict";
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function isExcludedPage() {
+    return (
+      document.body.classList.contains("index-page") ||
+      document.body.classList.contains("about-page") ||
+      document.body.classList.contains("privacy-page") ||
+      document.body.classList.contains("contact-page") ||
+      document.body.classList.contains("info-page")
+    );
+  }
+
+  function setupQuestionButton() {
+    if (!isPc() || isExcludedPage()) return;
+
+    const main = document.querySelector("main.pc-calculator-layout");
+    if (!main) return;
+
+    const instructionBox = main.querySelector(":scope > .instruction-box");
+    if (!instructionBox) return;
+
+    let button = main.querySelector(":scope > .pc-question-toggle");
+
+    if (!button) {
+      button = document.createElement("button");
+      button.type = "button";
+      button.className = "pc-question-toggle";
+      button.textContent = "?";
+      button.setAttribute("aria-label", "Open instructions and references");
+      button.setAttribute("aria-expanded", "false");
+
+      main.appendChild(button);
+    }
+
+    if (button.dataset.restoreQuestionReady === "true") return;
+
+    button.dataset.restoreQuestionReady = "true";
+
+    button.addEventListener("click", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const willOpen = !main.classList.contains("pc-help-open");
+
+      main.classList.toggle("pc-help-open", willOpen);
+      button.setAttribute("aria-expanded", willOpen ? "true" : "false");
+    });
+  }
+
+  function start() {
+    setupQuestionButton();
+
+    window.addEventListener("resize", setupQuestionButton);
+
+    setTimeout(setupQuestionButton, 200);
+    setTimeout(setupQuestionButton, 700);
+    setTimeout(setupQuestionButton, 1200);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
