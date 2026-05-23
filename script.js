@@ -2149,3 +2149,310 @@ document.addEventListener("DOMContentLoaded", function () {
     startLoanYearTable();
   }
 })();
+/* =====================================================
+   LOAN PAGE: result table + graph below calculator
+   PC layout: table and graph outside calculator box
+===================================================== */
+(function () {
+  "use strict";
+
+  function isLoanPage() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.toLowerCase() : "";
+
+    return (
+      title.includes("loan") ||
+      document.body.classList.contains("loan-page") ||
+      !!document.getElementById("loanResult")
+    );
+  }
+
+  function cleanNumber(value) {
+    return Number(String(value || "").replace(/,/g, "").trim());
+  }
+
+  function money(value) {
+    return Number(value).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function findInputByLabel(pattern) {
+    const labels = Array.from(document.querySelectorAll("label"));
+
+    for (const label of labels) {
+      if (!pattern.test(label.textContent || "")) continue;
+
+      const id = label.getAttribute("for");
+
+      if (id) {
+        const input = document.getElementById(id);
+        if (input) return input;
+      }
+
+      const next = label.nextElementSibling;
+      if (next && /input|select/i.test(next.tagName)) return next;
+    }
+
+    return null;
+  }
+
+  function findLoanInputs() {
+    return {
+      amountInput:
+        document.getElementById("loanAmount") ||
+        document.getElementById("amount") ||
+        document.getElementById("principal") ||
+        document.getElementById("loanPrincipal") ||
+        findInputByLabel(/loan amount|amount|principal/i),
+
+      rateInput:
+        document.getElementById("loanRate") ||
+        document.getElementById("interestRate") ||
+        document.getElementById("annualRate") ||
+        document.getElementById("rate") ||
+        findInputByLabel(/interest|rate/i),
+
+      yearsInput:
+        document.getElementById("loanYears") ||
+        document.getElementById("years") ||
+        document.getElementById("loanTerm") ||
+        document.getElementById("term") ||
+        findInputByLabel(/year|term|period/i)
+    };
+  }
+
+  function calculateMonthlyPayment(principal, annualRate, years) {
+    const months = years * 12;
+    const monthlyRate = annualRate / 100 / 12;
+
+    if (monthlyRate === 0) {
+      return principal / months;
+    }
+
+    return (
+      principal *
+      monthlyRate *
+      Math.pow(1 + monthlyRate, months)
+    ) / (
+      Math.pow(1 + monthlyRate, months) - 1
+    );
+  }
+
+  function getLoanOutputPanel() {
+    const calculator = document.querySelector(".calculator");
+    if (!calculator) return null;
+
+    let panel = document.getElementById("loanOutputPanel");
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = "loanOutputPanel";
+      panel.className = "loan-output-panel";
+      panel.setAttribute("aria-label", "Loan result table and graph");
+
+      calculator.insertAdjacentElement("afterend", panel);
+    }
+
+    return panel;
+  }
+
+  function buildGraph(data) {
+    if (!data.length) return "";
+
+    const width = 360;
+    const height = 240;
+    const paddingLeft = 46;
+    const paddingRight = 22;
+    const paddingTop = 26;
+    const paddingBottom = 46;
+
+    const minYear = data[0].year;
+    const maxYear = data[data.length - 1].year;
+
+    const values = data.map(function (row) {
+      return row.monthly;
+    });
+
+    const minValue = Math.min.apply(null, values);
+    const maxValue = Math.max.apply(null, values);
+
+    const safeValueRange = maxValue - minValue || 1;
+    const safeYearRange = maxYear - minYear || 1;
+
+    function x(year) {
+      return paddingLeft + ((year - minYear) / safeYearRange) * (width - paddingLeft - paddingRight);
+    }
+
+    function y(value) {
+      return paddingTop + ((maxValue - value) / safeValueRange) * (height - paddingTop - paddingBottom);
+    }
+
+    const points = data.map(function (row) {
+      return x(row.year) + "," + y(row.monthly);
+    }).join(" ");
+
+    const circles = data.map(function (row) {
+      return `
+        <circle cx="${x(row.year)}" cy="${y(row.monthly)}" r="5"></circle>
+      `;
+    }).join("");
+
+    const yearLabels = data.map(function (row) {
+      if (data.length > 12 && row.year % 5 !== 0 && row.year !== minYear && row.year !== maxYear) {
+        return "";
+      }
+
+      return `
+        <text x="${x(row.year)}" y="${height - 18}" transform="rotate(-45 ${x(row.year)} ${height - 18})">
+          ${row.year}
+        </text>
+      `;
+    }).join("");
+
+    const gridLines = [0, 0.25, 0.5, 0.75, 1].map(function (step) {
+      const gridY = paddingTop + step * (height - paddingTop - paddingBottom);
+      const value = maxValue - step * safeValueRange;
+
+      return `
+        <line x1="${paddingLeft}" y1="${gridY}" x2="${width - paddingRight}" y2="${gridY}" class="loan-graph-grid"></line>
+        <text x="8" y="${gridY + 5}" class="loan-graph-value">${money(value)}</text>
+      `;
+    }).join("");
+
+    return `
+      <div class="loan-graph-box">
+        <h3>Monthly Payment Graph</h3>
+
+        <svg class="loan-graph" viewBox="0 0 ${width} ${height}" role="img" aria-label="Monthly payment by years graph">
+          ${gridLines}
+
+          <line x1="${paddingLeft}" y1="${height - paddingBottom}" x2="${width - paddingRight + 12}" y2="${height - paddingBottom}" class="loan-graph-axis"></line>
+          <line x1="${paddingLeft}" y1="${height - paddingBottom}" x2="${paddingLeft}" y2="${paddingTop - 14}" class="loan-graph-axis"></line>
+
+          <polyline points="${points}" class="loan-graph-line"></polyline>
+
+          ${circles}
+          ${yearLabels}
+        </svg>
+      </div>
+    `;
+  }
+
+  function renderLoanOutput() {
+    if (!isLoanPage()) return;
+
+    const panel = getLoanOutputPanel();
+    if (!panel) return;
+
+    const inputs = findLoanInputs();
+
+    if (!inputs.amountInput || !inputs.rateInput || !inputs.yearsInput) {
+      panel.innerHTML = "";
+      return;
+    }
+
+    const principal = cleanNumber(inputs.amountInput.value);
+    const annualRate = cleanNumber(inputs.rateInput.value);
+    const inputYears = cleanNumber(inputs.yearsInput.value);
+
+    if (
+      !Number.isFinite(principal) ||
+      !Number.isFinite(annualRate) ||
+      !Number.isFinite(inputYears) ||
+      principal <= 0 ||
+      annualRate < 0 ||
+      inputYears <= 0
+    ) {
+      panel.innerHTML = "";
+      return;
+    }
+
+    const maxYears = Math.min(Math.floor(inputYears), 60);
+    const data = [];
+
+    for (let year = 1; year <= maxYears; year += 1) {
+      const monthly = calculateMonthlyPayment(principal, annualRate, year);
+      const totalPayment = monthly * year * 12;
+      const totalInterest = totalPayment - principal;
+
+      data.push({
+        year,
+        monthly,
+        totalInterest,
+        totalPayment
+      });
+    }
+
+    const rows = data.map(function (row) {
+      return `
+        <tr>
+          <td>${row.year}</td>
+          <td>${money(row.monthly)}</td>
+          <td>${money(row.totalInterest)}</td>
+          <td>${money(row.totalPayment)}</td>
+        </tr>
+      `;
+    }).join("");
+
+    panel.innerHTML = `
+      <div class="loan-result-table-box">
+        <h3>Result</h3>
+
+        <div class="loan-result-table-scroll">
+          <table class="loan-result-table">
+            <thead>
+              <tr>
+                <th>Years</th>
+                <th>Monthly Payment</th>
+                <th>Total Interest</th>
+                <th>Total Payment</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              ${rows}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      ${buildGraph(data)}
+    `;
+  }
+
+  function startLoanOutput() {
+    if (!isLoanPage()) return;
+
+    const calculator = document.querySelector(".calculator");
+    if (!calculator) return;
+
+    calculator.addEventListener("click", function (event) {
+      const button = event.target.closest("button");
+      if (!button) return;
+
+      const text = button.textContent.toLowerCase();
+
+      if (text.includes("calculate") || text.includes("loan")) {
+        setTimeout(renderLoanOutput, 0);
+        setTimeout(renderLoanOutput, 120);
+      }
+    });
+
+    calculator.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        setTimeout(renderLoanOutput, 0);
+        setTimeout(renderLoanOutput, 120);
+      }
+    });
+
+    renderLoanOutput();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startLoanOutput);
+  } else {
+    startLoanOutput();
+  }
+})();
