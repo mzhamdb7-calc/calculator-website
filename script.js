@@ -2839,15 +2839,18 @@
   };
 })();
 /* =====================================================
-   BMI CALCULATOR: INPUT HISTORY + POINT RESULT FORM
-   - History title = Input
-   - History removes BMI / BMI status / W/H ratio / condition
-   - Result box uses bullet/point form
+   BMI CALCULATOR: FINAL CLEAN UNIT + HISTORY + RESULT FIX
+   - Uses the SI/US toggle button state
+   - Stops guessing US from height > 3
+   - History box shows input only with correct units
+   - Result box shows point form:
+     BMI / BMI status / W/H ratio / Condition
 ===================================================== */
 (function () {
   "use strict";
 
-  const HISTORY_KEY = "bmiInputHistoryOnlyFinal";
+  const HISTORY_KEY = "bmiInputHistoryFinalCleanV2";
+  const UNIT_KEY = "bmiCurrentUnitFinalCleanV2";
   const MAX_ITEMS = 50;
   const PANEL_ID = "stableBmiOutput";
 
@@ -2859,6 +2862,7 @@
       document.body.classList.contains("bmi-page") ||
       document.body.dataset.page === "bmi" ||
       title.includes("bmi") ||
+      !!document.getElementById("bmiHistoryList") ||
       !!document.getElementById("bmiResult")
     );
   }
@@ -2870,112 +2874,357 @@
 
   function getNumber(ids) {
     for (const id of ids) {
-      const value = getValue(id).replace(/,/g, "");
-      const num = Number(value);
+      const raw = getValue(id).replace(/,/g, "");
+      const num = Number(raw);
 
-      if (Number.isFinite(num)) {
-        return num;
-      }
+      if (Number.isFinite(num)) return num;
     }
 
     return NaN;
   }
 
-  function getText(ids) {
-    for (const id of ids) {
-      const value = getValue(id);
+  function cleanUnit(value) {
+    const text = String(value || "").trim().toUpperCase();
 
-      if (value) return value;
+    if (text === "US" || text === "IMPERIAL") return "US";
+    if (text === "SI" || text === "METRIC") return "SI";
+
+    return "";
+  }
+
+  function getSavedUnit() {
+    try {
+      return localStorage.getItem(UNIT_KEY) === "US" ? "US" : "SI";
+    } catch {
+      return "SI";
+    }
+  }
+
+  function saveUnit(unit) {
+    const clean = unit === "US" ? "US" : "SI";
+
+    try {
+      localStorage.setItem(UNIT_KEY, clean);
+    } catch {
+      /* ignore */
+    }
+
+    document.body.dataset.bmiUnit = clean.toLowerCase();
+
+    const btn = document.getElementById("unitToggleBtn");
+    if (btn) {
+      btn.dataset.currentUnit = clean;
+    }
+
+    return clean;
+  }
+
+  function getLabelTextForInput(id) {
+    const input = document.getElementById(id);
+    if (!input) return "";
+
+    const label =
+      document.querySelector('label[for="' + id + '"]') ||
+      input.closest("label");
+
+    const placeholder = input.getAttribute("placeholder") || "";
+
+    return (
+      (label ? label.textContent : "") + " " +
+      placeholder + " " +
+      input.name + " " +
+      input.id
+    ).toLowerCase();
+  }
+
+  function readUnitFromLabels() {
+    const text = (
+      getLabelTextForInput("weight") + " " +
+      getLabelTextForInput("bmiWeight") + " " +
+      getLabelTextForInput("height") + " " +
+      getLabelTextForInput("bmiHeight") + " " +
+      getLabelTextForInput("waist") + " " +
+      getLabelTextForInput("waistSize") + " " +
+      getLabelTextForInput("bmiWaist")
+    ).toLowerCase();
+
+    if (
+      text.includes("lb") ||
+      text.includes("lbs") ||
+      text.includes("inch") ||
+      text.includes("(in") ||
+      text.includes(" in)")
+    ) {
+      return "US";
+    }
+
+    if (
+      text.includes("kg") ||
+      text.includes("cm") ||
+      text.includes("meter") ||
+      text.includes("metre") ||
+      text.includes("(m") ||
+      text.includes(" m)")
+    ) {
+      return "SI";
     }
 
     return "";
   }
 
-  function getUnitText() {
-    const unit =
-      getText(["unit", "bmiUnit", "bmiUnits", "unitSelect"]) ||
-      document.body.dataset.bmiUnit ||
-      "";
+  function readUnitFromControls() {
+    const selectors = [
+      "#unit",
+      "#bmiUnit",
+      "#bmiUnits",
+      "#unitSelect",
+      "select[name='unit']",
+      "select[name='bmiUnit']",
+      "input[name='unit']:checked",
+      "input[name='bmiUnit']:checked"
+    ];
 
-    return unit.toLowerCase();
+    for (const selector of selectors) {
+      const el = document.querySelector(selector);
+      if (!el) continue;
+
+      let text = "";
+
+      if (el.tagName && el.tagName.toLowerCase() === "select") {
+        const option = el.options[el.selectedIndex];
+        text = (
+          el.value + " " +
+          (option ? option.textContent : "")
+        ).toLowerCase();
+      } else {
+        text = (
+          el.value + " " +
+          (el.dataset.unit || "") + " " +
+          (el.dataset.currentUnit || "")
+        ).toLowerCase();
+      }
+
+      if (
+        text.includes("us") ||
+        text.includes("imperial") ||
+        text.includes("lb") ||
+        text.includes("inch")
+      ) {
+        return "US";
+      }
+
+      if (
+        text.includes("si") ||
+        text.includes("metric") ||
+        text.includes("kg") ||
+        text.includes("cm") ||
+        text.includes("meter") ||
+        text.includes("metre")
+      ) {
+        return "SI";
+      }
+    }
+
+    return "";
   }
 
-  function isUsUnit(weight, height) {
-    const unit = getUnitText();
+  function readUnitFromBody() {
+    const data = cleanUnit(document.body.dataset.bmiUnit);
+    if (data) return data;
 
+    if (
+      document.body.classList.contains("us-unit") ||
+      document.body.classList.contains("us-mode") ||
+      document.body.classList.contains("imperial-unit")
+    ) {
+      return "US";
+    }
+
+    if (
+      document.body.classList.contains("si-unit") ||
+      document.body.classList.contains("si-mode") ||
+      document.body.classList.contains("metric-unit")
+    ) {
+      return "SI";
+    }
+
+    return "";
+  }
+
+  function readUnitFromButtonAsCurrent() {
+    const btn = document.getElementById("unitToggleBtn");
+    if (!btn) return "";
+
+    const fromData =
+      cleanUnit(btn.dataset.currentUnit) ||
+      cleanUnit(btn.dataset.unit) ||
+      cleanUnit(btn.value);
+
+    if (fromData) return fromData;
+
+    const text = String(btn.textContent || "").trim().toLowerCase();
+
+    if (text === "si" || text === "metric" || text === "si unit") return "SI";
+    if (text === "us" || text === "imperial" || text === "us unit") return "US";
+
+    if (text.includes("current si") || text.includes("si mode")) return "SI";
+    if (text.includes("current us") || text.includes("us mode")) return "US";
+
+    /*
+      If the button says "switch to US", it means the CURRENT mode is SI.
+      If the button says "switch to SI", it means the CURRENT mode is US.
+    */
+    if (text.includes("switch to us") || text.includes("change to us")) return "SI";
+    if (text.includes("switch to si") || text.includes("change to si")) return "US";
+
+    return "";
+  }
+
+  function detectCurrentUnit() {
+    /*
+      Priority:
+      1. Labels/inputs after the page updates
+      2. Real controls/selects/radios
+      3. Body dataset/class
+      4. SI/US button
+      5. Saved state
+      6. Default SI
+    */
     return (
-      unit.includes("us") ||
-      unit.includes("imperial") ||
-      unit.includes("lb") ||
-      unit.includes("inch") ||
-      height > 3
+      readUnitFromLabels() ||
+      readUnitFromControls() ||
+      readUnitFromBody() ||
+      readUnitFromButtonAsCurrent() ||
+      getSavedUnit() ||
+      "SI"
     );
   }
 
-  function calculateBmiStatus(bmi) {
+  function syncUnitFromPage() {
+    return saveUnit(detectCurrentUnit());
+  }
+
+  function flipSavedUnit() {
+    return saveUnit(getSavedUnit() === "US" ? "SI" : "US");
+  }
+
+  function syncAfterUnitButtonClick() {
+    const before = getSavedUnit();
+
+    setTimeout(function () {
+      const detected = detectCurrentUnit();
+
+      /*
+        If the page gives a clear unit after the click, use it.
+        If not, toggle the saved state once.
+      */
+      if (detected && detected !== before) {
+        saveUnit(detected);
+      } else if (!readUnitFromLabels() && !readUnitFromControls() && !readUnitFromBody()) {
+        flipSavedUnit();
+      } else {
+        saveUnit(detected || before);
+      }
+
+      renderBmiHistory();
+    }, 120);
+  }
+
+  function getUnitsForCurrentMode(weight, height, waist) {
+    const unit = getSavedUnit();
+
+    if (unit === "US") {
+      return {
+        unit: "US",
+        weightUnit: "lb",
+        heightUnit: "in",
+        waistUnit: "in",
+        weightForBmi: weight,
+        heightForBmi: height,
+        waistForRatio: waist,
+        heightForRatio: height
+      };
+    }
+
+    const heightUnit = height > 3 ? "cm" : "m";
+    const waistUnit = Number.isFinite(waist) && waist > 3 ? "cm" : "m";
+
+    const heightMeters = heightUnit === "cm" ? height / 100 : height;
+    const waistMeters =
+      Number.isFinite(waist) && waist > 0
+        ? (waistUnit === "cm" ? waist / 100 : waist)
+        : NaN;
+
+    return {
+      unit: "SI",
+      weightUnit: "kg",
+      heightUnit: heightUnit,
+      waistUnit: waistUnit,
+      weightForBmi: weight,
+      heightForBmi: heightMeters,
+      waistForRatio: waistMeters,
+      heightForRatio: heightMeters
+    };
+  }
+
+  function bmiStatus(bmi) {
     if (bmi < 18.5) return "Underweight";
     if (bmi < 25) return "Normal";
     if (bmi < 30) return "Overweight";
     return "Obese";
   }
 
-  function calculateWhCondition(ratio) {
+  function whCondition(ratio) {
     if (!Number.isFinite(ratio)) return "-";
-
     if (ratio < 0.4) return "Very low";
     if (ratio < 0.5) return "Healthy";
     if (ratio < 0.6) return "Moderate risk";
     return "High risk";
   }
 
-  function getBmiInputs() {
+  function getBmiData() {
+    syncUnitFromPage();
+
     const weight = getNumber(["weight", "bmiWeight"]);
     const height = getNumber(["height", "bmiHeight"]);
     const waist = getNumber(["waist", "waistSize", "bmiWaist"]);
+
+    if (
+      !Number.isFinite(weight) ||
+      !Number.isFinite(height) ||
+      weight <= 0 ||
+      height <= 0
+    ) {
+      return null;
+    }
+
+    const units = getUnitsForCurrentMode(weight, height, waist);
+
+    let bmi;
+
+    if (units.unit === "US") {
+      bmi = 703 * weight / (height * height);
+    } else {
+      bmi = weight / (units.heightForBmi * units.heightForBmi);
+    }
+
+    const ratio =
+      Number.isFinite(waist) && waist > 0
+        ? units.waistForRatio / units.heightForRatio
+        : NaN;
 
     return {
       weight: weight,
       height: height,
       waist: waist,
-      usUnit: isUsUnit(weight, height)
-    };
-  }
-
-  function calculateBmiData() {
-    const data = getBmiInputs();
-
-    if (
-      !Number.isFinite(data.weight) ||
-      !Number.isFinite(data.height) ||
-      data.weight <= 0 ||
-      data.height <= 0
-    ) {
-      return null;
-    }
-
-    let bmi;
-
-    if (data.usUnit) {
-      bmi = 703 * data.weight / (data.height * data.height);
-    } else {
-      bmi = data.weight / (data.height * data.height);
-    }
-
-    let whRatio = NaN;
-
-    if (Number.isFinite(data.waist) && data.waist > 0) {
-      whRatio = data.waist / data.height;
-    }
-
-    return {
-      weight: data.weight,
-      height: data.height,
-      waist: data.waist,
-      unitLabel: data.usUnit ? "US" : "SI",
+      unit: units.unit,
+      weightUnit: units.weightUnit,
+      heightUnit: units.heightUnit,
+      waistUnit: units.waistUnit,
       bmi: bmi,
-      bmiStatus: calculateBmiStatus(bmi),
-      whRatio: whRatio,
-      condition: calculateWhCondition(whRatio)
+      bmiStatus: bmiStatus(bmi),
+      whRatio: ratio,
+      condition: whCondition(ratio)
     };
   }
 
@@ -2996,10 +3245,10 @@
     }
   }
 
-  function copyText(text, button) {
+  function copyTextFinal(text, button) {
     if (!text) return;
 
-    function done() {
+    function copied() {
       const old = button.textContent;
       button.textContent = "copied";
 
@@ -3009,17 +3258,17 @@
     }
 
     if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(done).catch(function () {
-        fallbackCopy(text);
-        done();
+      navigator.clipboard.writeText(text).then(copied).catch(function () {
+        fallbackCopyFinal(text);
+        copied();
       });
     } else {
-      fallbackCopy(text);
-      done();
+      fallbackCopyFinal(text);
+      copied();
     }
   }
 
-  function fallbackCopy(text) {
+  function fallbackCopyFinal(text) {
     const textarea = document.createElement("textarea");
 
     textarea.value = text;
@@ -3035,7 +3284,7 @@
     textarea.remove();
   }
 
-  function renameHistoryTitle() {
+  function renameBmiHistoryTitle() {
     const title =
       document.querySelector(".bmi-history-box .bmi-history-top h3") ||
       document.querySelector(".bmi-history-box h3");
@@ -3045,37 +3294,41 @@
     }
   }
 
-  function renderBmiInputHistory() {
+  function renderBmiHistory() {
     if (!isBmiPage()) return;
 
     const list = document.getElementById("bmiHistoryList");
     if (!list) return;
+
+    renameBmiHistoryTitle();
 
     const history = loadHistory();
 
     list.innerHTML = "";
 
     history.slice().reverse().forEach(function (item) {
-      const waistText =
+      const waistLine =
         item.waist && item.waist !== "-"
-          ? "<br><strong>Waist:</strong> " + item.waist
+          ? "<br><strong>Waist:</strong> " + item.waist + " " + item.waistUnit
           : "";
 
       const copyValue =
-        "Weight: " + item.weight + "\n" +
-        "Height: " + item.height + "\n" +
-        (item.waist && item.waist !== "-" ? "Waist: " + item.waist + "\n" : "") +
+        "Weight: " + item.weight + " " + item.weightUnit + "\n" +
+        "Height: " + item.height + " " + item.heightUnit + "\n" +
+        (item.waist && item.waist !== "-"
+          ? "Waist: " + item.waist + " " + item.waistUnit + "\n"
+          : "") +
         "Unit: " + item.unit;
 
       const li = document.createElement("li");
-      li.className = "history-item bmi-input-only-history-item";
+      li.className = "history-item bmi-input-unit-history-item";
 
       const text = document.createElement("span");
       text.className = "history-text";
       text.innerHTML =
-        "<strong>Weight:</strong> " + item.weight + "<br>" +
-        "<strong>Height:</strong> " + item.height +
-        waistText + "<br>" +
+        "<strong>Weight:</strong> " + item.weight + " " + item.weightUnit + "<br>" +
+        "<strong>Height:</strong> " + item.height + " " + item.heightUnit +
+        waistLine + "<br>" +
         "<strong>Unit:</strong> " + item.unit;
 
       const copyBtn = document.createElement("button");
@@ -3085,7 +3338,7 @@
 
       copyBtn.addEventListener("click", function (event) {
         event.stopPropagation();
-        copyText(copyValue, copyBtn);
+        copyTextFinal(copyValue, copyBtn);
       });
 
       li.appendChild(text);
@@ -3094,18 +3347,20 @@
     });
   }
 
-  function addBmiInputHistory(data) {
+  function addBmiHistory(data) {
     if (!data) return;
-
-    const history = loadHistory();
 
     const item = {
       weight: String(data.weight),
       height: String(data.height),
-      waist: Number.isFinite(data.waist) ? String(data.waist) : "-",
-      unit: data.unitLabel
+      waist: Number.isFinite(data.waist) && data.waist > 0 ? String(data.waist) : "-",
+      unit: data.unit,
+      weightUnit: data.weightUnit,
+      heightUnit: data.heightUnit,
+      waistUnit: data.waistUnit
     };
 
+    const history = loadHistory();
     const last = history[history.length - 1];
 
     if (
@@ -3119,21 +3374,7 @@
     }
 
     saveHistory(history);
-    renderBmiInputHistory();
-  }
-
-  function clearBmiInputHistory() {
-    localStorage.removeItem(HISTORY_KEY);
-    localStorage.removeItem("bmiHistory");
-    localStorage.removeItem("inputHistory_bmi");
-
-    renderBmiInputHistory();
-
-    const panel = document.getElementById(PANEL_ID);
-    if (panel) panel.hidden = true;
-
-    const oldPanel = document.getElementById("universalLoanStyleOutput");
-    if (oldPanel) oldPanel.hidden = true;
+    renderBmiHistory();
   }
 
   function getMain() {
@@ -3145,7 +3386,7 @@
     return main ? main.querySelector(".calculator") : null;
   }
 
-  function getOrCreateBmiResultPanel() {
+  function getOrCreateResultPanel() {
     const calculator = getCalculator();
     if (!calculator) return null;
 
@@ -3174,11 +3415,11 @@
     return panel;
   }
 
-  function hideOldBmiResult() {
-    const result = document.getElementById("bmiResult") || document.getElementById("result");
+  function hideOldResultPanels() {
+    const oldResult = document.getElementById("bmiResult") || document.getElementById("result");
 
-    if (result) {
-      result.style.display = "none";
+    if (oldResult) {
+      oldResult.style.display = "none";
     }
 
     const oldPanel = document.getElementById("universalLoanStyleOutput");
@@ -3189,29 +3430,25 @@
     }
   }
 
-  function renderBmiPointResult(data) {
-    if (!data) return;
-
-    const panel = getOrCreateBmiResultPanel();
-    if (!panel) return;
+  function renderBmiResult(data) {
+    const panel = getOrCreateResultPanel();
+    if (!panel || !data) return;
 
     const body = panel.querySelector(".stable-result-body");
     if (!body) return;
 
-    const whRatioText = Number.isFinite(data.whRatio)
-      ? data.whRatio.toFixed(2)
-      : "-";
+    const ratioText = Number.isFinite(data.whRatio) ? data.whRatio.toFixed(2) : "-";
 
     body.innerHTML =
       '<ul class="bmi-point-result">' +
         '<li><strong>BMI:</strong> ' + data.bmi.toFixed(2) + '</li>' +
         '<li><strong>BMI status:</strong> ' + data.bmiStatus + '</li>' +
-        '<li><strong>W/H ratio:</strong> ' + whRatioText + '</li>' +
+        '<li><strong>W/H ratio:</strong> ' + ratioText + '</li>' +
         '<li><strong>Condition:</strong> ' + data.condition + '</li>' +
       '</ul>';
 
     panel.hidden = false;
-    hideOldBmiResult();
+    hideOldResultPanels();
 
     const copyBtn = panel.querySelector(".stable-copy-btn");
 
@@ -3220,10 +3457,10 @@
         event.preventDefault();
         event.stopPropagation();
 
-        copyText(
+        copyTextFinal(
           "• BMI: " + data.bmi.toFixed(2) + "\n" +
           "• BMI status: " + data.bmiStatus + "\n" +
-          "• W/H ratio: " + whRatioText + "\n" +
+          "• W/H ratio: " + ratioText + "\n" +
           "• Condition: " + data.condition,
           copyBtn
         );
@@ -3237,1303 +3474,82 @@
     document.body.classList.add("bmi-page");
     document.body.dataset.page = "bmi";
 
-    renameHistoryTitle();
-
-    const data = calculateBmiData();
-    const result = document.getElementById("bmiResult") || document.getElementById("result");
+    const data = getBmiData();
+    const oldResult = document.getElementById("bmiResult") || document.getElementById("result");
 
     if (!data) {
-      if (result) {
-        result.style.display = "block";
-        result.innerText = "Please enter valid weight and height.";
-      }
-
       const panel = document.getElementById(PANEL_ID);
       if (panel) panel.hidden = true;
+
+      if (oldResult) {
+        oldResult.style.display = "block";
+        oldResult.innerText = "Please enter valid weight and height.";
+      }
 
       return;
     }
 
-    if (result) {
-      result.innerText =
+    if (oldResult) {
+      oldResult.innerText =
         "BMI: " + data.bmi.toFixed(2) + "\n" +
         "BMI status: " + data.bmiStatus + "\n" +
         "W/H ratio: " + (Number.isFinite(data.whRatio) ? data.whRatio.toFixed(2) : "-") + "\n" +
         "Condition: " + data.condition;
-      result.style.display = "none";
+      oldResult.style.display = "none";
     }
 
-    addBmiInputHistory(data);
-    renderBmiPointResult(data);
+    addBmiHistory(data);
+    renderBmiResult(data);
   }
 
-  function startBmiInputAndResultFix() {
-    if (!isBmiPage()) return;
-
-    document.body.classList.add("bmi-page");
-    document.body.dataset.page = "bmi";
-
-    renameHistoryTitle();
-    renderBmiInputHistory();
-
-    window.calculateBMI = calculateBmiFinal;
-    window.clearBMIHistory = clearBmiInputHistory;
-    window.clearBmiHistory = clearBmiInputHistory;
-
-    document.addEventListener(
-      "click",
-      function (event) {
-        const button = event.target.closest("button");
-        if (!button) return;
-
-        const text = button.textContent.trim().toLowerCase();
-        const onclick = button.getAttribute("onclick") || "";
-
-        if (text.includes("calculate") || text.includes("bmi") || onclick.includes("calculateBMI")) {
-          setTimeout(calculateBmiFinal, 0);
-          setTimeout(calculateBmiFinal, 200);
-          setTimeout(calculateBmiFinal, 600);
-        }
-
-        if (text.includes("clear")) {
-          setTimeout(clearBmiInputHistory, 0);
-          setTimeout(clearBmiInputHistory, 200);
-        }
-      },
-      true
-    );
-
-    setTimeout(renameHistoryTitle, 300);
-    setTimeout(renderBmiInputHistory, 500);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startBmiInputAndResultFix);
-  } else {
-    startBmiInputAndResultFix();
-  }
-})();
-/* =====================================================
-   BMI CALCULATOR: INPUT HISTORY WITH UNITS
-   - Weight includes kg/lb
-   - Height includes m/in
-   - Waist includes m/in
-   - History title remains Input
-===================================================== */
-(function () {
-  "use strict";
-
-  const HISTORY_KEY = "bmiInputHistoryOnlyFinal";
-  const MAX_ITEMS = 50;
-
-  function isBmiPage() {
-    const h1 = document.querySelector("h1");
-    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
-
-    return (
-      document.body.classList.contains("bmi-page") ||
-      document.body.dataset.page === "bmi" ||
-      title.includes("bmi") ||
-      !!document.getElementById("bmiResult")
-    );
-  }
-
-  function getValue(id) {
-    const el = document.getElementById(id);
-    return el ? String(el.value || "").trim() : "";
-  }
-
-  function getNumber(ids) {
-    for (const id of ids) {
-      const value = getValue(id).replace(/,/g, "");
-      const num = Number(value);
-
-      if (Number.isFinite(num)) return num;
-    }
-
-    return NaN;
-  }
-
-  function getText(ids) {
-    for (const id of ids) {
-      const value = getValue(id);
-      if (value) return value;
-    }
-
-    return "";
-  }
-
-  function getUnitText() {
-    return (
-      getText(["unit", "bmiUnit", "bmiUnits", "unitSelect"]) ||
-      document.body.dataset.bmiUnit ||
-      ""
-    ).toLowerCase();
-  }
-
-  function isUsUnit(weight, height) {
-    const unit = getUnitText();
-
-    return (
-      unit.includes("us") ||
-      unit.includes("imperial") ||
-      unit.includes("lb") ||
-      unit.includes("inch") ||
-      height > 3
-    );
-  }
-
-  function getUnitLabels(data) {
-    if (data.usUnit) {
-      return {
-        weight: "lb",
-        height: "in",
-        waist: "in",
-        unit: "US"
-      };
-    }
-
-    return {
-      weight: "kg",
-      height: "m",
-      waist: "m",
-      unit: "SI"
-    };
-  }
-
-  function getBmiInputData() {
-    const weight = getNumber(["weight", "bmiWeight"]);
-    const height = getNumber(["height", "bmiHeight"]);
-    const waist = getNumber(["waist", "waistSize", "bmiWaist"]);
-
-    const data = {
-      weight: weight,
-      height: height,
-      waist: waist,
-      usUnit: isUsUnit(weight, height)
-    };
-
-    data.units = getUnitLabels(data);
-
-    return data;
-  }
-
-  function loadHistory() {
+  function clearBmiFinal() {
     try {
-      const saved = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-      return Array.isArray(saved) ? saved : [];
-    } catch {
-      return [];
-    }
-  }
-
-  function saveHistory(history) {
-    try {
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-MAX_ITEMS)));
+      localStorage.removeItem(HISTORY_KEY);
+      localStorage.removeItem("bmiHistory");
+      localStorage.removeItem("inputHistory_bmi");
+      localStorage.removeItem("bmiInputHistoryOnlyFinal");
     } catch {
       /* ignore */
     }
-  }
 
-  function copyText(text, button) {
-    if (!text) return;
+    renderBmiHistory();
 
-    function done() {
-      const old = button.textContent;
-      button.textContent = "copied";
-
-      setTimeout(function () {
-        button.textContent = old;
-      }, 1000);
-    }
-
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(done).catch(function () {
-        fallbackCopy(text);
-        done();
-      });
-    } else {
-      fallbackCopy(text);
-      done();
-    }
-  }
-
-  function fallbackCopy(text) {
-    const textarea = document.createElement("textarea");
-
-    textarea.value = text;
-    textarea.style.position = "fixed";
-    textarea.style.left = "-9999px";
-    textarea.style.top = "-9999px";
-
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-
-    document.execCommand("copy");
-    textarea.remove();
-  }
-
-  function renameBmiHistoryTitle() {
-    const title =
-      document.querySelector(".bmi-history-box .bmi-history-top h3") ||
-      document.querySelector(".bmi-history-box h3");
-
-    if (title) {
-      title.textContent = "Input";
-    }
-  }
-
-  function renderBmiInputHistoryWithUnits() {
-    if (!isBmiPage()) return;
-
-    const list = document.getElementById("bmiHistoryList");
-    if (!list) return;
-
-    const history = loadHistory();
-
-    list.innerHTML = "";
-
-    history.slice().reverse().forEach(function (item) {
-      const waistLine =
-        item.waist && item.waist !== "-"
-          ? "<br><strong>Waist:</strong> " + item.waist + " " + item.waistUnit
-          : "";
-
-      const copyValue =
-        "Weight: " + item.weight + " " + item.weightUnit + "\n" +
-        "Height: " + item.height + " " + item.heightUnit + "\n" +
-        (item.waist && item.waist !== "-"
-          ? "Waist: " + item.waist + " " + item.waistUnit + "\n"
-          : "") +
-        "Unit: " + item.unit;
-
-      const li = document.createElement("li");
-      li.className = "history-item bmi-input-unit-history-item";
-
-      const text = document.createElement("span");
-      text.className = "history-text";
-      text.innerHTML =
-        "<strong>Weight:</strong> " + item.weight + " " + item.weightUnit + "<br>" +
-        "<strong>Height:</strong> " + item.height + " " + item.heightUnit +
-        waistLine + "<br>" +
-        "<strong>Unit:</strong> " + item.unit;
-
-      const copyBtn = document.createElement("button");
-      copyBtn.type = "button";
-      copyBtn.className = "history-copy-btn";
-      copyBtn.textContent = "copy";
-
-      copyBtn.addEventListener("click", function (event) {
-        event.stopPropagation();
-        copyText(copyValue, copyBtn);
-      });
-
-      li.appendChild(text);
-      li.appendChild(copyBtn);
-      list.appendChild(li);
-    });
-  }
-
-  function addBmiInputHistoryWithUnits() {
-    if (!isBmiPage()) return;
-
-    const data = getBmiInputData();
-
-    if (
-      !Number.isFinite(data.weight) ||
-      !Number.isFinite(data.height) ||
-      data.weight <= 0 ||
-      data.height <= 0
-    ) {
-      return;
-    }
-
-    const item = {
-      weight: String(data.weight),
-      height: String(data.height),
-      waist: Number.isFinite(data.waist) && data.waist > 0 ? String(data.waist) : "-",
-      weightUnit: data.units.weight,
-      heightUnit: data.units.height,
-      waistUnit: data.units.waist,
-      unit: data.units.unit
-    };
-
-    const history = loadHistory();
-    const last = history[history.length - 1];
-
-    if (
-      !last ||
-      last.weight !== item.weight ||
-      last.height !== item.height ||
-      last.waist !== item.waist ||
-      last.unit !== item.unit
-    ) {
-      history.push(item);
-    }
-
-    saveHistory(history);
-    renderBmiInputHistoryWithUnits();
-  }
-
-  function clearBmiInputHistoryWithUnits() {
-    localStorage.removeItem(HISTORY_KEY);
-    localStorage.removeItem("bmiHistory");
-    localStorage.removeItem("inputHistory_bmi");
-
-    renderBmiInputHistoryWithUnits();
-
-    const panel = document.getElementById("stableBmiOutput");
+    const panel = document.getElementById(PANEL_ID);
     if (panel) panel.hidden = true;
 
     const oldPanel = document.getElementById("universalLoanStyleOutput");
-    if (oldPanel) oldPanel.hidden = true;
+    if (oldPanel) {
+      oldPanel.hidden = true;
+      oldPanel.style.setProperty("display", "none", "important");
+    }
+
+    const oldResult = document.getElementById("bmiResult") || document.getElementById("result");
+    if (oldResult) oldResult.innerText = "";
   }
 
-  function startBmiInputUnitsHistory() {
+  function startBmiFinalRepair() {
     if (!isBmiPage()) return;
 
     document.body.classList.add("bmi-page");
     document.body.dataset.page = "bmi";
 
+    syncUnitFromPage();
     renameBmiHistoryTitle();
-    renderBmiInputHistoryWithUnits();
+    renderBmiHistory();
 
-    window.clearBMIHistory = clearBmiInputHistoryWithUnits;
-    window.clearBmiHistory = clearBmiInputHistoryWithUnits;
+    window.calculateBMI = calculateBmiFinal;
+    window.calculateBmi = calculateBmiFinal;
+    window.clearBMIHistory = clearBmiFinal;
+    window.clearBmiHistory = clearBmiFinal;
 
-    document.addEventListener(
-      "click",
-      function (event) {
-        const button = event.target.closest("button");
-        if (!button) return;
-
-        const text = button.textContent.trim().toLowerCase();
-        const onclick = button.getAttribute("onclick") || "";
-
-        if (text.includes("calculate") || text.includes("bmi") || onclick.includes("calculateBMI")) {
-          setTimeout(addBmiInputHistoryWithUnits, 0);
-          setTimeout(addBmiInputHistoryWithUnits, 200);
-          setTimeout(renderBmiInputHistoryWithUnits, 600);
-        }
-
-        if (text.includes("clear")) {
-          setTimeout(clearBmiInputHistoryWithUnits, 0);
-          setTimeout(clearBmiInputHistoryWithUnits, 200);
-        }
-      },
-      true
-    );
-
-    setTimeout(renameBmiHistoryTitle, 300);
-    setTimeout(renderBmiInputHistoryWithUnits, 700);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startBmiInputUnitsHistory);
-  } else {
-    startBmiInputUnitsHistory();
-  }
-})();
-/* =====================================================
-   BMI CALCULATOR: FIX UNDEFINED UNITS IN INPUT HISTORY
-   - Removes "undefined" from history box
-   - Adds default unit labels to old saved history
-===================================================== */
-(function () {
-  "use strict";
-
-  const HISTORY_KEY = "bmiInputHistoryOnlyFinal";
-
-  function isBmiPage() {
-    const h1 = document.querySelector("h1");
-    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
-
-    return (
-      document.body.classList.contains("bmi-page") ||
-      document.body.dataset.page === "bmi" ||
-      title.includes("bmi") ||
-      !!document.getElementById("bmiHistoryList")
-    );
-  }
-
-  function getValue(id) {
-    const el = document.getElementById(id);
-    return el ? String(el.value || "").trim() : "";
-  }
-
-  function getCurrentUnitType() {
-    const unitText =
-      getValue("unit") ||
-      getValue("bmiUnit") ||
-      getValue("bmiUnits") ||
-      getValue("unitSelect") ||
-      document.body.dataset.bmiUnit ||
-      "";
-
-    const lower = unitText.toLowerCase();
-
-    if (
-      lower.includes("us") ||
-      lower.includes("imperial") ||
-      lower.includes("lb") ||
-      lower.includes("inch")
-    ) {
-      return "US";
-    }
-
-    return "SI";
-  }
-
-  function unitLabels(unit) {
-    if (unit === "US") {
-      return {
-        weightUnit: "lb",
-        heightUnit: "in",
-        waistUnit: "in",
-        unit: "US"
-      };
-    }
-
-    return {
-      weightUnit: "kg",
-      heightUnit: "m",
-      waistUnit: "m",
-      unit: "SI"
-    };
-  }
-
-  function loadHistory() {
-    try {
-      const saved = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-      return Array.isArray(saved) ? saved : [];
-    } catch {
-      return [];
-    }
-  }
-
-  function saveHistory(history) {
-    try {
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-50)));
-    } catch {
-      /* ignore */
-    }
-  }
-
-  function normalizeHistoryItem(item) {
-    const fallbackUnit = item && item.unit ? item.unit : getCurrentUnitType();
-    const labels = unitLabels(fallbackUnit);
-
-    return {
-      weight: item && item.weight ? item.weight : "-",
-      height: item && item.height ? item.height : "-",
-      waist: item && item.waist ? item.waist : "-",
-
-      weightUnit: item && item.weightUnit ? item.weightUnit : labels.weightUnit,
-      heightUnit: item && item.heightUnit ? item.heightUnit : labels.heightUnit,
-      waistUnit: item && item.waistUnit ? item.waistUnit : labels.waistUnit,
-      unit: item && item.unit ? item.unit : labels.unit
-    };
-  }
-
-  function copyText(text, button) {
-    if (!text) return;
-
-    function done() {
-      const old = button.textContent;
-      button.textContent = "copied";
-
-      setTimeout(function () {
-        button.textContent = old;
-      }, 1000);
-    }
-
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(done).catch(function () {
-        fallbackCopy(text);
-        done();
-      });
-    } else {
-      fallbackCopy(text);
-      done();
-    }
-  }
-
-  function fallbackCopy(text) {
-    const textarea = document.createElement("textarea");
-    textarea.value = text;
-    textarea.style.position = "fixed";
-    textarea.style.left = "-9999px";
-    textarea.style.top = "-9999px";
-
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-
-    document.execCommand("copy");
-    textarea.remove();
-  }
-
-  function renderFixedBmiHistory() {
-    if (!isBmiPage()) return;
-
-    const list = document.getElementById("bmiHistoryList");
-    if (!list) return;
-
-    const title =
-      document.querySelector(".bmi-history-box .bmi-history-top h3") ||
-      document.querySelector(".bmi-history-box h3");
-
-    if (title) {
-      title.textContent = "Input";
-    }
-
-    const history = loadHistory().map(normalizeHistoryItem);
-    saveHistory(history);
-
-    list.innerHTML = "";
-
-    history.slice().reverse().forEach(function (item) {
-      const waistLine =
-        item.waist && item.waist !== "-"
-          ? "<br><strong>Waist:</strong> " + item.waist + " " + item.waistUnit
-          : "";
-
-      const copyValue =
-        "Weight: " + item.weight + " " + item.weightUnit + "\n" +
-        "Height: " + item.height + " " + item.heightUnit + "\n" +
-        (item.waist && item.waist !== "-"
-          ? "Waist: " + item.waist + " " + item.waistUnit + "\n"
-          : "") +
-        "Unit: " + item.unit;
-
-      const li = document.createElement("li");
-      li.className = "history-item bmi-input-unit-history-item";
-
-      const text = document.createElement("span");
-      text.className = "history-text";
-      text.innerHTML =
-        "<strong>Weight:</strong> " + item.weight + " " + item.weightUnit + "<br>" +
-        "<strong>Height:</strong> " + item.height + " " + item.heightUnit +
-        waistLine + "<br>" +
-        "<strong>Unit:</strong> " + item.unit;
-
-      const copyBtn = document.createElement("button");
-      copyBtn.type = "button";
-      copyBtn.className = "history-copy-btn";
-      copyBtn.textContent = "copy";
-
-      copyBtn.addEventListener("click", function (event) {
-        event.stopPropagation();
-        copyText(copyValue, copyBtn);
-      });
-
-      li.appendChild(text);
-      li.appendChild(copyBtn);
-      list.appendChild(li);
-    });
-  }
-
-  function startFixUndefinedBmiUnits() {
-    if (!isBmiPage()) return;
-
-    renderFixedBmiHistory();
-
-    document.addEventListener(
-      "click",
-      function () {
-        setTimeout(renderFixedBmiHistory, 300);
-        setTimeout(renderFixedBmiHistory, 800);
-      },
-      true
-    );
-
-    setTimeout(renderFixedBmiHistory, 500);
-    setTimeout(renderFixedBmiHistory, 1200);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startFixUndefinedBmiUnits);
-  } else {
-    startFixUndefinedBmiUnits();
-  }
-})();
-/* =====================================================
-   BMI CALCULATOR: FIX SI + US UNITS IN INPUT HISTORY
-   - Does not assume height > 3 means US
-   - SI supports kg / cm or kg / m
-   - US supports lb / in
-===================================================== */
-(function () {
-  "use strict";
-
-  const HISTORY_KEY = "bmiInputHistoryOnlyFinal";
-  const MAX_ITEMS = 50;
-
-  function isBmiPage() {
-    const h1 = document.querySelector("h1");
-    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
-
-    return (
-      document.body.classList.contains("bmi-page") ||
-      document.body.dataset.page === "bmi" ||
-      title.includes("bmi") ||
-      !!document.getElementById("bmiHistoryList")
-    );
-  }
-
-  function getValue(id) {
-    const el = document.getElementById(id);
-    return el ? String(el.value || "").trim() : "";
-  }
-
-  function getNumber(ids) {
-    for (const id of ids) {
-      const value = getValue(id).replace(/,/g, "");
-      const num = Number(value);
-
-      if (Number.isFinite(num)) return num;
-    }
-
-    return NaN;
-  }
-
-  function pageText() {
-    const calculator = document.querySelector(".calculator");
-    return calculator ? calculator.textContent.toLowerCase() : "";
-  }
-
-  function getBmiUnitType() {
-    const explicitUnit = (
-      getValue("unit") + " " +
-      getValue("bmiUnit") + " " +
-      getValue("bmiUnits") + " " +
-      getValue("unitSelect") + " " +
-      (document.body.dataset.bmiUnit || "") + " " +
-      pageText()
-    ).toLowerCase();
-
-    if (
-      explicitUnit.includes("us") ||
-      explicitUnit.includes("imperial") ||
-      explicitUnit.includes("lb") ||
-      explicitUnit.includes("inch") ||
-      explicitUnit.includes(" in")
-    ) {
-      return "US";
-    }
-
-    if (
-      explicitUnit.includes("si") ||
-      explicitUnit.includes("metric") ||
-      explicitUnit.includes("kg") ||
-      explicitUnit.includes("cm") ||
-      explicitUnit.includes("meter") ||
-      explicitUnit.includes("metre")
-    ) {
-      return "SI";
-    }
-
-    return "SI";
-  }
-
-  function getUnitLabels(weight, height, waist) {
-    const unitType = getBmiUnitType();
-
-    if (unitType === "US") {
-      return {
-        weightUnit: "lb",
-        heightUnit: "in",
-        waistUnit: "in",
-        unit: "US"
-      };
-    }
-
-    return {
-      weightUnit: "kg",
-      heightUnit: height > 3 ? "cm" : "m",
-      waistUnit: waist > 3 ? "cm" : "m",
-      unit: "SI"
-    };
-  }
-
-  function loadHistory() {
-    try {
-      const saved = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-      return Array.isArray(saved) ? saved : [];
-    } catch {
-      return [];
-    }
-  }
-
-  function saveHistory(history) {
-    try {
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-MAX_ITEMS)));
-    } catch {
-      /* ignore */
-    }
-  }
-
-  function copyText(text, button) {
-    if (!text) return;
-
-    function done() {
-      const old = button.textContent;
-      button.textContent = "copied";
-
-      setTimeout(function () {
-        button.textContent = old;
-      }, 1000);
-    }
-
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(done).catch(function () {
-        fallbackCopy(text);
-        done();
-      });
-    } else {
-      fallbackCopy(text);
-      done();
-    }
-  }
-
-  function fallbackCopy(text) {
-    const textarea = document.createElement("textarea");
-
-    textarea.value = text;
-    textarea.style.position = "fixed";
-    textarea.style.left = "-9999px";
-    textarea.style.top = "-9999px";
-
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-
-    document.execCommand("copy");
-    textarea.remove();
-  }
-
-  function normalizeHistoryItem(item) {
-    const weight = item && item.weight ? item.weight : "-";
-    const height = item && item.height ? item.height : "-";
-    const waist = item && item.waist ? item.waist : "-";
-
-    const labels = getUnitLabels(Number(weight), Number(height), Number(waist));
-
-    return {
-      weight: weight,
-      height: height,
-      waist: waist,
-      weightUnit: item && item.weightUnit && item.weightUnit !== "undefined" ? item.weightUnit : labels.weightUnit,
-      heightUnit: item && item.heightUnit && item.heightUnit !== "undefined" ? item.heightUnit : labels.heightUnit,
-      waistUnit: item && item.waistUnit && item.waistUnit !== "undefined" ? item.waistUnit : labels.waistUnit,
-      unit: item && item.unit && item.unit !== "undefined" ? item.unit : labels.unit
-    };
-  }
-
-  function addBmiInputHistoryWithCorrectUnits() {
-    if (!isBmiPage()) return;
-
-    const weight = getNumber(["weight", "bmiWeight"]);
-    const height = getNumber(["height", "bmiHeight"]);
-    const waist = getNumber(["waist", "waistSize", "bmiWaist"]);
-
-    if (
-      !Number.isFinite(weight) ||
-      !Number.isFinite(height) ||
-      weight <= 0 ||
-      height <= 0
-    ) {
-      return;
-    }
-
-    const labels = getUnitLabels(weight, height, waist);
-
-    const item = {
-      weight: String(weight),
-      height: String(height),
-      waist: Number.isFinite(waist) && waist > 0 ? String(waist) : "-",
-      weightUnit: labels.weightUnit,
-      heightUnit: labels.heightUnit,
-      waistUnit: labels.waistUnit,
-      unit: labels.unit
-    };
-
-    const history = loadHistory().map(normalizeHistoryItem);
-    const last = history[history.length - 1];
-
-    if (
-      !last ||
-      last.weight !== item.weight ||
-      last.height !== item.height ||
-      last.waist !== item.waist ||
-      last.unit !== item.unit
-    ) {
-      history.push(item);
-    }
-
-    saveHistory(history);
-    renderBmiInputHistoryCorrectUnits();
-  }
-
-  function renderBmiInputHistoryCorrectUnits() {
-    if (!isBmiPage()) return;
-
-    const list = document.getElementById("bmiHistoryList");
-    if (!list) return;
-
-    const title =
-      document.querySelector(".bmi-history-box .bmi-history-top h3") ||
-      document.querySelector(".bmi-history-box h3");
-
-    if (title) {
-      title.textContent = "Input";
-    }
-
-    const history = loadHistory().map(normalizeHistoryItem);
-    saveHistory(history);
-
-    list.innerHTML = "";
-
-    history.slice().reverse().forEach(function (item) {
-      const waistLine =
-        item.waist && item.waist !== "-"
-          ? "<br><strong>Waist:</strong> " + item.waist + " " + item.waistUnit
-          : "";
-
-      const copyValue =
-        "Weight: " + item.weight + " " + item.weightUnit + "\n" +
-        "Height: " + item.height + " " + item.heightUnit + "\n" +
-        (item.waist && item.waist !== "-"
-          ? "Waist: " + item.waist + " " + item.waistUnit + "\n"
-          : "") +
-        "Unit: " + item.unit;
-
-      const li = document.createElement("li");
-      li.className = "history-item bmi-input-unit-history-item";
-
-      const text = document.createElement("span");
-      text.className = "history-text";
-      text.innerHTML =
-        "<strong>Weight:</strong> " + item.weight + " " + item.weightUnit + "<br>" +
-        "<strong>Height:</strong> " + item.height + " " + item.heightUnit +
-        waistLine + "<br>" +
-        "<strong>Unit:</strong> " + item.unit;
-
-      const copyBtn = document.createElement("button");
-      copyBtn.type = "button";
-      copyBtn.className = "history-copy-btn";
-      copyBtn.textContent = "copy";
-
-      copyBtn.addEventListener("click", function (event) {
-        event.stopPropagation();
-        copyText(copyValue, copyBtn);
-      });
-
-      li.appendChild(text);
-      li.appendChild(copyBtn);
-      list.appendChild(li);
-    });
-  }
-
-  function clearBmiInputHistoryCorrectUnits() {
-    localStorage.removeItem(HISTORY_KEY);
-    localStorage.removeItem("bmiHistory");
-    localStorage.removeItem("inputHistory_bmi");
-
-    renderBmiInputHistoryCorrectUnits();
-  }
-
-  function startBmiCorrectUnits() {
-    if (!isBmiPage()) return;
-
-    document.body.classList.add("bmi-page");
-    document.body.dataset.page = "bmi";
-
-    window.clearBMIHistory = clearBmiInputHistoryCorrectUnits;
-    window.clearBmiHistory = clearBmiInputHistoryCorrectUnits;
-
-    renderBmiInputHistoryCorrectUnits();
-
-    document.addEventListener(
-      "click",
-      function (event) {
-        const button = event.target.closest("button");
-        if (!button) return;
-
-        const text = button.textContent.trim().toLowerCase();
-        const onclick = button.getAttribute("onclick") || "";
-
-        if (text.includes("calculate") || text.includes("bmi") || onclick.includes("calculateBMI")) {
-          setTimeout(addBmiInputHistoryWithCorrectUnits, 0);
-          setTimeout(addBmiInputHistoryWithCorrectUnits, 200);
-          setTimeout(renderBmiInputHistoryCorrectUnits, 600);
-        }
-
-        if (text.includes("clear")) {
-          setTimeout(clearBmiInputHistoryCorrectUnits, 0);
-        }
-      },
-      true
-    );
-
-    setTimeout(renderBmiInputHistoryCorrectUnits, 500);
-    setTimeout(renderBmiInputHistoryCorrectUnits, 1200);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startBmiCorrectUnits);
-  } else {
-    startBmiCorrectUnits();
-  }
-})();
-/* =====================================================
-   BMI CALCULATOR: USE SI/US BUTTON AS UNIT INDICATOR
-   - Reads #unitToggleBtn
-   - If current mode is SI: kg / cm
-   - If current mode is US: lb / in
-   - Fixes wrong US unit in BMI input history
-===================================================== */
-(function () {
-  "use strict";
-
-  const HISTORY_KEY = "bmiInputHistoryOnlyFinal";
-  const MAX_ITEMS = 50;
-
-  function isBmiPage() {
-    const h1 = document.querySelector("h1");
-    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
-
-    return (
-      document.body.classList.contains("bmi-page") ||
-      document.body.dataset.page === "bmi" ||
-      title.includes("bmi") ||
-      !!document.getElementById("bmiHistoryList")
-    );
-  }
-
-  function getValue(id) {
-    const el = document.getElementById(id);
-    return el ? String(el.value || "").trim() : "";
-  }
-
-  function getNumber(ids) {
-    for (const id of ids) {
-      const raw = getValue(id).replace(/,/g, "");
-      const num = Number(raw);
-
-      if (Number.isFinite(num)) return num;
-    }
-
-    return NaN;
-  }
-
-  function getButtonText() {
     const btn = document.getElementById("unitToggleBtn");
-    if (!btn) return "";
+    if (btn && btn.dataset.bmiFinalRepairReady !== "true") {
+      btn.dataset.bmiFinalRepairReady = "true";
 
-    return (
-      btn.textContent + " " +
-      btn.value + " " +
-      (btn.dataset.unit || "") + " " +
-      (btn.dataset.currentUnit || "") + " " +
-      (btn.getAttribute("aria-label") || "")
-    ).toLowerCase();
-  }
-
-  function getCurrentBmiUnit() {
-    const btn = document.getElementById("unitToggleBtn");
-
-    if (btn) {
-      const text = getButtonText();
-
-      /*
-        If your button shows CURRENT mode:
-        SI = SI mode
-        US = US mode
-      */
-      if (text.trim() === "si" || text.includes("current si") || text.includes("mode si")) {
-        return "SI";
-      }
-
-      if (text.trim() === "us" || text.includes("current us") || text.includes("mode us")) {
-        return "US";
-      }
-
-      /*
-        If your button says "Switch to US",
-        current mode is SI.
-      */
-      if (text.includes("switch to us") || text.includes("change to us")) {
-        return "SI";
-      }
-
-      /*
-        If your button says "Switch to SI",
-        current mode is US.
-      */
-      if (text.includes("switch to si") || text.includes("change to si")) {
-        return "US";
-      }
-
-      /*
-        If button contains only one clear unit word.
-      */
-      if (text.includes("si") && !text.includes("us")) {
-        return "SI";
-      }
-
-      if (text.includes("us") && !text.includes("si")) {
-        return "US";
-      }
-
-      /*
-        Class fallback.
-      */
-      if (
-        btn.classList.contains("si") ||
-        btn.classList.contains("si-mode") ||
-        btn.classList.contains("metric")
-      ) {
-        return "SI";
-      }
-
-      if (
-        btn.classList.contains("us") ||
-        btn.classList.contains("us-mode") ||
-        btn.classList.contains("imperial")
-      ) {
-        return "US";
-      }
+      btn.addEventListener("click", function () {
+        syncAfterUnitButtonClick();
+      }, true);
     }
-
-    /*
-      Body fallback.
-    */
-    if (
-      document.body.classList.contains("us-unit") ||
-      document.body.classList.contains("us-mode") ||
-      document.body.dataset.bmiUnit === "us"
-    ) {
-      return "US";
-    }
-
-    return "SI";
-  }
-
-  function getUnits() {
-    const currentUnit = getCurrentBmiUnit();
-
-    if (currentUnit === "US") {
-      return {
-        unit: "US",
-        weightUnit: "lb",
-        heightUnit: "in",
-        waistUnit: "in"
-      };
-    }
-
-    return {
-      unit: "SI",
-      weightUnit: "kg",
-      heightUnit: "cm",
-      waistUnit: "cm"
-    };
-  }
-
-  function loadHistory() {
-    try {
-      const saved = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-      return Array.isArray(saved) ? saved : [];
-    } catch {
-      return [];
-    }
-  }
-
-  function saveHistory(history) {
-    try {
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-MAX_ITEMS)));
-    } catch {
-      /* ignore */
-    }
-  }
-
-  function copyText(text, button) {
-    if (!text) return;
-
-    function copied() {
-      const old = button.textContent;
-      button.textContent = "copied";
-
-      setTimeout(function () {
-        button.textContent = old;
-      }, 1000);
-    }
-
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(copied).catch(function () {
-        fallbackCopy(text);
-        copied();
-      });
-    } else {
-      fallbackCopy(text);
-      copied();
-    }
-  }
-
-  function fallbackCopy(text) {
-    const textarea = document.createElement("textarea");
-
-    textarea.value = text;
-    textarea.style.position = "fixed";
-    textarea.style.left = "-9999px";
-    textarea.style.top = "-9999px";
-
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-
-    document.execCommand("copy");
-    textarea.remove();
-  }
-
-  function normalizeItem(item) {
-    const units = getUnits();
-
-    return {
-      weight: item && item.weight ? item.weight : "-",
-      height: item && item.height ? item.height : "-",
-      waist: item && item.waist ? item.waist : "-",
-      unit: item && item.unit && item.unit !== "undefined" ? item.unit : units.unit,
-      weightUnit: item && item.weightUnit && item.weightUnit !== "undefined" ? item.weightUnit : units.weightUnit,
-      heightUnit: item && item.heightUnit && item.heightUnit !== "undefined" ? item.heightUnit : units.heightUnit,
-      waistUnit: item && item.waistUnit && item.waistUnit !== "undefined" ? item.waistUnit : units.waistUnit
-    };
-  }
-
-  function renderBmiHistoryUsingButtonUnit() {
-    if (!isBmiPage()) return;
-
-    const list = document.getElementById("bmiHistoryList");
-    if (!list) return;
-
-    const title =
-      document.querySelector(".bmi-history-box .bmi-history-top h3") ||
-      document.querySelector(".bmi-history-box h3");
-
-    if (title) {
-      title.textContent = "Input";
-    }
-
-    const history = loadHistory().map(normalizeItem);
-    saveHistory(history);
-
-    list.innerHTML = "";
-
-    history.slice().reverse().forEach(function (item) {
-      const waistLine =
-        item.waist && item.waist !== "-"
-          ? "<br><strong>Waist:</strong> " + item.waist + " " + item.waistUnit
-          : "";
-
-      const copyValue =
-        "Weight: " + item.weight + " " + item.weightUnit + "\n" +
-        "Height: " + item.height + " " + item.heightUnit + "\n" +
-        (item.waist && item.waist !== "-"
-          ? "Waist: " + item.waist + " " + item.waistUnit + "\n"
-          : "") +
-        "Unit: " + item.unit;
-
-      const li = document.createElement("li");
-      li.className = "history-item bmi-input-unit-history-item";
-
-      const text = document.createElement("span");
-      text.className = "history-text";
-      text.innerHTML =
-        "<strong>Weight:</strong> " + item.weight + " " + item.weightUnit + "<br>" +
-        "<strong>Height:</strong> " + item.height + " " + item.heightUnit +
-        waistLine + "<br>" +
-        "<strong>Unit:</strong> " + item.unit;
-
-      const copyBtn = document.createElement("button");
-      copyBtn.type = "button";
-      copyBtn.className = "history-copy-btn";
-      copyBtn.textContent = "copy";
-
-      copyBtn.addEventListener("click", function (event) {
-        event.stopPropagation();
-        copyText(copyValue, copyBtn);
-      });
-
-      li.appendChild(text);
-      li.appendChild(copyBtn);
-      list.appendChild(li);
-    });
-  }
-
-  function addBmiHistoryUsingButtonUnit() {
-    if (!isBmiPage()) return;
-
-    const weight = getNumber(["weight", "bmiWeight"]);
-    const height = getNumber(["height", "bmiHeight"]);
-    const waist = getNumber(["waist", "waistSize", "bmiWaist"]);
-
-    if (
-      !Number.isFinite(weight) ||
-      !Number.isFinite(height) ||
-      weight <= 0 ||
-      height <= 0
-    ) {
-      return;
-    }
-
-    const units = getUnits();
-
-    const item = {
-      weight: String(weight),
-      height: String(height),
-      waist: Number.isFinite(waist) && waist > 0 ? String(waist) : "-",
-      unit: units.unit,
-      weightUnit: units.weightUnit,
-      heightUnit: units.heightUnit,
-      waistUnit: units.waistUnit
-    };
-
-    const history = loadHistory();
-    const last = history[history.length - 1];
-
-    if (
-      !last ||
-      last.weight !== item.weight ||
-      last.height !== item.height ||
-      last.waist !== item.waist ||
-      last.unit !== item.unit
-    ) {
-      history.push(item);
-    }
-
-    saveHistory(history);
-    renderBmiHistoryUsingButtonUnit();
-  }
-
-  function clearBmiHistoryUsingButtonUnit() {
-    localStorage.removeItem(HISTORY_KEY);
-    localStorage.removeItem("bmiHistory");
-    localStorage.removeItem("inputHistory_bmi");
-
-    renderBmiHistoryUsingButtonUnit();
-  }
-
-  function startBmiButtonUnitHistory() {
-    if (!isBmiPage()) return;
-
-    document.body.classList.add("bmi-page");
-    document.body.dataset.page = "bmi";
-
-    window.clearBMIHistory = clearBmiHistoryUsingButtonUnit;
-    window.clearBmiHistory = clearBmiHistoryUsingButtonUnit;
-
-    renderBmiHistoryUsingButtonUnit();
 
     document.addEventListener(
       "click",
@@ -4543,343 +3559,52 @@
 
         const text = button.textContent.trim().toLowerCase();
         const onclick = button.getAttribute("onclick") || "";
+
+        if (button.id === "unitToggleBtn") {
+          syncAfterUnitButtonClick();
+          return;
+        }
 
         if (
           text.includes("calculate") ||
-          onclick.includes("calculateBMI")
+          onclick.includes("calculateBMI") ||
+          onclick.includes("calculateBmi")
         ) {
-          setTimeout(addBmiHistoryUsingButtonUnit, 0);
-          setTimeout(addBmiHistoryUsingButtonUnit, 200);
-          setTimeout(renderBmiHistoryUsingButtonUnit, 600);
-        }
-
-        if (button.id === "unitToggleBtn") {
-          setTimeout(renderBmiHistoryUsingButtonUnit, 100);
-          setTimeout(renderBmiHistoryUsingButtonUnit, 400);
+          setTimeout(calculateBmiFinal, 0);
+          setTimeout(calculateBmiFinal, 250);
+          setTimeout(calculateBmiFinal, 650);
+          setTimeout(hideOldResultPanels, 900);
         }
 
         if (text.includes("clear")) {
-          setTimeout(clearBmiHistoryUsingButtonUnit, 0);
+          setTimeout(clearBmiFinal, 0);
         }
       },
       true
     );
-
-    setTimeout(renderBmiHistoryUsingButtonUnit, 500);
-    setTimeout(renderBmiHistoryUsingButtonUnit, 1200);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startBmiButtonUnitHistory);
-  } else {
-    startBmiButtonUnitHistory();
-  }
-})();
-/* =====================================================
-   BMI CALCULATOR: FINAL STABLE SI/US HISTORY FIX
-   Uses one saved unit state instead of guessing every time
-===================================================== */
-(function () {
-  "use strict";
-
-  const HISTORY_KEY = "bmiInputHistoryOnlyFinal";
-  const UNIT_KEY = "bmiCurrentUnitFinal";
-  const MAX_ITEMS = 50;
-
-  function isBmiPage() {
-    const h1 = document.querySelector("h1");
-    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
-
-    return (
-      document.body.classList.contains("bmi-page") ||
-      document.body.dataset.page === "bmi" ||
-      title.includes("bmi") ||
-      !!document.getElementById("bmiHistoryList")
-    );
-  }
-
-  function getValue(id) {
-    const el = document.getElementById(id);
-    return el ? String(el.value || "").trim() : "";
-  }
-
-  function getNumber(ids) {
-    for (const id of ids) {
-      const raw = getValue(id).replace(/,/g, "");
-      const num = Number(raw);
-      if (Number.isFinite(num)) return num;
-    }
-    return NaN;
-  }
-
-  function getSavedUnit() {
-    const saved = localStorage.getItem(UNIT_KEY);
-    return saved === "US" ? "US" : "SI";
-  }
-
-  function saveUnit(unit) {
-    const clean = unit === "US" ? "US" : "SI";
-    localStorage.setItem(UNIT_KEY, clean);
-    document.body.dataset.bmiUnit = clean.toLowerCase();
-  }
-
-  function readUnitButton() {
-    const btn = document.getElementById("unitToggleBtn");
-    if (!btn) return getSavedUnit();
-
-    const text = (
-      btn.textContent + " " +
-      btn.value + " " +
-      (btn.dataset.unit || "") + " " +
-      (btn.dataset.currentUnit || "") + " " +
-      (btn.getAttribute("aria-label") || "")
-    ).toLowerCase();
-
-    if (text.includes("switch to us") || text.includes("change to us")) {
-      return "SI";
-    }
-
-    if (text.includes("switch to si") || text.includes("change to si")) {
-      return "US";
-    }
-
-    if (text.trim() === "si" || text.includes("current si") || text.includes("si mode")) {
-      return "SI";
-    }
-
-    if (text.trim() === "us" || text.includes("current us") || text.includes("us mode")) {
-      return "US";
-    }
-
-    return getSavedUnit();
-  }
-
-  function getUnits() {
-    const unit = getSavedUnit();
-
-    if (unit === "US") {
-      return {
-        unit: "US",
-        weightUnit: "lb",
-        heightUnit: "in",
-        waistUnit: "in"
-      };
-    }
-
-    return {
-      unit: "SI",
-      weightUnit: "kg",
-      heightUnit: "cm",
-      waistUnit: "cm"
-    };
-  }
-
-  function loadHistory() {
-    try {
-      const saved = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-      return Array.isArray(saved) ? saved : [];
-    } catch {
-      return [];
-    }
-  }
-
-  function saveHistory(history) {
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-MAX_ITEMS)));
-  }
-
-  function copyText(text, button) {
-    if (!text) return;
-
-    function copied() {
-      const old = button.textContent;
-      button.textContent = "copied";
-
-      setTimeout(function () {
-        button.textContent = old;
-      }, 1000);
-    }
-
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(copied).catch(function () {
-        fallbackCopy(text);
-        copied();
-      });
-    } else {
-      fallbackCopy(text);
-      copied();
-    }
-  }
-
-  function fallbackCopy(text) {
-    const textarea = document.createElement("textarea");
-    textarea.value = text;
-    textarea.style.position = "fixed";
-    textarea.style.left = "-9999px";
-    textarea.style.top = "-9999px";
-
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-    document.execCommand("copy");
-    textarea.remove();
-  }
-
-  function renderHistory() {
-    if (!isBmiPage()) return;
-
-    const list = document.getElementById("bmiHistoryList");
-    if (!list) return;
-
-    const title =
-      document.querySelector(".bmi-history-box .bmi-history-top h3") ||
-      document.querySelector(".bmi-history-box h3");
-
-    if (title) title.textContent = "Input";
-
-    const history = loadHistory();
-
-    list.innerHTML = "";
-
-    history.slice().reverse().forEach(function (item) {
-      const waistLine =
-        item.waist && item.waist !== "-"
-          ? "<br><strong>Waist:</strong> " + item.waist + " " + item.waistUnit
-          : "";
-
-      const copyValue =
-        "Weight: " + item.weight + " " + item.weightUnit + "\n" +
-        "Height: " + item.height + " " + item.heightUnit + "\n" +
-        (item.waist && item.waist !== "-"
-          ? "Waist: " + item.waist + " " + item.waistUnit + "\n"
-          : "") +
-        "Unit: " + item.unit;
-
-      const li = document.createElement("li");
-      li.className = "history-item bmi-input-unit-history-item";
-
-      const text = document.createElement("span");
-      text.className = "history-text";
-      text.innerHTML =
-        "<strong>Weight:</strong> " + item.weight + " " + item.weightUnit + "<br>" +
-        "<strong>Height:</strong> " + item.height + " " + item.heightUnit +
-        waistLine + "<br>" +
-        "<strong>Unit:</strong> " + item.unit;
-
-      const copyBtn = document.createElement("button");
-      copyBtn.type = "button";
-      copyBtn.className = "history-copy-btn";
-      copyBtn.textContent = "copy";
-
-      copyBtn.addEventListener("click", function (event) {
-        event.stopPropagation();
-        copyText(copyValue, copyBtn);
-      });
-
-      li.appendChild(text);
-      li.appendChild(copyBtn);
-      list.appendChild(li);
-    });
-  }
-
-  function addHistory() {
-    if (!isBmiPage()) return;
-
-    const weight = getNumber(["weight", "bmiWeight"]);
-    const height = getNumber(["height", "bmiHeight"]);
-    const waist = getNumber(["waist", "waistSize", "bmiWaist"]);
-
-    if (
-      !Number.isFinite(weight) ||
-      !Number.isFinite(height) ||
-      weight <= 0 ||
-      height <= 0
-    ) {
-      return;
-    }
-
-    const units = getUnits();
-
-    const item = {
-      weight: String(weight),
-      height: String(height),
-      waist: Number.isFinite(waist) && waist > 0 ? String(waist) : "-",
-      unit: units.unit,
-      weightUnit: units.weightUnit,
-      heightUnit: units.heightUnit,
-      waistUnit: units.waistUnit
-    };
-
-    const history = loadHistory();
-    const last = history[history.length - 1];
-
-    if (
-      !last ||
-      last.weight !== item.weight ||
-      last.height !== item.height ||
-      last.waist !== item.waist ||
-      last.unit !== item.unit
-    ) {
-      history.push(item);
-    }
-
-    saveHistory(history);
-    renderHistory();
-  }
-
-  function clearHistory() {
-    localStorage.removeItem(HISTORY_KEY);
-    localStorage.removeItem("bmiHistory");
-    localStorage.removeItem("inputHistory_bmi");
-    renderHistory();
-  }
-
-  function start() {
-    if (!isBmiPage()) return;
-
-    document.body.classList.add("bmi-page");
-    document.body.dataset.page = "bmi";
-
-    saveUnit(readUnitButton());
-
-    window.clearBMIHistory = clearHistory;
-    window.clearBmiHistory = clearHistory;
 
     document.addEventListener(
-      "click",
+      "keydown",
       function (event) {
-        const button = event.target.closest("button");
-        if (!button) return;
-
-        const text = button.textContent.trim().toLowerCase();
-        const onclick = button.getAttribute("onclick") || "";
-
-        if (button.id === "unitToggleBtn") {
-          setTimeout(function () {
-            saveUnit(readUnitButton());
-            renderHistory();
-          }, 120);
-        }
-
-        if (text.includes("calculate") || onclick.includes("calculateBMI")) {
-          setTimeout(function () {
-            saveUnit(readUnitButton());
-            addHistory();
-          }, 180);
-        }
-
-        if (text.includes("clear")) {
-          setTimeout(clearHistory, 0);
+        if (event.key === "Enter") {
+          setTimeout(calculateBmiFinal, 0);
+          setTimeout(calculateBmiFinal, 250);
+          setTimeout(calculateBmiFinal, 650);
         }
       },
       true
     );
 
-    renderHistory();
+    setTimeout(function () {
+      syncUnitFromPage();
+      renderBmiHistory();
+      hideOldResultPanels();
+    }, 500);
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
+    document.addEventListener("DOMContentLoaded", startBmiFinalRepair);
   } else {
-    start();
+    startBmiFinalRepair();
   }
 })();

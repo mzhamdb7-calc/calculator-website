@@ -2009,3 +2009,164 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     color: var(--black) !important;
   }
 }
+/* =====================================================
+   PC ONLY: BMI final repaired history + point result style
+   Paste this at the bottom of pc.css if your BMI result box is not styled.
+===================================================== */
+@media (min-width: 851px) {
+  body.bmi-page #universalLoanStyleOutput {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  main.pc-calculator-layout > #stableBmiOutput {
+    grid-column: 1 / 3 !important;
+    grid-row: 3 !important;
+
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 18px !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  main.pc-calculator-layout > #stableBmiOutput[hidden] {
+    display: none !important;
+  }
+
+  #stableBmiOutput .stable-result-top {
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 16px !important;
+
+    align-items: start !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  #stableBmiOutput .stable-result-panel {
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+
+    padding: 18px !important;
+
+    background: #d3fff9 !important;
+    color: var(--black) !important;
+
+    border: 5px solid var(--black) !important;
+    box-shadow: 8px 8px 0 var(--black) !important;
+
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  #stableBmiOutput .stable-result-title {
+    margin: 0 0 14px !important;
+
+    color: var(--black) !important;
+
+    font-size: 30px !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+  }
+
+  #stableBmiOutput .stable-result-body {
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  #stableBmiOutput .stable-copy-side {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+  }
+
+  #stableBmiOutput .stable-copy-btn {
+    min-width: 90px !important;
+
+    padding: 10px 14px !important;
+
+    background: #ffb3c7 !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    font-family: inherit !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+
+    cursor: pointer !important;
+  }
+
+  #stableBmiOutput .stable-copy-btn:hover {
+    background: var(--yellow) !important;
+    transform: translate(-2px, -2px) !important;
+    box-shadow: 6px 6px 0 var(--black) !important;
+  }
+
+  .bmi-point-result {
+    width: 100% !important;
+    min-width: 700px !important;
+    min-height: 130px !important;
+
+    margin: 0 !important;
+    padding: 22px 34px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    list-style-position: inside !important;
+
+    font-size: 26px !important;
+    font-weight: bold !important;
+    line-height: 1.55 !important;
+    text-align: center !important;
+
+    box-sizing: border-box !important;
+  }
+
+  .bmi-point-result li {
+    margin: 8px 0 !important;
+    text-align: center !important;
+  }
+
+  .bmi-point-result strong {
+    color: var(--black) !important;
+  }
+
+  .bmi-input-unit-history-item .history-text {
+    line-height: 1.45 !important;
+    font-weight: bold !important;
+  }
+
+  .bmi-input-unit-history-item strong {
+    color: var(--black) !important;
+  }
+}
