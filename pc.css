@@ -2367,3 +2367,158 @@
     box-sizing: border-box !important;
   }
 }
+/* =====================================================
+   PC ONLY: FINAL FLOATING ? HELP OVERLAY
+   Panel opens left of ? and does not move layout
+===================================================== */
+@media (min-width: 851px) {
+  /* Hide old broken question buttons inside layout */
+  main.pc-calculator-layout > .pc-question-toggle {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  /* New fixed ? button */
+  #pcQuestionOverlayButton {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+
+    position: fixed !important;
+
+    left: var(--pc-final-question-left, calc(100vw - 86px)) !important;
+    top: var(--pc-final-question-top, 130px) !important;
+
+    width: 58px !important;
+    height: 58px !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: #ff9fcb !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 6px 6px 0 var(--black) !important;
+
+    font-family: inherit !important;
+    font-size: 30px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+
+    cursor: pointer !important;
+
+    z-index: 2147483647 !important;
+    box-sizing: border-box !important;
+  }
+
+  #pcQuestionOverlayButton:hover,
+  body.pc-final-help-open #pcQuestionOverlayButton {
+    background: var(--yellow) !important;
+  }
+
+  #pcQuestionOverlayButton[hidden] {
+    display: none !important;
+  }
+
+  /* Keep instruction box hidden without taking space */
+  main.pc-calculator-layout > .instruction-box {
+    display: none !important;
+  }
+
+  /* Open as fixed overlay, same size as calculator */
+  body.pc-final-help-open main.pc-calculator-layout > .instruction-box {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+
+    position: fixed !important;
+
+    left: var(--pc-final-help-left, 12px) !important;
+    top: var(--pc-final-help-top, 130px) !important;
+
+    width: var(--pc-final-help-width, 700px) !important;
+    height: var(--pc-final-help-height, 620px) !important;
+
+    max-width: calc(100vw - 24px) !important;
+    max-height: calc(100vh - 24px) !important;
+
+    margin: 0 !important;
+    padding: 20px !important;
+
+    background: var(--white) !important;
+
+    border: 5px solid var(--black) !important;
+    box-shadow: 9px 9px 0 var(--black) !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    transform: none !important;
+
+    z-index: 2147483646 !important;
+    box-sizing: border-box !important;
+  }
+
+  body.pc-final-help-open main.pc-calculator-layout > .instruction-box,
+  body.pc-final-help-open main.pc-calculator-layout > .instruction-box * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+  }
+
+  body.pc-final-help-open main.pc-calculator-layout > .instruction-box > .instruction-what-box {
+    display: none !important;
+  }
+
+  body.pc-final-help-open main.pc-calculator-layout .instruction-main-title,
+  body.pc-final-help-open main.pc-calculator-layout .reference-main-title,
+  body.pc-final-help-open main.pc-calculator-layout .reference-box > h2 {
+    text-align: center !important;
+  }
+
+  body.pc-final-help-open main.pc-calculator-layout .reference-box {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    overflow: visible !important;
+  }
+
+  body.pc-final-help-open main.pc-calculator-layout .reference-scroll {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    max-height: none !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    overflow: visible !important;
+  }
+
+  body.pc-final-help-open main.pc-calculator-layout .reference-card {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Phone mode: no PC ? overlay */
+@media (max-width: 850px) {
+  #pcQuestionOverlayButton {
+    display: none !important;
+  }
+}

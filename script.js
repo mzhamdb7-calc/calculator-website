@@ -2804,3 +2804,224 @@ document.addEventListener("DOMContentLoaded", function () {
     start();
   }
 })();
+/* =====================================================
+   PC ONLY: FINAL FLOATING ? HELP OVERLAY
+   - Does not move page layout
+   - Opens left of ? symbol
+   - Same size as calculator box
+   - Overlays all page items
+   - Works on all calculator pages
+===================================================== */
+(function () {
+  "use strict";
+
+  const BUTTON_ID = "pcQuestionOverlayButton";
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function isExcludedPage() {
+    return (
+      document.body.classList.contains("index-page") ||
+      document.body.classList.contains("about-page") ||
+      document.body.classList.contains("privacy-page") ||
+      document.body.classList.contains("contact-page") ||
+      document.body.classList.contains("info-page")
+    );
+  }
+
+  function getMain() {
+    return document.querySelector("main.pc-calculator-layout") ||
+           document.querySelector("main.has-instructions") ||
+           document.querySelector("main");
+  }
+
+  function isCalculatorPage(main) {
+    if (!main || isExcludedPage()) return false;
+
+    return !!(
+      main.querySelector(":scope > .calculator") &&
+      main.querySelector(":scope > .instruction-box")
+    );
+  }
+
+  function removeOldQuestionButtons(main) {
+    if (!main) return;
+
+    main.querySelectorAll(":scope > .pc-question-toggle").forEach(function (button) {
+      button.remove();
+    });
+  }
+
+  function getButton() {
+    let button = document.getElementById(BUTTON_ID);
+
+    if (!button) {
+      button = document.createElement("button");
+      button.id = BUTTON_ID;
+      button.type = "button";
+      button.textContent = "?";
+      button.setAttribute("aria-label", "Open instructions and references");
+      button.setAttribute("aria-expanded", "false");
+
+      document.body.appendChild(button);
+    }
+
+    return button;
+  }
+
+  function positionButtonAndPanel() {
+    const main = getMain();
+
+    if (!isPc() || !isCalculatorPage(main)) {
+      document.body.classList.remove("pc-final-help-ready", "pc-final-help-open");
+
+      const oldButton = document.getElementById(BUTTON_ID);
+      if (oldButton) oldButton.hidden = true;
+
+      return;
+    }
+
+    removeOldQuestionButtons(main);
+
+    const calculator = main.querySelector(":scope > .calculator");
+    const instructionBox = main.querySelector(":scope > .instruction-box");
+    const button = getButton();
+
+    if (!calculator || !instructionBox || !button) return;
+
+    const calcRect = calculator.getBoundingClientRect();
+
+    const buttonSize = 58;
+    const gap = 4;
+    const screenPadding = 12;
+
+    let buttonLeft = calcRect.right + gap;
+    let buttonTop = calcRect.top;
+
+    if (buttonLeft + buttonSize > window.innerWidth - screenPadding) {
+      buttonLeft = window.innerWidth - screenPadding - buttonSize;
+    }
+
+    if (buttonLeft < screenPadding) {
+      buttonLeft = screenPadding;
+    }
+
+    if (buttonTop < screenPadding) {
+      buttonTop = screenPadding;
+    }
+
+    if (buttonTop + buttonSize > window.innerHeight - screenPadding) {
+      buttonTop = window.innerHeight - screenPadding - buttonSize;
+    }
+
+    let panelWidth = calcRect.width;
+    let panelHeight = calcRect.height;
+
+    panelWidth = Math.min(panelWidth, window.innerWidth - screenPadding * 2);
+    panelHeight = Math.min(panelHeight, window.innerHeight - screenPadding * 2);
+
+    let panelLeft = buttonLeft - panelWidth - gap;
+    let panelTop = buttonTop;
+
+    if (panelLeft < screenPadding) {
+      panelLeft = screenPadding;
+      panelWidth = Math.min(panelWidth, buttonLeft - gap - screenPadding);
+    }
+
+    if (panelWidth < 300) {
+      panelWidth = Math.min(calcRect.width, window.innerWidth - screenPadding * 2);
+      panelLeft = screenPadding;
+    }
+
+    if (panelTop + panelHeight > window.innerHeight - screenPadding) {
+      panelTop = window.innerHeight - screenPadding - panelHeight;
+    }
+
+    if (panelTop < screenPadding) {
+      panelTop = screenPadding;
+    }
+
+    document.documentElement.style.setProperty("--pc-final-question-left", buttonLeft + "px");
+    document.documentElement.style.setProperty("--pc-final-question-top", buttonTop + "px");
+
+    document.documentElement.style.setProperty("--pc-final-help-left", panelLeft + "px");
+    document.documentElement.style.setProperty("--pc-final-help-top", panelTop + "px");
+    document.documentElement.style.setProperty("--pc-final-help-width", panelWidth + "px");
+    document.documentElement.style.setProperty("--pc-final-help-height", panelHeight + "px");
+
+    button.hidden = false;
+    document.body.classList.add("pc-final-help-ready");
+  }
+
+  function setupButtonClick() {
+    const button = getButton();
+
+    if (button.dataset.finalQuestionReady === "true") return;
+
+    button.dataset.finalQuestionReady = "true";
+
+    button.addEventListener(
+      "click",
+      function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (!isPc()) return;
+
+        const main = getMain();
+        if (!isCalculatorPage(main)) return;
+
+        positionButtonAndPanel();
+
+        const willOpen = !document.body.classList.contains("pc-final-help-open");
+
+        document.body.classList.toggle("pc-final-help-open", willOpen);
+        button.setAttribute("aria-expanded", willOpen ? "true" : "false");
+      },
+      true
+    );
+  }
+
+  function startFinalQuestionOverlay() {
+    setupButtonClick();
+    positionButtonAndPanel();
+
+    window.addEventListener("resize", positionButtonAndPanel);
+    window.addEventListener("scroll", positionButtonAndPanel, { passive: true });
+
+    setTimeout(positionButtonAndPanel, 100);
+    setTimeout(positionButtonAndPanel, 400);
+    setTimeout(positionButtonAndPanel, 900);
+    setTimeout(positionButtonAndPanel, 1500);
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = document.getElementById(BUTTON_ID);
+        const panel = document.querySelector("main.pc-calculator-layout > .instruction-box");
+
+        if (
+          document.body.classList.contains("pc-final-help-open") &&
+          button &&
+          panel &&
+          !button.contains(event.target) &&
+          !panel.contains(event.target)
+        ) {
+          document.body.classList.remove("pc-final-help-open");
+          button.setAttribute("aria-expanded", "false");
+        }
+
+        setTimeout(positionButtonAndPanel, 0);
+      },
+      true
+    );
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startFinalQuestionOverlay);
+  } else {
+    startFinalQuestionOverlay();
+  }
+})();
