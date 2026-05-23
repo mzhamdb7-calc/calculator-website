@@ -2522,3 +2522,30 @@
     display: none !important;
   }
 }
+/* =====================================================
+   PC ONLY: close visual gap between ? and help panel
+===================================================== */
+@media (min-width: 851px) {
+  #pcQuestionOverlayButton {
+    left: var(--pc-final-question-left, calc(100vw - 86px)) !important;
+    top: var(--pc-final-question-top, 130px) !important;
+
+    margin: 0 !important;
+    transform: none !important;
+
+    z-index: 2147483647 !important;
+  }
+
+  body.pc-final-help-open main.pc-calculator-layout > .instruction-box {
+    left: var(--pc-final-help-left, 12px) !important;
+    top: var(--pc-final-help-top, 130px) !important;
+
+    width: var(--pc-final-help-width, 700px) !important;
+    height: var(--pc-final-help-height, 620px) !important;
+
+    margin: 0 !important;
+    transform: none !important;
+
+    z-index: 2147483646 !important;
+  }
+}
