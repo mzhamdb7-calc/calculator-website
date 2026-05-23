@@ -2164,3 +2164,63 @@ document.addEventListener("DOMContentLoaded", function () {
     initLoanPage();
   }
 })();
+/* =====================================================
+   LOAN PAGE: remove Copy button inside calculator box
+   Keeps outside result/table copy button
+===================================================== */
+(function () {
+  "use strict";
+
+  function isLoanPage() {
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      !!document.getElementById("loanResult")
+    );
+  }
+
+  function removeLoanInsideCopyButton() {
+    if (!isLoanPage()) return;
+
+    const calculator = document.querySelector(".calculator");
+    const loanResult = document.getElementById("loanResult");
+
+    if (!calculator) return;
+
+    calculator
+      .querySelectorAll(".result-copy-btn, .copy-result-btn")
+      .forEach(function (button) {
+        if (!button.closest("#loanExternalOutput")) {
+          button.remove();
+        }
+      });
+
+    if (loanResult) {
+      const wrapper = loanResult.closest(".result-copy-wrap");
+
+      if (wrapper && calculator.contains(wrapper)) {
+        wrapper.parentNode.insertBefore(loanResult, wrapper);
+        wrapper.remove();
+      }
+    }
+  }
+
+  function start() {
+    removeLoanInsideCopyButton();
+
+    setTimeout(removeLoanInsideCopyButton, 100);
+    setTimeout(removeLoanInsideCopyButton, 400);
+    setTimeout(removeLoanInsideCopyButton, 1000);
+
+    document.addEventListener("click", function () {
+      setTimeout(removeLoanInsideCopyButton, 0);
+      setTimeout(removeLoanInsideCopyButton, 150);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();

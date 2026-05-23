@@ -1734,3 +1734,12 @@
     justify-content: flex-end !important;
   }
 }
+/* =====================================================
+   PC ONLY: hide loan copy button inside calculator box
+===================================================== */
+@media (min-width: 851px) {
+  body.loan-page .calculator .result-copy-btn,
+  body.loan-page .calculator .copy-result-btn {
+    display: none !important;
+  }
+}
