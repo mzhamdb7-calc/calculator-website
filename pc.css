@@ -1,94 +1,34 @@
-/*
-  Copyright © 2026 Hamdi.
-  PC MODE ONLY
-*/
-
+/* =====================================================
+   PC FINAL ARROW FIX
+   Remove duplicate arrows.
+   Use CSS only.
+   Closed = ▼
+   Hover/Open = ▲
+===================================================== */
 @media (min-width: 851px) {
-  #navbar {
-    overflow: visible !important;
-  }
-
-  #navbar > .dropdown {
-    position: relative !important;
-    overflow: visible !important;
-  }
-
-  #navbar > .dropdown:hover > .dropdown-content,
-  #navbar > .dropdown:focus-within > .dropdown-content,
-  #navbar > .dropdown.menu-open > .dropdown-content {
-    display: block !important;
-  }
-
-  #navbar .dropdown-content {
-    top: 62px !important;
-    left: -3px !important;
-    right: auto !important;
-    width: 250px !important;
-    overflow: visible !important;
-  }
-
-  #navbar .about-dropdown-content {
-    left: auto !important;
-    right: -3px !important;
-  }
-
-  #navbar .dropdown-content > .nav-group,
-  #navbar .dropdown-content > .fixed-nav-group,
-  #navbar .dropdown-content > .navbar-fixed-group {
-    position: relative !important;
-    overflow: visible !important;
-  }
-
-  #navbar .dropdown-content > .nav-group > .nav-group-links,
-  #navbar .dropdown-content > .fixed-nav-group > .nav-group-links,
-  #navbar .dropdown-content > .navbar-fixed-group > .nav-group-links {
+  /* Hide old JS arrows */
+  #navbar .nav-menu-arrow,
+  #navbar .phone-sub-arrow {
     display: none !important;
-    position: absolute !important;
-    top: -3px !important;
-    right: calc(100% + 3px) !important;
-    left: auto !important;
-    width: 210px !important;
-    background: var(--white) !important;
-    border: 3px solid var(--black) !important;
-    box-shadow: 5px 5px 0 var(--black) !important;
-    z-index: 999999999 !important;
-  }
-
-  #navbar .dropdown-content > .nav-group:hover > .nav-group-links,
-  #navbar .dropdown-content > .nav-group:focus-within > .nav-group-links,
-  #navbar .dropdown-content > .nav-group[open] > .nav-group-links,
-  #navbar .dropdown-content > .fixed-nav-group:hover > .nav-group-links,
-  #navbar .dropdown-content > .fixed-nav-group:focus-within > .nav-group-links,
-  #navbar .dropdown-content > .fixed-nav-group.is-open > .nav-group-links,
-  #navbar .dropdown-content > .navbar-fixed-group:hover > .nav-group-links,
-  #navbar .dropdown-content > .navbar-fixed-group:focus-within > .nav-group-links,
-  #navbar .dropdown-content > .navbar-fixed-group.is-open > .nav-group-links {
-    display: block !important;
-  }
-
-  #navbar .dropdown-content > .nav-group:hover > summary,
-  #navbar .dropdown-content > .nav-group:focus-within > summary,
-  #navbar .dropdown-content > .nav-group[open] > summary,
-  #navbar .dropdown-content > .fixed-nav-group:hover > .nav-summary,
-  #navbar .dropdown-content > .fixed-nav-group:focus-within > .nav-summary,
-  #navbar .dropdown-content > .fixed-nav-group.is-open > .nav-summary,
-  #navbar .dropdown-content > .navbar-fixed-group:hover > .navbar-fixed-summary,
-  #navbar .dropdown-content > .navbar-fixed-group:focus-within > .navbar-fixed-summary,
-  #navbar .dropdown-content > .navbar-fixed-group.is-open > .navbar-fixed-summary {
-    background: var(--yellow) !important;
-  }
-
-  /* Remove old duplicate CSS arrows from health/finance */
-  #navbar .dropdown-content details.nav-group > summary::after,
-  #navbar .dropdown-content .nav-group > summary::after,
-  #navbar .dropdown-content .fixed-nav-group > .nav-summary::after,
-  #navbar .dropdown-content .navbar-fixed-group > .navbar-fixed-summary::after {
     content: none !important;
+  }
+
+  /* Remove browser details marker */
+  #navbar summary {
+    list-style: none !important;
+  }
+
+  #navbar summary::-webkit-details-marker {
     display: none !important;
   }
 
-  /* Real JS arrow */
-  #navbar .nav-menu-arrow {
+  #navbar summary::marker {
+    content: "" !important;
+  }
+
+  /* Top menu arrows: calculator + info */
+  #navbar > .dropdown > .dropbtn::after {
+    content: "▼" !important;
     display: inline-block !important;
     margin-left: 8px !important;
     color: var(--black) !important;
@@ -98,221 +38,48 @@
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-  }
-}
-
-/* =====================================================
-   PC FINAL: keep only this instruction layout command
-   LEFT: What + Result/History
-   CENTER: Calculator
-   RIGHT: Instructions + References
-===================================================== */
-@media (min-width: 851px) {
-  :root {
-    --pc-side-width: 340px;
-    --pc-center-min: 620px;
-    --pc-center-max: 780px;
-    --pc-side-border: 4px;
-    --pc-side-shadow: 5px 5px 0 var(--black);
-    --pc-side-title-height: 56px;
-    --pc-side-item-height: 128px;
-  }
-
-  main.has-instructions {
-    width: 100% !important;
-    max-width: 1540px !important;
-    margin: 130px auto 80px !important;
-    padding: 16px 26px !important;
-    display: grid !important;
-    grid-template-columns: var(--pc-side-width) minmax(var(--pc-center-min), var(--pc-center-max)) var(--pc-side-width) !important;
-    grid-template-rows: auto auto !important;
-    gap: 22px 35px !important;
-    justify-content: center !important;
-    align-items: start !important;
-    box-sizing: border-box !important;
-  }
-
-  main.has-instructions > * {
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-  }
-
-  main.has-instructions > .pc-what-slot {
-    grid-column: 1 !important;
-    grid-row: 1 !important;
-    width: var(--pc-side-width) !important;
-    max-width: var(--pc-side-width) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    justify-self: center !important;
-    align-self: start !important;
-  }
-
-  main.has-instructions > .history,
-  main.has-instructions > .age-history-box,
-  main.has-instructions > .bmi-history-box,
-  main.has-instructions > .discount-history-box,
-  main.has-instructions > .loan-history-box,
-  main.has-instructions > .percentage-history-box,
-  main.has-instructions > .compound-history-box {
-    grid-column: 1 !important;
-    grid-row: 2 !important;
-    width: var(--pc-side-width) !important;
-    max-width: var(--pc-side-width) !important;
-    min-height: 420px !important;
-    max-height: 520px !important;
-    margin: 0 !important;
-    padding: 20px !important;
-    border: var(--pc-side-border) solid var(--black) !important;
-    box-shadow: var(--pc-side-shadow) !important;
     transform: none !important;
-    justify-self: center !important;
-    align-self: start !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
   }
 
-  main.has-instructions > .calculator {
-    grid-column: 2 !important;
-    grid-row: 1 / span 2 !important;
-    width: 100% !important;
-    max-width: var(--pc-center-max) !important;
-    margin: 0 !important;
-    justify-self: center !important;
-    align-self: start !important;
-    box-sizing: border-box !important;
+  #navbar > .dropdown:hover > .dropbtn::after,
+  #navbar > .dropdown:focus-within > .dropbtn::after,
+  #navbar > .dropdown.menu-open > .dropbtn::after,
+  #navbar > .dropdown.phone-open > .dropbtn::after,
+  #navbar > .dropdown.mobile-open > .dropbtn::after {
+    content: "▲" !important;
   }
 
-  main.has-instructions > .instruction-box {
-    grid-column: 3 !important;
-    grid-row: 1 / span 2 !important;
-    width: var(--pc-side-width) !important;
-    max-width: var(--pc-side-width) !important;
-    margin: 0 !important;
-    padding: 0 !important;
+  /* Health / finance arrows */
+  #navbar .dropdown-content > details.nav-group > summary::after,
+  #navbar .dropdown-content > .nav-group > summary::after,
+  #navbar .dropdown-content > .fixed-nav-group > .nav-summary::after,
+  #navbar .dropdown-content > .navbar-fixed-group > .navbar-fixed-summary::after {
+    content: "▼" !important;
+    display: inline-block !important;
+    margin-left: 8px !important;
+    color: var(--black) !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-    justify-self: center !important;
-    align-self: start !important;
-    overflow: visible !important;
-    box-sizing: border-box !important;
+    transform: none !important;
   }
 
-  main.has-instructions > .instruction-box > .instruction-what-box {
-    display: none !important;
-  }
-
-  main.has-instructions .pc-what-slot .instruction-what-box,
-  main.has-instructions .instruction-box .instruction-section:not(.instruction-what-box),
-  main.has-instructions .reference-card {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: var(--pc-side-item-height) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: center !important;
-    margin: 0 0 16px !important;
-    padding: 14px 12px !important;
-    color: var(--black) !important;
-    border: var(--pc-side-border) solid var(--black) !important;
-    box-shadow: var(--pc-side-shadow) !important;
-    text-align: center !important;
-    box-sizing: border-box !important;
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-  }
-
-  main.has-instructions .instruction-main-title,
-  main.has-instructions .reference-main-title,
-  main.has-instructions .reference-box > h2 {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: var(--pc-side-title-height) !important;
-    display: flex !important;
-    align-items: center !important;
-    margin: 0 0 16px !important;
-    padding: 10px 12px !important;
-    background: var(--white) !important;
-    color: var(--black) !important;
-    border: var(--pc-side-border) solid var(--black) !important;
-    box-shadow: var(--pc-side-shadow) !important;
-    font-size: 22px !important;
-    font-weight: bold !important;
-    line-height: 1.2 !important;
-    text-align: left !important;
-    box-sizing: border-box !important;
-  }
-
-  main.has-instructions .instruction-what-box { background: #ffd3d3 !important; }
-  main.has-instructions .instruction-how-box { background: #d3fff9 !important; }
-  main.has-instructions .instruction-formula-box { background: #fff4b8 !important; }
-  main.has-instructions .instruction-example-box { background: #d3ffd9 !important; }
-  main.has-instructions .reference-card { background: #d3fff9 !important; }
-  main.has-instructions .reference-card:nth-child(2) { background: #fff4b8 !important; }
-  main.has-instructions .reference-card:nth-child(3) { background: #d3ffd9 !important; }
-
-  main.has-instructions .instruction-section h3,
-  main.has-instructions .reference-card h3 {
-    margin: 0 0 7px !important;
-    color: var(--black) !important;
-    font-size: 18px !important;
-    font-weight: bold !important;
-    line-height: 1.2 !important;
-  }
-
-  main.has-instructions .instruction-section p,
-  main.has-instructions .reference-card p {
-    margin: 0 !important;
-    color: var(--black) !important;
-    font-size: 15px !important;
-    font-weight: bold !important;
-    line-height: 1.35 !important;
-  }
-
-  main.has-instructions .reference-box {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-  }
-
-  main.has-instructions .reference-scroll {
-    width: 100% !important;
-    max-width: 100% !important;
-    max-height: 360px !important;
-    padding: 0 8px 8px 0 !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
-  }
-
-  main.has-instructions .reference-card a {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    margin-top: 8px !important;
-    padding: 6px 10px !important;
-    background: var(--white) !important;
-    color: var(--black) !important;
-    border: 3px solid var(--black) !important;
-    box-shadow: 3px 3px 0 var(--black) !important;
-    font-size: 13px !important;
-    font-weight: bold !important;
-    text-decoration: none !important;
-  }
-
-  main.has-instructions .reference-card a:hover {
-    background: var(--yellow) !important;
+  #navbar .dropdown-content > details.nav-group:hover > summary::after,
+  #navbar .dropdown-content > details.nav-group:focus-within > summary::after,
+  #navbar .dropdown-content > details.nav-group[open] > summary::after,
+  #navbar .dropdown-content > .nav-group:hover > summary::after,
+  #navbar .dropdown-content > .nav-group:focus-within > summary::after,
+  #navbar .dropdown-content > .nav-group[open] > summary::after,
+  #navbar .dropdown-content > .nav-group.is-open > summary::after,
+  #navbar .dropdown-content > .fixed-nav-group:hover > .nav-summary::after,
+  #navbar .dropdown-content > .fixed-nav-group:focus-within > .nav-summary::after,
+  #navbar .dropdown-content > .fixed-nav-group.is-open > .nav-summary::after,
+  #navbar .dropdown-content > .navbar-fixed-group:hover > .navbar-fixed-summary::after,
+  #navbar .dropdown-content > .navbar-fixed-group:focus-within > .navbar-fixed-summary::after,
+  #navbar .dropdown-content > .navbar-fixed-group.is-open > .navbar-fixed-summary::after {
+    content: "▲" !important;
   }
 }
