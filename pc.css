@@ -1996,3 +1996,16 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     color: var(--black) !important;
   }
 }
+/* =====================================================
+   PC ONLY: BMI input history with units style
+===================================================== */
+@media (min-width: 851px) {
+  .bmi-input-unit-history-item .history-text {
+    line-height: 1.45 !important;
+    font-weight: bold !important;
+  }
+
+  .bmi-input-unit-history-item strong {
+    color: var(--black) !important;
+  }
+}
