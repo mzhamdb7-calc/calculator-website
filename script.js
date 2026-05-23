@@ -2578,3 +2578,148 @@ document.addEventListener("DOMContentLoaded", function () {
     setupPhoneDropups();
   }
 })();
+/* =====================================================
+   ADD REFERENCES BOX UNDER INSTRUCTIONS
+   Works on pages that already have .instruction-box
+===================================================== */
+(function () {
+  "use strict";
+
+  function getPageTitle() {
+    const h1 = document.querySelector("h1");
+    return h1 ? h1.textContent.trim().toLowerCase() : "";
+  }
+
+  function getReferenceData() {
+    const title = getPageTitle();
+
+    if (title.includes("compound")) {
+      return [
+        ["Formula reference", "A = P(1 + r/n)ⁿᵗ"],
+        ["Interest reference", "Compound Interest = A − P"],
+        ["Meaning", "P = principal, r = annual rate, n = compounding frequency, t = years."]
+      ];
+    }
+
+    if (title.includes("basic")) {
+      return [
+        ["Math order", "Brackets first, then powers, multiplication/division, and addition/subtraction."],
+        ["Power reference", "xʸ means a number multiplied by itself y times."],
+        ["Square root", "√x gives the number that multiplies by itself to make x."]
+      ];
+    }
+
+    if (title.includes("age")) {
+      return [
+        ["Normal age", "Current year − birth year, adjusted if birthday has not passed."],
+        ["Asian age", "Current year − birth year + 1."],
+        ["Date reference", "Birth date cannot be after today."]
+      ];
+    }
+
+    if (title.includes("bmi")) {
+      return [
+        ["SI BMI formula", "BMI = weight kg ÷ height m²."],
+        ["US BMI formula", "BMI = 703 × weight lb ÷ height inch²."],
+        ["Waist-to-height", "W/H ratio = waist ÷ height."]
+      ];
+    }
+
+    if (title.includes("loan")) {
+      return [
+        ["Monthly payment", "Payment = P × r × (1 + r)ⁿ ÷ ((1 + r)ⁿ − 1)."],
+        ["Monthly rate", "Monthly rate = annual interest rate ÷ 100 ÷ 12."],
+        ["Total interest", "Total interest = total payment − loan amount."]
+      ];
+    }
+
+    if (title.includes("discount")) {
+      return [
+        ["Savings", "Savings = original price × discount ÷ 100."],
+        ["Final price", "Final price = original price − savings."],
+        ["Discount range", "Discount should be between 0 and 100."]
+      ];
+    }
+
+    if (title.includes("percentage")) {
+      return [
+        ["Percentage formula", "Result = percentage ÷ 100 × number."],
+        ["Example", "20% of 150 = 20 ÷ 100 × 150 = 30."],
+        ["Meaning", "Percent means out of 100."]
+      ];
+    }
+
+    return [];
+  }
+
+  function createReferenceCard(title, text) {
+    const card = document.createElement("div");
+    card.className = "reference-card";
+
+    const h3 = document.createElement("h3");
+    h3.textContent = title;
+
+    const p = document.createElement("p");
+    p.textContent = text;
+
+    card.appendChild(h3);
+    card.appendChild(p);
+
+    return card;
+  }
+
+  function addReferenceBox() {
+    const main = document.querySelector("main");
+    if (!main) return;
+
+    const instructionBox = main.querySelector(".instruction-box");
+    if (!instructionBox) return;
+
+    const data = getReferenceData();
+    if (!data.length) return;
+
+    let referenceBox = instructionBox.querySelector(".reference-box");
+
+    if (!referenceBox) {
+      referenceBox = document.createElement("div");
+      referenceBox.className = "reference-box";
+      instructionBox.appendChild(referenceBox);
+    }
+
+    referenceBox.innerHTML = "";
+
+    const title = document.createElement("h2");
+    title.textContent = "References";
+    referenceBox.appendChild(title);
+
+    data.forEach(function (item) {
+      referenceBox.appendChild(createReferenceCard(item[0], item[1]));
+    });
+  }
+
+  function startReferenceBox() {
+    addReferenceBox();
+
+    setTimeout(addReferenceBox, 150);
+    setTimeout(addReferenceBox, 500);
+
+    const main = document.querySelector("main");
+
+    if (main) {
+      const observer = new MutationObserver(function () {
+        addReferenceBox();
+      });
+
+      observer.observe(main, {
+        childList: true,
+        subtree: true
+      });
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startReferenceBox);
+  } else {
+    startReferenceBox();
+  }
+})();
