@@ -884,3 +884,332 @@
     start();
   }
 })();
+/* =====================================================
+   PC ONLY: AGE PAGE LOAN-STYLE HELP + FAST HISTORY
+   - Age instruction/reference overlay follows loan style
+   - Age history no more repeated slow render
+===================================================== */
+(function () {
+  "use strict";
+
+  const PC_QUERY = "(min-width: 851px)";
+  const AGE_HISTORY_KEY = "ageFastInputHistory";
+  const MAX_ITEMS = 50;
+
+  function isPc() {
+    return window.matchMedia(PC_QUERY).matches;
+  }
+
+  function isAgePage() {
+    return (
+      document.body.classList.contains("age-page") ||
+      document.body.dataset.page === "age" ||
+      !!document.getElementById("birthdate")
+    );
+  }
+
+  function getMain() {
+    return (
+      document.querySelector("main.pc-calculator-layout") ||
+      document.querySelector("main.has-instructions") ||
+      document.querySelector("main")
+    );
+  }
+
+  function markAgePage() {
+    if (!isAgePage()) return;
+
+    document.body.classList.add("age-page");
+    document.body.dataset.page = "age";
+  }
+
+  function getHelpButton() {
+    return (
+      document.getElementById("pcHelpQuestionButton") ||
+      document.getElementById("pcQuestionOverlayButton")
+    );
+  }
+
+  function positionAgeHelpLikeLoan() {
+    if (!isPc() || !isAgePage()) return;
+
+    const main = getMain();
+    if (!main) return;
+
+    const calculator = main.querySelector(":scope > .calculator");
+    const whatBox =
+      main.querySelector(":scope > .pc-what-slot") ||
+      main.querySelector(".instruction-what-box");
+
+    const button = getHelpButton();
+
+    if (!calculator || !whatBox || !button) return;
+
+    const calcRect = calculator.getBoundingClientRect();
+    const whatRect = whatBox.getBoundingClientRect();
+
+    const screenPadding = 12;
+    const buttonSize = 58;
+    const buttonGap = 8;
+
+    let buttonLeft = whatRect.right + buttonGap;
+    let buttonTop = whatRect.top + Math.max(0, (whatRect.height - buttonSize) / 2);
+
+    if (buttonLeft + buttonSize > window.innerWidth - screenPadding) {
+      buttonLeft = whatRect.right - buttonSize - 12;
+    }
+
+    buttonLeft = Math.max(
+      screenPadding,
+      Math.min(buttonLeft, window.innerWidth - screenPadding - buttonSize)
+    );
+
+    buttonTop = Math.max(
+      screenPadding,
+      Math.min(buttonTop, window.innerHeight - screenPadding - buttonSize)
+    );
+
+    let panelLeft = calcRect.left;
+    let panelTop = calcRect.top;
+    let panelWidth = calcRect.width;
+    let panelHeight = calcRect.height;
+
+    panelWidth = Math.min(panelWidth, window.innerWidth - screenPadding * 2);
+    panelHeight = Math.min(panelHeight, window.innerHeight - screenPadding * 2);
+
+    if (panelLeft + panelWidth > window.innerWidth - screenPadding) {
+      panelLeft = window.innerWidth - screenPadding - panelWidth;
+    }
+
+    if (panelTop + panelHeight > window.innerHeight - screenPadding) {
+      panelTop = window.innerHeight - screenPadding - panelHeight;
+    }
+
+    panelLeft = Math.max(screenPadding, panelLeft);
+    panelTop = Math.max(screenPadding, panelTop);
+
+    /* New clean system variables */
+    document.documentElement.style.setProperty("--pc-help-btn-left", buttonLeft + "px");
+    document.documentElement.style.setProperty("--pc-help-btn-top", buttonTop + "px");
+    document.documentElement.style.setProperty("--pc-help-panel-left", panelLeft + "px");
+    document.documentElement.style.setProperty("--pc-help-panel-top", panelTop + "px");
+    document.documentElement.style.setProperty("--pc-help-panel-width", panelWidth + "px");
+    document.documentElement.style.setProperty("--pc-help-panel-height", panelHeight + "px");
+
+    /* Old compatible variables */
+    document.documentElement.style.setProperty("--calc-help-btn-left", buttonLeft + "px");
+    document.documentElement.style.setProperty("--calc-help-btn-top", buttonTop + "px");
+    document.documentElement.style.setProperty("--calc-help-left", panelLeft + "px");
+    document.documentElement.style.setProperty("--calc-help-top", panelTop + "px");
+    document.documentElement.style.setProperty("--calc-help-width", panelWidth + "px");
+    document.documentElement.style.setProperty("--calc-help-height", panelHeight + "px");
+  }
+
+  function loadAgeHistory() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(AGE_HISTORY_KEY) || "[]");
+      return Array.isArray(saved) ? saved : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveAgeHistory(history) {
+    try {
+      localStorage.setItem(AGE_HISTORY_KEY, JSON.stringify(history.slice(-MAX_ITEMS)));
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function getBirthdate() {
+    const input = document.getElementById("birthdate");
+    return input ? String(input.value || "").trim() : "";
+  }
+
+  function copyText(text, button) {
+    if (!text) return;
+
+    function done() {
+      const old = button.textContent;
+      button.textContent = "copied";
+
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done).catch(function () {
+        fallbackCopy(text);
+        done();
+      });
+    } else {
+      fallbackCopy(text);
+      done();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function cleanAgeHistoryList() {
+    const oldList = document.getElementById("ageHistoryList");
+    if (!oldList || oldList.dataset.fastAgeReady === "true") return oldList;
+
+    const newList = oldList.cloneNode(false);
+    newList.id = "ageHistoryList";
+    newList.dataset.fastAgeReady = "true";
+
+    oldList.parentNode.replaceChild(newList, oldList);
+
+    return newList;
+  }
+
+  function renderFastAgeHistory() {
+    if (!isPc() || !isAgePage()) return;
+
+    const list = cleanAgeHistoryList();
+    if (!list) return;
+
+    const history = loadAgeHistory();
+
+    list.innerHTML = "";
+
+    history.slice().reverse().forEach(function (birthdate) {
+      const li = document.createElement("li");
+      li.className = "history-item age-fast-history-item";
+
+      const text = document.createElement("span");
+      text.className = "history-text";
+      text.textContent = "Birthdate: " + birthdate;
+
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "history-copy-btn";
+      copyBtn.textContent = "copy";
+
+      copyBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        copyText(birthdate, copyBtn);
+      });
+
+      li.appendChild(text);
+      li.appendChild(copyBtn);
+      list.appendChild(li);
+    });
+  }
+
+  function addFastAgeHistory() {
+    if (!isPc() || !isAgePage()) return;
+
+    const birthdate = getBirthdate();
+    if (!birthdate) return;
+
+    const history = loadAgeHistory();
+    const last = history[history.length - 1];
+
+    if (last !== birthdate) {
+      history.push(birthdate);
+    }
+
+    saveAgeHistory(history);
+    renderFastAgeHistory();
+  }
+
+  function clearFastAgeHistory() {
+    if (!isAgePage()) return;
+
+    localStorage.removeItem(AGE_HISTORY_KEY);
+    localStorage.removeItem("ageHistory");
+    localStorage.removeItem("inputHistory_age");
+
+    renderFastAgeHistory();
+  }
+
+  function renameAgeHistoryTitle() {
+    if (!isPc() || !isAgePage()) return;
+
+    const title =
+      document.querySelector(".age-history-box .age-history-top h3") ||
+      document.querySelector(".age-history-box h3");
+
+    if (title) {
+      title.textContent = "Input";
+    }
+  }
+
+  function setupFastAgeHistory() {
+    if (!isPc() || !isAgePage()) return;
+
+    cleanAgeHistoryList();
+    renameAgeHistoryTitle();
+    renderFastAgeHistory();
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (text.includes("calculate") || onclick.includes("calculateAge")) {
+          setTimeout(addFastAgeHistory, 60);
+        }
+
+        if (text.includes("clear")) {
+          setTimeout(clearFastAgeHistory, 0);
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key === "Enter") {
+          setTimeout(addFastAgeHistory, 60);
+        }
+      },
+      true
+    );
+
+    window.clearAgeHistory = clearFastAgeHistory;
+  }
+
+  function start() {
+    markAgePage();
+    setupFastAgeHistory();
+    positionAgeHelpLikeLoan();
+
+    window.addEventListener("resize", positionAgeHelpLikeLoan);
+    window.addEventListener("scroll", positionAgeHelpLikeLoan, { passive: true });
+
+    document.addEventListener("click", function () {
+      setTimeout(positionAgeHelpLikeLoan, 0);
+      setTimeout(positionAgeHelpLikeLoan, 120);
+    });
+
+    setTimeout(positionAgeHelpLikeLoan, 300);
+    setTimeout(renderFastAgeHistory, 500);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();

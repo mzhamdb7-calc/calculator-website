@@ -971,3 +971,138 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     background: var(--yellow) !important;
   }
 }
+/* =====================================================
+   PC ONLY: AGE PAGE loan-style instruction/reference overlay
+===================================================== */
+@media (min-width: 851px) {
+  body.age-page #pcHelpQuestionButton,
+  body.age-page #pcQuestionOverlayButton {
+    left: var(--pc-help-btn-left, var(--calc-help-btn-left, calc(100vw - 80px))) !important;
+    top: var(--pc-help-btn-top, var(--calc-help-btn-top, 130px)) !important;
+
+    z-index: 2147483647 !important;
+  }
+
+  body.age-page.pc-help-overlay-open main.pc-calculator-layout > .instruction-box,
+  body.age-page.pc-calculator-help-open main.pc-calculator-layout > .instruction-box {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+
+    position: fixed !important;
+
+    left: var(--pc-help-panel-left, var(--calc-help-left, 10px)) !important;
+    top: var(--pc-help-panel-top, var(--calc-help-top, 130px)) !important;
+
+    width: var(--pc-help-panel-width, var(--calc-help-width, 700px)) !important;
+    height: var(--pc-help-panel-height, var(--calc-help-height, 620px)) !important;
+
+    max-width: calc(100vw - 24px) !important;
+    max-height: calc(100vh - 24px) !important;
+
+    margin: 0 !important;
+    padding: 20px !important;
+
+    background: var(--white) !important;
+
+    border: 5px solid var(--black) !important;
+    box-shadow: 9px 9px 0 var(--black) !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    transform: none !important;
+
+    z-index: 2147483646 !important;
+    box-sizing: border-box !important;
+  }
+
+  body.age-page.pc-help-overlay-open main.pc-calculator-layout > .instruction-box > .instruction-what-box,
+  body.age-page.pc-calculator-help-open main.pc-calculator-layout > .instruction-box > .instruction-what-box {
+    display: none !important;
+  }
+
+  body.age-page.pc-help-overlay-open main.pc-calculator-layout .instruction-section:not(.instruction-what-box),
+  body.age-page.pc-help-overlay-open main.pc-calculator-layout .reference-card,
+  body.age-page.pc-calculator-help-open main.pc-calculator-layout .instruction-section:not(.instruction-what-box),
+  body.age-page.pc-calculator-help-open main.pc-calculator-layout .reference-card {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 0 16px !important;
+    padding: 14px 12px !important;
+
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    text-align: center !important;
+
+    box-sizing: border-box !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+  }
+
+  body.age-page.pc-help-overlay-open main.pc-calculator-layout .instruction-how-box,
+  body.age-page.pc-calculator-help-open main.pc-calculator-layout .instruction-how-box {
+    background: #d3fff9 !important;
+  }
+
+  body.age-page.pc-help-overlay-open main.pc-calculator-layout .instruction-formula-box,
+  body.age-page.pc-calculator-help-open main.pc-calculator-layout .instruction-formula-box {
+    background: #fff4b8 !important;
+  }
+
+  body.age-page.pc-help-overlay-open main.pc-calculator-layout .instruction-example-box,
+  body.age-page.pc-calculator-help-open main.pc-calculator-layout .instruction-example-box {
+    background: #d3ffd9 !important;
+  }
+
+  body.age-page.pc-help-overlay-open main.pc-calculator-layout .reference-card,
+  body.age-page.pc-calculator-help-open main.pc-calculator-layout .reference-card {
+    background: #d3fff9 !important;
+  }
+
+  body.age-page.pc-help-overlay-open main.pc-calculator-layout .reference-box,
+  body.age-page.pc-calculator-help-open main.pc-calculator-layout .reference-box {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    overflow: visible !important;
+  }
+
+  body.age-page.pc-help-overlay-open main.pc-calculator-layout .reference-scroll,
+  body.age-page.pc-calculator-help-open main.pc-calculator-layout .reference-scroll {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    max-height: none !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    overflow: visible !important;
+  }
+
+  body.age-page .age-history-box {
+    contain: content !important;
+  }
+
+  body.age-page #ageHistoryList {
+    contain: content !important;
+  }
+
+  body.age-page .age-fast-history-item .history-text {
+    font-weight: bold !important;
+    line-height: 1.45 !important;
+  }
+}
