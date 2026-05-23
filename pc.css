@@ -1814,3 +1814,14 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     color: var(--black) !important;
   }
 }
+/* =====================================================
+   PC ONLY: Age input history range style
+   Paste at the bottom of pc.css
+===================================================== */
+@media (min-width: 851px) {
+  .age-range-history-item .history-text {
+    font-weight: bold !important;
+    line-height: 1.45 !important;
+    text-align: center !important;
+  }
+}

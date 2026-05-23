@@ -1670,3 +1670,303 @@
     startAgeInputTargetHistory();
   }
 })();
+/* =====================================================
+   PC ONLY: AGE INPUT HISTORY FORMAT
+   Format: dd/mm/yyyy to dd/mm/yyyy
+   Paste at the bottom of pc.js
+===================================================== */
+(function () {
+  "use strict";
+
+  const STORAGE_KEY = "ageInputHistoryWithTargetDate";
+  const MAX_ITEMS = 50;
+
+  let renderingAgeRangeHistory = false;
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function isAgePage() {
+    return (
+      document.body.classList.contains("age-page") ||
+      document.body.dataset.page === "age" ||
+      !!document.getElementById("birthdate")
+    );
+  }
+
+  function todayValue() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+
+    return year + "-" + month + "-" + day;
+  }
+
+  function formatDate(value) {
+    if (!value) return "";
+
+    const parts = String(value).split("-");
+
+    if (parts.length !== 3) {
+      return value;
+    }
+
+    const year = parts[0];
+    const month = parts[1];
+    const day = parts[2];
+
+    return day + "/" + month + "/" + year;
+  }
+
+  function getValue(id) {
+    const input = document.getElementById(id);
+    return input ? String(input.value || "").trim() : "";
+  }
+
+  function getTargetDate() {
+    const input = document.getElementById("dateToCalculate");
+
+    if (!input) return todayValue();
+
+    if (!input.value) {
+      input.value = todayValue();
+    }
+
+    return String(input.value || "").trim() || todayValue();
+  }
+
+  function loadHistory() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      return Array.isArray(saved) ? saved : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveHistory(history) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(history.slice(-MAX_ITEMS)));
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function copyText(text, button) {
+    if (!text) return;
+
+    function done() {
+      const oldText = button.textContent;
+      button.textContent = "copied";
+
+      setTimeout(function () {
+        button.textContent = oldText;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done).catch(function () {
+        fallbackCopy(text);
+        done();
+      });
+    } else {
+      fallbackCopy(text);
+      done();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function renderAgeRangeHistory() {
+    if (!isPc() || !isAgePage()) return;
+
+    const list = document.getElementById("ageHistoryList");
+    if (!list) return;
+
+    renderingAgeRangeHistory = true;
+
+    const history = loadHistory();
+
+    list.innerHTML = "";
+
+    history.slice().reverse().forEach(function (item) {
+      if (!item || !item.birthdate) return;
+
+      const birthdate = item.birthdate;
+      const targetDate = item.targetDate || todayValue();
+
+      const displayText = formatDate(birthdate) + " to " + formatDate(targetDate);
+
+      const li = document.createElement("li");
+      li.className = "history-item age-range-history-item";
+
+      const text = document.createElement("span");
+      text.className = "history-text";
+      text.textContent = displayText;
+
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "history-copy-btn";
+      copyBtn.textContent = "copy";
+
+      copyBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        copyText(displayText, copyBtn);
+      });
+
+      li.appendChild(text);
+      li.appendChild(copyBtn);
+      list.appendChild(li);
+    });
+
+    renderingAgeRangeHistory = false;
+  }
+
+  function addAgeRangeHistory() {
+    if (!isPc() || !isAgePage()) return;
+
+    const birthdate = getValue("birthdate");
+    if (!birthdate) return;
+
+    const targetDate = getTargetDate();
+
+    const history = loadHistory();
+
+    const item = {
+      birthdate: birthdate,
+      targetDate: targetDate
+    };
+
+    const last = history[history.length - 1];
+
+    if (
+      !last ||
+      last.birthdate !== item.birthdate ||
+      last.targetDate !== item.targetDate
+    ) {
+      history.push(item);
+    }
+
+    saveHistory(history);
+    renderAgeRangeHistory();
+  }
+
+  function clearAgeRangeHistory() {
+    if (!isAgePage()) return;
+
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem("ageHistory");
+    localStorage.removeItem("ageFastInputHistory");
+    localStorage.removeItem("inputHistory_age");
+
+    renderAgeRangeHistory();
+  }
+
+  function renameAgeHistoryTitle() {
+    const title =
+      document.querySelector(".age-history-box .age-history-top h3") ||
+      document.querySelector(".age-history-box h3");
+
+    if (title) {
+      title.textContent = "Input";
+    }
+  }
+
+  function protectAgainstOldRender() {
+    const list = document.getElementById("ageHistoryList");
+    if (!list || list.dataset.ageRangeObserverReady === "true") return;
+
+    list.dataset.ageRangeObserverReady = "true";
+
+    const observer = new MutationObserver(function () {
+      if (renderingAgeRangeHistory) return;
+
+      const hasOldFormat =
+        list.textContent.includes("Birthdate:") ||
+        list.textContent.includes("Date to calculate:");
+
+      if (hasOldFormat) {
+        setTimeout(renderAgeRangeHistory, 0);
+      }
+    });
+
+    observer.observe(list, {
+      childList: true,
+      subtree: true
+    });
+  }
+
+  function startAgeRangeHistory() {
+    if (!isPc() || !isAgePage()) return;
+
+    document.body.classList.add("age-page");
+    document.body.dataset.page = "age";
+
+    renameAgeHistoryTitle();
+    renderAgeRangeHistory();
+    protectAgainstOldRender();
+
+    window.clearAgeHistory = clearAgeRangeHistory;
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (text.includes("calculate") || onclick.includes("calculateAge")) {
+          setTimeout(addAgeRangeHistory, 0);
+          setTimeout(addAgeRangeHistory, 200);
+          setTimeout(renderAgeRangeHistory, 600);
+          setTimeout(renderAgeRangeHistory, 1200);
+        }
+
+        if (text.includes("clear")) {
+          setTimeout(clearAgeRangeHistory, 0);
+          setTimeout(clearAgeRangeHistory, 200);
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key === "Enter") {
+          setTimeout(addAgeRangeHistory, 0);
+          setTimeout(addAgeRangeHistory, 200);
+          setTimeout(renderAgeRangeHistory, 600);
+        }
+      },
+      true
+    );
+
+    setTimeout(renderAgeRangeHistory, 300);
+    setTimeout(renderAgeRangeHistory, 1000);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startAgeRangeHistory);
+  } else {
+    startAgeRangeHistory();
+  }
+})();
