@@ -2224,3 +2224,246 @@ document.addEventListener("DOMContentLoaded", function () {
     start();
   }
 })();
+/* =====================================================
+   PC ONLY: make all calculator pages use loan-style output
+   - Result appears outside calculator
+   - Copy button on side
+   - Loan keeps its table + graph system
+===================================================== */
+(function () {
+  "use strict";
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function isExcludedPage() {
+    return (
+      document.body.classList.contains("index-page") ||
+      document.body.classList.contains("about-page") ||
+      document.body.classList.contains("privacy-page") ||
+      document.body.classList.contains("contact-page") ||
+      document.body.classList.contains("info-page")
+    );
+  }
+
+  function isLoanPage() {
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      !!document.getElementById("loanExternalOutput")
+    );
+  }
+
+  function getMain() {
+    return document.querySelector("main");
+  }
+
+  function getCalculator(main) {
+    return main ? main.querySelector(":scope > .calculator") : null;
+  }
+
+  function isCalculatorPage() {
+    const main = getMain();
+    if (!main || isExcludedPage()) return false;
+    if (main.classList.contains("calculator-box")) return false;
+
+    return !!getCalculator(main);
+  }
+
+  function getResultElement(main) {
+    if (!main) return null;
+
+    const selectors = [
+      "#result",
+      "#ageResult",
+      "#bmiResult",
+      "#discountResult",
+      "#percentageResult",
+      "#compoundResult"
+    ];
+
+    for (const selector of selectors) {
+      const element = main.querySelector(selector);
+      if (element) return element;
+    }
+
+    return null;
+  }
+
+  function copyText(text, button) {
+    const value = String(text || "").trim();
+    if (!value) return;
+
+    function done() {
+      const oldText = button.textContent;
+      button.textContent = "Copied!";
+      setTimeout(function () {
+        button.textContent = oldText;
+      }, 1200);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(value).then(done).catch(function () {
+        fallbackCopy(value);
+        done();
+      });
+    } else {
+      fallbackCopy(value);
+      done();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function createUniversalPanel(main, calculator) {
+    let panel = main.querySelector(":scope > .universal-output-panel");
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.className = "universal-output-panel";
+      panel.setAttribute("aria-label", "Calculator result");
+
+      panel.innerHTML = `
+        <div class="universal-output-top">
+          <div class="universal-result-panel">
+            <h2 class="universal-panel-title">Result</h2>
+            <div class="universal-result-body"></div>
+          </div>
+
+          <div class="universal-copy-side">
+            <button type="button" class="universal-copy-btn">Copy</button>
+          </div>
+        </div>
+      `;
+
+      calculator.insertAdjacentElement("afterend", panel);
+    }
+
+    return panel;
+  }
+
+  function removeInsideCopyButtons(calculator) {
+    if (!calculator) return;
+
+    calculator
+      .querySelectorAll(".result-copy-btn, .copy-result-btn")
+      .forEach(function (button) {
+        button.remove();
+      });
+  }
+
+  function unwrapResult(result) {
+    if (!result) return;
+
+    const wrapper = result.closest(".result-copy-wrap");
+
+    if (wrapper && wrapper.parentNode) {
+      wrapper.parentNode.insertBefore(result, wrapper);
+      wrapper.remove();
+    }
+  }
+
+  function syncUniversalOutput() {
+    if (!isCalculatorPage()) return;
+
+    const main = getMain();
+    const calculator = getCalculator(main);
+
+    if (!main || !calculator) return;
+
+    main.classList.add("pc-calculator-layout");
+
+    removeInsideCopyButtons(calculator);
+
+    if (isLoanPage()) {
+      const loanPanel = document.getElementById("loanExternalOutput");
+
+      if (loanPanel && loanPanel.parentElement !== main) {
+        calculator.insertAdjacentElement("afterend", loanPanel);
+      }
+
+      return;
+    }
+
+    const result = getResultElement(main);
+    if (!result) return;
+
+    unwrapResult(result);
+
+    if (!isPc()) {
+      if (!calculator.contains(result)) {
+        calculator.appendChild(result);
+      }
+
+      const panel = main.querySelector(":scope > .universal-output-panel");
+      if (panel) panel.remove();
+
+      return;
+    }
+
+    const panel = createUniversalPanel(main, calculator);
+    const body = panel.querySelector(".universal-result-body");
+    const copyButton = panel.querySelector(".universal-copy-btn");
+
+    if (!body || !copyButton) return;
+
+    if (!body.contains(result)) {
+      body.appendChild(result);
+    }
+
+    result.style.display = "";
+
+    const hasText = result.innerText.trim() || result.textContent.trim();
+    panel.hidden = !hasText;
+
+    if (copyButton.dataset.ready !== "true") {
+      copyButton.dataset.ready = "true";
+
+      copyButton.addEventListener("click", function () {
+        copyText(result.innerText || result.textContent, copyButton);
+      });
+    }
+  }
+
+  function startUniversalLoanStyle() {
+    syncUniversalOutput();
+
+    window.addEventListener("resize", syncUniversalOutput);
+
+    document.addEventListener("click", function () {
+      setTimeout(syncUniversalOutput, 0);
+      setTimeout(syncUniversalOutput, 150);
+      setTimeout(syncUniversalOutput, 400);
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        setTimeout(syncUniversalOutput, 0);
+        setTimeout(syncUniversalOutput, 150);
+        setTimeout(syncUniversalOutput, 400);
+      }
+    });
+
+    setTimeout(syncUniversalOutput, 300);
+    setTimeout(syncUniversalOutput, 900);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startUniversalLoanStyle);
+  } else {
+    startUniversalLoanStyle();
+  }
+})();
