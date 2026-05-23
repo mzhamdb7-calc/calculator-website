@@ -2356,8 +2356,15 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 })();
 /* =====================================================
-   SAFE REFERENCE BOX UNDER INSTRUCTIONS
-   No loading loop
+   UNIFIED INSTRUCTION + REFERENCES LAYOUT
+   Order:
+   What box
+   Instructions title
+   How box
+   Formula box
+   Example box
+   References title
+   Scrollable reference source boxes
 ===================================================== */
 (function () {
   "use strict";
@@ -2367,72 +2374,170 @@ document.addEventListener("DOMContentLoaded", function () {
     return h1 ? h1.textContent.trim().toLowerCase() : "";
   }
 
-  function getReferenceData() {
+  function getPageData() {
     const title = getPageTitle();
 
     if (title.includes("basic")) {
-      return [
-        ["Math order", "Brackets first, then powers, multiplication/division, then addition/subtraction."],
-        ["Power", "xʸ means multiplying a number by itself y times."],
-        ["Square root", "√x finds the number that gives x when multiplied by itself."]
-      ];
+      return {
+        whatTitle: "What does this calculator do?",
+        what: "It helps you do quick math calculations like addition, subtraction, multiplication, division, power, and square root.",
+        howTitle: "How to use it",
+        how: "Enter numbers using the buttons, choose an operator, then press = to get the answer.",
+        formulaTitle: "Formula used",
+        formula: "The calculator follows normal math order: brackets first, then powers, multiplication/division, then addition/subtraction.",
+        exampleTitle: "Example calculation",
+        example: "8 + 2 × 3 = 14 because multiplication is calculated before addition.",
+        references: [
+          {
+            title: "Order of operations",
+            text: "Purplemath explains that parentheses, exponents, multiplication/division, and addition/subtraction are handled in order.",
+            url: "https://www.purplemath.com/modules/orderops.htm"
+          }
+        ]
+      };
     }
 
     if (title.includes("age")) {
-      return [
-        ["Normal age", "Normal age = current year − birth year, adjusted if birthday has not passed."],
-        ["Asian age", "Asian age = current year − birth year + 1."],
-        ["Date check", "Birth date cannot be after today."]
-      ];
+      return {
+        whatTitle: "What does this calculator do?",
+        what: "It calculates normal age and Asian age from a selected birth date.",
+        howTitle: "How to use it",
+        how: "Select your birth date, then press calculate age.",
+        formulaTitle: "Formula used",
+        formula: "Normal age is based on the difference between today and the birth date. Asian age uses current year − birth year + 1.",
+        exampleTitle: "Example calculation",
+        example: "If someone was born in 2000 and the current year is 2026, Asian age is 27.",
+        references: [
+          {
+            title: "Age calculation reference",
+            text: "Microsoft shows age calculation as the difference between today and a birth date.",
+            url: "https://support.microsoft.com/en-us/office/calculate-age-113d599f-5fea-448f-a4c3-268927911b37"
+          }
+        ]
+      };
     }
 
     if (title.includes("bmi")) {
-      return [
-        ["SI BMI", "BMI = weight kg ÷ height m²."],
-        ["US BMI", "BMI = 703 × weight lb ÷ height inch²."],
-        ["W/H ratio", "Waist-to-height ratio = waist ÷ height."]
-      ];
+      return {
+        whatTitle: "What does this calculator do?",
+        what: "It calculates Body Mass Index and can also check waist-to-height ratio.",
+        howTitle: "How to use it",
+        how: "Choose SI or US units, enter weight and height, optionally enter waist size, then press calculate BMI.",
+        formulaTitle: "Formula used",
+        formula: "SI: BMI = weight kg ÷ height m². US: BMI = weight lb ÷ height inch² × 703.",
+        exampleTitle: "Example calculation",
+        example: "70 kg and 1.70 m gives BMI = 70 ÷ 1.70² = 24.22.",
+        references: [
+          {
+            title: "CDC BMI formula",
+            text: "CDC lists metric and US customary formulas for calculating BMI.",
+            url: "https://www.cdc.gov/growth-chart-training/hcp/using-bmi/body-mass-index.html"
+          }
+        ]
+      };
     }
 
     if (title.includes("loan")) {
-      return [
-        ["Monthly payment", "Payment = P × r × (1 + r)ⁿ ÷ ((1 + r)ⁿ − 1)."],
-        ["Monthly rate", "Monthly rate = annual interest rate ÷ 100 ÷ 12."],
-        ["Total interest", "Total interest = total payment − loan amount."]
-      ];
+      return {
+        whatTitle: "What does this calculator do?",
+        what: "It estimates monthly loan payment, total payment, and total interest.",
+        howTitle: "How to use it",
+        how: "Enter loan amount, annual interest rate, and loan years. Then press calculate loan.",
+        formulaTitle: "Formula used",
+        formula: "Monthly Payment = P × r × (1 + r)ⁿ ÷ ((1 + r)ⁿ − 1).",
+        exampleTitle: "Example calculation",
+        example: "A 10,000 loan at 5% yearly for 5 years gives an estimated monthly payment using the amortization formula.",
+        references: [
+          {
+            title: "Loan payment formula",
+            text: "Chase explains the fixed-payment amortized loan formula using principal, monthly rate, and number of payments.",
+            url: "https://www.chase.com/personal/mortgage/education/financing-a-home/loan-amortization"
+          },
+          {
+            title: "Mortgage payment formula",
+            text: "Investopedia also lists the monthly mortgage payment formula with principal, monthly interest rate, and months.",
+            url: "https://www.investopedia.com/mortgage-calculator-5084794"
+          }
+        ]
+      };
     }
 
     if (title.includes("discount")) {
-      return [
-        ["Savings", "Savings = original price × discount ÷ 100."],
-        ["Final price", "Final price = original price − savings."],
-        ["Discount range", "Discount should be between 0 and 100."]
-      ];
+      return {
+        whatTitle: "What does this calculator do?",
+        what: "It calculates final price after discount and how much money you save.",
+        howTitle: "How to use it",
+        how: "Enter the original price and discount percentage, then press calculate discount.",
+        formulaTitle: "Formula used",
+        formula: "Savings = original price × discount ÷ 100. Final price = original price − savings.",
+        exampleTitle: "Example calculation",
+        example: "If price is 100 and discount is 20%, savings = 20 and final price = 80.",
+        references: [
+          {
+            title: "Discount calculation",
+            text: "Calculator.net explains percent-off discount by subtracting the discount amount from the original price.",
+            url: "https://www.calculator.net/discount-calculator.html"
+          },
+          {
+            title: "Discount meaning",
+            text: "Cambridge Dictionary defines discount as a reduction in the usual price.",
+            url: "https://dictionary.cambridge.org/dictionary/english/discount"
+          }
+        ]
+      };
     }
 
     if (title.includes("percentage")) {
-      return [
-        ["Percentage", "Result = percentage ÷ 100 × number."],
-        ["Meaning", "Percent means out of 100."],
-        ["Example", "20% of 150 = 20 ÷ 100 × 150 = 30."]
-      ];
+      return {
+        whatTitle: "What does this calculator do?",
+        what: "It calculates a percentage of a number.",
+        howTitle: "How to use it",
+        how: "Enter the percentage value and the number, then press calculate percentage.",
+        formulaTitle: "Formula used",
+        formula: "Result = percentage ÷ 100 × number.",
+        exampleTitle: "Example calculation",
+        example: "20% of 150 = 20 ÷ 100 × 150 = 30.",
+        references: [
+          {
+            title: "Percentage meaning",
+            text: "A percentage is a number or ratio expressed as a fraction of 100.",
+            url: "https://en.wikipedia.org/wiki/Percentage"
+          },
+          {
+            title: "Percentage formula",
+            text: "CalculatorSoup lists common percentage formulas, including percentage of a whole.",
+            url: "https://www.calculatorsoup.com/calculators/math/percentage.php"
+          }
+        ]
+      };
     }
 
     if (title.includes("compound")) {
-      return [
-        ["Future value", "A = P(1 + r/n)ⁿᵗ."],
-        ["Compound interest", "Compound Interest = A − P."],
-        ["Meaning", "P = principal, r = annual rate, n = compounding frequency, t = years."],
-        ["Example", "P = 1000, r = 5%, t = 10 years, n = 12 gives about 1,647.01 future value."]
-      ];
+      return {
+        whatTitle: "What does this calculator do?",
+        what: "It estimates how much your money can grow when interest is added repeatedly over time.",
+        howTitle: "How to use it",
+        how: "Enter principal amount, annual interest rate, time in years, and compounding frequency. Then press calculate compound interest.",
+        formulaTitle: "Formula used",
+        formula: "A = P(1 + r/n)ⁿᵗ. Compound Interest = A − P.",
+        exampleTitle: "Example calculation",
+        example: "P = 1000, r = 5%, t = 10 years, n = 12 gives about 1,647.01 future value and 647.01 compound interest.",
+        references: [
+          {
+            title: "Compound interest formula",
+            text: "Investopedia lists the compound interest formula as A = P(1 + r/n)^(nt).",
+            url: "https://www.investopedia.com/articles/investing/020614/learn-simple-and-compound-interest.asp"
+          }
+        ]
+      };
     }
 
-    return [];
+    return null;
   }
 
-  function createReferenceCard(title, text) {
-    const card = document.createElement("div");
-    card.className = "reference-card";
+  function makeBox(className, title, text) {
+    const box = document.createElement("div");
+    box.className = className;
 
     const h3 = document.createElement("h3");
     h3.textContent = title;
@@ -2440,46 +2545,105 @@ document.addEventListener("DOMContentLoaded", function () {
     const p = document.createElement("p");
     p.textContent = text;
 
+    box.appendChild(h3);
+    box.appendChild(p);
+
+    return box;
+  }
+
+  function makeReferenceCard(item) {
+    const card = document.createElement("div");
+    card.className = "reference-card";
+
+    const h3 = document.createElement("h3");
+    h3.textContent = item.title;
+
+    const p = document.createElement("p");
+    p.textContent = item.text;
+
+    const a = document.createElement("a");
+    a.href = item.url;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.textContent = "Open source";
+
     card.appendChild(h3);
     card.appendChild(p);
+    card.appendChild(a);
 
     return card;
   }
 
-  function addReferenceBox() {
-    const instructionBox = document.querySelector("main .instruction-box");
-    if (!instructionBox) return;
+  function renderInstructionLayout() {
+    const data = getPageData();
+    if (!data) return;
 
-    if (instructionBox.dataset.referenceReady === "true") return;
+    const main = document.querySelector("main");
+    if (!main) return;
 
-    const data = getReferenceData();
-    if (!data.length) return;
+    let instructionBox = main.querySelector(".instruction-box");
 
-    instructionBox.dataset.referenceReady = "true";
+    if (!instructionBox) {
+      instructionBox = document.createElement("aside");
+      instructionBox.className = "instruction-box";
+      instructionBox.setAttribute("aria-label", "Instructions");
+      main.classList.add("has-instructions");
+      main.appendChild(instructionBox);
+    }
+
+    instructionBox.innerHTML = "";
+
+    instructionBox.appendChild(
+      makeBox("instruction-section instruction-what-box", data.whatTitle, data.what)
+    );
+
+    const instructionTitle = document.createElement("h2");
+    instructionTitle.className = "instruction-main-title";
+    instructionTitle.textContent = "Instructions";
+    instructionBox.appendChild(instructionTitle);
+
+    instructionBox.appendChild(
+      makeBox("instruction-section instruction-how-box", data.howTitle, data.how)
+    );
+
+    instructionBox.appendChild(
+      makeBox("instruction-section instruction-formula-box", data.formulaTitle, data.formula)
+    );
+
+    instructionBox.appendChild(
+      makeBox("instruction-section instruction-example-box", data.exampleTitle, data.example)
+    );
 
     const referenceBox = document.createElement("section");
     referenceBox.className = "reference-box";
     referenceBox.setAttribute("aria-label", "References");
 
-    const heading = document.createElement("h2");
-    heading.textContent = "References";
+    const referenceTitle = document.createElement("h2");
+    referenceTitle.className = "reference-main-title";
+    referenceTitle.textContent = "References";
 
-    const scrollArea = document.createElement("div");
-    scrollArea.className = "reference-scroll";
+    const referenceScroll = document.createElement("div");
+    referenceScroll.className = "reference-scroll";
 
-    data.forEach(function (item) {
-      scrollArea.appendChild(createReferenceCard(item[0], item[1]));
+    data.references.forEach(function (item) {
+      referenceScroll.appendChild(makeReferenceCard(item));
     });
 
-    referenceBox.appendChild(heading);
-    referenceBox.appendChild(scrollArea);
+    referenceBox.appendChild(referenceTitle);
+    referenceBox.appendChild(referenceScroll);
 
     instructionBox.appendChild(referenceBox);
   }
 
+  function start() {
+    renderInstructionLayout();
+    setTimeout(renderInstructionLayout, 150);
+    setTimeout(renderInstructionLayout, 500);
+  }
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", addReferenceBox);
+    document.addEventListener("DOMContentLoaded", start);
   } else {
-    addReferenceBox();
+    start();
   }
 })();
