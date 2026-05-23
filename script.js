@@ -3125,3 +3125,115 @@ document.addEventListener("DOMContentLoaded", function () {
     start();
   }
 })();
+/* =====================================================
+   PC ONLY: FINAL TIGHT ? GAP FIX
+   Makes help panel touch/near the ? symbol
+===================================================== */
+(function () {
+  "use strict";
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function isExcludedPage() {
+    return (
+      document.body.classList.contains("index-page") ||
+      document.body.classList.contains("about-page") ||
+      document.body.classList.contains("privacy-page") ||
+      document.body.classList.contains("contact-page") ||
+      document.body.classList.contains("info-page")
+    );
+  }
+
+  function getMain() {
+    return (
+      document.querySelector("main.pc-calculator-layout") ||
+      document.querySelector("main.has-instructions")
+    );
+  }
+
+  function tightPositionQuestionPanel() {
+    if (!isPc() || isExcludedPage()) return;
+
+    const main = getMain();
+    const button = document.getElementById("pcQuestionOverlayButton");
+
+    if (!main || !button) return;
+
+    const calculator = main.querySelector(":scope > .calculator");
+    const panel = main.querySelector(":scope > .instruction-box");
+
+    if (!calculator || !panel) return;
+
+    const calcRect = calculator.getBoundingClientRect();
+
+    const gap = 0;          /* 0 = touching, 2 = tiny gap */
+    const padding = 10;
+    const buttonSize = 58;
+
+    let buttonLeft = calcRect.right + 4;
+    let buttonTop = calcRect.top + 8;
+
+    if (buttonLeft + buttonSize > window.innerWidth - padding) {
+      buttonLeft = window.innerWidth - padding - buttonSize;
+    }
+
+    if (buttonTop < padding) {
+      buttonTop = padding;
+    }
+
+    let panelWidth = Math.min(calcRect.width, buttonLeft - padding - gap);
+    let panelHeight = Math.min(calcRect.height, window.innerHeight - padding * 2);
+
+    if (panelWidth < 320) {
+      panelWidth = Math.min(calcRect.width, window.innerWidth - padding * 2);
+    }
+
+    let panelLeft = buttonLeft - panelWidth - gap;
+    let panelTop = buttonTop - 8;
+
+    if (panelLeft < padding) {
+      panelLeft = padding;
+    }
+
+    if (panelTop < padding) {
+      panelTop = padding;
+    }
+
+    if (panelTop + panelHeight > window.innerHeight - padding) {
+      panelTop = window.innerHeight - padding - panelHeight;
+    }
+
+    document.documentElement.style.setProperty("--tight-q-left", buttonLeft + "px");
+    document.documentElement.style.setProperty("--tight-q-top", buttonTop + "px");
+
+    document.documentElement.style.setProperty("--tight-panel-left", panelLeft + "px");
+    document.documentElement.style.setProperty("--tight-panel-top", panelTop + "px");
+    document.documentElement.style.setProperty("--tight-panel-width", panelWidth + "px");
+    document.documentElement.style.setProperty("--tight-panel-height", panelHeight + "px");
+  }
+
+  function startTightQuestionFix() {
+    tightPositionQuestionPanel();
+
+    window.addEventListener("resize", tightPositionQuestionPanel);
+    window.addEventListener("scroll", tightPositionQuestionPanel, { passive: true });
+
+    document.addEventListener("click", function () {
+      setTimeout(tightPositionQuestionPanel, 0);
+      setTimeout(tightPositionQuestionPanel, 80);
+      setTimeout(tightPositionQuestionPanel, 200);
+    });
+
+    setTimeout(tightPositionQuestionPanel, 100);
+    setTimeout(tightPositionQuestionPanel, 500);
+    setTimeout(tightPositionQuestionPanel, 1000);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startTightQuestionFix);
+  } else {
+    startTightQuestionFix();
+  }
+})();
