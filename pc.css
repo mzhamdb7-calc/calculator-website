@@ -2191,3 +2191,39 @@
     background: var(--white) !important;
   }
 }
+/* =====================================================
+   PC ONLY: final close gap between ? and opened panel
+===================================================== */
+@media (min-width: 851px) {
+  main.pc-calculator-layout.pc-help-open > .instruction-box {
+    position: fixed !important;
+
+    left: var(--pc-help-left, 12px) !important;
+    top: var(--pc-help-top, 12px) !important;
+    right: auto !important;
+
+    width: var(--pc-help-width, 700px) !important;
+    height: var(--pc-help-height, 620px) !important;
+
+    max-width: calc(100vw - 24px) !important;
+    max-height: calc(100vh - 24px) !important;
+
+    margin: 0 !important;
+    padding: 24px !important;
+
+    background: var(--white) !important;
+
+    border: 5px solid var(--black) !important;
+    box-shadow: 9px 9px 0 var(--black) !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    z-index: 999999998 !important;
+    box-sizing: border-box !important;
+  }
+
+  main.pc-calculator-layout > .pc-question-toggle {
+    z-index: 999999999 !important;
+  }
+}
