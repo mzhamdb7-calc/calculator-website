@@ -1494,3 +1494,44 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     overflow: visible !important;
   }
 }
+/* =====================================================
+   PC ONLY: Basic result = answer, no table
+===================================================== */
+@media (min-width: 851px) {
+  .basic-equal-result {
+    width: 100% !important;
+    min-height: 110px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 18px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    font-size: 42px !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+
+    box-sizing: border-box !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+  }
+
+  .basic-equal-symbol {
+    color: var(--black) !important;
+  }
+
+  .basic-equal-answer {
+    color: var(--black) !important;
+  }
+
+  .basic-equal-output-panel .loan-result-table-scroll,
+  .basic-equal-output-panel .loan-result-table {
+    display: none !important;
+  }
+}
