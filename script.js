@@ -4773,3 +4773,252 @@ document.addEventListener("DOMContentLoaded", function () {
     start();
   }
 })();
+/* =====================================================
+   AGE CALCULATOR ONLY: result table shows
+   Birthdate / Normal Age / Asian Age
+===================================================== */
+(function () {
+  "use strict";
+
+  function isAgePage() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    return title.includes("age") || !!document.getElementById("birthdate");
+  }
+
+  function getBirthdateValue() {
+    const input = document.getElementById("birthdate");
+    return input ? String(input.value || "").trim() : "";
+  }
+
+  function calculateNormalAge(birthdateValue) {
+    if (!birthdateValue) return "";
+
+    const parts = birthdateValue.split("-");
+    if (parts.length !== 3) return "";
+
+    const birthYear = Number(parts[0]);
+    const birthMonth = Number(parts[1]) - 1;
+    const birthDay = Number(parts[2]);
+
+    const today = new Date();
+    const birthDate = new Date(birthYear, birthMonth, birthDay);
+
+    if (birthDate > today) return "";
+
+    let age = today.getFullYear() - birthYear;
+
+    const birthdayThisYear = new Date(today.getFullYear(), birthMonth, birthDay);
+
+    if (today < birthdayThisYear) {
+      age -= 1;
+    }
+
+    return age + " years old";
+  }
+
+  function calculateAsianAge(birthdateValue) {
+    if (!birthdateValue) return "";
+
+    const birthYear = Number(birthdateValue.split("-")[0]);
+    const currentYear = new Date().getFullYear();
+
+    if (!birthYear || birthYear > currentYear) return "";
+
+    return (currentYear - birthYear + 1) + " years old";
+  }
+
+  function getAgeResultPanel() {
+    const main =
+      document.querySelector("main.pc-calculator-layout") ||
+      document.querySelector("main");
+
+    const calculator = main ? main.querySelector(".calculator") : null;
+
+    if (!main || !calculator) return null;
+
+    let panel = document.getElementById("universalLoanStyleOutput");
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = "universalLoanStyleOutput";
+      panel.className = "loan-style-output-panel";
+      panel.setAttribute("aria-label", "Age result table");
+
+      panel.innerHTML = `
+        <div class="loan-output-top">
+          <div class="loan-result-panel">
+            <h2 class="loan-panel-title">Result</h2>
+            <div class="loan-result-body"></div>
+          </div>
+
+          <div class="loan-copy-side">
+            <button type="button" class="loan-copy-btn">Copy</button>
+          </div>
+        </div>
+      `;
+
+      calculator.insertAdjacentElement("afterend", panel);
+    }
+
+    return panel;
+  }
+
+  function makeAgeTable(birthdate, normalAge, asianAge) {
+    return `
+      <div class="loan-result-table-scroll">
+        <table class="loan-result-table universal-loan-result-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Birthdate</td>
+              <td>${birthdate}</td>
+            </tr>
+
+            <tr>
+              <td>Normal age</td>
+              <td>${normalAge}</td>
+            </tr>
+
+            <tr>
+              <td>Asian age</td>
+              <td>${asianAge}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  function copyAgeTable(panel, button) {
+    const table = panel.querySelector("table");
+    if (!table) return;
+
+    const text = Array.from(table.querySelectorAll("tr"))
+      .map(function (row) {
+        return Array.from(row.querySelectorAll("th, td"))
+          .map(function (cell) {
+            return cell.textContent.trim();
+          })
+          .join("\t");
+      })
+      .join("\n");
+
+    if (!text) return;
+
+    function copied() {
+      const oldText = button.textContent;
+      button.textContent = "Copied!";
+
+      setTimeout(function () {
+        button.textContent = oldText;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(copied).catch(function () {
+        fallbackCopy(text);
+        copied();
+      });
+    } else {
+      fallbackCopy(text);
+      copied();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function setupAgeCopyButton(panel) {
+    const button = panel.querySelector(".loan-copy-btn");
+    if (!button || button.dataset.ageCopyReady === "true") return;
+
+    button.dataset.ageCopyReady = "true";
+
+    button.addEventListener("click", function () {
+      copyAgeTable(panel, button);
+    });
+  }
+
+  function renderAgeResultTable() {
+    if (!isAgePage()) return;
+
+    const birthdate = getBirthdateValue();
+    const panel = getAgeResultPanel();
+
+    if (!panel) return;
+
+    const resultBody = panel.querySelector(".loan-result-body");
+    if (!resultBody) return;
+
+    if (!birthdate) {
+      panel.hidden = true;
+      return;
+    }
+
+    const normalAge = calculateNormalAge(birthdate);
+    const asianAge = calculateAsianAge(birthdate);
+
+    if (!normalAge || !asianAge) {
+      panel.hidden = true;
+      return;
+    }
+
+    panel.hidden = false;
+    resultBody.innerHTML = makeAgeTable(birthdate, normalAge, asianAge);
+
+    const ageResult = document.getElementById("ageResult") || document.getElementById("result");
+    if (ageResult) {
+      ageResult.style.display = "none";
+    }
+
+    setupAgeCopyButton(panel);
+  }
+
+  function startAgeResultTable() {
+    if (!isAgePage()) return;
+
+    renderAgeResultTable();
+
+    document.addEventListener("click", function () {
+      setTimeout(renderAgeResultTable, 0);
+      setTimeout(renderAgeResultTable, 200);
+      setTimeout(renderAgeResultTable, 500);
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        setTimeout(renderAgeResultTable, 0);
+        setTimeout(renderAgeResultTable, 200);
+        setTimeout(renderAgeResultTable, 500);
+      }
+    });
+
+    setTimeout(renderAgeResultTable, 300);
+    setTimeout(renderAgeResultTable, 900);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startAgeResultTable);
+  } else {
+    startAgeResultTable();
+  }
+})();
