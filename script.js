@@ -3237,3 +3237,212 @@ document.addEventListener("DOMContentLoaded", function () {
     startTightQuestionFix();
   }
 })();
+/* =====================================================
+   PC ONLY: FINAL ? OVERLAY ON TOP OF CALCULATOR
+   - ? stays beside calculator
+   - Instruction/reference box overlays calculator
+   - Same size as calculator box
+   - Does not move any page item
+   - Works on all calculator pages
+===================================================== */
+(function () {
+  "use strict";
+
+  const BUTTON_ID = "pcQuestionOverlayButton";
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function isExcludedPage() {
+    return (
+      document.body.classList.contains("index-page") ||
+      document.body.classList.contains("about-page") ||
+      document.body.classList.contains("privacy-page") ||
+      document.body.classList.contains("contact-page") ||
+      document.body.classList.contains("info-page")
+    );
+  }
+
+  function getMain() {
+    return (
+      document.querySelector("main.pc-calculator-layout") ||
+      document.querySelector("main.has-instructions") ||
+      document.querySelector("main")
+    );
+  }
+
+  function isCalculatorPage(main) {
+    if (!main || isExcludedPage()) return false;
+
+    return !!(
+      main.querySelector(":scope > .calculator") &&
+      main.querySelector(":scope > .instruction-box")
+    );
+  }
+
+  function getButton() {
+    let button = document.getElementById(BUTTON_ID);
+
+    if (!button) {
+      button = document.createElement("button");
+      button.id = BUTTON_ID;
+      button.type = "button";
+      button.textContent = "?";
+      button.setAttribute("aria-label", "Open instructions and references");
+      button.setAttribute("aria-expanded", "false");
+      document.body.appendChild(button);
+    }
+
+    button.hidden = false;
+    return button;
+  }
+
+  function removeOldQuestionButtons(main) {
+    if (!main) return;
+
+    main.querySelectorAll(":scope > .pc-question-toggle").forEach(function (button) {
+      button.remove();
+    });
+  }
+
+  function positionCalculatorOverlay() {
+    const main = getMain();
+
+    if (!isPc() || !isCalculatorPage(main)) {
+      document.body.classList.remove("pc-calculator-help-ready", "pc-calculator-help-open");
+
+      const button = document.getElementById(BUTTON_ID);
+      if (button) button.hidden = true;
+
+      return;
+    }
+
+    removeOldQuestionButtons(main);
+
+    const calculator = main.querySelector(":scope > .calculator");
+    const instructionBox = main.querySelector(":scope > .instruction-box");
+    const button = getButton();
+
+    if (!calculator || !instructionBox || !button) return;
+
+    const calcRect = calculator.getBoundingClientRect();
+
+    const screenPadding = 10;
+    const buttonSize = 58;
+    const buttonGap = 6;
+
+    let overlayLeft = calcRect.left;
+    let overlayTop = calcRect.top;
+    let overlayWidth = calcRect.width;
+    let overlayHeight = calcRect.height;
+
+    if (overlayLeft < screenPadding) {
+      overlayLeft = screenPadding;
+    }
+
+    if (overlayTop < screenPadding) {
+      overlayTop = screenPadding;
+    }
+
+    overlayWidth = Math.min(overlayWidth, window.innerWidth - screenPadding * 2);
+    overlayHeight = Math.min(overlayHeight, window.innerHeight - screenPadding * 2);
+
+    if (overlayLeft + overlayWidth > window.innerWidth - screenPadding) {
+      overlayLeft = window.innerWidth - screenPadding - overlayWidth;
+    }
+
+    if (overlayTop + overlayHeight > window.innerHeight - screenPadding) {
+      overlayTop = window.innerHeight - screenPadding - overlayHeight;
+    }
+
+    let buttonLeft = overlayLeft + overlayWidth + buttonGap;
+    let buttonTop = overlayTop + 10;
+
+    if (buttonLeft + buttonSize > window.innerWidth - screenPadding) {
+      buttonLeft = overlayLeft + overlayWidth - buttonSize - 10;
+      buttonTop = overlayTop + 10;
+    }
+
+    document.documentElement.style.setProperty("--calc-help-left", overlayLeft + "px");
+    document.documentElement.style.setProperty("--calc-help-top", overlayTop + "px");
+    document.documentElement.style.setProperty("--calc-help-width", overlayWidth + "px");
+    document.documentElement.style.setProperty("--calc-help-height", overlayHeight + "px");
+
+    document.documentElement.style.setProperty("--calc-help-btn-left", buttonLeft + "px");
+    document.documentElement.style.setProperty("--calc-help-btn-top", buttonTop + "px");
+
+    document.body.classList.add("pc-calculator-help-ready");
+  }
+
+  function setupQuestionButton() {
+    const button = getButton();
+
+    if (button.dataset.calculatorOverlayReady === "true") return;
+
+    button.dataset.calculatorOverlayReady = "true";
+
+    button.addEventListener(
+      "click",
+      function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        if (!isPc()) return;
+
+        const main = getMain();
+        if (!isCalculatorPage(main)) return;
+
+        positionCalculatorOverlay();
+
+        const willOpen = !document.body.classList.contains("pc-calculator-help-open");
+
+        document.body.classList.toggle("pc-calculator-help-open", willOpen);
+        button.setAttribute("aria-expanded", willOpen ? "true" : "false");
+      },
+      true
+    );
+  }
+
+  function startCalculatorHelpOverlay() {
+    setupQuestionButton();
+    positionCalculatorOverlay();
+
+    window.addEventListener("resize", positionCalculatorOverlay);
+    window.addEventListener("scroll", positionCalculatorOverlay, { passive: true });
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = document.getElementById(BUTTON_ID);
+        const main = getMain();
+        const panel = main ? main.querySelector(":scope > .instruction-box") : null;
+
+        if (
+          document.body.classList.contains("pc-calculator-help-open") &&
+          button &&
+          panel &&
+          !button.contains(event.target) &&
+          !panel.contains(event.target)
+        ) {
+          document.body.classList.remove("pc-calculator-help-open");
+          button.setAttribute("aria-expanded", "false");
+        }
+
+        setTimeout(positionCalculatorOverlay, 0);
+      },
+      true
+    );
+
+    setTimeout(positionCalculatorOverlay, 100);
+    setTimeout(positionCalculatorOverlay, 400);
+    setTimeout(positionCalculatorOverlay, 900);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startCalculatorHelpOverlay);
+  } else {
+    startCalculatorHelpOverlay();
+  }
+})();
