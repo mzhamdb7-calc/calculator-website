@@ -373,3 +373,182 @@
     content: "▲" !important;
   }
 }
+
+/* =====================================================
+   PC ORIENTATION ONLY FOR REAL CALCULATOR PAGES
+   Not index/about/privacy/contact
+===================================================== */
+@media (min-width: 851px) {
+  :root {
+    --pc-left-width: 340px;
+    --pc-center-width: 730px;
+    --pc-right-width: 340px;
+    --pc-gap: 35px;
+    --pc-border: 4px;
+    --pc-shadow: 5px 5px 0 var(--black);
+  }
+
+  main.calculator-container.has-instructions,
+  main.age-calculator-container.has-instructions,
+  main.bmi-calculator-container.has-instructions,
+  main.discount-calculator-container.has-instructions,
+  main.loan-calculator-container.has-instructions,
+  main.percentage-calculator-container.has-instructions,
+  main.compound-calculator-container.has-instructions,
+  main.compound-interest-container.has-instructions {
+    width: 100% !important;
+    max-width: 1540px !important;
+
+    margin: 130px auto 80px !important;
+    padding: 16px 26px !important;
+
+    display: grid !important;
+    grid-template-columns: var(--pc-left-width) var(--pc-center-width) var(--pc-right-width) !important;
+    grid-template-rows: auto auto !important;
+
+    gap: 22px var(--pc-gap) !important;
+
+    justify-content: center !important;
+    align-items: start !important;
+
+    box-sizing: border-box !important;
+  }
+
+  main.calculator-container.has-instructions > .pc-what-slot,
+  main.age-calculator-container.has-instructions > .pc-what-slot,
+  main.bmi-calculator-container.has-instructions > .pc-what-slot,
+  main.discount-calculator-container.has-instructions > .pc-what-slot,
+  main.loan-calculator-container.has-instructions > .pc-what-slot,
+  main.percentage-calculator-container.has-instructions > .pc-what-slot,
+  main.compound-calculator-container.has-instructions > .pc-what-slot,
+  main.compound-interest-container.has-instructions > .pc-what-slot {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+
+    width: var(--pc-left-width) !important;
+    max-width: var(--pc-left-width) !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    justify-self: center !important;
+    align-self: start !important;
+  }
+
+  main.has-instructions > .pc-what-slot .instruction-what-box {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-height: 105px !important;
+
+    margin: 0 !important;
+    padding: 14px 12px !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+
+    background: #ffd3d3 !important;
+    color: var(--black) !important;
+
+    border: var(--pc-border) solid var(--black) !important;
+    box-shadow: var(--pc-shadow) !important;
+
+    text-align: center !important;
+    box-sizing: border-box !important;
+  }
+
+  main.calculator-container.has-instructions > .history,
+  main.age-calculator-container.has-instructions > .age-history-box,
+  main.bmi-calculator-container.has-instructions > .bmi-history-box,
+  main.discount-calculator-container.has-instructions > .discount-history-box,
+  main.loan-calculator-container.has-instructions > .loan-history-box,
+  main.percentage-calculator-container.has-instructions > .percentage-history-box,
+  main.compound-calculator-container.has-instructions > .compound-history-box,
+  main.compound-interest-container.has-instructions > .compound-history-box {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+
+    width: var(--pc-left-width) !important;
+    max-width: var(--pc-left-width) !important;
+
+    min-height: 520px !important;
+    max-height: 520px !important;
+
+    margin: 0 !important;
+    padding: 20px !important;
+
+    background: var(--soft-yellow) !important;
+
+    border: var(--pc-border) solid var(--black) !important;
+    box-shadow: var(--pc-shadow) !important;
+    transform: none !important;
+
+    justify-self: center !important;
+    align-self: start !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    box-sizing: border-box !important;
+  }
+
+  main.calculator-container.has-instructions > .calculator,
+  main.age-calculator-container.has-instructions > .calculator,
+  main.bmi-calculator-container.has-instructions > .calculator,
+  main.discount-calculator-container.has-instructions > .calculator,
+  main.loan-calculator-container.has-instructions > .calculator,
+  main.percentage-calculator-container.has-instructions > .calculator,
+  main.compound-calculator-container.has-instructions > .calculator,
+  main.compound-interest-container.has-instructions > .calculator {
+    grid-column: 2 !important;
+    grid-row: 1 / span 2 !important;
+
+    width: 100% !important;
+    max-width: var(--pc-center-width) !important;
+
+    margin: 0 !important;
+
+    justify-self: center !important;
+    align-self: start !important;
+
+    box-sizing: border-box !important;
+  }
+
+  main.calculator-container.has-instructions > .instruction-box,
+  main.age-calculator-container.has-instructions > .instruction-box,
+  main.bmi-calculator-container.has-instructions > .instruction-box,
+  main.discount-calculator-container.has-instructions > .instruction-box,
+  main.loan-calculator-container.has-instructions > .instruction-box,
+  main.percentage-calculator-container.has-instructions > .instruction-box,
+  main.compound-calculator-container.has-instructions > .instruction-box,
+  main.compound-interest-container.has-instructions > .instruction-box {
+    grid-column: 3 !important;
+    grid-row: 1 / span 2 !important;
+
+    width: var(--pc-right-width) !important;
+    max-width: var(--pc-right-width) !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    justify-self: center !important;
+    align-self: start !important;
+
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  main.has-instructions > .instruction-box > .instruction-what-box {
+    display: none !important;
+  }
+}
