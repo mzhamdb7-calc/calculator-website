@@ -1,7 +1,11 @@
 /*
   Copyright © 2026 Hamdi. All rights reserved.
   PC MODE ONLY
-  ? help panel opens LEFT and closes on second click.
+  Clean PC helper:
+  - Creates the ? button on calculator pages only.
+  - ? opens the instruction/reference panel to the left.
+  - Second click closes it.
+  - No duplicate observer/position scripts.
 */
 
 (function () {
@@ -11,14 +15,6 @@
 
   function isPc() {
     return window.matchMedia(PC_QUERY).matches;
-  }
-
-  function cleanOldArrows() {
-    document
-      .querySelectorAll("#navbar .nav-menu-arrow, #navbar .phone-sub-arrow")
-      .forEach(function (arrow) {
-        arrow.remove();
-      });
   }
 
   function isExcludedPage() {
@@ -92,6 +88,9 @@
     let button = main.querySelector(":scope > .pc-question-toggle");
 
     if (!button) {
+      const instructionBox = main.querySelector(":scope > .instruction-box");
+      if (!instructionBox) return null;
+
       button = document.createElement("button");
       button.type = "button";
       button.className = "pc-question-toggle";
@@ -99,7 +98,6 @@
       button.setAttribute("aria-label", "Open instructions and references");
       button.setAttribute("aria-expanded", "false");
 
-      const instructionBox = main.querySelector(":scope > .instruction-box");
       main.insertBefore(button, instructionBox);
     }
 
@@ -107,7 +105,7 @@
   }
 
   function syncPanelPosition(main) {
-    if (!isPc()) return;
+    if (!isPc() || !main) return;
 
     const button = main.querySelector(":scope > .pc-question-toggle");
     const calculator = main.querySelector(":scope > .calculator");
@@ -118,22 +116,21 @@
     const buttonRect = button.getBoundingClientRect();
     const calcRect = calculator.getBoundingClientRect();
 
-    const gap = 14;
-    const screenPadding = 16;
+    const gap = 4;
+    const screenPadding = 12;
 
-    const panelWidth = Math.min(calcRect.width, window.innerWidth - screenPadding * 2);
+    const availableLeftSpace = buttonRect.left - screenPadding - gap;
+    const wantedWidth = calcRect.width;
+    const panelWidth = Math.max(280, Math.min(wantedWidth, availableLeftSpace));
 
-    let panelLeft = buttonRect.left - panelWidth - gap;
-    if (panelLeft < screenPadding) {
-      panelLeft = screenPadding;
-    }
+    const panelLeft = Math.max(screenPadding, buttonRect.left - panelWidth - gap);
 
     let panelTop = buttonRect.top;
     let panelHeight = Math.min(calcRect.height, window.innerHeight - panelTop - screenPadding);
 
     if (panelHeight < 320) {
       panelTop = screenPadding;
-      panelHeight = Math.min(calcRect.height, window.innerHeight - screenPadding * 2);
+      panelHeight = window.innerHeight - screenPadding * 2;
     }
 
     document.documentElement.style.setProperty("--pc-help-left", panelLeft + "px");
@@ -148,6 +145,7 @@
     preparePcLayout(main);
 
     const button = createQuestionButton(main);
+    if (!button) return;
 
     syncPanelPosition(main);
 
@@ -175,7 +173,11 @@
   }
 
   function setupAll() {
-    cleanOldArrows();
+    document
+      .querySelectorAll("#navbar .nav-menu-arrow, #navbar .phone-sub-arrow")
+      .forEach(function (arrow) {
+        arrow.remove();
+      });
 
     document.querySelectorAll("main").forEach(function (main) {
       if (!isCalculatorPage(main)) {
@@ -203,153 +205,21 @@
       syncOpenPanels();
     });
 
-    window.addEventListener("scroll", syncOpenPanels);
+    window.addEventListener("scroll", syncOpenPanels, { passive: true });
+
+    document.addEventListener("click", function () {
+      setTimeout(syncOpenPanels, 0);
+      setTimeout(syncOpenPanels, 100);
+    });
 
     setTimeout(setupAll, 100);
     setTimeout(setupAll, 400);
     setTimeout(setupAll, 900);
-    setTimeout(setupAll, 1500);
   }
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", start);
   } else {
     start();
-  }
-})();
-/* =====================================================
-   PC ONLY: make ? help panel closer to ? symbol
-===================================================== */
-(function () {
-  "use strict";
-
-  function isPc() {
-    return window.matchMedia("(min-width: 851px)").matches;
-  }
-
-  function makeQuestionPanelCloser() {
-    if (!isPc()) return;
-
-    document.querySelectorAll("main.pc-calculator-layout").forEach(function (main) {
-      const button = main.querySelector(":scope > .pc-question-toggle");
-      const calculator = main.querySelector(":scope > .calculator");
-      const instructionBox = main.querySelector(":scope > .instruction-box");
-
-      if (!button || !calculator || !instructionBox) return;
-
-      const buttonRect = button.getBoundingClientRect();
-      const calcRect = calculator.getBoundingClientRect();
-
-      const gap = 0;
-      const screenPadding = 16;
-
-      const panelWidth = Math.min(calcRect.width, window.innerWidth - screenPadding * 2);
-
-      let panelLeft = buttonRect.left - panelWidth - gap;
-
-      if (panelLeft < screenPadding) {
-        panelLeft = screenPadding;
-      }
-
-      let panelTop = buttonRect.top;
-      let panelHeight = Math.min(calcRect.height, window.innerHeight - panelTop - screenPadding);
-
-      if (panelHeight < 320) {
-        panelTop = screenPadding;
-        panelHeight = Math.min(calcRect.height, window.innerHeight - screenPadding * 2);
-      }
-
-      document.documentElement.style.setProperty("--pc-help-left", panelLeft + "px");
-      document.documentElement.style.setProperty("--pc-help-top", panelTop + "px");
-      document.documentElement.style.setProperty("--pc-help-width", panelWidth + "px");
-      document.documentElement.style.setProperty("--pc-help-height", panelHeight + "px");
-    });
-  }
-
-  window.addEventListener("resize", makeQuestionPanelCloser);
-  window.addEventListener("scroll", makeQuestionPanelCloser);
-
-  document.addEventListener("click", function () {
-    setTimeout(makeQuestionPanelCloser, 0);
-    setTimeout(makeQuestionPanelCloser, 100);
-  });
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", makeQuestionPanelCloser);
-  } else {
-    makeQuestionPanelCloser();
-  }
-})();
-/* =====================================================
-   PC ONLY: keep ? panel close to ? button
-   Panel right edge = just left of ? button
-===================================================== */
-(function () {
-  "use strict";
-
-  function isPc() {
-    return window.matchMedia("(min-width: 851px)").matches;
-  }
-
-  function positionQuestionPanelClose() {
-    if (!isPc()) return;
-
-    document.querySelectorAll("main.pc-calculator-layout").forEach(function (main) {
-      const button = main.querySelector(":scope > .pc-question-toggle");
-      const calculator = main.querySelector(":scope > .calculator");
-      const panel = main.querySelector(":scope > .instruction-box");
-
-      if (!button || !calculator || !panel) return;
-
-      const buttonRect = button.getBoundingClientRect();
-      const calcRect = calculator.getBoundingClientRect();
-
-      const gap = 4; /* make this 0 if you want it touching */
-      const screenPadding = 12;
-
-      const availableLeftSpace = buttonRect.left - screenPadding - gap;
-      const wantedWidth = calcRect.width;
-
-      const panelWidth = Math.max(
-        280,
-        Math.min(wantedWidth, availableLeftSpace)
-      );
-
-      const panelLeft = Math.max(
-        screenPadding,
-        buttonRect.left - panelWidth - gap
-      );
-
-      let panelTop = buttonRect.top;
-      let panelHeight = Math.min(
-        calcRect.height,
-        window.innerHeight - panelTop - screenPadding
-      );
-
-      if (panelHeight < 320) {
-        panelTop = screenPadding;
-        panelHeight = window.innerHeight - screenPadding * 2;
-      }
-
-      document.documentElement.style.setProperty("--pc-help-left", panelLeft + "px");
-      document.documentElement.style.setProperty("--pc-help-top", panelTop + "px");
-      document.documentElement.style.setProperty("--pc-help-width", panelWidth + "px");
-      document.documentElement.style.setProperty("--pc-help-height", panelHeight + "px");
-    });
-  }
-
-  window.addEventListener("resize", positionQuestionPanelClose);
-  window.addEventListener("scroll", positionQuestionPanelClose);
-
-  document.addEventListener("click", function () {
-    setTimeout(positionQuestionPanelClose, 0);
-    setTimeout(positionQuestionPanelClose, 80);
-    setTimeout(positionQuestionPanelClose, 200);
-  });
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", positionQuestionPanelClose);
-  } else {
-    positionQuestionPanelClose();
   }
 })();

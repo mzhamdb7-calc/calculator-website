@@ -1620,199 +1620,8 @@ document.addEventListener("DOMContentLoaded", function () {
 })();
 
 
-/* =====================================================
-   LATEST PC ORIENTATION FOR CALCULATOR PAGES ONLY
-   Excludes index/about/privacy/contact
-   LEFT: What + Result/History
-   CENTER: Calculator
-   RIGHT: Instructions + References
-===================================================== */
-(function () {
-  "use strict";
 
-  function isPc() {
-    return window.matchMedia("(min-width: 851px)").matches;
-  }
 
-  function isExcludedPage(main) {
-    return (
-      main.classList.contains("calculator-box") ||
-      document.body.classList.contains("about-page") ||
-      document.body.classList.contains("privacy-page") ||
-      document.body.classList.contains("contact-page") ||
-      document.body.classList.contains("info-page")
-    );
-  }
-
-  function getLeftBox(main) {
-    return (
-      main.querySelector(":scope > .history") ||
-      main.querySelector(":scope > .age-history-box") ||
-      main.querySelector(":scope > .bmi-history-box") ||
-      main.querySelector(":scope > .discount-history-box") ||
-      main.querySelector(":scope > .loan-history-box") ||
-      main.querySelector(":scope > .percentage-history-box") ||
-      main.querySelector(":scope > .compound-history-box")
-    );
-  }
-
-  function syncPcOrientation() {
-    document.querySelectorAll("main.has-instructions").forEach(function (main) {
-      if (isExcludedPage(main)) return;
-
-      const instructionBox = main.querySelector(":scope > .instruction-box");
-      const leftBox = getLeftBox(main);
-
-      if (!instructionBox || !leftBox) return;
-
-      let whatBox =
-        main.querySelector(":scope > .pc-what-slot .instruction-what-box") ||
-        instructionBox.querySelector(":scope > .instruction-what-box");
-
-      if (!whatBox) return;
-
-      /* remove duplicate What boxes */
-      main.querySelectorAll(".instruction-what-box").forEach(function (box) {
-        if (box !== whatBox) {
-          box.remove();
-        }
-      });
-
-      let slot = main.querySelector(":scope > .pc-what-slot");
-
-      if (isPc()) {
-        if (!slot) {
-          slot = document.createElement("aside");
-          slot.className = "pc-what-slot";
-          slot.setAttribute("aria-label", "What this calculator does");
-          main.insertBefore(slot, leftBox);
-        }
-
-        if (!slot.contains(whatBox)) {
-          slot.appendChild(whatBox);
-        }
-      } else {
-        const title =
-          instructionBox.querySelector(":scope > .instruction-main-title") ||
-          instructionBox.querySelector(":scope > h2");
-
-        if (title && !instructionBox.contains(whatBox)) {
-          instructionBox.insertBefore(whatBox, title);
-        }
-
-        if (slot && slot.children.length === 0) {
-          slot.remove();
-        }
-      }
-    });
-  }
-
-  function start() {
-    syncPcOrientation();
-    window.addEventListener("resize", syncPcOrientation);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
-})();
-
-/* =====================================================
-   PC ORIENTATION ONLY FOR REAL CALCULATOR PAGES
-   Does not affect index/about/privacy/contact
-===================================================== */
-(function () {
-  "use strict";
-
-  function isPc() {
-    return window.matchMedia("(min-width: 851px)").matches;
-  }
-
-  function getCalculatorMain() {
-    return document.querySelector(
-      "main.calculator-container.has-instructions, " +
-      "main.age-calculator-container.has-instructions, " +
-      "main.bmi-calculator-container.has-instructions, " +
-      "main.discount-calculator-container.has-instructions, " +
-      "main.loan-calculator-container.has-instructions, " +
-      "main.percentage-calculator-container.has-instructions, " +
-      "main.compound-calculator-container.has-instructions, " +
-      "main.compound-interest-container.has-instructions"
-    );
-  }
-
-  function getLeftBox(main) {
-    return (
-      main.querySelector(":scope > .history") ||
-      main.querySelector(":scope > .age-history-box") ||
-      main.querySelector(":scope > .bmi-history-box") ||
-      main.querySelector(":scope > .discount-history-box") ||
-      main.querySelector(":scope > .loan-history-box") ||
-      main.querySelector(":scope > .percentage-history-box") ||
-      main.querySelector(":scope > .compound-history-box")
-    );
-  }
-
-  function syncPcCalculatorOrientation() {
-    const main = getCalculatorMain();
-    if (!main) return;
-
-    const instructionBox = main.querySelector(":scope > .instruction-box");
-    const leftBox = getLeftBox(main);
-
-    if (!instructionBox || !leftBox) return;
-
-    let whatBox =
-      main.querySelector(":scope > .pc-what-slot .instruction-what-box") ||
-      instructionBox.querySelector(":scope > .instruction-what-box");
-
-    if (!whatBox) return;
-
-    main.querySelectorAll(".instruction-what-box").forEach(function (box) {
-      if (box !== whatBox) box.remove();
-    });
-
-    let slot = main.querySelector(":scope > .pc-what-slot");
-
-    if (isPc()) {
-      if (!slot) {
-        slot = document.createElement("aside");
-        slot.className = "pc-what-slot";
-        slot.setAttribute("aria-label", "What this calculator does");
-        main.insertBefore(slot, leftBox);
-      }
-
-      if (!slot.contains(whatBox)) {
-        slot.appendChild(whatBox);
-      }
-    } else {
-      const title =
-        instructionBox.querySelector(":scope > .instruction-main-title") ||
-        instructionBox.querySelector(":scope > h2");
-
-      if (title && !instructionBox.contains(whatBox)) {
-        instructionBox.insertBefore(whatBox, title);
-      }
-
-      if (slot && slot.children.length === 0) {
-        slot.remove();
-      }
-    }
-  }
-
-  function start() {
-    syncPcCalculatorOrientation();
-    window.addEventListener("resize", syncPcCalculatorOrientation);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
-})();
 /* =====================================================
    PC CALCULATOR PAGE LAYOUT ONLY
    Excludes index/about/privacy/contact
@@ -1932,237 +1741,30 @@ document.addEventListener("DOMContentLoaded", function () {
     start();
   }
 })();
+
+
 /* =====================================================
-   LOAN PAGE: yearly comparison table
-   Monthly Payment / Total Interest / Total Payment vs Years
+   LOAN PAGE: clean outside result table + graph
+   - Removes old inside-calculator loan comparison blocks
+   - Result table appears in its own box
+   - Graph appears in its own box below
+   - Copy button stays on the right side of result box
 ===================================================== */
 (function () {
   "use strict";
 
+  function isPcMode() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
   function isLoanPage() {
     const h1 = document.querySelector("h1");
-    const title = h1 ? h1.textContent.toLowerCase() : "";
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
 
     return (
       title.includes("loan") ||
       document.body.classList.contains("loan-page") ||
-      !!document.getElementById("loanResult")
-    );
-  }
-
-  function cleanNumber(value) {
-    return Number(String(value || "").replace(/,/g, "").trim());
-  }
-
-  function money(value) {
-    return Number(value).toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-  }
-
-  function findInputByLabel(pattern) {
-    const labels = Array.from(document.querySelectorAll("label"));
-
-    for (const label of labels) {
-      if (!pattern.test(label.textContent || "")) continue;
-
-      const id = label.getAttribute("for");
-
-      if (id) {
-        const input = document.getElementById(id);
-        if (input) return input;
-      }
-
-      const next = label.nextElementSibling;
-      if (next && /input|select/i.test(next.tagName)) return next;
-    }
-
-    return null;
-  }
-
-  function findLoanInputs() {
-    const amountInput =
-      document.getElementById("loanAmount") ||
-      document.getElementById("amount") ||
-      document.getElementById("principal") ||
-      document.getElementById("loanPrincipal") ||
-      findInputByLabel(/loan amount|amount|principal/i);
-
-    const rateInput =
-      document.getElementById("loanRate") ||
-      document.getElementById("interestRate") ||
-      document.getElementById("annualRate") ||
-      document.getElementById("rate") ||
-      findInputByLabel(/interest|rate/i);
-
-    const yearsInput =
-      document.getElementById("loanYears") ||
-      document.getElementById("years") ||
-      document.getElementById("loanTerm") ||
-      document.getElementById("term") ||
-      findInputByLabel(/year|term|period/i);
-
-    return {
-      amountInput,
-      rateInput,
-      yearsInput
-    };
-  }
-
-  function monthlyPayment(principal, annualRate, years) {
-    const months = years * 12;
-    const monthlyRate = annualRate / 100 / 12;
-
-    if (monthlyRate === 0) {
-      return principal / months;
-    }
-
-    return (
-      principal *
-      monthlyRate *
-      Math.pow(1 + monthlyRate, months)
-    ) / (
-      Math.pow(1 + monthlyRate, months) - 1
-    );
-  }
-
-  function getTableWrap() {
-    let wrap = document.getElementById("loanYearTableWrap");
-
-    if (!wrap) {
-      wrap = document.createElement("div");
-      wrap.id = "loanYearTableWrap";
-      wrap.className = "loan-year-table-wrap";
-
-      const result = document.getElementById("loanResult");
-      const calculator = document.querySelector(".calculator");
-
-      if (result) {
-        result.insertAdjacentElement("afterend", wrap);
-      } else if (calculator) {
-        calculator.appendChild(wrap);
-      }
-    }
-
-    return wrap;
-  }
-
-  function renderLoanYearTable() {
-    if (!isLoanPage()) return;
-
-    const inputs = findLoanInputs();
-    const wrap = getTableWrap();
-
-    if (!inputs.amountInput || !inputs.rateInput || !inputs.yearsInput) {
-      wrap.innerHTML = "";
-      return;
-    }
-
-    const principal = cleanNumber(inputs.amountInput.value);
-    const annualRate = cleanNumber(inputs.rateInput.value);
-    const inputYears = cleanNumber(inputs.yearsInput.value);
-
-    if (
-      !Number.isFinite(principal) ||
-      !Number.isFinite(annualRate) ||
-      !Number.isFinite(inputYears) ||
-      principal <= 0 ||
-      annualRate < 0 ||
-      inputYears <= 0
-    ) {
-      wrap.innerHTML = "";
-      return;
-    }
-
-    const maxYears = Math.min(Math.floor(inputYears), 60);
-
-    let rows = "";
-
-    for (let year = 1; year <= maxYears; year += 1) {
-      const monthly = monthlyPayment(principal, annualRate, year);
-      const totalPayment = monthly * year * 12;
-      const totalInterest = totalPayment - principal;
-
-      rows += `
-        <tr>
-          <td>${year}</td>
-          <td>${money(monthly)}</td>
-          <td>${money(totalInterest)}</td>
-          <td>${money(totalPayment)}</td>
-        </tr>
-      `;
-    }
-
-    wrap.innerHTML = `
-      <h3>Loan Comparison by Years</h3>
-
-      <div class="loan-year-table-scroll">
-        <table class="loan-year-table">
-          <thead>
-            <tr>
-              <th>Years</th>
-              <th>Monthly Payment</th>
-              <th>Total Interest</th>
-              <th>Total Payment</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rows}
-          </tbody>
-        </table>
-      </div>
-    `;
-  }
-
-  function startLoanYearTable() {
-    if (!isLoanPage()) return;
-
-    const calculator = document.querySelector(".calculator");
-    if (!calculator) return;
-
-    calculator.addEventListener("click", function (event) {
-      const button = event.target.closest("button");
-      if (!button) return;
-
-      const text = button.textContent.toLowerCase();
-
-      if (text.includes("calculate") || text.includes("loan")) {
-        setTimeout(renderLoanYearTable, 0);
-        setTimeout(renderLoanYearTable, 120);
-      }
-    });
-
-    calculator.addEventListener("keydown", function (event) {
-      if (event.key === "Enter") {
-        setTimeout(renderLoanYearTable, 0);
-        setTimeout(renderLoanYearTable, 120);
-      }
-    });
-
-    renderLoanYearTable();
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startLoanYearTable);
-  } else {
-    startLoanYearTable();
-  }
-})();
-/* =====================================================
-   LOAN PAGE: result table + graph below calculator
-   PC layout: table and graph outside calculator box
-===================================================== */
-(function () {
-  "use strict";
-
-  function isLoanPage() {
-    const h1 = document.querySelector("h1");
-    const title = h1 ? h1.textContent.toLowerCase() : "";
-
-    return (
-      title.includes("loan") ||
-      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
       !!document.getElementById("loanResult")
     );
   }
@@ -2223,7 +1825,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 
-  function calculateMonthlyPayment(principal, annualRate, years) {
+  function monthlyPayment(principal, annualRate, years) {
     const months = years * 12;
     const monthlyRate = annualRate / 100 / 12;
 
@@ -2240,18 +1842,31 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   }
 
-  function getLoanOutputPanel() {
+  function removeOldLoanBlocks() {
+    document
+      .querySelectorAll(
+        ".calculator #loanYearTableWrap, " +
+        ".calculator .loan-year-table-wrap, " +
+        ".calculator #loanOutputPanel, " +
+        ".calculator .loan-output-panel, " +
+        ".calculator #loanExternalOutput, " +
+        "#loanYearTableWrap"
+      )
+      .forEach(function (el) {
+        el.remove();
+      });
+  }
+
+  function getExternalPanel() {
     const calculator = document.querySelector(".calculator");
     if (!calculator) return null;
 
-    let panel = document.getElementById("loanOutputPanel");
+    let panel = document.getElementById("loanExternalOutput");
 
     if (!panel) {
       panel = document.createElement("section");
-      panel.id = "loanOutputPanel";
-      panel.className = "loan-output-panel";
+      panel.id = "loanExternalOutput";
       panel.setAttribute("aria-label", "Loan result table and graph");
-
       calculator.insertAdjacentElement("afterend", panel);
     }
 
@@ -2259,14 +1874,14 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function buildGraph(data) {
-    if (!data.length) return "";
+    const width = 420;
+    const height = 250;
+    const left = 54;
+    const right = 24;
+    const top = 26;
+    const bottom = 48;
 
-    const width = 360;
-    const height = 240;
-    const paddingLeft = 46;
-    const paddingRight = 22;
-    const paddingTop = 26;
-    const paddingBottom = 46;
+    if (!data.length) return "";
 
     const minYear = data[0].year;
     const maxYear = data[data.length - 1].year;
@@ -2278,24 +1893,28 @@ document.addEventListener("DOMContentLoaded", function () {
     const minValue = Math.min.apply(null, values);
     const maxValue = Math.max.apply(null, values);
 
-    const safeValueRange = maxValue - minValue || 1;
-    const safeYearRange = maxYear - minYear || 1;
+    const yearRange = maxYear - minYear || 1;
+    const valueRange = maxValue - minValue || 1;
 
     function x(year) {
-      return paddingLeft + ((year - minYear) / safeYearRange) * (width - paddingLeft - paddingRight);
+      return left + ((year - minYear) / yearRange) * (width - left - right);
     }
 
     function y(value) {
-      return paddingTop + ((maxValue - value) / safeValueRange) * (height - paddingTop - paddingBottom);
+      return top + ((maxValue - value) / valueRange) * (height - top - bottom);
     }
 
     const points = data.map(function (row) {
       return x(row.year) + "," + y(row.monthly);
     }).join(" ");
 
-    const circles = data.map(function (row) {
+    const gridLines = [0, 0.25, 0.5, 0.75, 1].map(function (step) {
+      const gridY = top + step * (height - top - bottom);
+      const label = maxValue - step * valueRange;
+
       return `
-        <circle cx="${x(row.year)}" cy="${y(row.monthly)}" r="5"></circle>
+        <line x1="${left}" y1="${gridY}" x2="${width - right}" y2="${gridY}" class="loan-graph-grid"></line>
+        <text x="8" y="${gridY + 5}" class="loan-graph-value">${money(label)}</text>
       `;
     }).join("");
 
@@ -2305,51 +1924,101 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       return `
-        <text x="${x(row.year)}" y="${height - 18}" transform="rotate(-45 ${x(row.year)} ${height - 18})">
-          ${row.year}
-        </text>
+        <text x="${x(row.year)}" y="${height - 18}" transform="rotate(-45 ${x(row.year)} ${height - 18})">${row.year}</text>
       `;
     }).join("");
 
-    const gridLines = [0, 0.25, 0.5, 0.75, 1].map(function (step) {
-      const gridY = paddingTop + step * (height - paddingTop - paddingBottom);
-      const value = maxValue - step * safeValueRange;
-
-      return `
-        <line x1="${paddingLeft}" y1="${gridY}" x2="${width - paddingRight}" y2="${gridY}" class="loan-graph-grid"></line>
-        <text x="8" y="${gridY + 5}" class="loan-graph-value">${money(value)}</text>
-      `;
+    const circles = data.map(function (row) {
+      return `<circle cx="${x(row.year)}" cy="${y(row.monthly)}" r="5"></circle>`;
     }).join("");
 
     return `
-      <div class="loan-graph-box">
-        <h3>Monthly Payment Graph</h3>
+      <svg class="loan-graph" viewBox="0 0 ${width} ${height}" role="img" aria-label="Monthly payment by years graph">
+        ${gridLines}
 
-        <svg class="loan-graph" viewBox="0 0 ${width} ${height}" role="img" aria-label="Monthly payment by years graph">
-          ${gridLines}
+        <line x1="${left}" y1="${height - bottom}" x2="${width - right + 12}" y2="${height - bottom}" class="loan-graph-axis"></line>
+        <line x1="${left}" y1="${height - bottom}" x2="${left}" y2="${top - 14}" class="loan-graph-axis"></line>
 
-          <line x1="${paddingLeft}" y1="${height - paddingBottom}" x2="${width - paddingRight + 12}" y2="${height - paddingBottom}" class="loan-graph-axis"></line>
-          <line x1="${paddingLeft}" y1="${height - paddingBottom}" x2="${paddingLeft}" y2="${paddingTop - 14}" class="loan-graph-axis"></line>
+        <polyline points="${points}" class="loan-graph-line"></polyline>
 
-          <polyline points="${points}" class="loan-graph-line"></polyline>
-
-          ${circles}
-          ${yearLabels}
-        </svg>
-      </div>
+        ${circles}
+        ${yearLabels}
+      </svg>
     `;
   }
 
-  function renderLoanOutput() {
+  function tableText(panel) {
+    const table = panel.querySelector("table");
+    if (!table) return "";
+
+    return Array.from(table.querySelectorAll("tr"))
+      .map(function (row) {
+        return Array.from(row.querySelectorAll("th, td"))
+          .map(function (cell) {
+            return cell.textContent.trim();
+          })
+          .join("\t");
+      })
+      .join("\n");
+  }
+
+  function setupCopyButton(panel) {
+    const button = panel.querySelector(".loan-copy-btn");
+    if (!button || button.dataset.copyReady === "true") return;
+
+    button.dataset.copyReady = "true";
+
+    button.addEventListener("click", async function () {
+      const text = tableText(panel);
+      if (!text) return;
+
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const textarea = document.createElement("textarea");
+          textarea.value = text;
+          textarea.style.position = "fixed";
+          textarea.style.left = "-9999px";
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand("copy");
+          textarea.remove();
+        }
+
+        const old = button.textContent;
+        button.textContent = "Copied!";
+        setTimeout(function () {
+          button.textContent = old;
+        }, 1200);
+      } catch {
+        button.textContent = "Failed";
+        setTimeout(function () {
+          button.textContent = "Copy";
+        }, 1200);
+      }
+    });
+  }
+
+  function renderLoanExternalOutput() {
     if (!isLoanPage()) return;
 
-    const panel = getLoanOutputPanel();
+    removeOldLoanBlocks();
+
+    const panel = getExternalPanel();
     if (!panel) return;
+
+    if (!isPcMode()) {
+      panel.innerHTML = "";
+      panel.hidden = true;
+      return;
+    }
 
     const inputs = findLoanInputs();
 
     if (!inputs.amountInput || !inputs.rateInput || !inputs.yearsInput) {
       panel.innerHTML = "";
+      panel.hidden = true;
       return;
     }
 
@@ -2366,6 +2035,7 @@ document.addEventListener("DOMContentLoaded", function () {
       inputYears <= 0
     ) {
       panel.innerHTML = "";
+      panel.hidden = true;
       return;
     }
 
@@ -2373,7 +2043,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const data = [];
 
     for (let year = 1; year <= maxYears; year += 1) {
-      const monthly = calculateMonthlyPayment(principal, annualRate, year);
+      const monthly = monthlyPayment(principal, annualRate, year);
       const totalPayment = monthly * year * 12;
       const totalInterest = totalPayment - principal;
 
@@ -2396,482 +2066,71 @@ document.addEventListener("DOMContentLoaded", function () {
       `;
     }).join("");
 
+    panel.hidden = false;
+
     panel.innerHTML = `
-      <div class="loan-result-table-box">
-        <h3>Result</h3>
-
-        <div class="loan-result-table-scroll">
-          <table class="loan-result-table">
-            <thead>
-              <tr>
-                <th>Years</th>
-                <th>Monthly Payment</th>
-                <th>Total Interest</th>
-                <th>Total Payment</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              ${rows}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      ${buildGraph(data)}
-    `;
-  }
-
-  function startLoanOutput() {
-    if (!isLoanPage()) return;
-
-    const calculator = document.querySelector(".calculator");
-    if (!calculator) return;
-
-    calculator.addEventListener("click", function (event) {
-      const button = event.target.closest("button");
-      if (!button) return;
-
-      const text = button.textContent.toLowerCase();
-
-      if (text.includes("calculate") || text.includes("loan")) {
-        setTimeout(renderLoanOutput, 0);
-        setTimeout(renderLoanOutput, 120);
-      }
-    });
-
-    calculator.addEventListener("keydown", function (event) {
-      if (event.key === "Enter") {
-        setTimeout(renderLoanOutput, 0);
-        setTimeout(renderLoanOutput, 120);
-      }
-    });
-
-    renderLoanOutput();
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startLoanOutput);
-  } else {
-    startLoanOutput();
-  }
-})();
-/* =====================================================
-   PC ONLY: move calculator result outside calculator box
-   Result appears below calculator + result/history area
-===================================================== */
-(function () {
-  "use strict";
-
-  function isPc() {
-    return window.matchMedia("(min-width: 851px)").matches;
-  }
-
-  const resultSelectors = [
-    "#result",
-    "#bmiResult",
-    "#loanResult",
-    "#discountResult",
-    "#percentageResult",
-    "#compoundResult"
-  ];
-
-  function getMain() {
-    return document.querySelector("main.pc-calculator-layout") || document.querySelector("main");
-  }
-
-  function getResultElements(main) {
-    if (!main) return [];
-
-    return resultSelectors
-      .map(function (selector) {
-        return main.querySelector(selector);
-      })
-      .filter(Boolean);
-  }
-
-  function getOutsidePanel(main) {
-    let panel = main.querySelector(":scope > .pc-outside-result-panel");
-
-    if (!panel) {
-      panel = document.createElement("section");
-      panel.className = "pc-outside-result-panel";
-      panel.setAttribute("aria-label", "Calculator result");
-
-      const calculator = main.querySelector(":scope > .calculator");
-
-      if (calculator) {
-        calculator.insertAdjacentElement("afterend", panel);
-      } else {
-        main.appendChild(panel);
-      }
-    }
-
-    return panel;
-  }
-
-  function moveResultsOutside() {
-    const main = getMain();
-    if (!main) return;
-
-    const calculator = main.querySelector(":scope > .calculator");
-    if (!calculator) return;
-
-    const results = getResultElements(main);
-
-    if (!isPc()) {
-      const panel = main.querySelector(":scope > .pc-outside-result-panel");
-
-      results.forEach(function (result) {
-        if (panel && panel.contains(result)) {
-          calculator.appendChild(result);
-        }
-      });
-
-      if (panel && panel.children.length === 0) {
-        panel.remove();
-      }
-
-      return;
-    }
-
-    if (!main.classList.contains("pc-calculator-layout")) return;
-
-    const panel = getOutsidePanel(main);
-
-    results.forEach(function (result) {
-      if (!panel.contains(result)) {
-        panel.appendChild(result);
-      }
-    });
-
-    const loanOutputPanel = main.querySelector(":scope > #loanOutputPanel");
-
-    if (loanOutputPanel && !panel.contains(loanOutputPanel)) {
-      panel.appendChild(loanOutputPanel);
-    }
-  }
-
-  function startMoveResultsOutside() {
-    moveResultsOutside();
-
-    window.addEventListener("resize", moveResultsOutside);
-
-    document.addEventListener("click", function () {
-      setTimeout(moveResultsOutside, 0);
-      setTimeout(moveResultsOutside, 150);
-    });
-
-    document.addEventListener("keydown", function (event) {
-      if (event.key === "Enter") {
-        setTimeout(moveResultsOutside, 0);
-        setTimeout(moveResultsOutside, 150);
-      }
-    });
-
-    setTimeout(moveResultsOutside, 300);
-    setTimeout(moveResultsOutside, 800);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startMoveResultsOutside);
-  } else {
-    startMoveResultsOutside();
-  }
-})();
-/* =====================================================
-   LOAN PAGE: remove old comparison table inside calculator
-   Keeps only the outside result/table/graph panel
-===================================================== */
-(function () {
-  "use strict";
-
-  function isLoanPage() {
-    const h1 = document.querySelector("h1");
-    const title = h1 ? h1.textContent.toLowerCase() : "";
-
-    return (
-      title.includes("loan") ||
-      document.body.classList.contains("loan-page") ||
-      !!document.getElementById("loanResult")
-    );
-  }
-
-  function removeOldLoanTableInsideCalculator() {
-    if (!isLoanPage()) return;
-
-    document
-      .querySelectorAll(
-        ".calculator #loanYearTableWrap, " +
-        ".calculator .loan-year-table-wrap, " +
-        "#loanYearTableWrap"
-      )
-      .forEach(function (oldTable) {
-        oldTable.remove();
-      });
-  }
-
-  function startRemoveOldLoanTable() {
-    removeOldLoanTableInsideCalculator();
-
-    document.addEventListener("click", function () {
-      setTimeout(removeOldLoanTableInsideCalculator, 0);
-      setTimeout(removeOldLoanTableInsideCalculator, 150);
-      setTimeout(removeOldLoanTableInsideCalculator, 400);
-    });
-
-    document.addEventListener("keydown", function (event) {
-      if (event.key === "Enter") {
-        setTimeout(removeOldLoanTableInsideCalculator, 0);
-        setTimeout(removeOldLoanTableInsideCalculator, 150);
-        setTimeout(removeOldLoanTableInsideCalculator, 400);
-      }
-    });
-
-    const observer = new MutationObserver(removeOldLoanTableInsideCalculator);
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startRemoveOldLoanTable);
-  } else {
-    startRemoveOldLoanTable();
-  }
-})();
-/* =====================================================
-   LOAN PAGE RESULT LAYOUT - PC ONLY
-   Result/table box on top
-   Graph box below
-   Copy result button on the right
-===================================================== */
-(function () {
-  "use strict";
-
-  function isPcMode() {
-    return window.matchMedia("(min-width: 851px)").matches;
-  }
-
-  function isLoanPage() {
-    const h1 = document.querySelector("h1");
-    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
-    return (
-      title.includes("loan") ||
-      document.body.classList.contains("loan-page") ||
-      document.body.dataset.page === "loan"
-    );
-  }
-
-  function firstExisting(selectors, root) {
-    root = root || document;
-    for (let i = 0; i < selectors.length; i++) {
-      const el = root.querySelector(selectors[i]);
-      if (el) return el;
-    }
-    return null;
-  }
-
-  function allExisting(selectors, root) {
-    root = root || document;
-    const found = [];
-    selectors.forEach(function (selector) {
-      root.querySelectorAll(selector).forEach(function (el) {
-        if (!found.includes(el)) {
-          found.push(el);
-        }
-      });
-    });
-    return found;
-  }
-
-  function getMainContainer() {
-    return document.querySelector("main") || document.body;
-  }
-
-  function getCalculatorBox() {
-    return (
-      document.querySelector(".calculator") ||
-      document.querySelector(".calculator-box") ||
-      document.querySelector(".calc-box") ||
-      document.querySelector("main")
-    );
-  }
-
-  function makePanelStructure() {
-    let wrap = document.getElementById("loanExternalOutput");
-    if (wrap) return wrap;
-
-    wrap = document.createElement("section");
-    wrap.id = "loanExternalOutput";
-
-    wrap.innerHTML = `
       <div class="loan-output-top">
         <div class="loan-result-panel">
           <h2 class="loan-panel-title">Result</h2>
-          <div class="loan-result-body"></div>
+
+          <div class="loan-result-body">
+            <table class="loan-result-table">
+              <thead>
+                <tr>
+                  <th>Years</th>
+                  <th>Monthly Payment</th>
+                  <th>Total Interest</th>
+                  <th>Total Payment</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                ${rows}
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <div class="loan-copy-side"></div>
+        <div class="loan-copy-side">
+          <button type="button" class="loan-copy-btn">Copy</button>
+        </div>
       </div>
 
       <div class="loan-graph-panel">
         <h2 class="loan-panel-title">Graph</h2>
-        <div class="loan-graph-body"></div>
+
+        <div class="loan-graph-body">
+          ${buildGraph(data)}
+        </div>
       </div>
     `;
 
-    return wrap;
+    setupCopyButton(panel);
   }
 
-  function createCopyButton(resultBody) {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "loan-copy-btn";
-    btn.textContent = "Copy";
+  function startLoanExternalOutput() {
+    if (!isLoanPage()) return;
 
-    btn.addEventListener("click", function () {
-      let text = "";
+    renderLoanExternalOutput();
 
-      const table = resultBody.querySelector("table");
-      if (table) {
-        const rows = Array.from(table.querySelectorAll("tr"));
-        text = rows
-          .map(function (row) {
-            return Array.from(row.querySelectorAll("th, td"))
-              .map(function (cell) {
-                return cell.textContent.trim();
-              })
-              .join("\t");
-          })
-          .join("\n");
-      } else {
-        text = resultBody.innerText.trim();
-      }
-
-      if (!text) return;
-
-      navigator.clipboard.writeText(text).then(function () {
-        const old = btn.textContent;
-        btn.textContent = "Copied!";
-        setTimeout(function () {
-          btn.textContent = old;
-        }, 1200);
-      });
-    });
-
-    return btn;
-  }
-
-  function buildLoanOutputLayout() {
-    if (!isPcMode() || !isLoanPage()) return;
-
-    const main = getMainContainer();
-    const calculatorBox = getCalculatorBox();
-    if (!main || !calculatorBox) return;
-
-    const panel = makePanelStructure();
-
-    if (!panel.parentNode) {
-      calculatorBox.insertAdjacentElement("afterend", panel);
-    }
-
-    const resultBody = panel.querySelector(".loan-result-body");
-    const graphBody = panel.querySelector(".loan-graph-body");
-    const copySide = panel.querySelector(".loan-copy-side");
-
-    if (!resultBody || !graphBody || !copySide) return;
-
-    const resultSelectors = [
-      "#loanResultTableWrap",
-      ".loan-result-table-wrap",
-      "#loanResultTable",
-      ".loan-result-table",
-      "#loanResult",
-      "#loanResultBox",
-      ".loan-result-box",
-      ".loan-summary-box",
-      ".loan-output-text"
-    ];
-
-    const graphSelectors = [
-      "#loanGraphWrap",
-      "#loanGraphBox",
-      ".loan-graph-wrap",
-      ".loan-graph-box",
-      "#loanChartWrap",
-      "#loanChartBox",
-      "canvas#loanChart",
-      "canvas#loanGraph",
-      ".loan-chart-wrap"
-    ];
-
-    const buttonSelectors = [
-      "#copyLoanResultBtn",
-      ".copy-loan-result-btn",
-      ".copy-result-btn"
-    ];
-
-    const resultNodes = allExisting(resultSelectors).filter(function (node) {
-      return !node.closest("#loanExternalOutput");
-    });
-
-    const graphNode = firstExisting(graphSelectors.filter(Boolean)) &&
-      !firstExisting(graphSelectors.filter(Boolean)).closest("#loanExternalOutput")
-        ? firstExisting(graphSelectors.filter(Boolean))
-        : null;
-
-    const existingButton = firstExisting(buttonSelectors.filter(Boolean));
-
-    resultNodes.forEach(function (node) {
-      resultBody.appendChild(node);
-      node.style.display = "";
-    });
-
-    if (graphNode) {
-      graphBody.appendChild(graphNode);
-      graphNode.style.display = "";
-    }
-
-    copySide.innerHTML = "";
-
-    if (existingButton && !existingButton.closest("#loanExternalOutput")) {
-      existingButton.classList.add("loan-copy-btn");
-      copySide.appendChild(existingButton);
-      existingButton.style.display = "";
-    } else {
-      copySide.appendChild(createCopyButton(resultBody));
-    }
-  }
-
-  function startLoanOutputLayout() {
-    buildLoanOutputLayout();
-
-    window.addEventListener("resize", function () {
-      setTimeout(buildLoanOutputLayout, 50);
-    });
+    window.addEventListener("resize", renderLoanExternalOutput);
 
     document.addEventListener("click", function () {
-      setTimeout(buildLoanOutputLayout, 0);
-      setTimeout(buildLoanOutputLayout, 150);
-      setTimeout(buildLoanOutputLayout, 400);
+      setTimeout(renderLoanExternalOutput, 0);
+      setTimeout(renderLoanExternalOutput, 150);
     });
 
-    const observer = new MutationObserver(function () {
-      buildLoanOutputLayout();
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        setTimeout(renderLoanExternalOutput, 0);
+        setTimeout(renderLoanExternalOutput, 150);
+      }
     });
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startLoanOutputLayout);
+    document.addEventListener("DOMContentLoaded", startLoanExternalOutput);
   } else {
-    startLoanOutputLayout();
+    startLoanExternalOutput();
   }
 })();
