@@ -2579,3 +2579,66 @@ document.addEventListener("DOMContentLoaded", function () {
     startMoveResultsOutside();
   }
 })();
+/* =====================================================
+   LOAN PAGE: remove old comparison table inside calculator
+   Keeps only the outside result/table/graph panel
+===================================================== */
+(function () {
+  "use strict";
+
+  function isLoanPage() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.toLowerCase() : "";
+
+    return (
+      title.includes("loan") ||
+      document.body.classList.contains("loan-page") ||
+      !!document.getElementById("loanResult")
+    );
+  }
+
+  function removeOldLoanTableInsideCalculator() {
+    if (!isLoanPage()) return;
+
+    document
+      .querySelectorAll(
+        ".calculator #loanYearTableWrap, " +
+        ".calculator .loan-year-table-wrap, " +
+        "#loanYearTableWrap"
+      )
+      .forEach(function (oldTable) {
+        oldTable.remove();
+      });
+  }
+
+  function startRemoveOldLoanTable() {
+    removeOldLoanTableInsideCalculator();
+
+    document.addEventListener("click", function () {
+      setTimeout(removeOldLoanTableInsideCalculator, 0);
+      setTimeout(removeOldLoanTableInsideCalculator, 150);
+      setTimeout(removeOldLoanTableInsideCalculator, 400);
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        setTimeout(removeOldLoanTableInsideCalculator, 0);
+        setTimeout(removeOldLoanTableInsideCalculator, 150);
+        setTimeout(removeOldLoanTableInsideCalculator, 400);
+      }
+    });
+
+    const observer = new MutationObserver(removeOldLoanTableInsideCalculator);
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startRemoveOldLoanTable);
+  } else {
+    startRemoveOldLoanTable();
+  }
+})();

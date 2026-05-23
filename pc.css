@@ -2497,3 +2497,19 @@
     grid-template-columns: 1fr !important;
   }
 }
+/* =====================================================
+   PC ONLY: hide old loan comparison table inside calculator
+===================================================== */
+@media (min-width: 851px) {
+  .calculator #loanYearTableWrap,
+  .calculator .loan-year-table-wrap {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+}
