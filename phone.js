@@ -633,3 +633,154 @@
     start();
   }
 })();
+/* =====================================================
+   PHONE FIX: health / finance arrow changes
+   closed = ▼
+   open = ▲
+===================================================== */
+(function () {
+  "use strict";
+
+  function isPhone() {
+    return window.matchMedia("(max-width: 850px)").matches;
+  }
+
+  function installPhoneSubArrowCSS() {
+    const oldStyle = document.getElementById("phone-submenu-arrow-css");
+    if (oldStyle) oldStyle.remove();
+
+    const style = document.createElement("style");
+    style.id = "phone-submenu-arrow-css";
+
+    style.textContent = `
+      @media (max-width: 850px) {
+        html body #navbar .dropdown-content .nav-group > summary::after,
+        html body #navbar .dropdown-content .fixed-nav-group > .nav-summary::after,
+        html body #navbar .dropdown-content .navbar-fixed-group > .navbar-fixed-summary::after {
+          content: none !important;
+          display: none !important;
+        }
+
+        html body #navbar .phone-sub-arrow {
+          display: inline-block !important;
+          margin-left: 8px !important;
+          color: var(--black) !important;
+          font-size: 14px !important;
+          font-weight: bold !important;
+          line-height: 1 !important;
+          background: transparent !important;
+          border: none !important;
+          box-shadow: none !important;
+        }
+      }
+    `;
+
+    document.head.appendChild(style);
+  }
+
+  function cleanText(text) {
+    return String(text || "")
+      .replace(/[▼▲▶◀⬇⬆⬅➡]/g, "")
+      .trim();
+  }
+
+  function getTrigger(group) {
+    return (
+      group.querySelector(":scope > summary") ||
+      group.querySelector(":scope > .nav-summary") ||
+      group.querySelector(":scope > .navbar-fixed-summary")
+    );
+  }
+
+  function groupIsOpen(group) {
+    return (
+      group.open === true ||
+      group.dataset.phoneOpen === "true" ||
+      group.classList.contains("phone-submenu-open") ||
+      group.classList.contains("is-open") ||
+      group.classList.contains("open") ||
+      group.classList.contains("active")
+    );
+  }
+
+  function setupArrow(group) {
+    const trigger = getTrigger(group);
+    if (!trigger) return;
+
+    let arrow = trigger.querySelector(".phone-sub-arrow");
+
+    if (!arrow) {
+      trigger.querySelectorAll(".nav-menu-arrow").forEach(function (oldArrow) {
+        oldArrow.remove();
+      });
+
+      trigger.textContent = cleanText(trigger.textContent) + " ";
+
+      arrow = document.createElement("span");
+      arrow.className = "phone-sub-arrow";
+      arrow.textContent = "▼";
+
+      trigger.appendChild(arrow);
+    }
+
+    arrow.textContent = groupIsOpen(group) ? "▲" : "▼";
+  }
+
+  function updateAllPhoneSubArrows() {
+    if (!isPhone()) return;
+
+    document
+      .querySelectorAll(
+        "#navbar .dropdown-content .nav-group, " +
+        "#navbar .dropdown-content .fixed-nav-group, " +
+        "#navbar .dropdown-content .navbar-fixed-group"
+      )
+      .forEach(setupArrow);
+  }
+
+  function start() {
+    installPhoneSubArrowCSS();
+    updateAllPhoneSubArrows();
+
+    window.addEventListener(
+      "pointerdown",
+      function () {
+        setTimeout(updateAllPhoneSubArrows, 0);
+        setTimeout(updateAllPhoneSubArrows, 80);
+      },
+      true
+    );
+
+    window.addEventListener(
+      "click",
+      function () {
+        setTimeout(updateAllPhoneSubArrows, 0);
+        setTimeout(updateAllPhoneSubArrows, 80);
+      },
+      true
+    );
+
+    const navbar = document.getElementById("navbar");
+
+    if (navbar) {
+      const observer = new MutationObserver(function () {
+        updateAllPhoneSubArrows();
+      });
+
+      observer.observe(navbar, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["open", "class", "data-phone-open"]
+      });
+    }
+
+    window.addEventListener("resize", updateAllPhoneSubArrows);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
