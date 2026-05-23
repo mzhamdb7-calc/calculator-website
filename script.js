@@ -2541,3 +2541,148 @@ document.addEventListener("DOMContentLoaded", function () {
     start();
   }
 })();
+/* =====================================================
+   LOAN PAGE: add Copy button beside graph
+   Copies graph data: Years + Monthly Payment
+===================================================== */
+(function () {
+  "use strict";
+
+  function isLoanPage() {
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      !!document.getElementById("loanExternalOutput")
+    );
+  }
+
+  function getGraphDataText() {
+    const table = document.querySelector("#loanExternalOutput .loan-result-table");
+    if (!table) return "";
+
+    const rows = Array.from(table.querySelectorAll("tbody tr"));
+
+    if (!rows.length) return "";
+
+    let text = "Years\tMonthly Payment\n";
+
+    rows.forEach(function (row) {
+      const cells = row.querySelectorAll("td");
+
+      if (cells.length >= 2) {
+        text +=
+          cells[0].textContent.trim() +
+          "\t" +
+          cells[1].textContent.trim() +
+          "\n";
+      }
+    });
+
+    return text.trim();
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function copyGraphData(button) {
+    const text = getGraphDataText();
+    if (!text) return;
+
+    function done() {
+      const oldText = button.textContent;
+      button.textContent = "Copied!";
+
+      setTimeout(function () {
+        button.textContent = oldText;
+      }, 1200);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done).catch(function () {
+        fallbackCopy(text);
+        done();
+      });
+    } else {
+      fallbackCopy(text);
+      done();
+    }
+  }
+
+  function addGraphCopyButton() {
+    if (!isLoanPage()) return;
+
+    const output = document.getElementById("loanExternalOutput");
+    if (!output) return;
+
+    const graphPanel =
+      output.querySelector(":scope > .loan-graph-panel") ||
+      output.querySelector(":scope > .loan-graph-row > .loan-graph-panel");
+
+    if (!graphPanel) return;
+
+    let graphRow = output.querySelector(":scope > .loan-graph-row");
+
+    if (!graphRow) {
+      graphRow = document.createElement("div");
+      graphRow.className = "loan-graph-row";
+
+      output.insertBefore(graphRow, graphPanel);
+      graphRow.appendChild(graphPanel);
+    }
+
+    let copySide = graphRow.querySelector(":scope > .loan-graph-copy-side");
+
+    if (!copySide) {
+      copySide = document.createElement("div");
+      copySide.className = "loan-graph-copy-side";
+
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "loan-graph-copy-btn";
+      button.textContent = "Copy";
+
+      button.addEventListener("click", function () {
+        copyGraphData(button);
+      });
+
+      copySide.appendChild(button);
+      graphRow.appendChild(copySide);
+    }
+  }
+
+  function startGraphCopyButton() {
+    addGraphCopyButton();
+
+    document.addEventListener("click", function () {
+      setTimeout(addGraphCopyButton, 0);
+      setTimeout(addGraphCopyButton, 150);
+      setTimeout(addGraphCopyButton, 400);
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        setTimeout(addGraphCopyButton, 0);
+        setTimeout(addGraphCopyButton, 150);
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startGraphCopyButton);
+  } else {
+    startGraphCopyButton();
+  }
+})();

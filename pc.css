@@ -2223,3 +2223,64 @@
     box-sizing: border-box !important;
   }
 }
+/* =====================================================
+   PC ONLY: Copy button beside loan graph
+===================================================== */
+@media (min-width: 851px) {
+  #loanExternalOutput .loan-graph-row {
+    width: 100% !important;
+
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 16px !important;
+
+    align-items: start !important;
+
+    box-sizing: border-box !important;
+  }
+
+  #loanExternalOutput .loan-graph-row .loan-graph-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  #loanExternalOutput .loan-graph-copy-side {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+  }
+
+  #loanExternalOutput .loan-graph-copy-btn {
+    min-width: 90px !important;
+
+    padding: 10px 14px !important;
+
+    background: #ffb3c7 !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    font-family: inherit !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+
+    cursor: pointer !important;
+  }
+
+  #loanExternalOutput .loan-graph-copy-btn:hover {
+    background: var(--yellow) !important;
+    transform: translate(-2px, -2px) !important;
+    box-shadow: 6px 6px 0 var(--black) !important;
+  }
+}
+
+@media (min-width: 851px) and (max-width: 1180px) {
+  #loanExternalOutput .loan-graph-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  #loanExternalOutput .loan-graph-copy-side {
+    justify-content: flex-start !important;
+  }
+}
