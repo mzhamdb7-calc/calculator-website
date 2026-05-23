@@ -338,7 +338,8 @@
     "bmiResult",
     "loanResult",
     "discountResult",
-    "percentageResult"
+    "percentageResult",
+    "compoundResult"
   ];
 
   function setupResultCopyButtons() {
@@ -368,7 +369,12 @@
 
   function setupHistoryCopyButtons() {
     const lists = [
-      document.getElementById("ageHistoryList")
+      document.getElementById("ageHistoryList"),
+      document.getElementById("bmiHistoryList"),
+      document.getElementById("loanHistoryList"),
+      document.getElementById("discountHistoryList"),
+      document.getElementById("percentageHistoryList"),
+      document.getElementById("compoundHistoryList")
     ];
 
     lists.forEach(function (list) {
@@ -405,7 +411,12 @@
 
   function watchCopyButtons() {
     const targets = [
-      document.getElementById("ageHistoryList")
+      document.getElementById("ageHistoryList"),
+      document.getElementById("bmiHistoryList"),
+      document.getElementById("loanHistoryList"),
+      document.getElementById("discountHistoryList"),
+      document.getElementById("percentageHistoryList"),
+      document.getElementById("compoundHistoryList")
     ];
 
     targets.forEach(function (target) {
@@ -855,1519 +866,19 @@
   window.setupDropdowns = setupDropdowns;
 })();
 
-
-/* =========================
-   PC SIDE MENU CLICK EXPAND
-   Click the Calculator button to open/close its side submenu.
-   Hover still works from CSS.
-========================= */
-
-document.addEventListener("DOMContentLoaded", function () {
-  const navbar = document.getElementById("navbar");
-  if (!navbar) return;
-
-  const calculatorDropdown = navbar.querySelector(":scope > .dropdown");
-  if (!calculatorDropdown) return;
-
-  const calculatorButton = calculatorDropdown.querySelector(".dropbtn");
-  if (!calculatorButton) return;
-
-  function isPcSideMenu() {
-    return window.matchMedia("(min-width: 851px)").matches &&
-      navbar.classList.contains("open");
-  }
-
-  calculatorButton.addEventListener("click", function (event) {
-    if (!isPcSideMenu()) return;
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    calculatorDropdown.classList.toggle("menu-open");
-  });
-
-  document.addEventListener("click", function (event) {
-    if (!calculatorDropdown.contains(event.target)) {
-      calculatorDropdown.classList.remove("menu-open");
-    }
-  });
-
-  window.addEventListener("resize", function () {
-    calculatorDropdown.classList.remove("menu-open");
-  });
-});
-
-
 /* =====================================================
-   TOP NAVBAR CHANGES TO MENU ICON ON SCROLL
-===================================================== */
-
-document.addEventListener("DOMContentLoaded", function () {
-  const navbar = document.getElementById("navbar");
-  const menuIcon = document.getElementById("menuIcon");
-
-  if (!navbar || !menuIcon) return;
-
-  function updateScrolledMenu() {
-    if (window.scrollY > 90) {
-      document.body.classList.add("menu-scrolled");
-      navbar.classList.add("scrolled");
-      menuIcon.classList.add("show");
-    } else {
-      document.body.classList.remove("menu-scrolled");
-      navbar.classList.remove("scrolled");
-      navbar.classList.remove("open");
-      menuIcon.classList.remove("show");
-    }
-  }
-
-  window.toggleMenu = function () {
-    if (!document.body.classList.contains("menu-scrolled")) return;
-    navbar.classList.toggle("open");
-  };
-
-  menuIcon.addEventListener("click", function (event) {
-    event.preventDefault();
-    event.stopPropagation();
-    window.toggleMenu();
-  });
-
-  document.addEventListener("click", function (event) {
-    if (
-      document.body.classList.contains("menu-scrolled") &&
-      !navbar.contains(event.target) &&
-      !menuIcon.contains(event.target)
-    ) {
-      navbar.classList.remove("open");
-    }
-  });
-
-  window.addEventListener("scroll", updateScrolledMenu);
-  updateScrolledMenu();
-});
-
-/* =====================================================
-   OPEN ALL DETAILS DROPDOWNS ON HOVER
-===================================================== */
-
-document.addEventListener("DOMContentLoaded", function () {
-  const hoverDropdowns = document.querySelectorAll(".nav-group, .group-card");
-
-  hoverDropdowns.forEach(function (dropdown) {
-    dropdown.addEventListener("mouseenter", function () {
-      dropdown.open = true;
-    });
-
-    dropdown.addEventListener("mouseleave", function () {
-      dropdown.open = false;
-    });
-
-    dropdown.addEventListener("focusin", function () {
-      dropdown.open = true;
-    });
-
-    dropdown.addEventListener("focusout", function () {
-      setTimeout(function () {
-        if (!dropdown.contains(document.activeElement)) {
-          dropdown.open = false;
-        }
-      }, 100);
-    });
-  });
-});
-/* =====================================================
-   HOUSE ICON HOVER EXPANDS MENU
-===================================================== */
-
-document.addEventListener("DOMContentLoaded", function () {
-  const navbar = document.getElementById("navbar");
-  const menuIcon = document.getElementById("menuIcon");
-
-  if (!navbar || !menuIcon) return;
-
-  let closeTimer;
-
-  function isPastTopMenu() {
-    return window.scrollY > 90;
-  }
-
-  function openMenu() {
-    if (!isPastTopMenu()) return;
-
-    document.body.classList.add("menu-scrolled");
-    navbar.classList.add("scrolled");
-    navbar.classList.add("open");
-    menuIcon.classList.add("show");
-  }
-
-  function closeMenuSoon() {
-    clearTimeout(closeTimer);
-
-    closeTimer = setTimeout(function () {
-      if (!navbar.matches(":hover") && !menuIcon.matches(":hover")) {
-        navbar.classList.remove("open");
-      }
-    }, 180);
-  }
-
-  function updateScrollMenu() {
-    if (isPastTopMenu()) {
-      document.body.classList.add("menu-scrolled");
-      navbar.classList.add("scrolled");
-      menuIcon.classList.add("show");
-    } else {
-      document.body.classList.remove("menu-scrolled");
-      navbar.classList.remove("scrolled");
-      navbar.classList.remove("open");
-      menuIcon.classList.remove("show");
-    }
-  }
-
-  menuIcon.addEventListener("mouseenter", openMenu);
-  menuIcon.addEventListener("mouseleave", closeMenuSoon);
-
-  navbar.addEventListener("mouseenter", function () {
-    clearTimeout(closeTimer);
-  });
-
-  navbar.addEventListener("mouseleave", closeMenuSoon);
-
-  menuIcon.addEventListener("click", function (event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (!isPastTopMenu()) return;
-
-    document.body.classList.add("menu-scrolled");
-    navbar.classList.add("scrolled");
-    menuIcon.classList.add("show");
-    navbar.classList.toggle("open");
-  });
-
-  document.addEventListener("click", function (event) {
-    if (!navbar.contains(event.target) && !menuIcon.contains(event.target)) {
-      navbar.classList.remove("open");
-    }
-  });
-
-  window.addEventListener("scroll", updateScrollMenu);
-  updateScrollMenu();
-});
-/* =====================================================
-   PC: HOME ICON HOVER OPENS LEFT SIDE MENU
-===================================================== */
-
-document.addEventListener("DOMContentLoaded", function () {
-  const navbar = document.getElementById("navbar");
-  const menuIcon = document.getElementById("menuIcon");
-
-  if (!navbar || !menuIcon) return;
-
-  let closeTimer;
-
-  function isPc() {
-    return window.matchMedia("(min-width: 851px)").matches;
-  }
-
-  function isPastTopMenu() {
-    return window.scrollY > 90;
-  }
-
-  function showIconAfterScroll() {
-    if (isPastTopMenu()) {
-      document.body.classList.add("menu-scrolled");
-      navbar.classList.add("scrolled");
-      menuIcon.classList.add("show");
-    } else {
-      document.body.classList.remove("menu-scrolled");
-      navbar.classList.remove("scrolled");
-      navbar.classList.remove("open");
-      menuIcon.classList.remove("show");
-    }
-  }
-
-  function openSideMenu() {
-    if (!isPc() || !isPastTopMenu()) return;
-
-    clearTimeout(closeTimer);
-
-    document.body.classList.add("menu-scrolled");
-    navbar.classList.add("scrolled");
-    navbar.classList.add("open");
-    menuIcon.classList.add("show");
-  }
-
-  function closeSideMenuSoon() {
-    clearTimeout(closeTimer);
-
-    closeTimer = setTimeout(function () {
-      if (!navbar.matches(":hover") && !menuIcon.matches(":hover")) {
-        navbar.classList.remove("open");
-      }
-    }, 180);
-  }
-
-  menuIcon.addEventListener("mouseenter", openSideMenu);
-  navbar.addEventListener("mouseenter", function () {
-    clearTimeout(closeTimer);
-  });
-
-  menuIcon.addEventListener("mouseleave", closeSideMenuSoon);
-  navbar.addEventListener("mouseleave", closeSideMenuSoon);
-
-  menuIcon.addEventListener("click", function (event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (!isPastTopMenu()) return;
-
-    navbar.classList.toggle("open");
-  });
-
-  window.addEventListener("scroll", showIconAfterScroll);
-  showIconAfterScroll();
-});
-/* =====================================================
-   PC: MENU BUTTON HOVER OPENS LEFT SIDE MENU
-===================================================== */
-
-document.addEventListener("DOMContentLoaded", function () {
-  const navbar = document.getElementById("navbar");
-  const menuIcon = document.getElementById("menuIcon");
-
-  if (!navbar || !menuIcon) return;
-
-  let closeTimer;
-
-  function isPc() {
-    return window.matchMedia("(min-width: 851px)").matches;
-  }
-
-  function isPastTopMenu() {
-    return window.scrollY > 90;
-  }
-
-  function updateMenuIcon() {
-    if (isPastTopMenu()) {
-      document.body.classList.add("menu-scrolled");
-      navbar.classList.add("scrolled");
-      menuIcon.classList.add("show");
-    } else {
-      document.body.classList.remove("menu-scrolled");
-      navbar.classList.remove("scrolled");
-      navbar.classList.remove("open");
-      menuIcon.classList.remove("show");
-    }
-  }
-
-  function openMenu() {
-    if (!isPc() || !isPastTopMenu()) return;
-
-    clearTimeout(closeTimer);
-
-    document.body.classList.add("menu-scrolled");
-    navbar.classList.add("scrolled");
-    navbar.classList.add("open");
-    menuIcon.classList.add("show");
-  }
-
-  function closeMenuSoon() {
-    clearTimeout(closeTimer);
-
-    closeTimer = setTimeout(function () {
-      if (!navbar.matches(":hover") && !menuIcon.matches(":hover")) {
-        navbar.classList.remove("open");
-      }
-    }, 180);
-  }
-
-  menuIcon.addEventListener("mouseenter", openMenu);
-  menuIcon.addEventListener("mouseleave", closeMenuSoon);
-
-  navbar.addEventListener("mouseenter", function () {
-    clearTimeout(closeTimer);
-  });
-
-  navbar.addEventListener("mouseleave", closeMenuSoon);
-
-  menuIcon.addEventListener("click", function (event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (!isPastTopMenu()) return;
-
-    navbar.classList.toggle("open");
-  });
-
-  window.addEventListener("scroll", updateMenuIcon);
-  updateMenuIcon();
-});
-
-/* =====================================================
-   FINAL MENU SCROLL + HOVER SYSTEM
-===================================================== */
-
-document.addEventListener("DOMContentLoaded", function () {
-  const navbar = document.getElementById("navbar");
-  const menuIcon = document.getElementById("menuIcon");
-
-  if (!navbar || !menuIcon) return;
-
-  let closeTimer;
-
-  function isPastTopMenu() {
-    return window.scrollY > 90;
-  }
-
-  function updateMenuIcon() {
-    if (isPastTopMenu()) {
-      document.body.classList.add("menu-scrolled");
-      navbar.classList.add("scrolled");
-      menuIcon.classList.add("show");
-    } else {
-      document.body.classList.remove("menu-scrolled");
-      navbar.classList.remove("scrolled");
-      navbar.classList.remove("open");
-      menuIcon.classList.remove("show");
-    }
-  }
-
-  function openMenu() {
-    if (!isPastTopMenu()) return;
-
-    clearTimeout(closeTimer);
-
-    document.body.classList.add("menu-scrolled");
-    navbar.classList.add("scrolled");
-    navbar.classList.add("open");
-    menuIcon.classList.add("show");
-  }
-
-  function closeMenuSoon() {
-    clearTimeout(closeTimer);
-
-    closeTimer = setTimeout(function () {
-      if (!navbar.matches(":hover") && !menuIcon.matches(":hover")) {
-        navbar.classList.remove("open");
-      }
-    }, 180);
-  }
-
-  menuIcon.addEventListener("mouseenter", openMenu);
-  menuIcon.addEventListener("mouseleave", closeMenuSoon);
-
-  navbar.addEventListener("mouseenter", function () {
-    clearTimeout(closeTimer);
-  });
-
-  navbar.addEventListener("mouseleave", closeMenuSoon);
-
-  menuIcon.addEventListener("click", function (event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (!isPastTopMenu()) return;
-
-    navbar.classList.toggle("open");
-  });
-
-  document.addEventListener("click", function (event) {
-    if (!navbar.contains(event.target) && !menuIcon.contains(event.target)) {
-      navbar.classList.remove("open");
-    }
-  });
-
-  window.addEventListener("scroll", updateMenuIcon);
-  updateMenuIcon();
-});
-
-/* PHONE CLICK MENU SYSTEM */
-document.addEventListener("DOMContentLoaded", function () {
-  const navbar = document.getElementById("navbar");
-  const menuIcon = document.getElementById("menuIcon");
-
-  if (!navbar || !menuIcon) return;
-
-  const calculatorDropdown = navbar.querySelector(":scope > .dropdown");
-  const calculatorButton = calculatorDropdown
-    ? calculatorDropdown.querySelector(".dropbtn")
-    : null;
-
-  function isPhone() {
-    return window.matchMedia("(max-width: 850px)").matches;
-  }
-
-  function closePhoneSubmenus() {
-    if (calculatorDropdown) {
-      calculatorDropdown.classList.remove("phone-open");
-    }
-
-    navbar.querySelectorAll(".nav-group").forEach(function (group) {
-      group.open = false;
-    });
-  }
-
-  function togglePhoneMenu(event) {
-    if (!isPhone()) return;
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    document.body.classList.add("menu-scrolled");
-    navbar.classList.add("scrolled");
-    navbar.classList.toggle("open");
-    navbar.classList.toggle("phone-menu-open");
-
-    if (!navbar.classList.contains("open")) {
-      closePhoneSubmenus();
-    }
-  }
-
-  menuIcon.addEventListener("click", togglePhoneMenu);
-
-  if (calculatorButton && calculatorDropdown) {
-    calculatorButton.addEventListener("click", function (event) {
-      if (!isPhone() || !navbar.classList.contains("open")) return;
-
-      event.preventDefault();
-      event.stopPropagation();
-
-      calculatorDropdown.classList.toggle("phone-open");
-
-      navbar.querySelectorAll(".nav-group").forEach(function (group) {
-        group.open = false;
-      });
-    });
-  }
-
-  navbar.querySelectorAll(".nav-group > summary").forEach(function (summary) {
-    summary.addEventListener("click", function (event) {
-      if (!isPhone() || !navbar.classList.contains("open")) return;
-
-      event.preventDefault();
-      event.stopPropagation();
-
-      const group = summary.parentElement;
-      const isOpen = group.open;
-
-      navbar.querySelectorAll(".nav-group").forEach(function (otherGroup) {
-        otherGroup.open = false;
-      });
-
-      group.open = !isOpen;
-    });
-  });
-
-  document.addEventListener("click", function (event) {
-    if (!isPhone()) return;
-
-    if (!navbar.contains(event.target) && !menuIcon.contains(event.target)) {
-      navbar.classList.remove("open", "phone-menu-open");
-      closePhoneSubmenus();
-    }
-  });
-});
-/* Restrict all calculator number inputs to numbers only */
-document.addEventListener("DOMContentLoaded", function () {
-  const numberInputs = document.querySelectorAll('input[type="number"]');
-
-  numberInputs.forEach(function (input) {
-    input.setAttribute("inputmode", "decimal");
-
-    input.addEventListener("keydown", function (event) {
-      const allowedKeys = [
-        "Backspace",
-        "Delete",
-        "ArrowLeft",
-        "ArrowRight",
-        "ArrowUp",
-        "ArrowDown",
-        "Tab",
-        "Home",
-        "End"
-      ];
-
-      if (allowedKeys.includes(event.key)) return;
-
-      if (event.ctrlKey || event.metaKey) return;
-
-      if (/^[0-9]$/.test(event.key)) return;
-
-      if (event.key === "." && !input.value.includes(".")) return;
-
-      event.preventDefault();
-    });
-
-    input.addEventListener("input", function () {
-      let value = input.value;
-
-      value = value.replace(/[^0-9.]/g, "");
-
-      const parts = value.split(".");
-      if (parts.length > 2) {
-        value = parts[0] + "." + parts.slice(1).join("");
-      }
-
-      input.value = value;
-    });
-
-    input.addEventListener("paste", function (event) {
-      event.preventDefault();
-
-      const pastedText = (event.clipboardData || window.clipboardData).getData("text");
-      let cleanedText = pastedText.replace(/[^0-9.]/g, "");
-
-      const parts = cleanedText.split(".");
-      if (parts.length > 2) {
-        cleanedText = parts[0] + "." + parts.slice(1).join("");
-      }
-
-      input.value = cleanedText;
-      input.dispatchEvent(new Event("input"));
-    });
-  });
-});
-/* Remove emoji arrow text from phone side menu health/finance */
-document.addEventListener("DOMContentLoaded", function () {
-  document.querySelectorAll("#navbar .dropdown-content details.nav-group > summary")
-    .forEach(function (summary) {
-      summary.childNodes.forEach(function (node) {
-        if (node.nodeType === Node.TEXT_NODE) {
-          node.textContent = node.textContent
-            .replace(/[▼▲◀▶⬅️🔽🔼]/g, "")
-            .trim();
-        }
-      });
-    });
-});
-/* PHONE SIDE MENU: remove real emoji arrows from health/finance text */
-document.addEventListener("DOMContentLoaded", function () {
-  function cleanSideMenuArrows() {
-    document
-      .querySelectorAll("#navbar .dropdown-content details.nav-group > summary")
-      .forEach(function (summary) {
-        summary.childNodes.forEach(function (node) {
-          if (node.nodeType === Node.TEXT_NODE) {
-            node.textContent = node.textContent
-              .replace(/[\u25BC\u25B2\u25C0\u25B6\u2B05\uFE0F]/g, "")
-              .replace(/[▼▲◀▶⬅]/g, "")
-              .trim();
-          }
-        });
-      });
-  }
-
-  cleanSideMenuArrows();
-
-  document.addEventListener("click", function () {
-    setTimeout(cleanSideMenuArrows, 0);
-  });
-
-  document.querySelectorAll("#navbar .dropdown-content details.nav-group").forEach(function (detail) {
-    detail.addEventListener("toggle", function () {
-      setTimeout(cleanSideMenuArrows, 0);
-    });
-  });
-});
-/* PHONE FINAL FIX: navbar health/finance second tap closes */
-(function () {
-  function isPhone() {
-    return window.matchMedia("(max-width: 850px)").matches;
-  }
-
-  function getClickedGroup(event) {
-    const summary = event.target.closest(
-      "#navbar .dropdown-content details.nav-group > summary"
-    );
-
-    if (summary) {
-      return summary.parentElement;
-    }
-
-    const button = event.target.closest(
-      "#navbar .dropdown-content .nav-finance > .nav-summary, #navbar .dropdown-content .nav-summary"
-    );
-
-    if (button) {
-      return button.closest(".nav-group");
-    }
-
-    return null;
-  }
-
-  function closeGroup(group) {
-    if (!group) return;
-
-    group.open = false;
-    group.removeAttribute("open");
-    group.dataset.phoneOpen = "false";
-    group.classList.remove("is-open", "open", "active", "phone-sub-open");
-  }
-
-  function openGroup(group) {
-    if (!group) return;
-
-    group.open = true;
-    group.setAttribute("open", "");
-    group.dataset.phoneOpen = "true";
-    group.classList.add("is-open", "open", "active", "phone-sub-open");
-  }
-
-  function closeAllGroupsExcept(exceptGroup) {
-    document
-      .querySelectorAll("#navbar .dropdown-content .nav-group")
-      .forEach(function (group) {
-        if (group !== exceptGroup) {
-          closeGroup(group);
-        }
-      });
-  }
-
-  window.addEventListener(
-    "click",
-    function (event) {
-      if (!isPhone()) return;
-
-      const group = getClickedGroup(event);
-      if (!group) return;
-
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-
-      const isOpen =
-        group.dataset.phoneOpen === "true" ||
-        group.classList.contains("is-open") ||
-        group.open === true;
-
-      closeAllGroupsExcept(group);
-
-      if (isOpen) {
-        closeGroup(group);
-      } else {
-        openGroup(group);
-      }
-
-      setTimeout(function () {
-        if (isOpen) {
-          closeGroup(group);
-        } else {
-          openGroup(group);
-        }
-      }, 0);
-    },
-    true
-  );
-})();
-
-/* OVERRIDE: PHONE finance/health tap toggle fix */
-(function () {
-  function isPhone() {
-    return window.matchMedia("(max-width: 850px)").matches;
-  }
-
-  function getNavbarGroup(event) {
-    const summary = event.target.closest(
-      "#navbar .dropdown-content details.nav-group > summary"
-    );
-
-    if (summary) {
-      return summary.parentElement;
-    }
-
-    const button = event.target.closest(
-      "#navbar .dropdown-content .nav-summary"
-    );
-
-    if (button) {
-      return button.closest(".nav-group");
-    }
-
-    return null;
-  }
-
-  function groupName(group) {
-    const text = group.textContent.toLowerCase();
-    if (text.includes("finance")) return "finance";
-    if (text.includes("health")) return "health";
-    return "";
-  }
-
-  function closeGroup(group) {
-    if (!group) return;
-
-    group.open = false;
-    group.removeAttribute("open");
-    group.dataset.phoneOpen = "false";
-    group.classList.remove("is-open", "open", "active", "phone-sub-open");
-  }
-
-  function openGroup(group) {
-    if (!group) return;
-
-    group.open = true;
-    group.setAttribute("open", "");
-    group.dataset.phoneOpen = "true";
-    group.classList.add("is-open", "open", "active", "phone-sub-open");
-  }
-
-  function closeAllNavbarGroupsExcept(exceptGroup) {
-    document
-      .querySelectorAll("#navbar .dropdown-content .nav-group")
-      .forEach(function (group) {
-        if (group !== exceptGroup) {
-          closeGroup(group);
-        }
-      });
-  }
-
-  window.addEventListener(
-    "click",
-    function (event) {
-      if (!isPhone()) return;
-
-      const group = getNavbarGroup(event);
-      if (!group) return;
-
-      const name = groupName(group);
-      if (name !== "finance" && name !== "health") return;
-
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-
-      const wasOpen = group.dataset.phoneOpen === "true";
-
-      closeAllNavbarGroupsExcept(group);
-
-      if (wasOpen) {
-        closeGroup(group);
-      } else {
-        openGroup(group);
-      }
-
-      setTimeout(function () {
-        if (wasOpen) {
-          closeGroup(group);
-        } else {
-          openGroup(group);
-        }
-      }, 0);
-
-      setTimeout(function () {
-        if (wasOpen) {
-          closeGroup(group);
-        } else {
-          openGroup(group);
-        }
-      }, 80);
-    },
-    true
-  );
-})();
-/* OVERRIDE: PHONE navbar health/finance fixed toggle
-   Converts navbar details into button menus so old details behavior cannot reopen finance.
-*/
-(function () {
-  function isPhone() {
-    return window.matchMedia("(max-width: 850px)").matches;
-  }
-
-  function setupFixedNavbarGroups() {
-    const navbar = document.getElementById("navbar");
-    if (!navbar) return;
-
-    const dropdownContent = navbar.querySelector(".dropdown-content");
-    if (!dropdownContent) return;
-
-    dropdownContent
-      .querySelectorAll("details.nav-group")
-      .forEach(function (details) {
-        const summary = details.querySelector(":scope > summary");
-        const links = details.querySelector(":scope > .nav-group-links");
-
-        if (!summary || !links) return;
-
-        const group = document.createElement("div");
-        group.className = "nav-group fixed-nav-group";
-        group.dataset.menuName = summary.textContent.trim().toLowerCase();
-
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "nav-summary";
-        button.textContent = summary.textContent.trim();
-
-        group.appendChild(button);
-        group.appendChild(links.cloneNode(true));
-
-        details.replaceWith(group);
-      });
-  }
-
-  function closeAllGroups(exceptGroup) {
-    document
-      .querySelectorAll("#navbar .dropdown-content .fixed-nav-group")
-      .forEach(function (group) {
-        if (group !== exceptGroup) {
-          group.classList.remove("is-open");
-        }
-      });
-  }
-
-  function handleNavbarGroupClick(event) {
-    if (!isPhone()) return;
-
-    const button = event.target.closest(
-      "#navbar .dropdown-content .fixed-nav-group > .nav-summary"
-    );
-
-    if (!button) return;
-
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-
-    const group = button.closest(".fixed-nav-group");
-    const wasOpen = group.classList.contains("is-open");
-
-    closeAllGroups(group);
-
-    if (wasOpen) {
-      group.classList.remove("is-open");
-    } else {
-      group.classList.add("is-open");
-    }
-  }
-
-  function closeWhenClickOutside(event) {
-    if (!isPhone()) return;
-
-    const navbar = document.getElementById("navbar");
-    if (!navbar) return;
-
-    if (!navbar.contains(event.target)) {
-      closeAllGroups(null);
-    }
-  }
-
-  function initFixedNavbarGroups() {
-    setupFixedNavbarGroups();
-
-    window.addEventListener("click", handleNavbarGroupClick, true);
-    document.addEventListener("click", closeWhenClickOutside, true);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initFixedNavbarGroups);
-  } else {
-    initFixedNavbarGroups();
-  }
-})();
-/* OVERRIDE: add instruction box to every page */
-(function () {
-  function getInstructionData() {
-    const h1 = document.querySelector("h1");
-    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
-
-    if (title.includes("basic")) {
-      return [
-        "Enter numbers using the buttons.",
-        "Choose +, −, ×, ÷, power, or square root.",
-        "Press = to calculate.",
-        "Use ANS to reuse your last answer.",
-        "Press AC to clear the display."
-      ];
-    }
-
-    if (title.includes("age")) {
-      return [
-        "Select your birth date.",
-        "Press calculate age.",
-        "Normal age and Asian age will appear.",
-        "Use Clear to remove saved results."
-      ];
-    }
-
-    if (title.includes("bmi")) {
-      return [
-        "Choose SI or US units.",
-        "Enter your weight and height.",
-        "Waist size is optional.",
-        "Press calculate bmi.",
-        "Your BMI result will appear below."
-      ];
-    }
-
-    if (title.includes("loan")) {
-      return [
-        "Enter the loan amount.",
-        "Enter the annual interest rate.",
-        "Enter the loan years.",
-        "Press calculate loan.",
-        "Monthly payment will be shown."
-      ];
-    }
-
-    if (title.includes("discount")) {
-      return [
-        "Enter the original price.",
-        "Enter the discount percentage.",
-        "Press calculate discount.",
-        "Final price and savings will be shown."
-      ];
-    }
-
-    if (title.includes("percentage")) {
-      return [
-        "Enter the percentage value.",
-        "Enter the number.",
-        "Press calculate percentage.",
-        "The percentage result will appear below."
-      ];
-    }
-
-    if (title.includes("calculator")) {
-      return [
-        "Choose a calculator type.",
-        "Open health for age and BMI.",
-        "Open finance for loan and discount.",
-        "Choose percentage for percentage calculation."
-      ];
-    }
-
-    return [
-      "Use the menu to move between pages.",
-      "Open calculator to choose a calculator type.",
-      "Use the go up button to return to the top."
-    ];
-  }
-
-  function addInstructionBox() {
-    const main = document.querySelector("main");
-    if (!main) return;
-    if (main.querySelector(".instruction-box")) return;
-
-    const box = document.createElement("aside");
-    box.className = "instruction-box";
-
-    const title = document.createElement("h2");
-    title.textContent = "Instructions";
-
-    const list = document.createElement("ul");
-
-    getInstructionData().forEach(function (text) {
-      const li = document.createElement("li");
-      li.textContent = text;
-      list.appendChild(li);
-    });
-
-    box.appendChild(title);
-    box.appendChild(list);
-
-    main.classList.add("has-instructions");
-    main.appendChild(box);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", addInstructionBox);
-  } else {
-    addInstructionBox();
-  }
-})();
-/* OVERRIDE: remove instruction box from index.html only */
-(function () {
-  function removeIndexInstruction() {
-    const main = document.querySelector("main");
-
-    if (!main) return;
-
-    /* index.html uses calculator-box */
-    if (main.classList.contains("calculator-box")) {
-      const instructionBox = main.querySelector(".instruction-box");
-
-      if (instructionBox) {
-        instructionBox.remove();
-      }
-
-      main.classList.remove("has-instructions");
-    }
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", removeIndexInstruction);
-  } else {
-    removeIndexInstruction();
-  }
-
-  setTimeout(removeIndexInstruction, 100);
-})();
-/* OVERRIDE: detailed instruction content */
-(function () {
-  function pageTitle() {
-    const h1 = document.querySelector("h1");
-    return h1 ? h1.textContent.trim().toLowerCase() : "";
-  }
-
-  function makeSection(title, text) {
-    const section = document.createElement("div");
-    section.className = "instruction-section";
-
-    const h3 = document.createElement("h3");
-    h3.textContent = title;
-
-    const p = document.createElement("p");
-    p.textContent = text;
-
-    section.appendChild(h3);
-    section.appendChild(p);
-
-    return section;
-  }
-
-  function getDetailedInstructions() {
-    const title = pageTitle();
-
-    if (title.includes("basic")) {
-      return [
-        ["What does this calculator do?", "It helps you do quick math calculations like addition, subtraction, multiplication, division, power, and square root."],
-        ["How to use it", "Enter numbers using the buttons, choose an operator, then press = to get the answer."],
-        ["Formula used", "The calculator follows normal math order: brackets first, then powers, multiplication/division, then addition/subtraction."],
-        ["Example calculation", "Example: 8 + 2 × 3 = 14 because multiplication is calculated before addition."]
-      ];
-    }
-
-    if (title.includes("age")) {
-      return [
-        ["What does this calculator do?", "It calculates your normal age and Asian age from your birth date."],
-        ["How to use it", "Select your birth date, then press calculate age."],
-        ["Formula used", "Normal age = current year − birth year, adjusted if your birthday has not passed. Asian age = current year − birth year + 1."],
-        ["Example calculation", "If you were born in 2000 and the current year is 2026, Asian age = 2026 − 2000 + 1 = 27."]
-      ];
-    }
-
-    if (title.includes("bmi")) {
-      return [
-        ["What does this calculator do?", "It calculates your Body Mass Index and optional waist-to-height ratio."],
-        ["How to use it", "Choose SI or US unit, enter your weight and height, then press calculate bmi. Waist is optional."],
-        ["Formula used", "SI BMI = weight kg ÷ height m². US BMI = 703 × weight lb ÷ height inch². W/H ratio = waist ÷ height."],
-        ["Example calculation", "If weight is 70 kg and height is 1.70 m, BMI = 70 ÷ 1.70² = 24.22."]
-      ];
-    }
-
-    if (title.includes("loan")) {
-      return [
-        ["What does this calculator do?", "It estimates your monthly loan payment, total payment, and total interest."],
-        ["How to use it", "Enter loan amount, annual interest rate, and loan years, then press calculate loan."],
-        ["Formula used", "Monthly payment = P × r × (1 + r)ⁿ ÷ ((1 + r)ⁿ − 1), where P is loan amount, r is monthly rate, and n is total months."],
-        ["Example calculation", "For a 10000 loan at 5% yearly interest for 2 years, it calculates the estimated monthly payment."]
-      ];
-    }
-
-    if (title.includes("discount")) {
-      return [
-        ["What does this calculator do?", "It calculates the final price after discount and how much money you save."],
-        ["How to use it", "Enter the original price and discount percentage, then press calculate discount."],
-        ["Formula used", "Savings = original price × discount ÷ 100. Final price = original price − savings."],
-        ["Example calculation", "If price is 100 and discount is 20%, savings = 20 and final price = 80."]
-      ];
-    }
-
-    if (title.includes("percentage")) {
-      return [
-        ["What does this calculator do?", "It calculates what a percentage of a number is."],
-        ["How to use it", "Enter the percentage value and the number, then press calculate percentage."],
-        ["Formula used", "Result = percentage ÷ 100 × number."],
-        ["Example calculation", "20% of 150 = 20 ÷ 100 × 150 = 30."]
-      ];
-    }
-
-    if (title.includes("about")) {
-      return [
-        ["What does this page do?", "This page explains what the website is about, privacy information, and contact details."],
-        ["How to use it", "Read the information or use the menu to open a calculator page."],
-        ["Formula used", "No formula is used on this page."],
-        ["Example", "You can use the calculator menu to open BMI, age, loan, discount, percentage, or basic calculator."]
-      ];
-    }
-
-    return [];
-  }
-
-  function rebuildInstructionBox() {
-    const main = document.querySelector("main");
-    if (!main) return;
-
-    /* No instruction on index.html */
-    if (main.classList.contains("calculator-box")) {
-      const oldIndexBox = main.querySelector(".instruction-box");
-      if (oldIndexBox) oldIndexBox.remove();
-      main.classList.remove("has-instructions");
-      return;
-    }
-
-    const data = getDetailedInstructions();
-    if (!data.length) return;
-
-    let box = main.querySelector(".instruction-box");
-
-    if (!box) {
-      box = document.createElement("aside");
-      box.className = "instruction-box";
-      main.appendChild(box);
-    }
-
-    box.innerHTML = "";
-
-    const h2 = document.createElement("h2");
-    h2.textContent = "Instructions";
-    box.appendChild(h2);
-
-    data.forEach(function (item) {
-      box.appendChild(makeSection(item[0], item[1]));
-    });
-
-    main.classList.add("has-instructions");
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", rebuildInstructionBox);
-  } else {
-    rebuildInstructionBox();
-  }
-
-  setTimeout(rebuildInstructionBox, 100);
-})();
-
-/* FINAL PHONE FIX: calculator menu button toggles open/close */
-(function () {
-  function isPhoneMode() {
-    return window.matchMedia("(max-width: 850px)").matches;
-  }
-
-  function blurActiveElement() {
-    if (document.activeElement && document.activeElement.blur) {
-      document.activeElement.blur();
-    }
-  }
-
-  function closeNavbarSubmenus(navbar) {
-    if (!navbar) return;
-
-    navbar.querySelectorAll("details.nav-group").forEach(function (group) {
-      group.open = false;
-      group.removeAttribute("data-phone-open");
-      group.classList.remove("is-open", "open", "active");
-    });
-
-    navbar.querySelectorAll(".fixed-nav-group, .navbar-fixed-group").forEach(function (group) {
-      group.classList.remove("is-open", "open", "active");
-    });
-  }
-
-  function setupFinalPhoneCalculatorToggle() {
-    const navbar = document.getElementById("navbar");
-    if (!navbar) return;
-
-    const calculatorDropdown = navbar.querySelector(":scope > .dropdown");
-    if (!calculatorDropdown) return;
-
-    const calculatorButton = calculatorDropdown.querySelector(":scope > .dropbtn");
-    if (!calculatorButton) return;
-
-    window.addEventListener(
-      "click",
-      function (event) {
-        if (!isPhoneMode()) return;
-
-        const clickedCalculatorButton = event.target.closest("#navbar > .dropdown > .dropbtn");
-
-        if (clickedCalculatorButton) {
-          event.preventDefault();
-          event.stopPropagation();
-          event.stopImmediatePropagation();
-
-          const shouldOpen = !calculatorDropdown.classList.contains("phone-open");
-
-          calculatorDropdown.classList.toggle("phone-open", shouldOpen);
-          calculatorDropdown.classList.toggle("mobile-open", shouldOpen);
-
-          closeNavbarSubmenus(navbar);
-
-          setTimeout(function () {
-            calculatorButton.blur();
-            blurActiveElement();
-          }, 0);
-
-          return;
-        }
-
-        if (!navbar.contains(event.target)) {
-          calculatorDropdown.classList.remove("phone-open", "mobile-open");
-          closeNavbarSubmenus(navbar);
-          blurActiveElement();
-        }
-      },
-      true
-    );
-
-    window.addEventListener("resize", function () {
-      calculatorDropdown.classList.remove("phone-open", "mobile-open");
-      closeNavbarSubmenus(navbar);
-      blurActiveElement();
-    });
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", setupFinalPhoneCalculatorToggle);
-  } else {
-    setupFinalPhoneCalculatorToggle();
-  }
-})();
-/* FINAL REAL PHONE FIX: calculator button second tap closes dropdown */
-(function () {
-  function isPhoneMode() {
-    return window.matchMedia("(max-width: 850px)").matches;
-  }
-
-  function setupPhoneCalculatorDropdown() {
-    const navbar = document.getElementById("navbar");
-    if (!navbar) return;
-
-    const calculatorDropdown = navbar.querySelector(":scope > .dropdown");
-    if (!calculatorDropdown) return;
-
-    const calculatorButton = calculatorDropdown.querySelector(":scope > .dropbtn");
-    const dropdownContent = calculatorDropdown.querySelector(":scope > .dropdown-content");
-
-    if (!calculatorButton || !dropdownContent) return;
-
-    function closeSubmenus() {
-      navbar.querySelectorAll("details.nav-group").forEach(function (group) {
-        group.open = false;
-        group.removeAttribute("open");
-        group.dataset.phoneOpen = "false";
-        group.classList.remove("is-open", "open", "active", "phone-sub-open");
-      });
-
-      navbar.querySelectorAll(".navbar-fixed-group").forEach(function (group) {
-        group.classList.remove("is-open", "open", "active", "phone-sub-open");
-      });
-    }
-
-    function setCalculatorOpen(isOpen) {
-      calculatorDropdown.classList.toggle("phone-open", isOpen);
-      calculatorDropdown.classList.toggle("mobile-open", isOpen);
-      calculatorDropdown.dataset.phoneOpen = isOpen ? "true" : "false";
-
-      dropdownContent.style.setProperty(
-        "display",
-        isOpen ? "block" : "none",
-        "important"
-      );
-
-      calculatorButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
-
-      if (!isOpen) {
-        calculatorButton.blur();
-
-        if (document.activeElement && document.activeElement.blur) {
-          document.activeElement.blur();
-        }
-      }
-
-      closeSubmenus();
-    }
-
-    function clearDesktopInlineStyle() {
-      calculatorDropdown.classList.remove("phone-open", "mobile-open");
-      calculatorDropdown.removeAttribute("data-phone-open");
-      dropdownContent.style.removeProperty("display");
-      calculatorButton.setAttribute("aria-expanded", "false");
-    }
-
-    document.addEventListener(
-      "pointerdown",
-      function (event) {
-        if (!isPhoneMode()) return;
-
-        if (!calculatorButton.contains(event.target)) return;
-
-        event.preventDefault();
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-
-        const shouldOpen = calculatorDropdown.dataset.phoneOpen !== "true";
-        setCalculatorOpen(shouldOpen);
-      },
-      true
-    );
-
-    document.addEventListener(
-      "click",
-      function (event) {
-        if (!isPhoneMode()) return;
-
-        if (calculatorButton.contains(event.target)) {
-          event.preventDefault();
-          event.stopPropagation();
-          event.stopImmediatePropagation();
-          return;
-        }
-
-        if (!calculatorDropdown.contains(event.target)) {
-          setCalculatorOpen(false);
-        }
-      },
-      true
-    );
-
-    window.addEventListener("resize", function () {
-      if (isPhoneMode()) {
-        setCalculatorOpen(false);
-      } else {
-        clearDesktopInlineStyle();
-      }
-    });
-
-    if (isPhoneMode()) {
-      setCalculatorOpen(false);
-    }
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", setupPhoneCalculatorDropdown);
-  } else {
-    setupPhoneCalculatorDropdown();
-  }
-})();
-
-/* =====================================================
-   PHONE FINAL FIX:
-   calculator + info buttons toggle their own dropup
-===================================================== */
-(function () {
-  function isPhoneMode() {
-    return window.matchMedia("(max-width: 850px)").matches;
-  }
-
-  function closePhoneSubmenus(navbar) {
-    if (!navbar) return;
-
-    navbar.querySelectorAll("details.nav-group").forEach(function (group) {
-      group.open = false;
-      group.removeAttribute("open");
-      group.dataset.phoneOpen = "false";
-      group.classList.remove("is-open", "open", "active", "phone-sub-open");
-    });
-
-    navbar.querySelectorAll(".fixed-nav-group, .navbar-fixed-group").forEach(function (group) {
-      group.classList.remove("is-open", "open", "active", "phone-sub-open");
-    });
-  }
-
-  function closeAllDropdowns(navbar, exceptDropdown) {
-    if (!navbar) return;
-
-    navbar.querySelectorAll(":scope > .dropdown").forEach(function (dropdown) {
-      if (dropdown !== exceptDropdown) {
-        dropdown.classList.remove("phone-open", "mobile-open");
-        dropdown.removeAttribute("data-phone-open");
-
-        const content = dropdown.querySelector(":scope > .dropdown-content");
-        if (content) {
-          content.style.removeProperty("display");
-        }
-
-        const button = dropdown.querySelector(":scope > .dropbtn");
-        if (button) {
-          button.setAttribute("aria-expanded", "false");
-          button.blur();
-        }
-      }
-    });
-  }
-
-  function setupPhoneDropups() {
-    const navbar = document.getElementById("navbar");
-    if (!navbar) return;
-
-    const dropdowns = navbar.querySelectorAll(":scope > .dropdown");
-
-    dropdowns.forEach(function (dropdown) {
-      const button = dropdown.querySelector(":scope > .dropbtn");
-      const content = dropdown.querySelector(":scope > .dropdown-content");
-
-      if (!button || !content) return;
-      if (dropdown.dataset.phoneDropupReady === "true") return;
-
-      dropdown.dataset.phoneDropupReady = "true";
-
-      button.addEventListener(
-        "pointerdown",
-        function (event) {
-          if (!isPhoneMode()) return;
-
-          event.preventDefault();
-          event.stopPropagation();
-
-          const isOpen = dropdown.classList.contains("phone-open");
-
-          closeAllDropdowns(navbar, dropdown);
-          closePhoneSubmenus(navbar);
-
-          dropdown.classList.toggle("phone-open", !isOpen);
-          dropdown.classList.toggle("mobile-open", !isOpen);
-          dropdown.dataset.phoneOpen = !isOpen ? "true" : "false";
-
-          content.style.setProperty("display", !isOpen ? "block" : "none", "important");
-          button.setAttribute("aria-expanded", !isOpen ? "true" : "false");
-
-          setTimeout(function () {
-            button.blur();
-          }, 0);
-        },
-        true
-      );
-    });
-
-    document.addEventListener(
-      "pointerdown",
-      function (event) {
-        if (!isPhoneMode()) return;
-
-        if (!navbar.contains(event.target)) {
-          closeAllDropdowns(navbar, null);
-          closePhoneSubmenus(navbar);
-        }
-      },
-      true
-    );
-
-    window.addEventListener("resize", function () {
-      closeAllDropdowns(navbar, null);
-      closePhoneSubmenus(navbar);
-    });
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", setupPhoneDropups);
-  } else {
-    setupPhoneDropups();
-  }
-})();
-/* =====================================================
-   UNIFIED INSTRUCTION + REFERENCES LAYOUT
-   Order:
-   What box
-   Instructions title
-   How box
-   Formula box
-   Example box
-   References title
-   Scrollable reference source boxes
+   MASTER INSTRUCTION + REFERENCES
+   One clean system only:
+   PC left: What + Result/History
+   PC center: Calculator
+   PC right: Instructions + References
 ===================================================== */
 (function () {
   "use strict";
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
 
   function getPageTitle() {
     const h1 = document.querySelector("h1");
@@ -2379,155 +890,87 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (title.includes("basic")) {
       return {
-        whatTitle: "What does this calculator do?",
         what: "It helps you do quick math calculations like addition, subtraction, multiplication, division, power, and square root.",
-        howTitle: "How to use it",
         how: "Enter numbers using the buttons, choose an operator, then press = to get the answer.",
-        formulaTitle: "Formula used",
         formula: "The calculator follows normal math order: brackets first, then powers, multiplication/division, then addition/subtraction.",
-        exampleTitle: "Example calculation",
         example: "8 + 2 × 3 = 14 because multiplication is calculated before addition.",
         references: [
-          {
-            title: "Order of operations",
-            text: "Purplemath explains that parentheses, exponents, multiplication/division, and addition/subtraction are handled in order.",
-            url: "https://www.purplemath.com/modules/orderops.htm"
-          }
+          ["Order of operations", "Purplemath explains the normal order of operations.", "https://www.purplemath.com/modules/orderops.htm"]
         ]
       };
     }
 
     if (title.includes("age")) {
       return {
-        whatTitle: "What does this calculator do?",
         what: "It calculates normal age and Asian age from a selected birth date.",
-        howTitle: "How to use it",
         how: "Select your birth date, then press calculate age.",
-        formulaTitle: "Formula used",
         formula: "Normal age is based on the difference between today and the birth date. Asian age uses current year − birth year + 1.",
-        exampleTitle: "Example calculation",
         example: "If someone was born in 2000 and the current year is 2026, Asian age is 27.",
         references: [
-          {
-            title: "Age calculation reference",
-            text: "Microsoft shows age calculation as the difference between today and a birth date.",
-            url: "https://support.microsoft.com/en-us/office/calculate-age-113d599f-5fea-448f-a4c3-268927911b37"
-          }
+          ["Age calculation", "Microsoft shows age calculation using today’s date and a birth date.", "https://support.microsoft.com/en-us/office/calculate-age-113d599f-5fea-448f-a4c3-268927911b37"]
         ]
       };
     }
 
     if (title.includes("bmi")) {
       return {
-        whatTitle: "What does this calculator do?",
         what: "It calculates Body Mass Index and can also check waist-to-height ratio.",
-        howTitle: "How to use it",
         how: "Choose SI or US units, enter weight and height, optionally enter waist size, then press calculate BMI.",
-        formulaTitle: "Formula used",
         formula: "SI: BMI = weight kg ÷ height m². US: BMI = weight lb ÷ height inch² × 703.",
-        exampleTitle: "Example calculation",
         example: "70 kg and 1.70 m gives BMI = 70 ÷ 1.70² = 24.22.",
         references: [
-          {
-            title: "CDC BMI formula",
-            text: "CDC lists metric and US customary formulas for calculating BMI.",
-            url: "https://www.cdc.gov/growth-chart-training/hcp/using-bmi/body-mass-index.html"
-          }
+          ["CDC BMI formula", "CDC lists metric and US customary formulas for calculating BMI.", "https://www.cdc.gov/growth-chart-training/hcp/using-bmi/body-mass-index.html"]
         ]
       };
     }
 
     if (title.includes("loan")) {
       return {
-        whatTitle: "What does this calculator do?",
         what: "It estimates monthly loan payment, total payment, and total interest.",
-        howTitle: "How to use it",
         how: "Enter loan amount, annual interest rate, and loan years. Then press calculate loan.",
-        formulaTitle: "Formula used",
         formula: "Monthly Payment = P × r × (1 + r)ⁿ ÷ ((1 + r)ⁿ − 1).",
-        exampleTitle: "Example calculation",
         example: "A 10,000 loan at 5% yearly for 5 years gives an estimated monthly payment using the amortization formula.",
         references: [
-          {
-            title: "Loan payment formula",
-            text: "Chase explains the fixed-payment amortized loan formula using principal, monthly rate, and number of payments.",
-            url: "https://www.chase.com/personal/mortgage/education/financing-a-home/loan-amortization"
-          },
-          {
-            title: "Mortgage payment formula",
-            text: "Investopedia also lists the monthly mortgage payment formula with principal, monthly interest rate, and months.",
-            url: "https://www.investopedia.com/mortgage-calculator-5084794"
-          }
+          ["Loan amortization", "Chase explains fixed-payment amortized loan calculations.", "https://www.chase.com/personal/mortgage/education/financing-a-home/loan-amortization"],
+          ["Mortgage formula", "Investopedia lists the mortgage payment formula using principal, rate, and months.", "https://www.investopedia.com/mortgage-calculator-5084794"]
         ]
       };
     }
 
     if (title.includes("discount")) {
       return {
-        whatTitle: "What does this calculator do?",
         what: "It calculates final price after discount and how much money you save.",
-        howTitle: "How to use it",
         how: "Enter the original price and discount percentage, then press calculate discount.",
-        formulaTitle: "Formula used",
         formula: "Savings = original price × discount ÷ 100. Final price = original price − savings.",
-        exampleTitle: "Example calculation",
         example: "If price is 100 and discount is 20%, savings = 20 and final price = 80.",
         references: [
-          {
-            title: "Discount calculation",
-            text: "Calculator.net explains percent-off discount by subtracting the discount amount from the original price.",
-            url: "https://www.calculator.net/discount-calculator.html"
-          },
-          {
-            title: "Discount meaning",
-            text: "Cambridge Dictionary defines discount as a reduction in the usual price.",
-            url: "https://dictionary.cambridge.org/dictionary/english/discount"
-          }
+          ["Discount calculation", "Calculator.net explains percent-off discount calculation.", "https://www.calculator.net/discount-calculator.html"],
+          ["Discount meaning", "Cambridge Dictionary defines discount as a reduction in price.", "https://dictionary.cambridge.org/dictionary/english/discount"]
         ]
       };
     }
 
     if (title.includes("percentage")) {
       return {
-        whatTitle: "What does this calculator do?",
         what: "It calculates a percentage of a number.",
-        howTitle: "How to use it",
         how: "Enter the percentage value and the number, then press calculate percentage.",
-        formulaTitle: "Formula used",
         formula: "Result = percentage ÷ 100 × number.",
-        exampleTitle: "Example calculation",
         example: "20% of 150 = 20 ÷ 100 × 150 = 30.",
         references: [
-          {
-            title: "Percentage meaning",
-            text: "A percentage is a number or ratio expressed as a fraction of 100.",
-            url: "https://en.wikipedia.org/wiki/Percentage"
-          },
-          {
-            title: "Percentage formula",
-            text: "CalculatorSoup lists common percentage formulas, including percentage of a whole.",
-            url: "https://www.calculatorsoup.com/calculators/math/percentage.php"
-          }
+          ["Percentage meaning", "A percentage means a value out of 100.", "https://en.wikipedia.org/wiki/Percentage"],
+          ["Percentage formula", "CalculatorSoup lists common percentage formulas.", "https://www.calculatorsoup.com/calculators/math/percentage.php"]
         ]
       };
     }
 
     if (title.includes("compound")) {
       return {
-        whatTitle: "What does this calculator do?",
         what: "It estimates how much your money can grow when interest is added repeatedly over time.",
-        howTitle: "How to use it",
         how: "Enter principal amount, annual interest rate, time in years, and compounding frequency. Then press calculate compound interest.",
-        formulaTitle: "Formula used",
         formula: "A = P(1 + r/n)ⁿᵗ. Compound Interest = A − P.",
-        exampleTitle: "Example calculation",
         example: "P = 1000, r = 5%, t = 10 years, n = 12 gives about 1,647.01 future value and 647.01 compound interest.",
         references: [
-          {
-            title: "Compound interest formula",
-            text: "Investopedia lists the compound interest formula as A = P(1 + r/n)^(nt).",
-            url: "https://www.investopedia.com/articles/investing/020614/learn-simple-and-compound-interest.asp"
-          }
+          ["Compound interest formula", "Investopedia lists the compound interest formula as A = P(1 + r/n)^(nt).", "https://www.investopedia.com/articles/investing/020614/learn-simple-and-compound-interest.asp"]
         ]
       };
     }
@@ -2535,7 +978,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return null;
   }
 
-  function makeBox(className, title, text) {
+  function makeInfoBox(className, title, text) {
     const box = document.createElement("div");
     box.className = className;
 
@@ -2556,13 +999,13 @@ document.addEventListener("DOMContentLoaded", function () {
     card.className = "reference-card";
 
     const h3 = document.createElement("h3");
-    h3.textContent = item.title;
+    h3.textContent = item[0];
 
     const p = document.createElement("p");
-    p.textContent = item.text;
+    p.textContent = item[1];
 
     const a = document.createElement("a");
-    a.href = item.url;
+    a.href = item[2];
     a.target = "_blank";
     a.rel = "noopener noreferrer";
     a.textContent = "Open source";
@@ -2574,27 +1017,52 @@ document.addEventListener("DOMContentLoaded", function () {
     return card;
   }
 
-  function renderInstructionLayout() {
-    const data = getPageData();
-    if (!data) return;
+  function getLeftBox(main) {
+    return (
+      main.querySelector(":scope > .history") ||
+      main.querySelector(":scope > .age-history-box") ||
+      main.querySelector(":scope > .bmi-history-box") ||
+      main.querySelector(":scope > .discount-history-box") ||
+      main.querySelector(":scope > .loan-history-box") ||
+      main.querySelector(":scope > .percentage-history-box") ||
+      main.querySelector(":scope > .compound-history-box")
+    );
+  }
 
+  function removeInstructionLayout(main) {
+    if (!main) return;
+
+    main.querySelectorAll(":scope > .instruction-box, :scope > .pc-what-slot").forEach(function (element) {
+      element.remove();
+    });
+
+    main.classList.remove("has-instructions");
+  }
+
+  function buildInstructionLayout() {
     const main = document.querySelector("main");
     if (!main) return;
 
-    let instructionBox = main.querySelector(".instruction-box");
+    const data = getPageData();
 
-    if (!instructionBox) {
-      instructionBox = document.createElement("aside");
-      instructionBox.className = "instruction-box";
-      instructionBox.setAttribute("aria-label", "Instructions");
-      main.classList.add("has-instructions");
-      main.appendChild(instructionBox);
+    if (!data || main.classList.contains("calculator-box")) {
+      removeInstructionLayout(main);
+      return;
     }
 
-    instructionBox.innerHTML = "";
+    main.classList.add("has-instructions");
+
+    /* Remove old/duplicate generated boxes before building one clean layout. */
+    main.querySelectorAll(":scope > .instruction-box, :scope > .pc-what-slot").forEach(function (element) {
+      element.remove();
+    });
+
+    const instructionBox = document.createElement("aside");
+    instructionBox.className = "instruction-box";
+    instructionBox.setAttribute("aria-label", "Instructions");
 
     instructionBox.appendChild(
-      makeBox("instruction-section instruction-what-box", data.whatTitle, data.what)
+      makeInfoBox("instruction-section instruction-what-box", "What does this calculator do?", data.what)
     );
 
     const instructionTitle = document.createElement("h2");
@@ -2603,15 +1071,15 @@ document.addEventListener("DOMContentLoaded", function () {
     instructionBox.appendChild(instructionTitle);
 
     instructionBox.appendChild(
-      makeBox("instruction-section instruction-how-box", data.howTitle, data.how)
+      makeInfoBox("instruction-section instruction-how-box", "How to use it", data.how)
     );
 
     instructionBox.appendChild(
-      makeBox("instruction-section instruction-formula-box", data.formulaTitle, data.formula)
+      makeInfoBox("instruction-section instruction-formula-box", "Formula used", data.formula)
     );
 
     instructionBox.appendChild(
-      makeBox("instruction-section instruction-example-box", data.exampleTitle, data.example)
+      makeInfoBox("instruction-section instruction-example-box", "Example calculation", data.example)
     );
 
     const referenceBox = document.createElement("section");
@@ -2631,176 +1099,61 @@ document.addEventListener("DOMContentLoaded", function () {
 
     referenceBox.appendChild(referenceTitle);
     referenceBox.appendChild(referenceScroll);
-
     instructionBox.appendChild(referenceBox);
-  }
 
-  function start() {
-    renderInstructionLayout();
-        
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
-})();
-/* =====================================================
-   PC ONLY: move "What does this calculator do?" box
-   to the left side above Result/History
-===================================================== */
-(function () {
-  "use strict";
-
-  function isPc() {
-    return window.matchMedia("(min-width: 851px)").matches;
-  }
-
-  function getMain() {
-    return document.querySelector("main.has-instructions");
-  }
-
-  function getInstructionBox(main) {
-    return main ? main.querySelector(".instruction-box") : null;
-  }
-
-  function getWhatBox(main) {
-    return main ? main.querySelector(".instruction-what-box") : null;
-  }
-
-  function getFirstLeftBox(main) {
-    if (!main) return null;
-
-    return (
-      main.querySelector(".history") ||
-      main.querySelector(".age-history-box") ||
-      main.querySelector(".bmi-history-box") ||
-      main.querySelector(".discount-history-box") ||
-      main.querySelector(".loan-history-box") ||
-      main.querySelector(".percentage-history-box") ||
-      main.querySelector(".compound-history-box")
-    );
-  }
-
-  function moveWhatBoxForPc() {
-    const main = getMain();
-    if (!main) return;
-
-    const instructionBox = getInstructionBox(main);
-    const whatBox = getWhatBox(main);
-    const leftBox = getFirstLeftBox(main);
-
-    if (!instructionBox || !whatBox || !leftBox) return;
-
-    let slot = main.querySelector(".pc-what-slot");
-
-    if (!slot) {
-      slot = document.createElement("aside");
-      slot.className = "pc-what-slot";
-      slot.setAttribute("aria-label", "What this calculator does");
-
-      main.insertBefore(slot, leftBox);
-    }
-
-    if (isPc()) {
-      if (!slot.contains(whatBox)) {
-        slot.appendChild(whatBox);
-      }
-    } else {
-      const instructionTitle = instructionBox.querySelector(".instruction-main-title, h2");
-
-      if (instructionTitle && !instructionBox.contains(whatBox)) {
-        instructionBox.insertBefore(whatBox, instructionTitle);
-      }
-    }
-  }
-
-  function start() {
-    moveWhatBoxForPc();
-
-    window.addEventListener("resize", moveWhatBoxForPc);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
-})();
-/* =====================================================
-   PC FINAL: move What box above Result/History
-   Phone keeps What box inside instruction area
-===================================================== */
-(function () {
-  "use strict";
-
-  function isPc() {
-    return window.matchMedia("(min-width: 851px)").matches;
-  }
-
-  function getLeftBox(main) {
-    return (
-      main.querySelector(":scope > .history") ||
-      main.querySelector(":scope > .age-history-box") ||
-      main.querySelector(":scope > .bmi-history-box") ||
-      main.querySelector(":scope > .discount-history-box") ||
-      main.querySelector(":scope > .loan-history-box") ||
-      main.querySelector(":scope > .percentage-history-box") ||
-      main.querySelector(":scope > .compound-history-box")
-    );
+    main.appendChild(instructionBox);
+    syncWhatBox();
   }
 
   function syncWhatBox() {
     document.querySelectorAll("main.has-instructions").forEach(function (main) {
-      const instructionBox =
-        main.querySelector(":scope > .instruction-box") ||
-        main.querySelector(".instruction-box");
-
+      const instructionBox = main.querySelector(":scope > .instruction-box");
       if (!instructionBox) return;
+
+      let whatBox =
+        main.querySelector(":scope > .pc-what-slot .instruction-what-box") ||
+        instructionBox.querySelector(":scope > .instruction-what-box");
+
+      if (!whatBox) return;
 
       const leftBox = getLeftBox(main);
       if (!leftBox) return;
 
-      let whatBox =
-        main.querySelector(".pc-what-slot .instruction-what-box") ||
-        instructionBox.querySelector(".instruction-what-box");
-
-      if (!whatBox) return;
-
       let slot = main.querySelector(":scope > .pc-what-slot");
 
-      if (!slot) {
-        slot = document.createElement("aside");
-        slot.className = "pc-what-slot";
-        slot.setAttribute("aria-label", "What this calculator does");
-        main.insertBefore(slot, leftBox);
-      }
-
       if (isPc()) {
+        if (!slot) {
+          slot = document.createElement("aside");
+          slot.className = "pc-what-slot";
+          slot.setAttribute("aria-label", "What this calculator does");
+          main.insertBefore(slot, leftBox);
+        }
+
         if (!slot.contains(whatBox)) {
           slot.appendChild(whatBox);
         }
       } else {
-        const instructionTitle =
-          instructionBox.querySelector(".instruction-main-title") ||
-          instructionBox.querySelector("h2");
+        const title = instructionBox.querySelector(".instruction-main-title");
 
-        if (instructionTitle && !instructionBox.contains(whatBox)) {
-          instructionBox.insertBefore(whatBox, instructionTitle);
+        if (title && !instructionBox.contains(whatBox)) {
+          instructionBox.insertBefore(whatBox, title);
+        }
+
+        if (slot && !slot.children.length) {
+          slot.remove();
         }
       }
     });
   }
 
-  function start() {
-    syncWhatBox();
+  function startInstructionLayout() {
+    buildInstructionLayout();
     window.addEventListener("resize", syncWhatBox);
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
+    document.addEventListener("DOMContentLoaded", startInstructionLayout);
   } else {
-    start();
+    startInstructionLayout();
   }
 })();
