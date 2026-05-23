@@ -1,73 +1,69 @@
 /*
   Copyright © 2026 Hamdi. All rights reserved.
-  SAFE PHONE MENU
+  PHONE MODE ONLY
+  Safe phone menu:
   - no document-level click blocking
   - calculator opens upward
   - info opens upward
   - opening one closes the other
-  - health/finance opens upward
+  - health/finance open upward
 */
 
 (function () {
   "use strict";
 
   const PHONE_QUERY = "(max-width: 850px)";
+  const CSS_ID = "safe-phone-menu-css";
 
   function isPhone() {
     return window.matchMedia(PHONE_QUERY).matches;
   }
 
+  function getNavbar() {
+    return document.getElementById("navbar");
+  }
+
+  function topDropdowns(navbar) {
+    return Array.from(navbar.querySelectorAll(":scope > .dropdown"));
+  }
+
+  function submenuGroups(root) {
+    return Array.from(
+      root.querySelectorAll(
+        ".nav-group, " +
+        ".fixed-nav-group, " +
+        ".navbar-fixed-group"
+      )
+    );
+  }
+
+  function getSubmenuTrigger(group) {
+    return (
+      group.querySelector(":scope > summary") ||
+      group.querySelector(":scope > .nav-summary") ||
+      group.querySelector(":scope > .navbar-fixed-summary")
+    );
+  }
+
+  function cleanLabel(text) {
+    return String(text || "")
+      .replace(/[▼▲▶◀⬇⬆⬅➡]/g, "")
+      .trim();
+  }
+
   function installPhoneMenuCss() {
-    const old = document.getElementById("safe-phone-menu-css");
+    const old = document.getElementById(CSS_ID);
     if (old) old.remove();
 
     const style = document.createElement("style");
-    style.id = "safe-phone-menu-css";
+    style.id = CSS_ID;
 
     style.textContent = `
       @media (max-width: 850px) {
         html,
         body {
-          touch-action: manipulation !important;
           overflow-x: hidden !important;
-        }
-
-        html body #navbar,
-        html body #navbar.open,
-        html body #navbar.scrolled,
-        html body #navbar.scrolled.open,
-        html body.menu-scrolled #navbar,
-        html body.menu-scrolled #navbar.open {
-          display: flex !important;
-          position: fixed !important;
-
-          top: auto !important;
-          bottom: calc(18px + env(safe-area-inset-bottom)) !important;
-          left: 8px !important;
-          right: 76px !important;
-
-          width: auto !important;
-          max-width: none !important;
-          height: 54px !important;
-
-          flex-direction: row !important;
-          align-items: stretch !important;
-
-          background: var(--white) !important;
-          border: 3px solid var(--black) !important;
-          box-shadow: none !important;
-
-          transform: none !important;
-          overflow: visible !important;
-
-          pointer-events: auto !important;
-          box-sizing: border-box !important;
-          z-index: 999999 !important;
-        }
-
-        html body #navbar *,
-        html body #navbar.open * {
-          pointer-events: auto !important;
+          touch-action: manipulation !important;
         }
 
         html body #menuIcon,
@@ -86,24 +82,52 @@
           right: 12px !important;
           left: auto !important;
           bottom: calc(18px + env(safe-area-inset-bottom)) !important;
-
           width: 54px !important;
           height: 54px !important;
-
           align-items: center !important;
           justify-content: center !important;
-
           background: var(--white) !important;
           color: var(--black) !important;
           border: 4px solid var(--black) !important;
           box-shadow: 5px 5px 0 var(--black) !important;
-
           font-size: 32px !important;
           font-weight: bold !important;
-
           opacity: 1 !important;
           pointer-events: auto !important;
           z-index: 9999999 !important;
+        }
+
+        html body #navbar,
+        html body #navbar.open,
+        html body #navbar.scrolled,
+        html body #navbar.scrolled.open,
+        html body.menu-scrolled #navbar,
+        html body.menu-scrolled #navbar.open {
+          display: flex !important;
+          position: fixed !important;
+          top: auto !important;
+          bottom: calc(18px + env(safe-area-inset-bottom)) !important;
+          left: 8px !important;
+          right: 76px !important;
+          width: auto !important;
+          max-width: none !important;
+          height: 54px !important;
+          flex-direction: row !important;
+          align-items: stretch !important;
+          background: var(--white) !important;
+          border: 3px solid var(--black) !important;
+          box-shadow: none !important;
+          transform: none !important;
+          overflow: visible !important;
+          pointer-events: auto !important;
+          box-sizing: border-box !important;
+          z-index: 999999 !important;
+        }
+
+        html body #navbar *,
+        html body #navbar.open * {
+          pointer-events: auto !important;
+          box-sizing: border-box !important;
         }
 
         html body #navbar > a,
@@ -114,14 +138,10 @@
           max-width: 33.333% !important;
           height: 54px !important;
           flex: 1 1 33.333% !important;
-
           margin: 0 !important;
           padding: 0 !important;
-
           position: relative !important;
           overflow: visible !important;
-
-          box-sizing: border-box !important;
         }
 
         html body #navbar > a,
@@ -130,38 +150,31 @@
         html body #navbar.open > .dropdown > .dropbtn {
           width: 100% !important;
           height: 54px !important;
-
           display: flex !important;
           align-items: center !important;
           justify-content: center !important;
-
           background: var(--white) !important;
           color: var(--black) !important;
-
           border: none !important;
           border-right: 3px solid var(--black) !important;
           box-shadow: none !important;
-
           font-size: 15px !important;
           font-weight: bold !important;
           line-height: 1 !important;
           text-align: center !important;
           text-decoration: none !important;
-
           white-space: nowrap !important;
           overflow: hidden !important;
           text-overflow: ellipsis !important;
-
-          box-sizing: border-box !important;
         }
 
         html body #navbar > .dropdown:last-child > .dropbtn {
           border-right: none !important;
         }
 
+        html body #navbar > .dropdown:not(.phone-open) > .dropbtn,
         html body #navbar > .dropdown:not(.phone-open):hover > .dropbtn,
-        html body #navbar > .dropdown:not(.phone-open):focus-within > .dropbtn,
-        html body #navbar > .dropdown:not(.phone-open) > .dropbtn {
+        html body #navbar > .dropdown:not(.phone-open):focus-within > .dropbtn {
           background: var(--white) !important;
         }
 
@@ -188,17 +201,13 @@
           position: absolute !important;
           top: auto !important;
           bottom: calc(100% + 3px) !important;
-
           width: 210px !important;
           max-width: calc(100vw - 16px) !important;
           height: auto !important;
-
           background: var(--white) !important;
           border: 3px solid var(--black) !important;
           box-shadow: 4px 4px 0 var(--black) !important;
-
           overflow: visible !important;
-          box-sizing: border-box !important;
           z-index: 9999999 !important;
         }
 
@@ -220,30 +229,26 @@
         html body #navbar .dropdown-content > .navbar-fixed-group > .navbar-fixed-summary {
           width: 100% !important;
           height: 42px !important;
-
           display: flex !important;
           align-items: center !important;
           justify-content: center !important;
-
           background: var(--white) !important;
           color: var(--black) !important;
-
           border: none !important;
           border-bottom: 3px solid var(--black) !important;
           box-shadow: none !important;
-
           font-family: inherit !important;
           font-size: 15px !important;
           font-weight: bold !important;
           text-align: center !important;
           text-decoration: none !important;
-
-          box-sizing: border-box !important;
           cursor: pointer !important;
         }
 
         html body #navbar .dropdown-content > *:last-child,
-        html body #navbar .dropdown-content > *:last-child > summary {
+        html body #navbar .dropdown-content > *:last-child > summary,
+        html body #navbar .dropdown-content > *:last-child > .nav-summary,
+        html body #navbar .dropdown-content > *:last-child > .navbar-fixed-summary {
           border-bottom: none !important;
         }
 
@@ -253,6 +258,7 @@
           position: relative !important;
           height: 42px !important;
           overflow: visible !important;
+          background: var(--white) !important;
         }
 
         html body #navbar .nav-group > .nav-group-links,
@@ -278,37 +284,28 @@
         html body #navbar .fixed-nav-group > .nav-group-links,
         html body #navbar .navbar-fixed-group > .nav-group-links {
           position: absolute !important;
-
           top: auto !important;
           bottom: calc(100% + 3px) !important;
           left: 0 !important;
           right: auto !important;
-
           width: 100% !important;
-
           background: var(--white) !important;
           border: 3px solid var(--black) !important;
           box-shadow: 4px 4px 0 var(--black) !important;
-
           overflow: visible !important;
-          box-sizing: border-box !important;
           z-index: 99999999 !important;
         }
 
         html body #navbar .nav-group-links a {
           width: 100% !important;
           height: 40px !important;
-
           display: flex !important;
           align-items: center !important;
           justify-content: center !important;
-
           background: var(--white) !important;
           color: var(--black) !important;
-
           border: none !important;
           border-bottom: 3px solid var(--black) !important;
-
           font-size: 14px !important;
           font-weight: bold !important;
           text-align: center !important;
@@ -338,13 +335,10 @@
         html body #navbar .phone-sub-arrow {
           display: inline-block !important;
           margin-left: 8px !important;
-
           color: var(--black) !important;
-
           font-size: 14px !important;
           font-weight: bold !important;
           line-height: 1 !important;
-
           background: transparent !important;
           border: none !important;
           box-shadow: none !important;
@@ -370,40 +364,53 @@
     document.head.appendChild(style);
   }
 
-  function getNavbar() {
-    return document.getElementById("navbar");
+  function addPhoneArrow(trigger) {
+    if (!trigger) return null;
+
+    trigger.querySelectorAll(".phone-sub-arrow, .nav-menu-arrow").forEach(function (oldArrow) {
+      oldArrow.remove();
+    });
+
+    trigger.textContent = cleanLabel(trigger.textContent) + " ";
+
+    const arrow = document.createElement("span");
+    arrow.className = "phone-sub-arrow";
+    arrow.textContent = "▼";
+    trigger.appendChild(arrow);
+
+    return arrow;
   }
 
-  function dropdowns(navbar) {
-    return Array.from(navbar.querySelectorAll(":scope > .dropdown"));
-  }
+  function updatePhoneArrow(group) {
+    const trigger = getSubmenuTrigger(group);
+    if (!trigger) return;
 
-  function getGroupTrigger(group) {
-    return (
-      group.querySelector(":scope > summary") ||
-      group.querySelector(":scope > .nav-summary") ||
-      group.querySelector(":scope > .navbar-fixed-summary")
-    );
+    let arrow = trigger.querySelector(".phone-sub-arrow");
+
+    if (!arrow) {
+      arrow = addPhoneArrow(trigger);
+    }
+
+    if (!arrow) return;
+
+    arrow.textContent =
+      group.classList.contains("phone-sub-open") || group.open ? "▲" : "▼";
   }
 
   function closeSubmenus(dropdown) {
     if (!dropdown) return;
 
-    dropdown
-      .querySelectorAll(".nav-group, .fixed-nav-group, .navbar-fixed-group")
-      .forEach(function (group) {
-        group.classList.remove("phone-sub-open", "is-open", "open", "active");
-        group.dataset.phoneOpen = "false";
+    submenuGroups(dropdown).forEach(function (group) {
+      group.classList.remove("phone-sub-open", "is-open", "open", "active");
+      group.dataset.phoneOpen = "false";
 
-        if (group.tagName && group.tagName.toLowerCase() === "details") {
-          group.open = false;
-          group.removeAttribute("open");
-        }
+      if (group.tagName && group.tagName.toLowerCase() === "details") {
+        group.open = false;
+        group.removeAttribute("open");
+      }
 
-        const trigger = getGroupTrigger(group);
-        const arrow = trigger ? trigger.querySelector(".phone-sub-arrow") : null;
-        if (arrow) arrow.textContent = "▼";
-      });
+      updatePhoneArrow(group);
+    });
   }
 
   function closeDropdown(dropdown) {
@@ -422,7 +429,7 @@
   }
 
   function closeAll(navbar, exceptDropdown) {
-    dropdowns(navbar).forEach(function (dropdown) {
+    topDropdowns(navbar).forEach(function (dropdown) {
       if (dropdown !== exceptDropdown) {
         closeDropdown(dropdown);
       }
@@ -455,63 +462,27 @@
     }
   }
 
-  function cleanLabel(text) {
-    return String(text || "")
-      .replace(/[▼▲▶◀⬇⬆⬅➡]/g, "")
-      .trim();
-  }
-
-  function setupSubmenuArrow(group) {
-    const trigger = getGroupTrigger(group);
-    if (!trigger) return;
-
-    let arrow = trigger.querySelector(".phone-sub-arrow");
-
-    if (!arrow) {
-      trigger.textContent = cleanLabel(trigger.textContent) + " ";
-
-      arrow = document.createElement("span");
-      arrow.className = "phone-sub-arrow";
-      arrow.textContent = "▼";
-
-      trigger.appendChild(arrow);
-    }
-
-    arrow.textContent =
-      group.classList.contains("phone-sub-open") ||
-      group.classList.contains("is-open") ||
-      group.open
-        ? "▲"
-        : "▼";
-  }
-
   function toggleSubmenu(group) {
     if (!group) return;
 
     const dropdown = group.closest(".dropdown");
     if (!dropdown) return;
 
-    dropdown
-      .querySelectorAll(".nav-group, .fixed-nav-group, .navbar-fixed-group")
-      .forEach(function (other) {
-        if (other !== group) {
-          other.classList.remove("phone-sub-open", "is-open", "open", "active");
-          other.dataset.phoneOpen = "false";
+    submenuGroups(dropdown).forEach(function (other) {
+      if (other === group) return;
 
-          if (other.tagName && other.tagName.toLowerCase() === "details") {
-            other.open = false;
-            other.removeAttribute("open");
-          }
+      other.classList.remove("phone-sub-open", "is-open", "open", "active");
+      other.dataset.phoneOpen = "false";
 
-          setupSubmenuArrow(other);
-        }
-      });
+      if (other.tagName && other.tagName.toLowerCase() === "details") {
+        other.open = false;
+        other.removeAttribute("open");
+      }
 
-    const willOpen = !(
-      group.classList.contains("phone-sub-open") ||
-      group.classList.contains("is-open") ||
-      group.open
-    );
+      updatePhoneArrow(other);
+    });
+
+    const willOpen = !(group.classList.contains("phone-sub-open") || group.open);
 
     group.classList.toggle("phone-sub-open", willOpen);
     group.classList.toggle("is-open", willOpen);
@@ -526,7 +497,7 @@
       }
     }
 
-    setupSubmenuArrow(group);
+    updatePhoneArrow(group);
   }
 
   function setupPhoneMenu() {
@@ -537,7 +508,7 @@
 
     navbar.dataset.safePhoneReady = "true";
 
-    dropdowns(navbar).forEach(function (dropdown) {
+    topDropdowns(navbar).forEach(function (dropdown) {
       const button = dropdown.querySelector(":scope > .dropbtn");
       if (!button) return;
 
@@ -551,23 +522,21 @@
       });
     });
 
-    navbar
-      .querySelectorAll(".nav-group, .fixed-nav-group, .navbar-fixed-group")
-      .forEach(function (group) {
-        setupSubmenuArrow(group);
+    submenuGroups(navbar).forEach(function (group) {
+      const trigger = getSubmenuTrigger(group);
+      if (!trigger) return;
 
-        const trigger = getGroupTrigger(group);
-        if (!trigger) return;
+      addPhoneArrow(trigger);
 
-        trigger.addEventListener("click", function (event) {
-          if (!isPhone()) return;
+      trigger.addEventListener("click", function (event) {
+        if (!isPhone()) return;
 
-          event.preventDefault();
-          event.stopPropagation();
+        event.preventDefault();
+        event.stopPropagation();
 
-          toggleSubmenu(group);
-        });
+        toggleSubmenu(group);
       });
+    });
 
     document.addEventListener("click", function (event) {
       if (!isPhone()) return;
