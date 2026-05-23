@@ -751,7 +751,7 @@
 
     const screenPadding = 10;
     const buttonSize = 58;
-    const gap = 12;
+    const gap = 8;
 
     let buttonLeft = whatRect.right + gap;
     let buttonTop = whatRect.top + Math.max(0, (whatRect.height - buttonSize) / 2);
