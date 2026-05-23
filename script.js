@@ -2642,3 +2642,236 @@ document.addEventListener("DOMContentLoaded", function () {
     startRemoveOldLoanTable();
   }
 })();
+/* =====================================================
+   LOAN PAGE RESULT LAYOUT - PC ONLY
+   Result/table box on top
+   Graph box below
+   Copy result button on the right
+===================================================== */
+(function () {
+  "use strict";
+
+  function isPcMode() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function isLoanPage() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+    return (
+      title.includes("loan") ||
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan"
+    );
+  }
+
+  function firstExisting(selectors, root) {
+    root = root || document;
+    for (let i = 0; i < selectors.length; i++) {
+      const el = root.querySelector(selectors[i]);
+      if (el) return el;
+    }
+    return null;
+  }
+
+  function allExisting(selectors, root) {
+    root = root || document;
+    const found = [];
+    selectors.forEach(function (selector) {
+      root.querySelectorAll(selector).forEach(function (el) {
+        if (!found.includes(el)) {
+          found.push(el);
+        }
+      });
+    });
+    return found;
+  }
+
+  function getMainContainer() {
+    return document.querySelector("main") || document.body;
+  }
+
+  function getCalculatorBox() {
+    return (
+      document.querySelector(".calculator") ||
+      document.querySelector(".calculator-box") ||
+      document.querySelector(".calc-box") ||
+      document.querySelector("main")
+    );
+  }
+
+  function makePanelStructure() {
+    let wrap = document.getElementById("loanExternalOutput");
+    if (wrap) return wrap;
+
+    wrap = document.createElement("section");
+    wrap.id = "loanExternalOutput";
+
+    wrap.innerHTML = `
+      <div class="loan-output-top">
+        <div class="loan-result-panel">
+          <h2 class="loan-panel-title">Result</h2>
+          <div class="loan-result-body"></div>
+        </div>
+
+        <div class="loan-copy-side"></div>
+      </div>
+
+      <div class="loan-graph-panel">
+        <h2 class="loan-panel-title">Graph</h2>
+        <div class="loan-graph-body"></div>
+      </div>
+    `;
+
+    return wrap;
+  }
+
+  function createCopyButton(resultBody) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "loan-copy-btn";
+    btn.textContent = "Copy";
+
+    btn.addEventListener("click", function () {
+      let text = "";
+
+      const table = resultBody.querySelector("table");
+      if (table) {
+        const rows = Array.from(table.querySelectorAll("tr"));
+        text = rows
+          .map(function (row) {
+            return Array.from(row.querySelectorAll("th, td"))
+              .map(function (cell) {
+                return cell.textContent.trim();
+              })
+              .join("\t");
+          })
+          .join("\n");
+      } else {
+        text = resultBody.innerText.trim();
+      }
+
+      if (!text) return;
+
+      navigator.clipboard.writeText(text).then(function () {
+        const old = btn.textContent;
+        btn.textContent = "Copied!";
+        setTimeout(function () {
+          btn.textContent = old;
+        }, 1200);
+      });
+    });
+
+    return btn;
+  }
+
+  function buildLoanOutputLayout() {
+    if (!isPcMode() || !isLoanPage()) return;
+
+    const main = getMainContainer();
+    const calculatorBox = getCalculatorBox();
+    if (!main || !calculatorBox) return;
+
+    const panel = makePanelStructure();
+
+    if (!panel.parentNode) {
+      calculatorBox.insertAdjacentElement("afterend", panel);
+    }
+
+    const resultBody = panel.querySelector(".loan-result-body");
+    const graphBody = panel.querySelector(".loan-graph-body");
+    const copySide = panel.querySelector(".loan-copy-side");
+
+    if (!resultBody || !graphBody || !copySide) return;
+
+    const resultSelectors = [
+      "#loanResultTableWrap",
+      ".loan-result-table-wrap",
+      "#loanResultTable",
+      ".loan-result-table",
+      "#loanResult",
+      "#loanResultBox",
+      ".loan-result-box",
+      ".loan-summary-box",
+      ".loan-output-text"
+    ];
+
+    const graphSelectors = [
+      "#loanGraphWrap",
+      "#loanGraphBox",
+      ".loan-graph-wrap",
+      ".loan-graph-box",
+      "#loanChartWrap",
+      "#loanChartBox",
+      "canvas#loanChart",
+      "canvas#loanGraph",
+      ".loan-chart-wrap"
+    ];
+
+    const buttonSelectors = [
+      "#copyLoanResultBtn",
+      ".copy-loan-result-btn",
+      ".copy-result-btn"
+    ];
+
+    const resultNodes = allExisting(resultSelectors).filter(function (node) {
+      return !node.closest("#loanExternalOutput");
+    });
+
+    const graphNode = firstExisting(graphSelectors.filter(Boolean)) &&
+      !firstExisting(graphSelectors.filter(Boolean)).closest("#loanExternalOutput")
+        ? firstExisting(graphSelectors.filter(Boolean))
+        : null;
+
+    const existingButton = firstExisting(buttonSelectors.filter(Boolean));
+
+    resultNodes.forEach(function (node) {
+      resultBody.appendChild(node);
+      node.style.display = "";
+    });
+
+    if (graphNode) {
+      graphBody.appendChild(graphNode);
+      graphNode.style.display = "";
+    }
+
+    copySide.innerHTML = "";
+
+    if (existingButton && !existingButton.closest("#loanExternalOutput")) {
+      existingButton.classList.add("loan-copy-btn");
+      copySide.appendChild(existingButton);
+      existingButton.style.display = "";
+    } else {
+      copySide.appendChild(createCopyButton(resultBody));
+    }
+  }
+
+  function startLoanOutputLayout() {
+    buildLoanOutputLayout();
+
+    window.addEventListener("resize", function () {
+      setTimeout(buildLoanOutputLayout, 50);
+    });
+
+    document.addEventListener("click", function () {
+      setTimeout(buildLoanOutputLayout, 0);
+      setTimeout(buildLoanOutputLayout, 150);
+      setTimeout(buildLoanOutputLayout, 400);
+    });
+
+    const observer = new MutationObserver(function () {
+      buildLoanOutputLayout();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startLoanOutputLayout);
+  } else {
+    startLoanOutputLayout();
+  }
+})();
