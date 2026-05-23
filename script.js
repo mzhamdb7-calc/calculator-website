@@ -2728,3 +2728,79 @@ document.addEventListener("DOMContentLoaded", function () {
     start();
   }
 })();
+/* =====================================================
+   PC FINAL: move What box above Result/History
+   Phone keeps What box inside instruction area
+===================================================== */
+(function () {
+  "use strict";
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function getLeftBox(main) {
+    return (
+      main.querySelector(":scope > .history") ||
+      main.querySelector(":scope > .age-history-box") ||
+      main.querySelector(":scope > .bmi-history-box") ||
+      main.querySelector(":scope > .discount-history-box") ||
+      main.querySelector(":scope > .loan-history-box") ||
+      main.querySelector(":scope > .percentage-history-box") ||
+      main.querySelector(":scope > .compound-history-box")
+    );
+  }
+
+  function syncWhatBox() {
+    document.querySelectorAll("main.has-instructions").forEach(function (main) {
+      const instructionBox =
+        main.querySelector(":scope > .instruction-box") ||
+        main.querySelector(".instruction-box");
+
+      if (!instructionBox) return;
+
+      const leftBox = getLeftBox(main);
+      if (!leftBox) return;
+
+      let whatBox =
+        main.querySelector(".pc-what-slot .instruction-what-box") ||
+        instructionBox.querySelector(".instruction-what-box");
+
+      if (!whatBox) return;
+
+      let slot = main.querySelector(":scope > .pc-what-slot");
+
+      if (!slot) {
+        slot = document.createElement("aside");
+        slot.className = "pc-what-slot";
+        slot.setAttribute("aria-label", "What this calculator does");
+        main.insertBefore(slot, leftBox);
+      }
+
+      if (isPc()) {
+        if (!slot.contains(whatBox)) {
+          slot.appendChild(whatBox);
+        }
+      } else {
+        const instructionTitle =
+          instructionBox.querySelector(".instruction-main-title") ||
+          instructionBox.querySelector("h2");
+
+        if (instructionTitle && !instructionBox.contains(whatBox)) {
+          instructionBox.insertBefore(whatBox, instructionTitle);
+        }
+      }
+    });
+  }
+
+  function start() {
+    syncWhatBox();
+    window.addEventListener("resize", syncWhatBox);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
