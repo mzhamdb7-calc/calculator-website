@@ -338,8 +338,7 @@
     "bmiResult",
     "loanResult",
     "discountResult",
-    "percentageResult",
-    "compoundResult"
+    "percentageResult"
   ];
 
   function setupResultCopyButtons() {
@@ -369,12 +368,7 @@
 
   function setupHistoryCopyButtons() {
     const lists = [
-      document.getElementById("ageHistoryList"),
-      document.getElementById("bmiHistoryList"),
-      document.getElementById("loanHistoryList"),
-      document.getElementById("discountHistoryList"),
-      document.getElementById("percentageHistoryList"),
-      document.getElementById("compoundHistoryList")
+      document.getElementById("ageHistoryList")
     ];
 
     lists.forEach(function (list) {
@@ -411,12 +405,7 @@
 
   function watchCopyButtons() {
     const targets = [
-      document.getElementById("ageHistoryList"),
-      document.getElementById("bmiHistoryList"),
-      document.getElementById("loanHistoryList"),
-      document.getElementById("discountHistoryList"),
-      document.getElementById("percentageHistoryList"),
-      document.getElementById("compoundHistoryList")
+      document.getElementById("ageHistoryList")
     ];
 
     targets.forEach(function (target) {
@@ -866,9 +855,496 @@
   window.setupDropdowns = setupDropdowns;
 })();
 
+
+/* =========================
+   PC SIDE MENU CLICK EXPAND
+   Click the Calculator button to open/close its side submenu.
+   Hover still works from CSS.
+========================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  if (!navbar) return;
+
+  const calculatorDropdown = navbar.querySelector(":scope > .dropdown");
+  if (!calculatorDropdown) return;
+
+  const calculatorButton = calculatorDropdown.querySelector(".dropbtn");
+  if (!calculatorButton) return;
+
+  function isPcSideMenu() {
+    return window.matchMedia("(min-width: 851px)").matches &&
+      navbar.classList.contains("open");
+  }
+
+  calculatorButton.addEventListener("click", function (event) {
+    if (!isPcSideMenu()) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    calculatorDropdown.classList.toggle("menu-open");
+  });
+
+  document.addEventListener("click", function (event) {
+    if (!calculatorDropdown.contains(event.target)) {
+      calculatorDropdown.classList.remove("menu-open");
+    }
+  });
+
+  window.addEventListener("resize", function () {
+    calculatorDropdown.classList.remove("menu-open");
+  });
+});
+
+
 /* =====================================================
-   MASTER INSTRUCTION + REFERENCES
-   One clean system only:
+   TOP NAVBAR CHANGES TO MENU ICON ON SCROLL
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!navbar || !menuIcon) return;
+
+  function updateScrolledMenu() {
+    if (window.scrollY > 90) {
+      document.body.classList.add("menu-scrolled");
+      navbar.classList.add("scrolled");
+      menuIcon.classList.add("show");
+    } else {
+      document.body.classList.remove("menu-scrolled");
+      navbar.classList.remove("scrolled");
+      navbar.classList.remove("open");
+      menuIcon.classList.remove("show");
+    }
+  }
+
+  window.toggleMenu = function () {
+    if (!document.body.classList.contains("menu-scrolled")) return;
+    navbar.classList.toggle("open");
+  };
+
+  menuIcon.addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+    window.toggleMenu();
+  });
+
+  document.addEventListener("click", function (event) {
+    if (
+      document.body.classList.contains("menu-scrolled") &&
+      !navbar.contains(event.target) &&
+      !menuIcon.contains(event.target)
+    ) {
+      navbar.classList.remove("open");
+    }
+  });
+
+  window.addEventListener("scroll", updateScrolledMenu);
+  updateScrolledMenu();
+});
+
+/* =====================================================
+   OPEN ALL DETAILS DROPDOWNS ON HOVER
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const hoverDropdowns = document.querySelectorAll(".nav-group, .group-card");
+
+  hoverDropdowns.forEach(function (dropdown) {
+    dropdown.addEventListener("mouseenter", function () {
+      dropdown.open = true;
+    });
+
+    dropdown.addEventListener("mouseleave", function () {
+      dropdown.open = false;
+    });
+
+    dropdown.addEventListener("focusin", function () {
+      dropdown.open = true;
+    });
+
+    dropdown.addEventListener("focusout", function () {
+      setTimeout(function () {
+        if (!dropdown.contains(document.activeElement)) {
+          dropdown.open = false;
+        }
+      }, 100);
+    });
+  });
+});
+/* =====================================================
+   HOUSE ICON HOVER EXPANDS MENU
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!navbar || !menuIcon) return;
+
+  let closeTimer;
+
+  function isPastTopMenu() {
+    return window.scrollY > 90;
+  }
+
+  function openMenu() {
+    if (!isPastTopMenu()) return;
+
+    document.body.classList.add("menu-scrolled");
+    navbar.classList.add("scrolled");
+    navbar.classList.add("open");
+    menuIcon.classList.add("show");
+  }
+
+  function closeMenuSoon() {
+    clearTimeout(closeTimer);
+
+    closeTimer = setTimeout(function () {
+      if (!navbar.matches(":hover") && !menuIcon.matches(":hover")) {
+        navbar.classList.remove("open");
+      }
+    }, 180);
+  }
+
+  function updateScrollMenu() {
+    if (isPastTopMenu()) {
+      document.body.classList.add("menu-scrolled");
+      navbar.classList.add("scrolled");
+      menuIcon.classList.add("show");
+    } else {
+      document.body.classList.remove("menu-scrolled");
+      navbar.classList.remove("scrolled");
+      navbar.classList.remove("open");
+      menuIcon.classList.remove("show");
+    }
+  }
+
+  menuIcon.addEventListener("mouseenter", openMenu);
+  menuIcon.addEventListener("mouseleave", closeMenuSoon);
+
+  navbar.addEventListener("mouseenter", function () {
+    clearTimeout(closeTimer);
+  });
+
+  navbar.addEventListener("mouseleave", closeMenuSoon);
+
+  menuIcon.addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!isPastTopMenu()) return;
+
+    document.body.classList.add("menu-scrolled");
+    navbar.classList.add("scrolled");
+    menuIcon.classList.add("show");
+    navbar.classList.toggle("open");
+  });
+
+  document.addEventListener("click", function (event) {
+    if (!navbar.contains(event.target) && !menuIcon.contains(event.target)) {
+      navbar.classList.remove("open");
+    }
+  });
+
+  window.addEventListener("scroll", updateScrollMenu);
+  updateScrollMenu();
+});
+/* =====================================================
+   PC: HOME ICON HOVER OPENS LEFT SIDE MENU
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!navbar || !menuIcon) return;
+
+  let closeTimer;
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function isPastTopMenu() {
+    return window.scrollY > 90;
+  }
+
+  function showIconAfterScroll() {
+    if (isPastTopMenu()) {
+      document.body.classList.add("menu-scrolled");
+      navbar.classList.add("scrolled");
+      menuIcon.classList.add("show");
+    } else {
+      document.body.classList.remove("menu-scrolled");
+      navbar.classList.remove("scrolled");
+      navbar.classList.remove("open");
+      menuIcon.classList.remove("show");
+    }
+  }
+
+  function openSideMenu() {
+    if (!isPc() || !isPastTopMenu()) return;
+
+    clearTimeout(closeTimer);
+
+    document.body.classList.add("menu-scrolled");
+    navbar.classList.add("scrolled");
+    navbar.classList.add("open");
+    menuIcon.classList.add("show");
+  }
+
+  function closeSideMenuSoon() {
+    clearTimeout(closeTimer);
+
+    closeTimer = setTimeout(function () {
+      if (!navbar.matches(":hover") && !menuIcon.matches(":hover")) {
+        navbar.classList.remove("open");
+      }
+    }, 180);
+  }
+
+  menuIcon.addEventListener("mouseenter", openSideMenu);
+  navbar.addEventListener("mouseenter", function () {
+    clearTimeout(closeTimer);
+  });
+
+  menuIcon.addEventListener("mouseleave", closeSideMenuSoon);
+  navbar.addEventListener("mouseleave", closeSideMenuSoon);
+
+  menuIcon.addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!isPastTopMenu()) return;
+
+    navbar.classList.toggle("open");
+  });
+
+  window.addEventListener("scroll", showIconAfterScroll);
+  showIconAfterScroll();
+});
+/* =====================================================
+   PC: MENU BUTTON HOVER OPENS LEFT SIDE MENU
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!navbar || !menuIcon) return;
+
+  let closeTimer;
+
+  function isPc() {
+    return window.matchMedia("(min-width: 851px)").matches;
+  }
+
+  function isPastTopMenu() {
+    return window.scrollY > 90;
+  }
+
+  function updateMenuIcon() {
+    if (isPastTopMenu()) {
+      document.body.classList.add("menu-scrolled");
+      navbar.classList.add("scrolled");
+      menuIcon.classList.add("show");
+    } else {
+      document.body.classList.remove("menu-scrolled");
+      navbar.classList.remove("scrolled");
+      navbar.classList.remove("open");
+      menuIcon.classList.remove("show");
+    }
+  }
+
+  function openMenu() {
+    if (!isPc() || !isPastTopMenu()) return;
+
+    clearTimeout(closeTimer);
+
+    document.body.classList.add("menu-scrolled");
+    navbar.classList.add("scrolled");
+    navbar.classList.add("open");
+    menuIcon.classList.add("show");
+  }
+
+  function closeMenuSoon() {
+    clearTimeout(closeTimer);
+
+    closeTimer = setTimeout(function () {
+      if (!navbar.matches(":hover") && !menuIcon.matches(":hover")) {
+        navbar.classList.remove("open");
+      }
+    }, 180);
+  }
+
+  menuIcon.addEventListener("mouseenter", openMenu);
+  menuIcon.addEventListener("mouseleave", closeMenuSoon);
+
+  navbar.addEventListener("mouseenter", function () {
+    clearTimeout(closeTimer);
+  });
+
+  navbar.addEventListener("mouseleave", closeMenuSoon);
+
+  menuIcon.addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!isPastTopMenu()) return;
+
+    navbar.classList.toggle("open");
+  });
+
+  window.addEventListener("scroll", updateMenuIcon);
+  updateMenuIcon();
+});
+
+/* =====================================================
+   FINAL MENU SCROLL + HOVER SYSTEM
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!navbar || !menuIcon) return;
+
+  let closeTimer;
+
+  function isPastTopMenu() {
+    return window.scrollY > 90;
+  }
+
+  function updateMenuIcon() {
+    if (isPastTopMenu()) {
+      document.body.classList.add("menu-scrolled");
+      navbar.classList.add("scrolled");
+      menuIcon.classList.add("show");
+    } else {
+      document.body.classList.remove("menu-scrolled");
+      navbar.classList.remove("scrolled");
+      navbar.classList.remove("open");
+      menuIcon.classList.remove("show");
+    }
+  }
+
+  function openMenu() {
+    if (!isPastTopMenu()) return;
+
+    clearTimeout(closeTimer);
+
+    document.body.classList.add("menu-scrolled");
+    navbar.classList.add("scrolled");
+    navbar.classList.add("open");
+    menuIcon.classList.add("show");
+  }
+
+  function closeMenuSoon() {
+    clearTimeout(closeTimer);
+
+    closeTimer = setTimeout(function () {
+      if (!navbar.matches(":hover") && !menuIcon.matches(":hover")) {
+        navbar.classList.remove("open");
+      }
+    }, 180);
+  }
+
+  menuIcon.addEventListener("mouseenter", openMenu);
+  menuIcon.addEventListener("mouseleave", closeMenuSoon);
+
+  navbar.addEventListener("mouseenter", function () {
+    clearTimeout(closeTimer);
+  });
+
+  navbar.addEventListener("mouseleave", closeMenuSoon);
+
+  menuIcon.addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!isPastTopMenu()) return;
+
+    navbar.classList.toggle("open");
+  });
+
+  document.addEventListener("click", function (event) {
+    if (!navbar.contains(event.target) && !menuIcon.contains(event.target)) {
+      navbar.classList.remove("open");
+    }
+  });
+
+  window.addEventListener("scroll", updateMenuIcon);
+  updateMenuIcon();
+});
+
+/* Restrict all calculator number inputs to numbers only */
+document.addEventListener("DOMContentLoaded", function () {
+  const numberInputs = document.querySelectorAll('input[type="number"]');
+
+  numberInputs.forEach(function (input) {
+    input.setAttribute("inputmode", "decimal");
+
+    input.addEventListener("keydown", function (event) {
+      const allowedKeys = [
+        "Backspace",
+        "Delete",
+        "ArrowLeft",
+        "ArrowRight",
+        "ArrowUp",
+        "ArrowDown",
+        "Tab",
+        "Home",
+        "End"
+      ];
+
+      if (allowedKeys.includes(event.key)) return;
+
+      if (event.ctrlKey || event.metaKey) return;
+
+      if (/^[0-9]$/.test(event.key)) return;
+
+      if (event.key === "." && !input.value.includes(".")) return;
+
+      event.preventDefault();
+    });
+
+    input.addEventListener("input", function () {
+      let value = input.value;
+
+      value = value.replace(/[^0-9.]/g, "");
+
+      const parts = value.split(".");
+      if (parts.length > 2) {
+        value = parts[0] + "." + parts.slice(1).join("");
+      }
+
+      input.value = value;
+    });
+
+    input.addEventListener("paste", function (event) {
+      event.preventDefault();
+
+      const pastedText = (event.clipboardData || window.clipboardData).getData("text");
+      let cleanedText = pastedText.replace(/[^0-9.]/g, "");
+
+      const parts = cleanedText.split(".");
+      if (parts.length > 2) {
+        cleanedText = parts[0] + "." + parts.slice(1).join("");
+      }
+
+      input.value = cleanedText;
+      input.dispatchEvent(new Event("input"));
+    });
+  });
+});
+
+/* =====================================================
+   MASTER INSTRUCTION + REFERENCES + PC SIDE LAYOUT
+   One system only:
    PC left: What + Result/History
    PC center: Calculator
    PC right: Instructions + References
@@ -978,7 +1454,7 @@
     return null;
   }
 
-  function makeInfoBox(className, title, text) {
+  function makeBox(className, title, text) {
     const box = document.createElement("div");
     box.className = className;
 
@@ -1029,82 +1505,6 @@
     );
   }
 
-  function removeInstructionLayout(main) {
-    if (!main) return;
-
-    main.querySelectorAll(":scope > .instruction-box, :scope > .pc-what-slot").forEach(function (element) {
-      element.remove();
-    });
-
-    main.classList.remove("has-instructions");
-  }
-
-  function buildInstructionLayout() {
-    const main = document.querySelector("main");
-    if (!main) return;
-
-    const data = getPageData();
-
-    if (!data || main.classList.contains("calculator-box")) {
-      removeInstructionLayout(main);
-      return;
-    }
-
-    main.classList.add("has-instructions");
-
-    /* Remove old/duplicate generated boxes before building one clean layout. */
-    main.querySelectorAll(":scope > .instruction-box, :scope > .pc-what-slot").forEach(function (element) {
-      element.remove();
-    });
-
-    const instructionBox = document.createElement("aside");
-    instructionBox.className = "instruction-box";
-    instructionBox.setAttribute("aria-label", "Instructions");
-
-    instructionBox.appendChild(
-      makeInfoBox("instruction-section instruction-what-box", "What does this calculator do?", data.what)
-    );
-
-    const instructionTitle = document.createElement("h2");
-    instructionTitle.className = "instruction-main-title";
-    instructionTitle.textContent = "Instructions";
-    instructionBox.appendChild(instructionTitle);
-
-    instructionBox.appendChild(
-      makeInfoBox("instruction-section instruction-how-box", "How to use it", data.how)
-    );
-
-    instructionBox.appendChild(
-      makeInfoBox("instruction-section instruction-formula-box", "Formula used", data.formula)
-    );
-
-    instructionBox.appendChild(
-      makeInfoBox("instruction-section instruction-example-box", "Example calculation", data.example)
-    );
-
-    const referenceBox = document.createElement("section");
-    referenceBox.className = "reference-box";
-    referenceBox.setAttribute("aria-label", "References");
-
-    const referenceTitle = document.createElement("h2");
-    referenceTitle.className = "reference-main-title";
-    referenceTitle.textContent = "References";
-
-    const referenceScroll = document.createElement("div");
-    referenceScroll.className = "reference-scroll";
-
-    data.references.forEach(function (item) {
-      referenceScroll.appendChild(makeReferenceCard(item));
-    });
-
-    referenceBox.appendChild(referenceTitle);
-    referenceBox.appendChild(referenceScroll);
-    instructionBox.appendChild(referenceBox);
-
-    main.appendChild(instructionBox);
-    syncWhatBox();
-  }
-
   function syncWhatBox() {
     document.querySelectorAll("main.has-instructions").forEach(function (main) {
       const instructionBox = main.querySelector(":scope > .instruction-box");
@@ -1146,14 +1546,76 @@
     });
   }
 
-  function startInstructionLayout() {
+  function buildInstructionLayout() {
+    const main = document.querySelector("main");
+    if (!main) return;
+
+    if (main.classList.contains("calculator-box")) {
+      main.querySelectorAll(":scope > .instruction-box, :scope > .pc-what-slot").forEach(function (el) {
+        el.remove();
+      });
+      main.classList.remove("has-instructions");
+      return;
+    }
+
+    const data = getPageData();
+    if (!data) return;
+
+    main.classList.add("has-instructions");
+
+    main.querySelectorAll(":scope > .instruction-box, :scope > .pc-what-slot").forEach(function (el) {
+      el.remove();
+    });
+
+    const instructionBox = document.createElement("aside");
+    instructionBox.className = "instruction-box";
+    instructionBox.setAttribute("aria-label", "Instructions");
+
+    instructionBox.appendChild(
+      makeBox("instruction-section instruction-what-box", "What does this calculator do?", data.what)
+    );
+
+    const instructionTitle = document.createElement("h2");
+    instructionTitle.className = "instruction-main-title";
+    instructionTitle.textContent = "Instructions";
+    instructionBox.appendChild(instructionTitle);
+
+    instructionBox.appendChild(makeBox("instruction-section instruction-how-box", "How to use it", data.how));
+    instructionBox.appendChild(makeBox("instruction-section instruction-formula-box", "Formula used", data.formula));
+    instructionBox.appendChild(makeBox("instruction-section instruction-example-box", "Example calculation", data.example));
+
+    const referenceBox = document.createElement("section");
+    referenceBox.className = "reference-box";
+    referenceBox.setAttribute("aria-label", "References");
+
+    const referenceTitle = document.createElement("h2");
+    referenceTitle.className = "reference-main-title";
+    referenceTitle.textContent = "References";
+
+    const referenceScroll = document.createElement("div");
+    referenceScroll.className = "reference-scroll";
+
+    data.references.forEach(function (item) {
+      referenceScroll.appendChild(makeReferenceCard(item));
+    });
+
+    referenceBox.appendChild(referenceTitle);
+    referenceBox.appendChild(referenceScroll);
+    instructionBox.appendChild(referenceBox);
+
+    main.appendChild(instructionBox);
+    syncWhatBox();
+  }
+
+  function start() {
     buildInstructionLayout();
     window.addEventListener("resize", syncWhatBox);
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startInstructionLayout);
+    document.addEventListener("DOMContentLoaded", start);
   } else {
-    startInstructionLayout();
+    start();
   }
 })();
+
