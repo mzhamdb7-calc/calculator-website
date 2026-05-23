@@ -283,7 +283,6 @@
     right: auto !important;
   }
 
-  body.left-hand body.menu-scrolled #navbar.open,
   body.left-hand #navbar.open {
     left: 116px !important;
     right: auto !important;
@@ -415,14 +414,14 @@
   }
 
   /* Fixed ? button created by pc.js */
-  #pcQuestionOverlayButton {
+  #pcHelpQuestionButton {
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
     pointer-events: auto !important;
     position: fixed !important;
-    left: var(--calc-help-btn-left, calc(100vw - 80px)) !important;
-    top: var(--calc-help-btn-top, 130px) !important;
+    left: var(--pc-help-btn-left, calc(100vw - 80px)) !important;
+    top: var(--pc-help-btn-top, 130px) !important;
     width: 58px !important;
     height: 58px !important;
     align-items: center !important;
@@ -442,31 +441,24 @@
     box-sizing: border-box !important;
   }
 
-  #pcQuestionOverlayButton:hover,
-  body.pc-calculator-help-open #pcQuestionOverlayButton {
+  #pcHelpQuestionButton:hover,
+  body.pc-help-overlay-open #pcHelpQuestionButton {
     background: var(--yellow) !important;
   }
 
-  #pcQuestionOverlayButton[hidden] {
+  #pcHelpQuestionButton[hidden] {
     display: none !important;
   }
-
-  main.pc-calculator-layout > .pc-question-toggle {
-    display: none !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-  }
-
-  body.pc-calculator-help-open main.pc-calculator-layout > .instruction-box {
+body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
     pointer-events: auto !important;
     position: fixed !important;
-    left: var(--calc-help-left, 10px) !important;
-    top: var(--calc-help-top, 130px) !important;
-    width: var(--calc-help-width, 700px) !important;
-    height: var(--calc-help-height, 620px) !important;
+    left: var(--pc-help-panel-left, 10px) !important;
+    top: var(--pc-help-panel-top, 130px) !important;
+    width: var(--pc-help-panel-width, 700px) !important;
+    height: var(--pc-help-panel-height, 620px) !important;
     max-width: calc(100vw - 20px) !important;
     max-height: calc(100vh - 20px) !important;
     margin: 0 !important;
@@ -481,19 +473,19 @@
     box-sizing: border-box !important;
   }
 
-  body.pc-calculator-help-open main.pc-calculator-layout > .instruction-box,
-  body.pc-calculator-help-open main.pc-calculator-layout > .instruction-box * {
+  body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box,
+  body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box * {
     max-width: 100% !important;
     box-sizing: border-box !important;
     overflow-wrap: break-word !important;
     word-break: break-word !important;
   }
 
-  body.pc-calculator-help-open main.pc-calculator-layout > .instruction-box > .instruction-what-box {
+  body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box > .instruction-what-box {
     display: none !important;
   }
 
-  body.pc-calculator-help-open main.pc-calculator-layout .reference-box {
+  body.pc-help-overlay-open main.pc-calculator-layout .reference-box {
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
@@ -504,7 +496,7 @@
     overflow: visible !important;
   }
 
-  body.pc-calculator-help-open main.pc-calculator-layout .reference-scroll {
+  body.pc-help-overlay-open main.pc-calculator-layout .reference-scroll {
     width: 100% !important;
     max-width: 100% !important;
     max-height: none !important;
@@ -513,8 +505,8 @@
     overflow: visible !important;
   }
 
-  body.pc-calculator-help-open main.pc-calculator-layout .instruction-section:not(.instruction-what-box),
-  body.pc-calculator-help-open main.pc-calculator-layout .reference-card,
+  body.pc-help-overlay-open main.pc-calculator-layout .instruction-section:not(.instruction-what-box),
+  body.pc-help-overlay-open main.pc-calculator-layout .reference-card,
   main.pc-calculator-layout .instruction-section:not(.instruction-what-box),
   main.pc-calculator-layout .reference-card {
     width: 100% !important;
