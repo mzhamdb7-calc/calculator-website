@@ -1375,3 +1375,98 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     align-self: center !important;
   }
 }
+/* =====================================================
+   PC ONLY: bottom result can go beyond screen width
+   Fixes age result table being hidden/cut off
+   Applies to all calculator pages
+===================================================== */
+@media (min-width: 851px) {
+  html,
+  body {
+    overflow-x: auto !important;
+  }
+
+  main.pc-calculator-layout {
+    overflow: visible !important;
+  }
+
+  main.pc-calculator-layout > #universalLoanStyleOutput,
+  main.pc-calculator-layout > #loanExternalOutput,
+  main.pc-calculator-layout > .universal-output-panel {
+    grid-column: 1 / 3 !important;
+    grid-row: 3 !important;
+
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  #universalLoanStyleOutput .loan-output-top,
+  #loanExternalOutput .loan-output-top,
+  #loanExternalOutput .loan-graph-row,
+  .universal-output-panel .universal-output-top {
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+
+    overflow: visible !important;
+  }
+
+  #universalLoanStyleOutput .loan-result-panel,
+  #loanExternalOutput .loan-result-panel,
+  #loanExternalOutput .loan-graph-panel,
+  .universal-output-panel .universal-result-panel {
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+
+    overflow: visible !important;
+  }
+
+  #universalLoanStyleOutput .loan-result-body,
+  #loanExternalOutput .loan-result-body,
+  #loanExternalOutput .loan-graph-body,
+  .universal-output-panel .universal-result-body {
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+
+    overflow: visible !important;
+  }
+
+  #universalLoanStyleOutput .loan-result-table-scroll,
+  #loanExternalOutput .loan-result-table-scroll,
+  .bottom-result-table-scroll {
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+
+    overflow: visible !important;
+  }
+
+  #universalLoanStyleOutput .loan-result-table,
+  #loanExternalOutput .loan-result-table,
+  .bottom-result-table {
+    width: max-content !important;
+    min-width: 700px !important;
+    max-width: none !important;
+
+    table-layout: auto !important;
+  }
+
+  #universalLoanStyleOutput .loan-result-table th,
+  #universalLoanStyleOutput .loan-result-table td,
+  #loanExternalOutput .loan-result-table th,
+  #loanExternalOutput .loan-result-table td,
+  .bottom-result-table th,
+  .bottom-result-table td {
+    white-space: nowrap !important;
+    overflow: visible !important;
+  }
+}
