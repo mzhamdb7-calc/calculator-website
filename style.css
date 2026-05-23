@@ -5990,3 +5990,60 @@ body.menu-scrolled #navbar.open .dropdown-content .navbar-fixed-group > .navbar-
     font-size: 13px !important;
   }
 }
+
+/* =====================================================
+   FINAL REPAIR OVERRIDES
+   - Reference box stays scrollable
+   - JS arrows are the only health/finance arrows
+===================================================== */
+.reference-box {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.reference-scroll {
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: min(360px, calc(100vh - 260px)) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.reference-card,
+.reference-card * {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+}
+
+#navbar .dropdown-content details.nav-group > summary::after,
+#navbar .dropdown-content .nav-group > summary::after,
+#navbar .dropdown-content .fixed-nav-group > .nav-summary::after,
+#navbar .dropdown-content .navbar-fixed-group > .navbar-fixed-summary::after {
+  content: none !important;
+  display: none !important;
+}
+
+#navbar .nav-menu-arrow,
+#navbar .phone-sub-arrow {
+  display: inline-block !important;
+  margin-left: 8px !important;
+  color: var(--black) !important;
+  font-size: 14px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 850px) {
+  .reference-scroll {
+    max-height: min(300px, calc(100vh - 220px)) !important;
+  }
+}
+
