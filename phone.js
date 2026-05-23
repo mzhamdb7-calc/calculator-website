@@ -1,20 +1,19 @@
 /*
   Copyright © 2026 Hamdi. All rights reserved.
   PHONE MODE ONLY
-  Clean phone menu:
-  - removes old duplicate arrows
-  - CSS-only arrows
-  - calculator opens upward
-  - info opens upward
-  - opening one closes the other
-  - health/finance opens upward
+
+  Clean phone file:
+  - Phone navbar only
+  - Removes duplicate JS arrow spans
+  - Uses CSS-only arrows
+  - Top menus and health/finance menus open upward
 */
 
 (function () {
   "use strict";
 
   const PHONE_QUERY = "(max-width: 850px)";
-  const CSS_ID = "safe-phone-menu-css";
+  const CSS_ID = "clean-phone-css";
 
   function isPhone() {
     return window.matchMedia(PHONE_QUERY).matches;
@@ -24,64 +23,7 @@
     return document.getElementById("navbar");
   }
 
-  function topDropdowns(navbar) {
-    return Array.from(navbar.querySelectorAll(":scope > .dropdown"));
-  }
-
-  function submenuGroups(root) {
-    return Array.from(
-      root.querySelectorAll(
-        ".nav-group, " +
-        ".fixed-nav-group, " +
-        ".navbar-fixed-group"
-      )
-    );
-  }
-
-  function getSubmenuTrigger(group) {
-    return (
-      group.querySelector(":scope > summary") ||
-      group.querySelector(":scope > .nav-summary") ||
-      group.querySelector(":scope > .navbar-fixed-summary")
-    );
-  }
-
-  function cleanArrowText(text) {
-    return String(text || "")
-      .replace(/[▼▲▶◀⬇⬆⬅➡]/g, "")
-      .replace(/\s+/g, " ")
-      .trim();
-  }
-
-  function cleanOldArrows(root) {
-    const navbar = root || getNavbar();
-    if (!navbar) return;
-
-    navbar
-      .querySelectorAll(".phone-sub-arrow, .nav-menu-arrow")
-      .forEach(function (arrow) {
-        arrow.remove();
-      });
-
-    navbar
-      .querySelectorAll(
-        "#navbar > .dropdown > .dropbtn, " +
-        "#navbar .dropdown-content > details.nav-group > summary, " +
-        "#navbar .dropdown-content > .nav-group > summary, " +
-        "#navbar .dropdown-content > .fixed-nav-group > .nav-summary, " +
-        "#navbar .dropdown-content > .navbar-fixed-group > .navbar-fixed-summary"
-      )
-      .forEach(function (trigger) {
-        trigger.childNodes.forEach(function (node) {
-          if (node.nodeType === Node.TEXT_NODE) {
-            const cleaned = cleanArrowText(node.textContent);
-            node.textContent = cleaned ? cleaned + " " : "";
-          }
-        });
-      });
-  }
-
-  function installPhoneMenuCss() {
+  function installPhoneCss() {
     const old = document.getElementById(CSS_ID);
     if (old) old.remove();
 
@@ -94,6 +36,10 @@
         body {
           overflow-x: hidden !important;
           touch-action: manipulation !important;
+        }
+
+        #pcQuestionOverlayButton {
+          display: none !important;
         }
 
         html body #menuIcon,
@@ -202,12 +148,6 @@
           border-right: none !important;
         }
 
-        html body #navbar > .dropdown:not(.phone-open) > .dropbtn,
-        html body #navbar > .dropdown:not(.phone-open):hover > .dropbtn,
-        html body #navbar > .dropdown:not(.phone-open):focus-within > .dropbtn {
-          background: var(--white) !important;
-        }
-
         html body #navbar > .dropdown.phone-open > .dropbtn {
           background: var(--yellow) !important;
         }
@@ -276,9 +216,7 @@
         }
 
         html body #navbar .dropdown-content > *:last-child,
-        html body #navbar .dropdown-content > *:last-child > summary,
-        html body #navbar .dropdown-content > *:last-child > .nav-summary,
-        html body #navbar .dropdown-content > *:last-child > .navbar-fixed-summary {
+        html body #navbar .dropdown-content > *:last-child > summary {
           border-bottom: none !important;
         }
 
@@ -355,14 +293,12 @@
           background: var(--yellow) !important;
         }
 
-        /* Remove all old JS arrow spans */
         html body #navbar .phone-sub-arrow,
         html body #navbar .nav-menu-arrow {
           display: none !important;
           content: none !important;
         }
 
-        /* Remove browser default details arrow */
         html body #navbar summary {
           list-style: none !important;
         }
@@ -375,7 +311,6 @@
           content: "" !important;
         }
 
-        /* Top menu arrows: calculator + info */
         html body #navbar > .dropdown > .dropbtn::after {
           content: "▼" !important;
           display: inline-block !important;
@@ -384,19 +319,12 @@
           font-size: 12px !important;
           font-weight: bold !important;
           line-height: 1 !important;
-          background: transparent !important;
-          border: none !important;
-          box-shadow: none !important;
-          transform: none !important;
         }
 
-        html body #navbar > .dropdown.phone-open > .dropbtn::after,
-        html body #navbar > .dropdown.mobile-open > .dropbtn::after,
-        html body #navbar > .dropdown.phone-dropup-open > .dropbtn::after {
+        html body #navbar > .dropdown.phone-open > .dropbtn::after {
           content: "▲" !important;
         }
 
-        /* Health / finance arrows */
         html body #navbar .dropdown-content > details.nav-group > summary::after,
         html body #navbar .dropdown-content > .nav-group > summary::after,
         html body #navbar .dropdown-content > .fixed-nav-group > .nav-summary::after,
@@ -408,36 +336,13 @@
           font-size: 12px !important;
           font-weight: bold !important;
           line-height: 1 !important;
-          background: transparent !important;
-          border: none !important;
-          box-shadow: none !important;
-          transform: none !important;
         }
 
         html body #navbar .dropdown-content > details.nav-group[open] > summary::after,
-        html body #navbar .dropdown-content > .nav-group[open] > summary::after,
         html body #navbar .dropdown-content > .nav-group.phone-sub-open > summary::after,
-        html body #navbar .dropdown-content > .nav-group.is-open > summary::after,
         html body #navbar .dropdown-content > .fixed-nav-group.phone-sub-open > .nav-summary::after,
-        html body #navbar .dropdown-content > .fixed-nav-group.is-open > .nav-summary::after,
-        html body #navbar .dropdown-content > .navbar-fixed-group.phone-sub-open > .navbar-fixed-summary::after,
-        html body #navbar .dropdown-content > .navbar-fixed-group.is-open > .navbar-fixed-summary::after {
+        html body #navbar .dropdown-content > .navbar-fixed-group.phone-sub-open > .navbar-fixed-summary::after {
           content: "▲" !important;
-        }
-
-        html body main,
-        html body main.has-instructions,
-        html body .calculator-container,
-        html body .age-calculator-container,
-        html body .bmi-calculator-container,
-        html body .discount-calculator-container,
-        html body .loan-calculator-container,
-        html body .percentage-calculator-container,
-        html body .compound-interest-container,
-        html body .about-container,
-        html body .calculator-box {
-          margin-top: 20px !important;
-          pointer-events: auto !important;
         }
       }
     `;
@@ -445,116 +350,90 @@
     document.head.appendChild(style);
   }
 
-  function closeSubmenus(dropdown) {
-    if (!dropdown) return;
+  function cleanArrowText(text) {
+    return String(text || "")
+      .replace(/[▼▲▶◀⬇⬆⬅➡]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
 
-    submenuGroups(dropdown).forEach(function (group) {
+  function cleanOldArrows() {
+    const navbar = getNavbar();
+    if (!navbar) return;
+
+    navbar
+      .querySelectorAll(".phone-sub-arrow, .nav-menu-arrow")
+      .forEach(function (arrow) {
+        arrow.remove();
+      });
+
+    navbar
+      .querySelectorAll(
+        "#navbar > .dropdown > .dropbtn, " +
+        "#navbar .dropdown-content > details.nav-group > summary, " +
+        "#navbar .dropdown-content > .nav-group > summary, " +
+        "#navbar .dropdown-content > .fixed-nav-group > .nav-summary, " +
+        "#navbar .dropdown-content > .navbar-fixed-group > .navbar-fixed-summary"
+      )
+      .forEach(function (trigger) {
+        trigger.childNodes.forEach(function (node) {
+          if (node.nodeType === Node.TEXT_NODE) {
+            const cleaned = cleanArrowText(node.textContent);
+            node.textContent = cleaned ? cleaned + " " : "";
+          }
+        });
+      });
+  }
+
+  function topDropdowns(navbar) {
+    return Array.from(navbar.querySelectorAll(":scope > .dropdown"));
+  }
+
+  function submenuGroups(root) {
+    return Array.from(
+      root.querySelectorAll(
+        ".nav-group, " +
+        ".fixed-nav-group, " +
+        ".navbar-fixed-group"
+      )
+    );
+  }
+
+  function closeAllTopMenus(except) {
+    const navbar = getNavbar();
+    if (!navbar) return;
+
+    topDropdowns(navbar).forEach(function (dropdown) {
+      if (dropdown === except) return;
+
+      dropdown.classList.remove("phone-open", "mobile-open", "phone-dropup-open");
+
+      const button = dropdown.querySelector(":scope > .dropbtn");
+      if (button) button.setAttribute("aria-expanded", "false");
+    });
+  }
+
+  function closeAllSubmenus(root, except) {
+    submenuGroups(root || document).forEach(function (group) {
+      if (group === except) return;
+
       group.classList.remove("phone-sub-open", "is-open", "open", "active");
-      group.dataset.phoneOpen = "false";
 
       if (group.tagName && group.tagName.toLowerCase() === "details") {
         group.open = false;
-        group.removeAttribute("open");
       }
     });
   }
 
-  function closeDropdown(dropdown) {
-    if (!dropdown) return;
-
-    dropdown.classList.remove("phone-open", "mobile-open", "phone-dropup-open");
-    dropdown.dataset.phoneOpen = "false";
-
-    const button = dropdown.querySelector(":scope > .dropbtn");
-    if (button) {
-      button.setAttribute("aria-expanded", "false");
-      button.blur();
-    }
-
-    closeSubmenus(dropdown);
-  }
-
-  function closeAll(navbar, exceptDropdown) {
-    topDropdowns(navbar).forEach(function (dropdown) {
-      if (dropdown !== exceptDropdown) {
-        closeDropdown(dropdown);
-      }
-    });
-  }
-
-  function openDropdown(dropdown) {
+  function setupTopMenus() {
     const navbar = getNavbar();
-    if (!navbar || !dropdown) return;
-
-    closeAll(navbar, dropdown);
-
-    dropdown.classList.add("phone-open", "mobile-open", "phone-dropup-open");
-    dropdown.dataset.phoneOpen = "true";
-
-    const button = dropdown.querySelector(":scope > .dropbtn");
-    if (button) {
-      button.setAttribute("aria-expanded", "true");
-      button.blur();
-    }
-  }
-
-  function toggleDropdown(dropdown) {
-    if (!dropdown) return;
-
-    if (dropdown.classList.contains("phone-open")) {
-      closeDropdown(dropdown);
-    } else {
-      openDropdown(dropdown);
-    }
-  }
-
-  function toggleSubmenu(group) {
-    if (!group) return;
-
-    const dropdown = group.closest(".dropdown");
-    if (!dropdown) return;
-
-    submenuGroups(dropdown).forEach(function (other) {
-      if (other === group) return;
-
-      other.classList.remove("phone-sub-open", "is-open", "open", "active");
-      other.dataset.phoneOpen = "false";
-
-      if (other.tagName && other.tagName.toLowerCase() === "details") {
-        other.open = false;
-        other.removeAttribute("open");
-      }
-    });
-
-    const willOpen = !(group.classList.contains("phone-sub-open") || group.open);
-
-    group.classList.toggle("phone-sub-open", willOpen);
-    group.classList.toggle("is-open", willOpen);
-    group.dataset.phoneOpen = willOpen ? "true" : "false";
-
-    if (group.tagName && group.tagName.toLowerCase() === "details") {
-      group.open = willOpen;
-      if (willOpen) {
-        group.setAttribute("open", "");
-      } else {
-        group.removeAttribute("open");
-      }
-    }
-  }
-
-  function setupPhoneMenu() {
-    installPhoneMenuCss();
-
-    const navbar = getNavbar();
-    if (!navbar || navbar.dataset.safePhoneReady === "true") return;
-
-    navbar.dataset.safePhoneReady = "true";
-
-    cleanOldArrows(navbar);
+    if (!navbar) return;
 
     topDropdowns(navbar).forEach(function (dropdown) {
       const button = dropdown.querySelector(":scope > .dropbtn");
-      if (!button) return;
+      if (!button || button.dataset.phoneReady === "true") return;
+
+      button.dataset.phoneReady = "true";
 
       button.addEventListener("click", function (event) {
         if (!isPhone()) return;
@@ -562,16 +441,32 @@
         event.preventDefault();
         event.stopPropagation();
 
-        cleanOldArrows(navbar);
-        toggleDropdown(dropdown);
+        const willOpen = !dropdown.classList.contains("phone-open");
+
+        closeAllTopMenus(dropdown);
+        closeAllSubmenus(navbar);
+
+        dropdown.classList.toggle("phone-open", willOpen);
+        dropdown.classList.toggle("mobile-open", willOpen);
+        dropdown.classList.toggle("phone-dropup-open", willOpen);
+        button.setAttribute("aria-expanded", willOpen ? "true" : "false");
       });
     });
+  }
+
+  function setupSubmenus() {
+    const navbar = getNavbar();
+    if (!navbar) return;
 
     submenuGroups(navbar).forEach(function (group) {
-      const trigger = getSubmenuTrigger(group);
-      if (!trigger) return;
+      const trigger =
+        group.querySelector(":scope > summary") ||
+        group.querySelector(":scope > .nav-summary") ||
+        group.querySelector(":scope > .navbar-fixed-summary");
 
-      cleanOldArrows(navbar);
+      if (!trigger || trigger.dataset.phoneSubReady === "true") return;
+
+      trigger.dataset.phoneSubReady = "true";
 
       trigger.addEventListener("click", function (event) {
         if (!isPhone()) return;
@@ -579,30 +474,50 @@
         event.preventDefault();
         event.stopPropagation();
 
-        cleanOldArrows(navbar);
-        toggleSubmenu(group);
+        const willOpen = !group.classList.contains("phone-sub-open") && !group.open;
+
+        closeAllSubmenus(navbar, group);
+
+        group.classList.toggle("phone-sub-open", willOpen);
+        group.classList.toggle("is-open", willOpen);
+
+        if (group.tagName && group.tagName.toLowerCase() === "details") {
+          group.open = willOpen;
+        }
       });
     });
+  }
 
+  function setupCloseOutside() {
     document.addEventListener("click", function (event) {
       if (!isPhone()) return;
-      if (navbar.contains(event.target)) return;
 
-      closeAll(navbar, null);
-    });
+      const navbar = getNavbar();
+      if (!navbar) return;
 
-    window.addEventListener("resize", function () {
-      cleanOldArrows(navbar);
-
-      if (!isPhone()) {
-        closeAll(navbar, null);
+      if (!navbar.contains(event.target)) {
+        closeAllTopMenus();
+        closeAllSubmenus(navbar);
       }
     });
   }
 
+  function start() {
+    installPhoneCss();
+    cleanOldArrows();
+    setupTopMenus();
+    setupSubmenus();
+    setupCloseOutside();
+
+    window.addEventListener("resize", function () {
+      if (!isPhone()) return;
+      cleanOldArrows();
+    });
+  }
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", setupPhoneMenu);
+    document.addEventListener("DOMContentLoaded", start);
   } else {
-    setupPhoneMenu();
+    start();
   }
 })();
