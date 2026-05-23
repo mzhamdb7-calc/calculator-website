@@ -1825,3 +1825,14 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     text-align: center !important;
   }
 }
+/* =====================================================
+   PC ONLY: Final Age input history range style
+===================================================== */
+@media (min-width: 851px) {
+  .age-final-range-history-item .history-text {
+    width: 100% !important;
+    font-weight: bold !important;
+    line-height: 1.45 !important;
+    text-align: center !important;
+  }
+}
