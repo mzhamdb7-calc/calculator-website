@@ -2743,3 +2743,98 @@
     startAgeBulletResult();
   }
 })();
+/* =====================================================
+   BASIC CALCULATOR: FIX NUMBER × SQUARE ROOT
+   Example:
+   2 then √ then 9 = 2 * Math.sqrt(9)
+===================================================== */
+(function () {
+  "use strict";
+
+  function isBasicPage() {
+    return (
+      document.body.classList.contains("basic-page") ||
+      document.body.dataset.page === "basic" ||
+      !!document.getElementById("display")
+    );
+  }
+
+  function getDisplay() {
+    return document.getElementById("display");
+  }
+
+  function needsMultiplyBeforeFunction(value) {
+    if (!value) return false;
+
+    const lastChar = value.slice(-1);
+
+    return /[0-9.)]/.test(lastChar);
+  }
+
+  function clearError(display) {
+    if (display && display.value === "Error") {
+      display.value = "";
+    }
+  }
+
+  /* Override old addFunction */
+  window.addFunction = function (func) {
+    if (!isBasicPage()) return;
+
+    const display = getDisplay();
+    if (!display) return;
+
+    clearError(display);
+
+    const functions = {
+      sqrt: "Math.sqrt(",
+      sin: "Math.sin(",
+      cos: "Math.cos(",
+      tan: "Math.tan(",
+      log: "Math.log10(",
+      ln: "Math.log("
+    };
+
+    const functionText = functions[func];
+    if (!functionText) return;
+
+    if (needsMultiplyBeforeFunction(display.value)) {
+      display.value += "*" + functionText;
+    } else {
+      display.value += functionText;
+    }
+  };
+
+  /*
+    Extra safety:
+    If old display already became 2Math.sqrt(9),
+    convert it to 2*Math.sqrt(9) before calculate.
+  */
+  const oldCalculate = window.calculate;
+
+  window.calculate = function () {
+    if (isBasicPage()) {
+      const display = getDisplay();
+
+      if (display && display.value) {
+        display.value = display.value
+          .replace(/(\d)(Math\.sqrt\()/g, "$1*$2")
+          .replace(/(\d)(Math\.sin\()/g, "$1*$2")
+          .replace(/(\d)(Math\.cos\()/g, "$1*$2")
+          .replace(/(\d)(Math\.tan\()/g, "$1*$2")
+          .replace(/(\d)(Math\.log10\()/g, "$1*$2")
+          .replace(/(\d)(Math\.log\()/g, "$1*$2")
+          .replace(/\)(Math\.sqrt\()/g, ")*$1")
+          .replace(/\)(Math\.sin\()/g, ")*$1")
+          .replace(/\)(Math\.cos\()/g, ")*$1")
+          .replace(/\)(Math\.tan\()/g, ")*$1")
+          .replace(/\)(Math\.log10\()/g, ")*$1")
+          .replace(/\)(Math\.log\()/g, ")*$1");
+      }
+    }
+
+    if (typeof oldCalculate === "function") {
+      return oldCalculate();
+    }
+  };
+})();
