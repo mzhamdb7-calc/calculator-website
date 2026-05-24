@@ -2672,3 +2672,68 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     text-align: center !important;
   }
 }
+
+/* =====================================================
+   PC ONLY: BMI user profile boxes match calculator inputs
+   - Same width, height, font, border as calculator inputs
+   - Sex option is controlled by script.js: Male / Female only
+===================================================== */
+@media (min-width: 851px) {
+  main.pc-calculator-layout > .calculator .bmi-extra-profile-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 14px auto 18px !important;
+    padding: 14px !important;
+    background: #fff4b8 !important;
+    color: var(--black) !important;
+    border: 5px solid var(--black) !important;
+    box-shadow: 7px 7px 0 var(--black) !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+  }
+
+  main.pc-calculator-layout > .calculator .bmi-extra-title {
+    width: 100% !important;
+    margin: 0 0 12px !important;
+    font-size: 24px !important;
+    line-height: 1.2 !important;
+    font-weight: bold !important;
+    text-align: center !important;
+  }
+
+  main.pc-calculator-layout > .calculator .bmi-extra-profile-box label {
+    display: block !important;
+    width: 50% !important;
+    min-width: 300px !important;
+    max-width: 450px !important;
+    margin: 0 auto 12px !important;
+    font-size: 24px !important;
+    line-height: 1.2 !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+  }
+
+  main.pc-calculator-layout > .calculator .bmi-extra-profile-box select,
+  main.pc-calculator-layout > .calculator .bmi-extra-profile-box input {
+    width: 50% !important;
+    min-width: 300px !important;
+    max-width: 450px !important;
+    height: 70px !important;
+    display: block !important;
+    margin: 0 auto 22px !important;
+    padding: 10px 18px !important;
+    background: #f8f8f8 !important;
+    color: var(--black) !important;
+    border: 5px solid var(--black) !important;
+    box-shadow: inset 4px 4px 0 #ddd !important;
+    font-family: inherit !important;
+    font-size: 28px !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+    text-align-last: center !important;
+    box-sizing: border-box !important;
+  }
+}
+

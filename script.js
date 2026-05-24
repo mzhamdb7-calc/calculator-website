@@ -170,6 +170,14 @@
     return "";
   }
 
+  function applyPageBodyClass() {
+    const type = getPageType();
+    if (!type) return;
+
+    document.body.dataset.page = type;
+    document.body.classList.add(type + "-page");
+  }
+
   function isCalculatorPage() {
     const main = document.querySelector("main");
     if (!main) return false;
@@ -1412,13 +1420,16 @@
 
     if (type === "age") {
       const birthdate = firstValue(["birthdate", "birthDate", "dob"]);
-      const normalAge = calculateNormalAgeFromBirthdate(birthdate);
-      const asianAge = calculateAsianAgeFromBirthdate(birthdate);
+      const targetInput = ensureAgeTargetDateInput();
+      const targetDate = targetInput ? String(targetInput.value || "").trim() : todayValueISO();
+
+      const normalAge = calculateNormalAgeBetweenDates(birthdate, targetDate);
+      const asianAge = calculateAsianAgeBetweenDates(birthdate, targetDate);
 
       if (!birthdate || normalAge === "" || asianAge === "") return [];
 
       return [
-        ["Birthdate", birthdate],
+        ["Date range", formatDateDMY(birthdate) + " to " + formatDateDMY(targetDate)],
         ["Normal age", normalAge + " years old"],
         ["Asian age", asianAge + " years old"]
       ];
@@ -1616,11 +1627,24 @@
         text.includes("compound")
       ) {
         setTimeout(function () {
-          if (type !== "basic") addInputHistory(type);
-          renderUniversalLoanStyleResult();
+          /*
+            Age has its own result panel and already adds its input history
+            inside calculateAge(). Do not run the universal loan-style
+            result system for Age, because that is what brought back the
+            old "Birthdate / Date to calculate" result.
+          */
+          if (type !== "basic" && type !== "age") {
+            addInputHistory(type);
+          }
+
+          if (type !== "age") {
+            renderUniversalLoanStyleResult();
+          }
         }, 150);
 
-        setTimeout(renderUniversalLoanStyleResult, 400);
+        if (type !== "age") {
+          setTimeout(renderUniversalLoanStyleResult, 400);
+        }
       }
     });
 
@@ -1629,8 +1653,14 @@
 
       setTimeout(function () {
         const type = getPageType();
-        if (type !== "basic") addInputHistory(type);
-        renderUniversalLoanStyleResult();
+
+        if (type !== "basic" && type !== "age") {
+          addInputHistory(type);
+        }
+
+        if (type !== "age") {
+          renderUniversalLoanStyleResult();
+        }
       }, 150);
     });
   }
@@ -1657,6 +1687,7 @@
   }
 
   function init() {
+    applyPageBodyClass();
     buildInstructionLayout();
     setupNumberInputs();
     setupKeyboardSupport();
@@ -4652,7 +4683,6 @@
       <select id="bmiSex">
         <option value="male">Male</option>
         <option value="female">Female</option>
-        <option value="not-specified">Prefer not to say</option>
       </select>
 
       <label for="bmiEthnicity">BMI cut-off:</label>
@@ -5461,7 +5491,6 @@
       <select id="bmiSex">
         <option value="male">Male</option>
         <option value="female">Female</option>
-        <option value="not-specified">Prefer not to say</option>
       </select>
 
       <label for="bmiEthnicity">BMI cut-off:</label>
@@ -6007,3 +6036,75 @@
     startBasicSqrtSymbolFix();
   }
 })();
+
+/* =====================================================
+   BMI: FINAL USER PROFILE SEX OPTION FIX
+   Keeps Sex as Male / Female only, even if old BMI profile code rebuilds it.
+===================================================== */
+(function () {
+  "use strict";
+
+  function isBmiPage() {
+    return (
+      document.body.classList.contains("bmi-page") ||
+      document.body.dataset.page === "bmi" ||
+      !!document.getElementById("bmiResult") ||
+      !!document.getElementById("bmiHistoryList")
+    );
+  }
+
+  function fixBmiSexOptions() {
+    if (!isBmiPage()) return;
+
+    const sex = document.getElementById("bmiSex");
+    if (!sex) return;
+
+    const current = String(sex.value || "").toLowerCase();
+
+    if (
+      sex.options.length === 2 &&
+      sex.options[0].value === "male" &&
+      sex.options[1].value === "female"
+    ) {
+      return;
+    }
+
+    sex.innerHTML =
+      '<option value="male">Male</option>' +
+      '<option value="female">Female</option>';
+
+    sex.value = current === "female" ? "female" : "male";
+  }
+
+  function startBmiSexFinalFix() {
+    if (!isBmiPage()) return;
+
+    fixBmiSexOptions();
+
+    const calculator = document.querySelector(".calculator");
+
+    if (calculator && calculator.dataset.bmiSexFinalFixReady !== "true") {
+      calculator.dataset.bmiSexFinalFixReady = "true";
+
+      const observer = new MutationObserver(function () {
+        fixBmiSexOptions();
+      });
+
+      observer.observe(calculator, {
+        childList: true,
+        subtree: true
+      });
+    }
+
+    setTimeout(fixBmiSexOptions, 300);
+    setTimeout(fixBmiSexOptions, 900);
+    setTimeout(fixBmiSexOptions, 1500);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startBmiSexFinalFix);
+  } else {
+    startBmiSexFinalFix();
+  }
+})();
+
