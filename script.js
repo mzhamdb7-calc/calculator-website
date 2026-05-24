@@ -6274,3 +6274,157 @@
     start();
   }
 })();
+/* =====================================================
+   BMI RESULT: Change W/H ratio to Waist/Height ratio
+   - Shows waist/height in fraction format in result box
+   - Also updates copy text to "Waist/height ratio"
+===================================================== */
+(function () {
+  "use strict";
+
+  function isBmiPage() {
+    return (
+      document.body.classList.contains("bmi-page") ||
+      document.body.dataset.page === "bmi" ||
+      !!document.getElementById("bmiResult") ||
+      !!document.getElementById("bmiHistoryList")
+    );
+  }
+
+  function fractionLabelHTML() {
+    return (
+      '<span class="bmi-fraction-label" aria-label="Waist divided by height">' +
+        '<span class="bmi-fraction-top">Waist</span>' +
+        '<span class="bmi-fraction-line"></span>' +
+        '<span class="bmi-fraction-bottom">Height</span>' +
+      '</span> ratio'
+    );
+  }
+
+  function cleanValue(text) {
+    return String(text || "")
+      .replace(/^•\s*/g, "")
+      .replace(/^w\/h\s*ratio\s*:\s*/i, "")
+      .replace(/^waist\s*\/\s*height\s*ratio\s*:\s*/i, "")
+      .replace(/^waist\s*height\s*ratio\s*:\s*/i, "")
+      .trim();
+  }
+
+  function updateBmiRatioLabel() {
+    if (!isBmiPage()) return;
+
+    const panel =
+      document.getElementById("stableBmiOutput") ||
+      document.getElementById("universalLoanStyleOutput");
+
+    if (panel) {
+      panel.querySelectorAll("li, td, th").forEach(function (item) {
+        const text = item.textContent.trim();
+
+        if (/^w\/h\s*ratio\s*:/i.test(text) || /^w\/h\s*ratio$/i.test(text)) {
+          const value = cleanValue(text);
+
+          if (item.tagName.toLowerCase() === "li") {
+            item.innerHTML =
+              '<strong>' + fractionLabelHTML() + ':</strong> ' + value;
+          } else {
+            item.innerHTML = fractionLabelHTML();
+          }
+        }
+      });
+
+      const copyBtn =
+        panel.querySelector(".stable-copy-btn") ||
+        panel.querySelector(".loan-copy-btn");
+
+      const list =
+        panel.querySelector(".bmi-detailed-result") ||
+        panel.querySelector(".bmi-point-result") ||
+        panel.querySelector(".stable-result-body");
+
+      if (copyBtn && list) {
+        copyBtn.onclick = function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+
+          const copyValue = Array.from(list.querySelectorAll("li"))
+            .map(function (li) {
+              return "• " + li.textContent.trim()
+                .replace(/^W\/H ratio\s*:/i, "Waist/height ratio:");
+            })
+            .join("\n");
+
+          if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(copyValue).then(function () {
+              const old = copyBtn.textContent;
+              copyBtn.textContent = "Copied!";
+              setTimeout(function () {
+                copyBtn.textContent = old;
+              }, 1000);
+            });
+          }
+        };
+      }
+    }
+
+    const hiddenResult =
+      document.getElementById("bmiResult") ||
+      document.getElementById("result");
+
+    if (hiddenResult && hiddenResult.textContent.includes("W/H ratio")) {
+      hiddenResult.textContent = hiddenResult.textContent.replace(
+        /W\/H ratio/g,
+        "Waist/height ratio"
+      );
+    }
+  }
+
+  function start() {
+    if (!isBmiPage()) return;
+
+    updateBmiRatioLabel();
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (text.includes("calculate bmi") || onclick.includes("calculateBMI")) {
+          setTimeout(updateBmiRatioLabel, 0);
+          setTimeout(updateBmiRatioLabel, 200);
+          setTimeout(updateBmiRatioLabel, 600);
+        }
+      },
+      true
+    );
+
+    const main = document.querySelector("main");
+
+    if (main && main.dataset.bmiRatioLabelObserverReady !== "true") {
+      main.dataset.bmiRatioLabelObserverReady = "true";
+
+      const observer = new MutationObserver(function () {
+        updateBmiRatioLabel();
+      });
+
+      observer.observe(main, {
+        childList: true,
+        subtree: true,
+        characterData: true
+      });
+    }
+
+    setTimeout(updateBmiRatioLabel, 500);
+    setTimeout(updateBmiRatioLabel, 1200);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
