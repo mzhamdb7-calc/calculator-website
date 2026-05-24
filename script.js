@@ -8260,3 +8260,259 @@
   }
 })();
 
+/* =====================================================
+   DISCOUNT CALCULATOR: Bottom result box like other pages
+   - Result appears in external box below calculator
+   - Point form result
+   - Copy button included
+   - Hides old table/result output
+===================================================== */
+(function () {
+  "use strict";
+
+  const PANEL_ID = "stableDiscountOutput";
+
+  function isDiscountPage() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    return (
+      document.body.classList.contains("discount-page") ||
+      document.body.dataset.page === "discount" ||
+      title.includes("discount") ||
+      window.location.pathname.includes("discount-calculator") ||
+      !!document.getElementById("discountResult") ||
+      !!document.getElementById("discountHistoryList")
+    );
+  }
+
+  function getNumber(ids) {
+    for (const id of ids) {
+      const input = document.getElementById(id);
+      if (!input) continue;
+
+      const value = Number(String(input.value || "").replace(/,/g, "").trim());
+
+      if (Number.isFinite(value)) {
+        return value;
+      }
+    }
+
+    return NaN;
+  }
+
+  function money(value) {
+    return Number(value).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function getDiscountPanel() {
+    const main =
+      document.querySelector("main.pc-calculator-layout") ||
+      document.querySelector("main");
+
+    const calculator = main ? main.querySelector(".calculator") : null;
+    if (!calculator) return null;
+
+    let panel = document.getElementById(PANEL_ID);
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = PANEL_ID;
+      panel.className = "stable-result-output discount-result-output";
+      panel.setAttribute("aria-label", "Discount calculator result");
+
+      panel.innerHTML =
+        '<div class="stable-result-top">' +
+          '<div class="stable-result-panel">' +
+            '<h2 class="stable-result-title">Result</h2>' +
+            '<div class="stable-result-body"></div>' +
+          '</div>' +
+          '<div class="stable-copy-side">' +
+            '<button type="button" class="stable-copy-btn">Copy</button>' +
+          '</div>' +
+        '</div>';
+
+      calculator.insertAdjacentElement("afterend", panel);
+    }
+
+    return panel;
+  }
+
+  function hideOldDiscountOutputs() {
+    const oldUniversal = document.getElementById("universalLoanStyleOutput");
+
+    if (oldUniversal) {
+      oldUniversal.hidden = true;
+      oldUniversal.style.setProperty("display", "none", "important");
+      oldUniversal.style.setProperty("visibility", "hidden", "important");
+      oldUniversal.style.setProperty("pointer-events", "none", "important");
+    }
+
+    const result =
+      document.getElementById("discountResult") ||
+      document.getElementById("result");
+
+    if (result) {
+      result.style.display = "none";
+    }
+  }
+
+  function copyText(text, button) {
+    const value = String(text || "").trim();
+    if (!value) return;
+
+    function copied() {
+      const old = button.textContent;
+      button.textContent = "Copied!";
+
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(value).then(copied).catch(function () {
+        fallbackCopy(value);
+        copied();
+      });
+    } else {
+      fallbackCopy(value);
+      copied();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+    textarea.setAttribute("readonly", "");
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function renderDiscountResultBox() {
+    if (!isDiscountPage()) return;
+
+    document.body.classList.add("discount-page");
+    document.body.dataset.page = "discount";
+
+    const price = getNumber(["price", "originalPrice", "amount"]);
+    const discount = getNumber(["discount", "discountRate", "percent"]);
+
+    const panel = getDiscountPanel();
+    const result =
+      document.getElementById("discountResult") ||
+      document.getElementById("result");
+
+    if (!panel) return;
+
+    if (
+      !Number.isFinite(price) ||
+      !Number.isFinite(discount) ||
+      price <= 0 ||
+      discount < 0 ||
+      discount > 100
+    ) {
+      if (result) {
+        result.style.display = "block";
+        result.innerText = "Please enter valid discount details.";
+      }
+
+      panel.hidden = true;
+      hideOldDiscountOutputs();
+      return;
+    }
+
+    const savings = price * discount / 100;
+    const finalPrice = price - savings;
+
+    const resultText =
+      "• Original price: " + money(price) + "\n" +
+      "• Discount: " + discount + "%\n" +
+      "• Savings: " + money(savings) + "\n" +
+      "• Final price: " + money(finalPrice);
+
+    const body = panel.querySelector(".stable-result-body");
+
+    if (body) {
+      body.innerHTML =
+        '<ul class="discount-point-result">' +
+          '<li><strong>Original price:</strong> ' + money(price) + '</li>' +
+          '<li><strong>Discount:</strong> ' + discount + '%</li>' +
+          '<li><strong>Savings:</strong> ' + money(savings) + '</li>' +
+          '<li><strong>Final price:</strong> ' + money(finalPrice) + '</li>' +
+        '</ul>';
+    }
+
+    panel.hidden = false;
+    panel.style.removeProperty("display");
+
+    const copyBtn = panel.querySelector(".stable-copy-btn");
+
+    if (copyBtn) {
+      copyBtn.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        copyText(resultText, copyBtn);
+      };
+    }
+
+    hideOldDiscountOutputs();
+  }
+
+  function startDiscountResultBox() {
+    if (!isDiscountPage()) return;
+
+    window.calculateDiscount = renderDiscountResultBox;
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (text.includes("calculate") || onclick.includes("calculateDiscount")) {
+          setTimeout(renderDiscountResultBox, 0);
+          setTimeout(renderDiscountResultBox, 250);
+          setTimeout(renderDiscountResultBox, 700);
+          setTimeout(renderDiscountResultBox, 1200);
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key === "Enter") {
+          setTimeout(renderDiscountResultBox, 250);
+          setTimeout(renderDiscountResultBox, 700);
+        }
+      },
+      true
+    );
+
+    setTimeout(hideOldDiscountOutputs, 500);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startDiscountResultBox);
+  } else {
+    startDiscountResultBox();
+  }
+})();
