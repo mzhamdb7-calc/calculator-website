@@ -6876,3 +6876,256 @@
     startBmiProfileHistory();
   }
 })();
+/* =====================================================
+   BASIC CALCULATOR: SHOW √ SYMBOL IN DISPLAY + HISTORY
+   - Calculator display shows √(
+   - History input shows √(
+   - Calculation still works by converting √( to Math.sqrt(
+   - Example: 2√9 style becomes 2*√(9)
+===================================================== */
+(function () {
+  "use strict";
+
+  function isBasicPage() {
+    return (
+      document.body.classList.contains("basic-page") ||
+      document.body.dataset.page === "basic" ||
+      !!document.getElementById("display")
+    );
+  }
+
+  function getDisplay() {
+    return document.getElementById("display");
+  }
+
+  function needsMultiplyBeforeFunction(value) {
+    if (!value) return false;
+
+    const lastChar = value.slice(-1);
+    return /[0-9.)]/.test(lastChar);
+  }
+
+  function toPrettyExpression(value) {
+    return String(value || "")
+      .replace(/Math\.sqrt\(/g, "√(");
+  }
+
+  function toJsExpression(value) {
+    return String(value || "")
+      .replace(/√\(/g, "Math.sqrt(")
+      .replace(/×/g, "*")
+      .replace(/÷/g, "/")
+      .replace(/−/g, "-");
+  }
+
+  function normalizeDisplaySqrtSymbol() {
+    if (!isBasicPage()) return;
+
+    const display = getDisplay();
+    if (!display) return;
+
+    if (display.value.includes("Math.sqrt(")) {
+      display.value = toPrettyExpression(display.value);
+    }
+  }
+
+  function loadBasicHistory() {
+    try {
+      const saved = JSON.parse(localStorage.getItem("basicEquationHistory") || "[]");
+      return Array.isArray(saved) ? saved : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function copyText(text, button) {
+    const value = String(text || "").trim();
+    if (!value) return;
+
+    function copied() {
+      const old = button.textContent;
+      button.textContent = "copied";
+
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(value).then(copied).catch(function () {
+        fallbackCopy(value);
+        copied();
+      });
+    } else {
+      fallbackCopy(value);
+      copied();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function renderPrettyBasicHistory() {
+    if (!isBasicPage()) return;
+
+    const list = document.getElementById("historyList");
+    if (!list) return;
+
+    const title = document.querySelector(".history h3");
+    if (title) {
+      title.textContent = "Input";
+    }
+
+    const history = loadBasicHistory();
+
+    list.innerHTML = "";
+
+    history.slice().reverse().forEach(function (equation) {
+      const prettyEquation = toPrettyExpression(equation);
+
+      const li = document.createElement("li");
+      li.className = "history-item basic-equation-history-item";
+
+      const text = document.createElement("span");
+      text.className = "history-text";
+      text.textContent = "Eq: " + prettyEquation;
+
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "history-copy-btn";
+      copyBtn.textContent = "copy";
+
+      copyBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        copyText(prettyEquation, copyBtn);
+      });
+
+      li.appendChild(text);
+      li.appendChild(copyBtn);
+      list.appendChild(li);
+    });
+  }
+
+  /* Override square root button behavior */
+  window.addFunction = function (func) {
+    if (!isBasicPage()) return;
+
+    const display = getDisplay();
+    if (!display) return;
+
+    if (display.value === "Error") {
+      display.value = "";
+    }
+
+    if (func === "sqrt") {
+      if (needsMultiplyBeforeFunction(display.value)) {
+        display.value += "*√(";
+      } else {
+        display.value += "√(";
+      }
+
+      return;
+    }
+
+    const functionMap = {
+      sin: "Math.sin(",
+      cos: "Math.cos(",
+      tan: "Math.tan(",
+      log: "Math.log10(",
+      ln: "Math.log("
+    };
+
+    if (functionMap[func]) {
+      if (needsMultiplyBeforeFunction(display.value)) {
+        display.value += "*" + functionMap[func];
+      } else {
+        display.value += functionMap[func];
+      }
+    }
+  };
+
+  /* Override calculate so √ still calculates correctly */
+  const oldCalculate = window.calculate;
+
+  window.calculate = function () {
+    if (!isBasicPage()) {
+      if (typeof oldCalculate === "function") {
+        return oldCalculate();
+      }
+
+      return;
+    }
+
+    const display = getDisplay();
+    if (!display) return;
+
+    const prettyBeforeCalculate = display.value;
+
+    display.value = toJsExpression(prettyBeforeCalculate);
+
+    if (typeof oldCalculate === "function") {
+      oldCalculate();
+    }
+
+    setTimeout(renderPrettyBasicHistory, 0);
+    setTimeout(renderPrettyBasicHistory, 200);
+    setTimeout(normalizeDisplaySqrtSymbol, 300);
+  };
+
+  /* Keyboard R should also use √ instead of Math.sqrt */
+  document.addEventListener(
+    "keydown",
+    function (event) {
+      if (!isBasicPage()) return;
+
+      if (event.key.toLowerCase() === "r") {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        window.addFunction("sqrt");
+      }
+    },
+    true
+  );
+
+  function startBasicSqrtSymbolFix() {
+    if (!isBasicPage()) return;
+
+    normalizeDisplaySqrtSymbol();
+    renderPrettyBasicHistory();
+
+    document.addEventListener(
+      "click",
+      function () {
+        setTimeout(normalizeDisplaySqrtSymbol, 0);
+        setTimeout(renderPrettyBasicHistory, 150);
+        setTimeout(renderPrettyBasicHistory, 500);
+      },
+      true
+    );
+
+    setTimeout(normalizeDisplaySqrtSymbol, 300);
+    setTimeout(renderPrettyBasicHistory, 300);
+    setTimeout(renderPrettyBasicHistory, 1000);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startBasicSqrtSymbolFix);
+  } else {
+    startBasicSqrtSymbolFix();
+  }
+})();
