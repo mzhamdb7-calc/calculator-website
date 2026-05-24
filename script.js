@@ -7269,3 +7269,80 @@
     startLoanOptionalHistory();
   }
 })();
+/* =====================================================
+   LOAN PAGE: Rename to Mortgage / Personal Loan Calculator
+===================================================== */
+(function () {
+  "use strict";
+
+  function isLoanPage() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      title.includes("loan") ||
+      title.includes("mortgage") ||
+      !!document.getElementById("loanResult") ||
+      window.location.pathname.includes("loan-calculator")
+    );
+  }
+
+  function renameLoanCalculator() {
+    if (!isLoanPage()) return;
+
+    document.body.classList.add("loan-page");
+    document.body.dataset.page = "loan";
+
+    document.title = "Mortgage / Personal Loan Calculator";
+
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute(
+        "content",
+        "Free mortgage and personal loan calculator for monthly payment, interest, down payment, and total repayment."
+      );
+    }
+
+    const h1 = document.querySelector(".calculator h1");
+    if (h1) {
+      h1.textContent = "Mortgage / Personal Loan Calculator";
+    }
+
+    const subtitle = document.querySelector(".calculator .subtitle");
+    if (subtitle) {
+      subtitle.textContent = "Calculate mortgage or personal loan payment using reducing-balance interest.";
+    }
+
+    document.querySelectorAll('a[href="loan-calculator.html"]').forEach(function (link) {
+      link.textContent = "mortgage / personal loan";
+    });
+
+    const whatBox = document.querySelector(".instruction-what-box p");
+    if (whatBox) {
+      whatBox.textContent =
+        "It estimates mortgage or personal loan payment, total interest, total payment, down payment, and optional costs.";
+    }
+
+    const howBox = document.querySelector(".instruction-how-box p");
+    if (howBox) {
+      howBox.textContent =
+        "Enter the loan amount or purchase price, interest rate, years, and optional costs. Then press calculate.";
+    }
+  }
+
+  function start() {
+    renameLoanCalculator();
+
+    setTimeout(renameLoanCalculator, 300);
+    setTimeout(renameLoanCalculator, 900);
+    setTimeout(renameLoanCalculator, 1500);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
