@@ -5069,3 +5069,46 @@
     startCleanOptionalCostText();
   }
 })();
+/* =====================================================
+   ALL CALCULATOR PAGES: History title -> Input
+===================================================== */
+(function () {
+  "use strict";
+
+  function renameHistoryToInput() {
+    const titles = document.querySelectorAll(
+      ".history h3, " +
+      ".age-history-box h3, " +
+      ".bmi-history-box h3, " +
+      ".loan-history-box h3, " +
+      ".discount-history-box h3, " +
+      ".percentage-history-box h3, " +
+      ".compound-history-box h3"
+    );
+
+    titles.forEach(function (title) {
+      if (title.textContent.trim().toLowerCase() === "history") {
+        title.textContent = "Input";
+      }
+    });
+  }
+
+  function start() {
+    renameHistoryToInput();
+
+    setTimeout(renameHistoryToInput, 300);
+    setTimeout(renameHistoryToInput, 900);
+    setTimeout(renameHistoryToInput, 1500);
+
+    document.addEventListener("click", function () {
+      setTimeout(renameHistoryToInput, 0);
+      setTimeout(renameHistoryToInput, 200);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
