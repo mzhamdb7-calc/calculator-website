@@ -2283,3 +2283,68 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     transform: rotate(0.5deg) !important;
   }
 }
+/* =====================================================
+   PC ONLY: Optional mortgage costs style
+===================================================== */
+@media (min-width: 851px) {
+  .optional-mortgage-costs {
+    width: 100% !important;
+    margin: 16px 0 !important;
+    padding: 14px !important;
+
+    background: #fff4b8 !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    box-sizing: border-box !important;
+  }
+
+  .optional-mortgage-title {
+    margin: 0 0 12px !important;
+    text-align: center !important;
+    font-size: 22px !important;
+    font-weight: bold !important;
+  }
+
+  .optional-mortgage-costs label {
+    display: block !important;
+    margin-top: 10px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+  }
+
+  .optional-mortgage-costs input {
+    width: 100% !important;
+    margin-top: 6px !important;
+    padding: 10px !important;
+
+    border: 3px solid var(--black) !important;
+    box-shadow: 3px 3px 0 var(--black) !important;
+
+    font-family: inherit !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+
+    box-sizing: border-box !important;
+  }
+
+  .optional-mortgage-note,
+  .mortgage-note {
+    margin: 12px 0 0 !important;
+    font-size: 15px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    line-height: 1.35 !important;
+  }
+
+  .mortgage-comparison-scroll {
+    margin-top: 18px !important;
+  }
+
+  .mortgage-summary-table,
+  .mortgage-comparison-table {
+    min-width: 760px !important;
+  }
+}

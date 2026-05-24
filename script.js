@@ -4150,3 +4150,432 @@
     startBmiCleanFinal();
   }
 })();
+/* =====================================================
+   LOAN / MORTGAGE OPTIONAL COSTS
+   - Adds optional property tax, insurance, and HOA/fees
+   - Base payment uses amortized loan formula
+   - Total monthly payment includes optional mortgage costs
+===================================================== */
+(function () {
+  "use strict";
+
+  function isLoanPage() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      title.includes("loan") ||
+      !!document.getElementById("loanResult")
+    );
+  }
+
+  function getNumber(ids) {
+    for (const id of ids) {
+      const input = document.getElementById(id);
+      if (!input) continue;
+
+      const value = Number(String(input.value || "").replace(/,/g, "").trim());
+      if (Number.isFinite(value)) return value;
+    }
+
+    return NaN;
+  }
+
+  function money(value) {
+    return Number(value).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function addOptionalMortgageInputs() {
+    if (!isLoanPage()) return;
+
+    const calculator = document.querySelector(".calculator");
+    if (!calculator) return;
+
+    if (document.getElementById("propertyTaxYearly")) return;
+
+    const calculateBtn =
+      calculator.querySelector("button.main-btn") ||
+      Array.from(calculator.querySelectorAll("button")).find(function (btn) {
+        return btn.textContent.toLowerCase().includes("calculate");
+      });
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "optional-mortgage-costs";
+
+    wrapper.innerHTML = `
+      <h3 class="optional-mortgage-title">Optional mortgage costs</h3>
+
+      <label for="propertyTaxYearly">Property tax per year:</label>
+      <input type="number" id="propertyTaxYearly" placeholder="Optional, example: 1200">
+
+      <label for="homeInsuranceYearly">Home insurance per year:</label>
+      <input type="number" id="homeInsuranceYearly" placeholder="Optional, example: 600">
+
+      <label for="hoaMonthly">HOA / other fees per month:</label>
+      <input type="number" id="hoaMonthly" placeholder="Optional, example: 100">
+
+      <p class="optional-mortgage-note">
+        Leave these empty if you only want principal and interest.
+      </p>
+    `;
+
+    if (calculateBtn) {
+      calculateBtn.insertAdjacentElement("beforebegin", wrapper);
+    } else {
+      calculator.appendChild(wrapper);
+    }
+  }
+
+  function calculateLoanPayment(principal, annualRate, years) {
+    const months = years * 12;
+    const monthlyRate = annualRate / 100 / 12;
+
+    if (monthlyRate === 0) return principal / months;
+
+    return (
+      principal *
+      monthlyRate *
+      Math.pow(1 + monthlyRate, months)
+    ) / (
+      Math.pow(1 + monthlyRate, months) - 1
+    );
+  }
+
+  function getLoanExternalPanel() {
+    const main =
+      document.querySelector("main.pc-calculator-layout") ||
+      document.querySelector("main");
+
+    const calculator = main ? main.querySelector(".calculator") : null;
+    if (!calculator) return null;
+
+    let panel = document.getElementById("loanExternalOutput");
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = "loanExternalOutput";
+      panel.className = "loan-external-output";
+      panel.setAttribute("aria-label", "Loan result table and graph");
+      calculator.insertAdjacentElement("afterend", panel);
+    }
+
+    return panel;
+  }
+
+  function buildLoanGraph(data) {
+    if (!data.length) return "";
+
+    const width = 520;
+    const height = 280;
+    const left = 70;
+    const right = 28;
+    const top = 28;
+    const bottom = 52;
+
+    const minYear = data[0].year;
+    const maxYear = data[data.length - 1].year;
+    const values = data.map(function (row) {
+      return row.totalMonthly;
+    });
+
+    const minValue = Math.min.apply(null, values);
+    const maxValue = Math.max.apply(null, values);
+    const yearRange = maxYear - minYear || 1;
+    const valueRange = maxValue - minValue || 1;
+
+    function x(year) {
+      return left + ((year - minYear) / yearRange) * (width - left - right);
+    }
+
+    function y(value) {
+      return top + ((maxValue - value) / valueRange) * (height - top - bottom);
+    }
+
+    const points = data.map(function (row) {
+      return x(row.year) + "," + y(row.totalMonthly);
+    }).join(" ");
+
+    const gridLines = [0, 0.25, 0.5, 0.75, 1].map(function (step) {
+      const gridY = top + step * (height - top - bottom);
+      const label = maxValue - step * valueRange;
+
+      return (
+        '<line x1="' + left + '" y1="' + gridY + '" x2="' + (width - right) + '" y2="' + gridY + '" class="loan-graph-grid"></line>' +
+        '<text x="8" y="' + (gridY + 5) + '" class="loan-graph-value">' + money(label) + '</text>'
+      );
+    }).join("");
+
+    const yearLabels = data.map(function (row) {
+      if (data.length > 12 && row.year % 5 !== 0 && row.year !== minYear && row.year !== maxYear) return "";
+
+      return '<text x="' + x(row.year) + '" y="' + (height - 18) + '" transform="rotate(-45 ' + x(row.year) + ' ' + (height - 18) + ')">' + row.year + '</text>';
+    }).join("");
+
+    const circles = data.map(function (row) {
+      return '<circle cx="' + x(row.year) + '" cy="' + y(row.totalMonthly) + '" r="5"></circle>';
+    }).join("");
+
+    return (
+      '<svg class="loan-graph" viewBox="0 0 ' + width + ' ' + height + '" role="img" aria-label="Total monthly payment by years graph">' +
+        gridLines +
+        '<line x1="' + left + '" y1="' + (height - bottom) + '" x2="' + (width - right + 12) + '" y2="' + (height - bottom) + '" class="loan-graph-axis"></line>' +
+        '<line x1="' + left + '" y1="' + (height - bottom) + '" x2="' + left + '" y2="' + (top - 14) + '" class="loan-graph-axis"></line>' +
+        '<polyline points="' + points + '" class="loan-graph-line"></polyline>' +
+        circles +
+        yearLabels +
+      '</svg>'
+    );
+  }
+
+  function renderMortgageLoanOutput(amount, annualRate, years, taxYearly, insuranceYearly, hoaMonthly) {
+    const panel = getLoanExternalPanel();
+    if (!panel) return;
+
+    const monthlyTax = taxYearly / 12;
+    const monthlyInsurance = insuranceYearly / 12;
+    const monthlyExtras = monthlyTax + monthlyInsurance + hoaMonthly;
+
+    const maxYears = Math.min(Math.floor(years), 60);
+    const data = [];
+
+    for (let year = 1; year <= maxYears; year += 1) {
+      const principalInterest = calculateLoanPayment(amount, annualRate, year);
+      const totalMonthly = principalInterest + monthlyExtras;
+      const baseTotalPayment = principalInterest * year * 12;
+      const totalInterest = baseTotalPayment - amount;
+      const totalWithExtras = totalMonthly * year * 12;
+
+      data.push({
+        year: year,
+        principalInterest: principalInterest,
+        monthlyTax: monthlyTax,
+        monthlyInsurance: monthlyInsurance,
+        hoaMonthly: hoaMonthly,
+        totalMonthly: totalMonthly,
+        totalInterest: totalInterest,
+        totalWithExtras: totalWithExtras
+      });
+    }
+
+    const selectedMonthlyPI = calculateLoanPayment(amount, annualRate, years);
+    const selectedTotalMonthly = selectedMonthlyPI + monthlyExtras;
+    const selectedTotalPayment = selectedMonthlyPI * years * 12;
+    const selectedTotalInterest = selectedTotalPayment - amount;
+    const selectedTotalWithExtras = selectedTotalMonthly * years * 12;
+
+    const summaryRows = `
+      <tr><td>Principal + interest monthly</td><td>${money(selectedMonthlyPI)}</td></tr>
+      <tr><td>Property tax monthly</td><td>${money(monthlyTax)}</td></tr>
+      <tr><td>Home insurance monthly</td><td>${money(monthlyInsurance)}</td></tr>
+      <tr><td>HOA / other monthly fees</td><td>${money(hoaMonthly)}</td></tr>
+      <tr><td>Total monthly payment</td><td>${money(selectedTotalMonthly)}</td></tr>
+      <tr><td>Total interest</td><td>${money(selectedTotalInterest)}</td></tr>
+      <tr><td>Total payment with optional costs</td><td>${money(selectedTotalWithExtras)}</td></tr>
+    `;
+
+    const comparisonRows = data.map(function (row) {
+      return (
+        "<tr>" +
+          "<td>" + row.year + "</td>" +
+          "<td>" + money(row.principalInterest) + "</td>" +
+          "<td>" + money(row.monthlyTax) + "</td>" +
+          "<td>" + money(row.monthlyInsurance) + "</td>" +
+          "<td>" + money(row.hoaMonthly) + "</td>" +
+          "<td>" + money(row.totalMonthly) + "</td>" +
+          "<td>" + money(row.totalInterest) + "</td>" +
+          "<td>" + money(row.totalWithExtras) + "</td>" +
+        "</tr>"
+      );
+    }).join("");
+
+    panel.hidden = false;
+
+    panel.innerHTML =
+      '<div class="loan-output-top">' +
+        '<div class="loan-result-panel">' +
+          '<h2 class="loan-panel-title">Result</h2>' +
+          '<div class="loan-result-body">' +
+            '<div class="loan-result-table-scroll">' +
+              '<table class="loan-result-table mortgage-summary-table">' +
+                '<thead><tr><th>Item</th><th>Value</th></tr></thead>' +
+                '<tbody>' + summaryRows + '</tbody>' +
+              '</table>' +
+            '</div>' +
+            '<div class="loan-result-table-scroll mortgage-comparison-scroll">' +
+              '<table class="loan-result-table mortgage-comparison-table">' +
+                '<thead>' +
+                  '<tr>' +
+                    '<th>Years</th>' +
+                    '<th>Principal + Interest</th>' +
+                    '<th>Tax Monthly</th>' +
+                    '<th>Insurance Monthly</th>' +
+                    '<th>HOA / Fees</th>' +
+                    '<th>Total Monthly</th>' +
+                    '<th>Total Interest</th>' +
+                    '<th>Total With Optional Costs</th>' +
+                  '</tr>' +
+                '</thead>' +
+                '<tbody>' + comparisonRows + '</tbody>' +
+              '</table>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="loan-copy-side"><button type="button" class="loan-copy-btn">Copy</button></div>' +
+      '</div>' +
+      '<div class="loan-graph-row">' +
+        '<div class="loan-graph-panel">' +
+          '<h2 class="loan-panel-title">Graph</h2>' +
+          '<div class="loan-graph-body">' + buildLoanGraph(data) + '</div>' +
+        '</div>' +
+        '<div class="loan-graph-copy-side"><button type="button" class="loan-graph-copy-btn">Copy</button></div>' +
+      '</div>' +
+      '<p class="mortgage-note">Note: Optional mortgage costs are estimates. Real mortgage payments may also include other charges depending on your lender, location, and loan type.</p>';
+
+    const resultCopy = panel.querySelector(".loan-copy-btn");
+    const graphCopy = panel.querySelector(".loan-graph-copy-btn");
+
+    if (resultCopy) {
+      resultCopy.onclick = function () {
+        const text =
+          "Item\tValue\n" +
+          "Principal + interest monthly\t" + money(selectedMonthlyPI) + "\n" +
+          "Property tax monthly\t" + money(monthlyTax) + "\n" +
+          "Home insurance monthly\t" + money(monthlyInsurance) + "\n" +
+          "HOA / other monthly fees\t" + money(hoaMonthly) + "\n" +
+          "Total monthly payment\t" + money(selectedTotalMonthly) + "\n" +
+          "Total interest\t" + money(selectedTotalInterest) + "\n" +
+          "Total payment with optional costs\t" + money(selectedTotalWithExtras);
+
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(text);
+        } else {
+          const textarea = document.createElement("textarea");
+          textarea.value = text;
+          textarea.style.position = "fixed";
+          textarea.style.left = "-9999px";
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand("copy");
+          textarea.remove();
+        }
+
+        const old = resultCopy.textContent;
+        resultCopy.textContent = "Copied!";
+        setTimeout(function () {
+          resultCopy.textContent = old;
+        }, 1000);
+      };
+    }
+
+    if (graphCopy) {
+      graphCopy.onclick = function () {
+        const text =
+          "Years\tTotal Monthly Payment\n" +
+          data.map(function (row) {
+            return row.year + "\t" + money(row.totalMonthly);
+          }).join("\n");
+
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(text);
+        }
+
+        const old = graphCopy.textContent;
+        graphCopy.textContent = "Copied!";
+        setTimeout(function () {
+          graphCopy.textContent = old;
+        }, 1000);
+      };
+    }
+  }
+
+  function calculateLoanWithOptionalMortgageCosts() {
+    if (!isLoanPage()) return;
+
+    const amount = getNumber(["amount", "loanAmount", "principal", "loanPrincipal"]);
+    const annualRate = getNumber(["interest", "loanRate", "interestRate", "annualRate", "rate"]);
+    const years = getNumber(["years", "loanYears", "loanTerm", "term"]);
+
+    const taxYearly = getNumber(["propertyTaxYearly"]);
+    const insuranceYearly = getNumber(["homeInsuranceYearly"]);
+    const hoaMonthly = getNumber(["hoaMonthly"]);
+
+    const cleanTax = Number.isFinite(taxYearly) && taxYearly > 0 ? taxYearly : 0;
+    const cleanInsurance = Number.isFinite(insuranceYearly) && insuranceYearly > 0 ? insuranceYearly : 0;
+    const cleanHoa = Number.isFinite(hoaMonthly) && hoaMonthly > 0 ? hoaMonthly : 0;
+
+    const result = document.getElementById("loanResult") || document.getElementById("result");
+
+    if (
+      !Number.isFinite(amount) ||
+      !Number.isFinite(annualRate) ||
+      !Number.isFinite(years) ||
+      amount <= 0 ||
+      annualRate < 0 ||
+      years <= 0
+    ) {
+      if (result) {
+        result.style.display = "block";
+        result.innerText = "Please enter valid loan details.";
+      }
+
+      return;
+    }
+
+    const monthlyPI = calculateLoanPayment(amount, annualRate, years);
+    const totalMonthly = monthlyPI + cleanTax / 12 + cleanInsurance / 12 + cleanHoa;
+    const totalPayment = monthlyPI * years * 12;
+    const totalInterest = totalPayment - amount;
+
+    if (result) {
+      result.innerText =
+        "Principal + interest monthly: " + money(monthlyPI) + "\n" +
+        "Total monthly payment: " + money(totalMonthly) + "\n" +
+        "Total interest: " + money(totalInterest);
+      result.style.display = "none";
+    }
+
+    renderMortgageLoanOutput(amount, annualRate, years, cleanTax, cleanInsurance, cleanHoa);
+  }
+
+  function startOptionalMortgageCosts() {
+    if (!isLoanPage()) return;
+
+    document.body.classList.add("loan-page");
+    document.body.dataset.page = "loan";
+
+    addOptionalMortgageInputs();
+
+    window.calculateLoan = calculateLoanWithOptionalMortgageCosts;
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (text.includes("calculate") || onclick.includes("calculateLoan")) {
+          setTimeout(calculateLoanWithOptionalMortgageCosts, 0);
+          setTimeout(calculateLoanWithOptionalMortgageCosts, 150);
+        }
+      },
+      true
+    );
+
+    setTimeout(addOptionalMortgageInputs, 300);
+    setTimeout(addOptionalMortgageInputs, 900);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startOptionalMortgageCosts);
+  } else {
+    startOptionalMortgageCosts();
+  }
+})();
