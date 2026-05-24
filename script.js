@@ -5410,3 +5410,385 @@
     startDetailedBmiResult();
   }
 })();
+/* =====================================================
+   BMI CALCULATOR: KIDS / ADULT / OLDER / MEN / WOMEN / ASIAN
+   Adds:
+   - Age group selector
+   - Sex selector
+   - Asian / non-Asian selector
+   - Detailed point-form result
+===================================================== */
+(function () {
+  "use strict";
+
+  const PANEL_ID = "stableBmiOutput";
+
+  function isBmiPage() {
+    return (
+      document.body.classList.contains("bmi-page") ||
+      document.body.dataset.page === "bmi" ||
+      !!document.getElementById("bmiResult") ||
+      !!document.getElementById("bmiHistoryList")
+    );
+  }
+
+  function getNumber(id) {
+    const input = document.getElementById(id);
+    if (!input) return NaN;
+
+    const value = Number(String(input.value || "").replace(/,/g, "").trim());
+    return Number.isFinite(value) ? value : NaN;
+  }
+
+  function getSelectValue(id, fallback) {
+    const input = document.getElementById(id);
+    return input ? String(input.value || fallback).trim() : fallback;
+  }
+
+  function getCurrentUnit() {
+    const btn = document.getElementById("unitToggleBtn");
+
+    if (btn && btn.dataset.currentUnit) {
+      return btn.dataset.currentUnit.toLowerCase() === "us" ? "us" : "si";
+    }
+
+    const saved = localStorage.getItem("bmiUnit") || document.body.dataset.bmiUnit || "si";
+    return String(saved).toLowerCase() === "us" ? "us" : "si";
+  }
+
+  function money(value) {
+    return Number(value).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function addBmiDetailSelectors() {
+    if (!isBmiPage()) return;
+
+    const calculator = document.querySelector(".calculator");
+    const weightInput = document.getElementById("weight");
+
+    if (!calculator || !weightInput || document.getElementById("bmiAgeGroup")) return;
+
+    const box = document.createElement("div");
+    box.className = "bmi-extra-profile-box";
+
+    box.innerHTML = `
+      <h3 class="bmi-extra-title">User profile</h3>
+
+      <label for="bmiAgeGroup">Age group:</label>
+      <select id="bmiAgeGroup">
+        <option value="adult">Adult, 20 - 64</option>
+        <option value="child">Kid / teen, 2 - 19</option>
+        <option value="older">Older adult, 65+</option>
+      </select>
+
+      <label for="bmiSex">Sex:</label>
+      <select id="bmiSex">
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="not-specified">Prefer not to say</option>
+      </select>
+
+      <label for="bmiEthnicity">BMI cut-off:</label>
+      <select id="bmiEthnicity">
+        <option value="non-asian">Non-Asian / standard adult cut-off</option>
+        <option value="asian">Asian cut-off</option>
+      </select>
+    `;
+
+    weightInput.insertAdjacentElement("beforebegin", box);
+  }
+
+  function standardAdultStatus(bmi) {
+    if (bmi < 18.5) return "Underweight";
+    if (bmi < 25) return "Healthy weight";
+    if (bmi < 30) return "Overweight";
+    if (bmi < 35) return "Obesity class 1";
+    if (bmi < 40) return "Obesity class 2";
+    return "Obesity class 3";
+  }
+
+  function asianAdultStatus(bmi) {
+    if (bmi < 18.5) return "Underweight";
+    if (bmi < 23) return "Normal";
+    if (bmi < 27.5) return "Overweight";
+    return "Obese";
+  }
+
+  function whCondition(ratio) {
+    if (!Number.isFinite(ratio)) return "-";
+    if (ratio < 0.4) return "Below healthy range";
+    if (ratio < 0.5) return "Healthy";
+    if (ratio < 0.6) return "Increased risk";
+    return "High risk";
+  }
+
+  function waistStatus(waist, unit, sex) {
+    if (!Number.isFinite(waist) || waist <= 0) return "-";
+
+    if (sex === "female") {
+      const limit = unit === "us" ? 35 : 88;
+      return waist > limit ? "Above common female risk level" : "Below common female risk level";
+    }
+
+    if (sex === "male") {
+      const limit = unit === "us" ? 40 : 102;
+      return waist > limit ? "Above common male risk level" : "Below common male risk level";
+    }
+
+    return "Choose male or female for waist risk comparison";
+  }
+
+  function ageGroupNote(ageGroup) {
+    if (ageGroup === "child") {
+      return "For kids/teens, BMI should be interpreted using BMI-for-age percentile by age and sex.";
+    }
+
+    if (ageGroup === "older") {
+      return "For older adults, BMI should be considered together with waist size, strength, health condition, and medical advice.";
+    }
+
+    return "Adult BMI category is suitable for most adults age 20 and older.";
+  }
+
+  function getOrCreatePanel() {
+    const main =
+      document.querySelector("main.pc-calculator-layout") ||
+      document.querySelector("main");
+
+    const calculator = main ? main.querySelector(".calculator") : null;
+    if (!calculator) return null;
+
+    let panel = document.getElementById(PANEL_ID);
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = PANEL_ID;
+      panel.className = "stable-result-output bmi-point-output";
+      panel.setAttribute("aria-label", "BMI detailed result");
+
+      panel.innerHTML =
+        '<div class="stable-result-top">' +
+          '<div class="stable-result-panel">' +
+            '<h2 class="stable-result-title">Result</h2>' +
+            '<div class="stable-result-body"></div>' +
+          '</div>' +
+          '<div class="stable-copy-side">' +
+            '<button type="button" class="stable-copy-btn">Copy</button>' +
+          '</div>' +
+        '</div>';
+
+      calculator.insertAdjacentElement("afterend", panel);
+    }
+
+    return panel;
+  }
+
+  function copyText(text, button) {
+    if (!text) return;
+
+    function copied() {
+      const old = button.textContent;
+      button.textContent = "Copied!";
+
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(copied).catch(function () {
+        fallbackCopy(text);
+        copied();
+      });
+    } else {
+      fallbackCopy(text);
+      copied();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function calculateInclusiveBMI() {
+    if (!isBmiPage()) return;
+
+    addBmiDetailSelectors();
+
+    const unit = getCurrentUnit();
+    const weight = getNumber("weight");
+    const height = getNumber("height");
+    const waist = getNumber("waist");
+
+    const ageGroup = getSelectValue("bmiAgeGroup", "adult");
+    const sex = getSelectValue("bmiSex", "male");
+    const ethnicity = getSelectValue("bmiEthnicity", "non-asian");
+
+    const result = document.getElementById("bmiResult") || document.getElementById("result");
+    const panel = getOrCreatePanel();
+
+    if (
+      !Number.isFinite(weight) ||
+      !Number.isFinite(height) ||
+      weight <= 0 ||
+      height <= 0
+    ) {
+      if (result) {
+        result.style.display = "block";
+        result.textContent = "Please enter valid weight and height.";
+      }
+
+      if (panel) panel.hidden = true;
+      return;
+    }
+
+    let bmi;
+    let formulaUsed;
+    let healthyMinWeight;
+    let healthyMaxWeight;
+    let weightUnit;
+
+    if (unit === "us") {
+      bmi = 703 * weight / (height * height);
+      formulaUsed = "BMI = weight lb ÷ height in² × 703";
+
+      healthyMinWeight = 18.5 * height * height / 703;
+      healthyMaxWeight = 24.9 * height * height / 703;
+
+      weightUnit = "lb";
+    } else {
+      const heightM = height / 100;
+      bmi = weight / (heightM * heightM);
+      formulaUsed = "BMI = weight kg ÷ height m²";
+
+      healthyMinWeight = 18.5 * heightM * heightM;
+      healthyMaxWeight = 24.9 * heightM * heightM;
+
+      weightUnit = "kg";
+    }
+
+    const standardStatus = standardAdultStatus(bmi);
+    const asianStatus = asianAdultStatus(bmi);
+    const selectedStatus = ethnicity === "asian" ? asianStatus : standardStatus;
+
+    let weightDifference = "Within standard healthy adult weight range";
+
+    if (weight < healthyMinWeight) {
+      weightDifference = "Need about " + money(healthyMinWeight - weight) + " " + weightUnit + " to reach standard healthy adult range";
+    } else if (weight > healthyMaxWeight) {
+      weightDifference = "Need about " + money(weight - healthyMaxWeight) + " " + weightUnit + " to reach standard healthy adult range";
+    }
+
+    const whRatio = Number.isFinite(waist) && waist > 0 ? waist / height : NaN;
+    const whRatioText = Number.isFinite(whRatio) ? whRatio.toFixed(2) : "-";
+    const whStatus = whCondition(whRatio);
+    const waistRisk = waistStatus(waist, unit, sex);
+    const note = ageGroupNote(ageGroup);
+
+    const kidStatus =
+      ageGroup === "child"
+        ? "Use BMI-for-age percentile; adult BMI status is shown only as a rough reference."
+        : selectedStatus;
+
+    const resultText =
+      "• BMI: " + bmi.toFixed(2) + "\n" +
+      "• Main status: " + kidStatus + "\n" +
+      "• Standard adult status: " + standardStatus + "\n" +
+      "• Asian adult status: " + asianStatus + "\n" +
+      "• Healthy adult weight range: " + money(healthyMinWeight) + " - " + money(healthyMaxWeight) + " " + weightUnit + "\n" +
+      "• Weight difference: " + weightDifference + "\n" +
+      "• W/H ratio: " + whRatioText + "\n" +
+      "• W/H condition: " + whStatus + "\n" +
+      "• Waist risk by sex: " + waistRisk + "\n" +
+      "• Age group note: " + note + "\n" +
+      "• Formula used: " + formulaUsed;
+
+    if (result) {
+      result.textContent = resultText;
+      result.style.display = "none";
+    }
+
+    if (!panel) return;
+
+    const body = panel.querySelector(".stable-result-body");
+    const copyBtn = panel.querySelector(".stable-copy-btn");
+
+    if (body) {
+      body.innerHTML =
+        '<ul class="bmi-point-result bmi-detailed-result">' +
+          '<li><strong>BMI:</strong> ' + bmi.toFixed(2) + '</li>' +
+          '<li><strong>Main status:</strong> ' + kidStatus + '</li>' +
+          '<li><strong>Standard adult status:</strong> ' + standardStatus + '</li>' +
+          '<li><strong>Asian adult status:</strong> ' + asianStatus + '</li>' +
+          '<li><strong>Healthy adult weight range:</strong> ' + money(healthyMinWeight) + ' - ' + money(healthyMaxWeight) + ' ' + weightUnit + '</li>' +
+          '<li><strong>Weight difference:</strong> ' + weightDifference + '</li>' +
+          '<li><strong>W/H ratio:</strong> ' + whRatioText + '</li>' +
+          '<li><strong>W/H condition:</strong> ' + whStatus + '</li>' +
+          '<li><strong>Waist risk by sex:</strong> ' + waistRisk + '</li>' +
+          '<li><strong>Age group note:</strong> ' + note + '</li>' +
+          '<li><strong>Formula used:</strong> ' + formulaUsed + '</li>' +
+        '</ul>';
+    }
+
+    panel.hidden = false;
+
+    if (copyBtn) {
+      copyBtn.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        copyText(resultText, copyBtn);
+      };
+    }
+  }
+
+  function startInclusiveBmiCalculator() {
+    if (!isBmiPage()) return;
+
+    addBmiDetailSelectors();
+
+    window.calculateBMI = calculateInclusiveBMI;
+    window.calculateBmi = calculateInclusiveBMI;
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (text.includes("calculate bmi") || onclick.includes("calculateBMI")) {
+          setTimeout(calculateInclusiveBMI, 0);
+          setTimeout(calculateInclusiveBMI, 200);
+          setTimeout(calculateInclusiveBMI, 600);
+        }
+      },
+      true
+    );
+
+    setTimeout(addBmiDetailSelectors, 300);
+    setTimeout(addBmiDetailSelectors, 900);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startInclusiveBmiCalculator);
+  } else {
+    startInclusiveBmiCalculator();
+  }
+})();
