@@ -1590,39 +1590,19 @@
     });
   }
 
-  function setupActionHooks() {
-    document.addEventListener("click", function (event) {
-      const button = event.target.closest("button");
-      if (!button) return;
+  setTimeout(function () {
+  if (type !== "basic" && type !== "age") {
+    addInputHistory(type);
+  }
 
-      const text = button.textContent.trim().toLowerCase();
-      const type = getPageType();
+  if (type !== "age") {
+    renderUniversalLoanStyleResult();
+  }
+}, 150);
 
-      if (text.includes("clear")) {
-        setTimeout(function () {
-          clearInputHistory(type);
-        }, 0);
-        return;
-      }
-
-      if (
-        text === "=" ||
-        text.includes("calculate") ||
-        text.includes("loan") ||
-        text.includes("age") ||
-        text.includes("bmi") ||
-        text.includes("discount") ||
-        text.includes("percentage") ||
-        text.includes("compound")
-      ) {
-        setTimeout(function () {
-          if (type !== "basic") addInputHistory(type);
-          renderUniversalLoanStyleResult();
-        }, 150);
-
-        setTimeout(renderUniversalLoanStyleResult, 400);
-      }
-    });
+if (type !== "age") {
+  setTimeout(renderUniversalLoanStyleResult, 400);
+}
 
     document.addEventListener("keydown", function (event) {
       if (event.key !== "Enter") return;
@@ -6005,5 +5985,71 @@
     document.addEventListener("DOMContentLoaded", startBasicSqrtSymbolFix);
   } else {
     startBasicSqrtSymbolFix();
+  }
+})();
+/* =====================================================
+   BMI: USER PROFILE SEX OPTION = MALE / FEMALE ONLY
+===================================================== */
+(function () {
+  "use strict";
+
+  function isBmiPage() {
+    return (
+      document.body.classList.contains("bmi-page") ||
+      document.body.dataset.page === "bmi" ||
+      !!document.getElementById("bmiResult") ||
+      !!document.getElementById("bmiHistoryList")
+    );
+  }
+
+  function fixBmiSexOptions() {
+    if (!isBmiPage()) return;
+
+    const sex = document.getElementById("bmiSex");
+    if (!sex) return;
+
+    const current = String(sex.value || "").toLowerCase();
+
+    sex.innerHTML = `
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+    `;
+
+    if (current === "female") {
+      sex.value = "female";
+    } else {
+      sex.value = "male";
+    }
+  }
+
+  function start() {
+    if (!isBmiPage()) return;
+
+    fixBmiSexOptions();
+
+    setTimeout(fixBmiSexOptions, 300);
+    setTimeout(fixBmiSexOptions, 900);
+    setTimeout(fixBmiSexOptions, 1500);
+
+    const calculator = document.querySelector(".calculator");
+
+    if (calculator && calculator.dataset.bmiSexObserverReady !== "true") {
+      calculator.dataset.bmiSexObserverReady = "true";
+
+      const observer = new MutationObserver(function () {
+        fixBmiSexOptions();
+      });
+
+      observer.observe(calculator, {
+        childList: true,
+        subtree: true
+      });
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
   }
 })();
