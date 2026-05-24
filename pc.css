@@ -2802,3 +2802,216 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     box-sizing: border-box !important;
   }
 }
+/* =====================================================
+   PC ONLY: Consistent box/text sizing inside calculator
+   - All input/select/button boxes use same text size
+   - Boxes fit text nicely
+   - Reduces uneven tall boxes
+   - Centers all text inside calculator box
+===================================================== */
+@media (min-width: 851px) {
+  .calculator {
+    --calc-inner-font: 16px;
+    --calc-title-font: 30px;
+    --calc-subtitle-font: 16px;
+    --calc-box-height: 40px;
+    --calc-box-padding-y: 8px;
+    --calc-box-padding-x: 10px;
+    --calc-box-gap: 9px;
+
+    text-align: center !important;
+  }
+
+  .calculator,
+  .calculator * {
+    box-sizing: border-box !important;
+  }
+
+  .calculator h1 {
+    font-size: var(--calc-title-font) !important;
+    line-height: 1.15 !important;
+    margin: 0 0 8px !important;
+    text-align: center !important;
+  }
+
+  .calculator h2,
+  .calculator h3 {
+    font-size: 20px !important;
+    line-height: 1.2 !important;
+    margin: 8px 0 !important;
+    text-align: center !important;
+  }
+
+  .calculator .subtitle,
+  .calculator p,
+  .calculator label {
+    display: block !important;
+    width: 100% !important;
+
+    font-size: var(--calc-subtitle-font) !important;
+    line-height: 1.25 !important;
+    margin: 6px 0 !important;
+
+    text-align: center !important;
+  }
+
+  .calculator input,
+  .calculator select,
+  .calculator textarea,
+  .calculator button,
+  .calculator .main-btn,
+  .calculator .ans-btn {
+    min-height: var(--calc-box-height) !important;
+    height: auto !important;
+
+    padding: var(--calc-box-padding-y) var(--calc-box-padding-x) !important;
+    margin: 5px 0 !important;
+
+    font-family: inherit !important;
+    font-size: var(--calc-inner-font) !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+
+    text-align: center !important;
+
+    border-width: 3px !important;
+    box-shadow: 3px 3px 0 var(--black) !important;
+
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .calculator input,
+  .calculator select,
+  .calculator textarea,
+  .calculator .main-btn {
+    width: 100% !important;
+  }
+
+  .calculator input::placeholder,
+  .calculator textarea::placeholder {
+    font-size: var(--calc-inner-font) !important;
+    text-align: center !important;
+  }
+
+  /* Basic calculator display row */
+  .calculator .display-row {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: var(--calc-box-gap) !important;
+    align-items: center !important;
+    margin: 8px 0 10px !important;
+  }
+
+  .calculator .display-row input {
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+  }
+
+  .calculator .display-row .ans-btn {
+    width: auto !important;
+    min-width: 62px !important;
+    margin: 0 !important;
+  }
+
+  /* Basic calculator buttons */
+  .calculator .buttons,
+  .calculator .basic-grid {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: var(--calc-box-gap) !important;
+  }
+
+  .calculator .buttons button,
+  .calculator .basic-grid button {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 42px !important;
+    margin: 0 !important;
+    padding: 7px !important;
+    font-size: 17px !important;
+  }
+
+  /* BMI title row */
+  .calculator .bmi-title-row {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    justify-items: center !important;
+    gap: 8px !important;
+  }
+
+  .calculator .bmi-title-row > div {
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  .calculator #unitToggleBtn {
+    width: auto !important;
+    min-width: 78px !important;
+    min-height: var(--calc-box-height) !important;
+    margin: 4px auto !important;
+  }
+
+  /* Boxes inside calculator: BMI profile + optional costs */
+  .calculator .bmi-extra-profile-box,
+  .calculator .optional-mortgage-costs {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    padding: 10px !important;
+    margin: 10px 0 !important;
+
+    font-size: var(--calc-inner-font) !important;
+    text-align: center !important;
+
+    border-width: 3px !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    box-sizing: border-box !important;
+  }
+
+  .calculator .bmi-extra-profile-box label,
+  .calculator .optional-mortgage-costs label {
+    font-size: var(--calc-inner-font) !important;
+    margin: 6px 0 4px !important;
+    text-align: center !important;
+  }
+
+  .calculator .bmi-extra-profile-box select,
+  .calculator .optional-mortgage-costs input {
+    min-height: var(--calc-box-height) !important;
+    margin: 4px 0 7px !important;
+  }
+
+  .calculator .bmi-extra-title,
+  .calculator .optional-mortgage-title {
+    font-size: 19px !important;
+    line-height: 1.2 !important;
+    margin: 0 0 8px !important;
+    text-align: center !important;
+  }
+
+  /* Optional expandable cost header */
+  .calculator .optional-mortgage-toggle {
+    min-height: 44px !important;
+    padding: 8px 12px !important;
+    font-size: 18px !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+  }
+
+  .calculator .optional-mortgage-content {
+    padding: 10px !important;
+  }
+
+  .calculator .optional-mortgage-note {
+    font-size: 14px !important;
+    line-height: 1.25 !important;
+    margin: 8px 0 0 !important;
+    text-align: center !important;
+  }
+}
