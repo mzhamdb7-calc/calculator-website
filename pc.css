@@ -2626,3 +2626,16 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     color: var(--black) !important;
   }
 }
+/* =====================================================
+   PC ONLY: Hide Basic Calculator bottom result panel
+===================================================== */
+@media (min-width: 851px) {
+  body.basic-page #universalLoanStyleOutput,
+  body.basic-page #stableBasicAgeOutput,
+  body.basic-page .basic-equal-output-panel,
+  body.basic-page .stable-result-output {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}

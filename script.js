@@ -6120,3 +6120,90 @@
     startBmiProfileHistory();
   }
 })();
+/* =====================================================
+   BASIC CALCULATOR: REMOVE BOTTOM RESULT BOX
+   - Removes bottom result panel
+   - Removes side copy button
+   - Keeps answer only inside calculator display
+===================================================== */
+(function () {
+  "use strict";
+
+  function isBasicPage() {
+    return (
+      document.body.classList.contains("basic-page") ||
+      document.body.dataset.page === "basic" ||
+      !!document.getElementById("display")
+    );
+  }
+
+  function removeBasicBottomResult() {
+    if (!isBasicPage()) return;
+
+    const panels = [
+      document.getElementById("universalLoanStyleOutput"),
+      document.getElementById("stableBasicAgeOutput")
+    ];
+
+    panels.forEach(function (panel) {
+      if (panel) {
+        panel.remove();
+      }
+    });
+  }
+
+  function startRemoveBasicBottomResult() {
+    if (!isBasicPage()) return;
+
+    document.body.classList.add("basic-page");
+    document.body.dataset.page = "basic";
+
+    removeBasicBottomResult();
+
+    document.addEventListener(
+      "click",
+      function () {
+        setTimeout(removeBasicBottomResult, 0);
+        setTimeout(removeBasicBottomResult, 150);
+        setTimeout(removeBasicBottomResult, 500);
+      },
+      true
+    );
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key === "Enter" || event.key === "=") {
+          setTimeout(removeBasicBottomResult, 0);
+          setTimeout(removeBasicBottomResult, 150);
+          setTimeout(removeBasicBottomResult, 500);
+        }
+      },
+      true
+    );
+
+    const main = document.querySelector("main");
+
+    if (main && main.dataset.basicResultRemoveObserver !== "true") {
+      main.dataset.basicResultRemoveObserver = "true";
+
+      const observer = new MutationObserver(function () {
+        removeBasicBottomResult();
+      });
+
+      observer.observe(main, {
+        childList: true,
+        subtree: true
+      });
+    }
+
+    setTimeout(removeBasicBottomResult, 300);
+    setTimeout(removeBasicBottomResult, 1000);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startRemoveBasicBottomResult);
+  } else {
+    startRemoveBasicBottomResult();
+  }
+})();
