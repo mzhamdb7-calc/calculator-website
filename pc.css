@@ -2845,3 +2845,72 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     box-sizing: border-box !important;
   }
 }
+/* =====================================================
+   PC ONLY: Loan optional cost inputs = same size as loan inputs
+===================================================== */
+@media (min-width: 851px) {
+  /* Normal loan inputs + optional cost inputs use one same size */
+  body.loan-page .calculator > input[type="number"],
+  body.loan-page .calculator > input[type="text"],
+  body.loan-page .calculator .optional-mortgage-costs input[type="number"],
+  body.loan-page .calculator .optional-mortgage-costs input[type="text"],
+  .loan-calculator-container .calculator > input[type="number"],
+  .loan-calculator-container .calculator > input[type="text"],
+  .loan-calculator-container .calculator .optional-mortgage-costs input[type="number"],
+  .loan-calculator-container .calculator .optional-mortgage-costs input[type="text"],
+  main.pc-calculator-layout > .calculator .optional-mortgage-costs input[type="number"],
+  main.pc-calculator-layout > .calculator .optional-mortgage-costs input[type="text"] {
+    width: 50% !important;
+    min-width: 300px !important;
+    max-width: 450px !important;
+
+    height: 70px !important;
+    min-height: 70px !important;
+
+    display: block !important;
+    margin: 0 auto 22px !important;
+    padding: 10px 18px !important;
+
+    background: #f8f8f8 !important;
+    color: var(--black) !important;
+
+    border: 5px solid var(--black) !important;
+    box-shadow: inset 4px 4px 0 #ddd !important;
+
+    font-family: inherit !important;
+    font-size: 28px !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+
+    text-align: center !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Optional cost labels match normal calculator labels */
+  body.loan-page .calculator .optional-mortgage-costs label,
+  .loan-calculator-container .calculator .optional-mortgage-costs label,
+  main.pc-calculator-layout > .calculator .optional-mortgage-costs label {
+    width: 50% !important;
+    min-width: 300px !important;
+    max-width: 450px !important;
+
+    display: block !important;
+    margin: 0 auto 12px !important;
+
+    font-size: 24px !important;
+    font-weight: bold !important;
+    line-height: 1.25 !important;
+    text-align: center !important;
+
+    box-sizing: border-box !important;
+  }
+
+  /* Keep optional cost box itself full width, only inputs become same as loan inputs */
+  body.loan-page .calculator .optional-mortgage-costs,
+  .loan-calculator-container .calculator .optional-mortgage-costs,
+  main.pc-calculator-layout > .calculator .optional-mortgage-costs {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
