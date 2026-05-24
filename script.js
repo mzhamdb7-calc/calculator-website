@@ -759,7 +759,7 @@
 
     if (result) {
       result.innerText =
-        "Date range: " + formatDateDMY(birthdate) + " to " + formatDateDMY(targetDate) + "\n" +
+        formatDateDMY(birthdate) + " to " + formatDateDMY(targetDate) + "\n" +
         "Normal age: " + normalAge + " years old\n" +
         "Asian age: " + asianAge + " years old";
       result.style.display = "none";
