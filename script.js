@@ -7007,3 +7007,265 @@
     startLoanDownPayment();
   }
 })();
+/* =====================================================
+   LOAN CALCULATOR: Include optional costs in Input history
+   - Shows normal loan inputs
+   - Adds optional cost items only if not empty
+   - Includes Down payment if not empty
+===================================================== */
+(function () {
+  "use strict";
+
+  const HISTORY_KEY = "inputHistory_loan";
+  const MAX_ITEMS = 50;
+
+  function isLoanPage() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      title.includes("loan") ||
+      !!document.getElementById("loanHistoryList") ||
+      !!document.getElementById("loanResult")
+    );
+  }
+
+  function getValue(ids) {
+    for (const id of ids) {
+      const input = document.getElementById(id);
+      if (!input) continue;
+
+      const value = String(input.value || "").trim();
+      if (value !== "") return value;
+    }
+
+    return "";
+  }
+
+  function getLabel(input) {
+    if (!input) return "Optional cost";
+
+    const label =
+      input.id ? document.querySelector('label[for="' + input.id + '"]') : null;
+
+    if (label) {
+      return label.textContent.replace(/[:：]/g, "").trim();
+    }
+
+    return input.name || input.id || "Optional cost";
+  }
+
+  function loadHistory() {
+    try {
+      const value = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+      return Array.isArray(value) ? value : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveHistory(history) {
+    try {
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-MAX_ITEMS)));
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function copyText(text, button) {
+    if (!text) return;
+
+    function copied() {
+      const old = button.textContent;
+      button.textContent = "Copied!";
+
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(copied).catch(function () {
+        fallbackCopy(text);
+        copied();
+      });
+    } else {
+      fallbackCopy(text);
+      copied();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function getOptionalCostLines() {
+    const box = document.querySelector(".optional-mortgage-costs");
+    if (!box) return [];
+
+    const used = new Set();
+    const lines = [];
+
+    box.querySelectorAll("input, select, textarea").forEach(function (input) {
+      if (!input || input.type === "hidden") return;
+
+      const id = input.id || input.name || "";
+      if (used.has(id)) return;
+      used.add(id);
+
+      const value = String(input.value || "").trim();
+      if (value === "") return;
+
+      const label = getLabel(input);
+
+      lines.push(label + ": " + value);
+    });
+
+    return lines;
+  }
+
+  function buildLoanHistoryText() {
+    const amount = getValue(["amount", "loanAmount", "principal", "loanPrincipal"]);
+    const interest = getValue(["interest", "loanRate", "interestRate", "annualRate", "rate"]);
+    const years = getValue(["years", "loanYears", "loanTerm", "term"]);
+
+    const lines = [];
+
+    if (amount) lines.push("Loan amount / purchase price: " + amount);
+    if (interest) lines.push("Interest rate: " + interest + "%");
+    if (years) lines.push("Years: " + years);
+
+    getOptionalCostLines().forEach(function (line) {
+      lines.push(line);
+    });
+
+    return lines.join(" | ");
+  }
+
+  function renderLoanHistory() {
+    if (!isLoanPage()) return;
+
+    const list = document.getElementById("loanHistoryList");
+    if (!list) return;
+
+    const title =
+      document.querySelector(".loan-history-box .loan-history-top h3") ||
+      document.querySelector(".loan-history-box h3");
+
+    if (title) {
+      title.textContent = "Input";
+    }
+
+    const history = loadHistory();
+
+    list.innerHTML = "";
+
+    history.slice().reverse().forEach(function (item) {
+      const li = document.createElement("li");
+      li.className = "history-item loan-input-history-item";
+
+      const text = document.createElement("span");
+      text.className = "history-text";
+      text.textContent = item;
+
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "history-copy-btn";
+      copyBtn.textContent = "copy";
+
+      copyBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        copyText(item, copyBtn);
+      });
+
+      li.appendChild(text);
+      li.appendChild(copyBtn);
+      list.appendChild(li);
+    });
+  }
+
+  function addLoanHistoryWithOptionalCosts() {
+    if (!isLoanPage()) return;
+
+    const item = buildLoanHistoryText();
+    if (!item) return;
+
+    const history = loadHistory();
+    const last = history[history.length - 1];
+
+    if (last !== item) {
+      history.push(item);
+      saveHistory(history);
+    }
+
+    renderLoanHistory();
+  }
+
+  function clearLoanHistoryWithOptionalCosts() {
+    try {
+      localStorage.removeItem(HISTORY_KEY);
+      localStorage.removeItem("loanHistory");
+      localStorage.removeItem("loanInputHistory");
+    } catch {
+      /* ignore */
+    }
+
+    renderLoanHistory();
+  }
+
+  function startLoanOptionalHistory() {
+    if (!isLoanPage()) return;
+
+    document.body.classList.add("loan-page");
+    document.body.dataset.page = "loan";
+
+    window.clearLoanHistory = clearLoanHistoryWithOptionalCosts;
+
+    renderLoanHistory();
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (text.includes("calculate") || onclick.includes("calculateLoan")) {
+          setTimeout(addLoanHistoryWithOptionalCosts, 0);
+          setTimeout(addLoanHistoryWithOptionalCosts, 250);
+          setTimeout(renderLoanHistory, 700);
+        }
+
+        if (text.includes("clear")) {
+          setTimeout(clearLoanHistoryWithOptionalCosts, 0);
+        }
+      },
+      true
+    );
+
+    setTimeout(renderLoanHistory, 400);
+    setTimeout(renderLoanHistory, 1200);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startLoanOptionalHistory);
+  } else {
+    startLoanOptionalHistory();
+  }
+})();
