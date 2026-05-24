@@ -2551,3 +2551,64 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     text-align: center !important;
   }
 }
+/* =====================================================
+   PC ONLY: BMI user profile box + detailed result
+===================================================== */
+@media (min-width: 851px) {
+  .bmi-extra-profile-box {
+    width: 100% !important;
+    margin: 14px 0 18px !important;
+    padding: 14px !important;
+
+    background: #fff4b8 !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    text-align: center !important;
+    box-sizing: border-box !important;
+  }
+
+  .bmi-extra-title {
+    margin: 0 0 12px !important;
+    font-size: 22px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+  }
+
+  .bmi-extra-profile-box label {
+    display: block !important;
+    margin-top: 10px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+  }
+
+  .bmi-extra-profile-box select {
+    width: 100% !important;
+    margin-top: 6px !important;
+    padding: 10px !important;
+
+    background: var(--white) !important;
+    color: var(--black) !important;
+
+    border: 3px solid var(--black) !important;
+    box-shadow: 3px 3px 0 var(--black) !important;
+
+    font-family: inherit !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+
+    box-sizing: border-box !important;
+  }
+
+  .bmi-detailed-result {
+    min-width: 850px !important;
+    text-align: center !important;
+  }
+
+  .bmi-detailed-result li {
+    text-align: center !important;
+  }
+}
