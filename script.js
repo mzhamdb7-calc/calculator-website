@@ -557,32 +557,208 @@
     return currentYear - birthYear + 1;
   }
 
+  function todayValueISO() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+
+    return year + "-" + month + "-" + day;
+  }
+
+  function formatDateDMY(value) {
+    const parts = String(value || "").split("-");
+    if (parts.length !== 3) return value || "";
+
+    return parts[2] + "/" + parts[1] + "/" + parts[0];
+  }
+
+  function ensureAgeTargetDateInput() {
+    const birthdateInput = document.getElementById("birthdate");
+    if (!birthdateInput) return null;
+
+    let targetInput = document.getElementById("dateToCalculate");
+
+    if (!targetInput) {
+      const label = document.createElement("label");
+      label.setAttribute("for", "dateToCalculate");
+      label.textContent = "Date to calculate:";
+
+      targetInput = document.createElement("input");
+      targetInput.type = "date";
+      targetInput.id = "dateToCalculate";
+      targetInput.setAttribute("aria-label", "Date to calculate");
+
+      birthdateInput.insertAdjacentElement("afterend", targetInput);
+      targetInput.insertAdjacentElement("beforebegin", label);
+    }
+
+    if (!targetInput.value) {
+      targetInput.value = todayValueISO();
+    }
+
+    return targetInput;
+  }
+
+  function calculateNormalAgeBetweenDates(birthdateValue, targetDateValue) {
+    if (!birthdateValue || !targetDateValue) return "";
+
+    const birth = new Date(birthdateValue + "T00:00:00");
+    const target = new Date(targetDateValue + "T00:00:00");
+
+    if (Number.isNaN(birth.getTime()) || Number.isNaN(target.getTime())) return "";
+    if (birth > target) return "";
+
+    let years = target.getFullYear() - birth.getFullYear();
+
+    const birthdayThisYear = new Date(
+      target.getFullYear(),
+      birth.getMonth(),
+      birth.getDate()
+    );
+
+    if (target < birthdayThisYear) {
+      years -= 1;
+    }
+
+    return years;
+  }
+
+  function calculateAsianAgeBetweenDates(birthdateValue, targetDateValue) {
+    if (!birthdateValue || !targetDateValue) return "";
+
+    const birthYear = Number(String(birthdateValue).split("-")[0]);
+    const targetYear = Number(String(targetDateValue).split("-")[0]);
+
+    if (!birthYear || !targetYear || birthYear > targetYear) return "";
+
+    return targetYear - birthYear + 1;
+  }
+
+  function getAgeResultPanel() {
+    const main = document.querySelector("main.pc-calculator-layout") || document.querySelector("main");
+    const calculator = main ? main.querySelector(".calculator") : null;
+    if (!calculator) return null;
+
+    let panel = document.getElementById("stableBasicAgeOutput");
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = "stableBasicAgeOutput";
+      panel.className = "stable-result-output age-bullet-output age-final-range-output";
+      panel.setAttribute("aria-label", "Age calculator result");
+
+      panel.innerHTML =
+        '<div class="stable-result-top">' +
+          '<div class="stable-result-panel">' +
+            '<h2 class="stable-result-title">Result</h2>' +
+            '<div class="stable-result-body"></div>' +
+          '</div>' +
+          '<div class="stable-copy-side">' +
+            '<button type="button" class="stable-copy-btn">Copy</button>' +
+          '</div>' +
+        '</div>';
+
+      calculator.insertAdjacentElement("afterend", panel);
+    }
+
+    panel.classList.add("age-bullet-output", "age-final-range-output");
+
+    return panel;
+  }
+
+  function hideOldAgePanels() {
+    const universal = document.getElementById("universalLoanStyleOutput");
+    if (universal) {
+      universal.hidden = true;
+      universal.style.setProperty("display", "none", "important");
+      universal.style.setProperty("visibility", "hidden", "important");
+      universal.style.setProperty("pointer-events", "none", "important");
+    }
+
+    const oldResult = document.getElementById("ageResult") || document.getElementById("result");
+    if (oldResult) {
+      oldResult.style.display = "none";
+    }
+  }
+
+  function renderAgeDateRangeResult(birthdate, targetDate, normalAge, asianAge) {
+    const panel = getAgeResultPanel();
+    if (!panel) return;
+
+    const dateRange = formatDateDMY(birthdate) + " to " + formatDateDMY(targetDate);
+    const body = panel.querySelector(".stable-result-body");
+
+    if (body) {
+      body.innerHTML =
+        '<ul class="age-bullet-result age-final-range-result">' +
+          '<li><strong>Date range:</strong> ' + dateRange + '</li>' +
+          '<li><strong>Normal age:</strong> ' + normalAge + ' years old</li>' +
+          '<li><strong>Asian age:</strong> ' + asianAge + ' years old</li>' +
+        '</ul>';
+    }
+
+    const copyBtn = panel.querySelector(".stable-copy-btn");
+    if (copyBtn) {
+      copyBtn.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        copyText(
+          "• Date range: " + dateRange + "\n" +
+          "• Normal age: " + normalAge + " years old\n" +
+          "• Asian age: " + asianAge + " years old",
+          copyBtn
+        );
+      };
+    }
+
+    panel.hidden = false;
+    panel.style.removeProperty("display");
+    hideOldAgePanels();
+  }
+
   function calculateAge() {
     const birthdate = firstValue(["birthdate", "birthDate", "dob"]);
+    const targetInput = ensureAgeTargetDateInput();
     const result = document.getElementById("ageResult") || document.getElementById("result");
 
     if (!birthdate) {
-      if (result) result.innerText = "Please select your birthdate.";
+      if (result) {
+        result.style.display = "block";
+        result.innerText = "Please select your birthdate.";
+      }
+
+      const panel = document.getElementById("stableBasicAgeOutput");
+      if (panel) panel.hidden = true;
       return;
     }
 
-    const normalAge = calculateNormalAgeFromBirthdate(birthdate);
-    const asianAge = calculateAsianAgeFromBirthdate(birthdate);
+    const targetDate = targetInput ? String(targetInput.value || "").trim() : todayValueISO();
+    const normalAge = calculateNormalAgeBetweenDates(birthdate, targetDate);
+    const asianAge = calculateAsianAgeBetweenDates(birthdate, targetDate);
 
     if (normalAge === "" || asianAge === "") {
-      if (result) result.innerText = "Birthdate cannot be after today.";
+      if (result) {
+        result.style.display = "block";
+        result.innerText = "Date to calculate must be after birthdate.";
+      }
+
+      const panel = document.getElementById("stableBasicAgeOutput");
+      if (panel) panel.hidden = true;
       return;
     }
 
     if (result) {
       result.innerText =
-        "Birthdate: " + birthdate + "\n" +
+        "Date range: " + formatDateDMY(birthdate) + " to " + formatDateDMY(targetDate) + "\n" +
         "Normal age: " + normalAge + " years old\n" +
         "Asian age: " + asianAge + " years old";
+      result.style.display = "none";
     }
 
-    addInputHistory();
-    renderUniversalLoanStyleResult();
+    addInputHistory("age");
+    renderAgeDateRangeResult(birthdate, targetDate, normalAge, asianAge);
   }
 
   function calculateBMI() {
@@ -1096,7 +1272,10 @@
   function getInputHistoryText(type) {
     if (type === "age") {
       const birthdate = firstValue(["birthdate", "birthDate", "dob"]);
-      return birthdate ? "Birthdate: " + birthdate : "";
+      const targetInput = ensureAgeTargetDateInput();
+      const targetDate = targetInput ? String(targetInput.value || "").trim() : todayValueISO();
+
+      return birthdate ? formatDateDMY(birthdate) + " to " + formatDateDMY(targetDate) : "";
     }
 
     if (type === "loan") {
@@ -1323,7 +1502,7 @@
 
     const type = getPageType();
 
-    if (type === "loan") return;
+    if (type === "loan" || type === "age" || type === "basic") return;
 
     const result = getResultElement();
     const panel = getUniversalOutputPanel();
@@ -1484,6 +1663,11 @@
     setupActionHooks();
     setupScrollButton();
 
+    if (getPageType() === "age") {
+      ensureAgeTargetDateInput();
+      hideOldAgePanels();
+    }
+
     if (getPageType() === "basic") showHistory();
     else renderInputHistory(getPageType());
 
@@ -1529,337 +1713,6 @@
   window.clearLoanHistory = clearLoanHistory;
 
   window.renderUniversalLoanStyleResult = renderUniversalLoanStyleResult;
-})();
-/* =====================================================
-   AGE CALCULATOR: add "Date to calculate" input
-   If empty, automatically use today's date
-===================================================== */
-(function () {
-  "use strict";
-
-  function isAgePage() {
-    return (
-      document.body.classList.contains("age-page") ||
-      document.body.dataset.page === "age" ||
-      !!document.getElementById("birthdate")
-    );
-  }
-
-  function todayValue() {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-
-    return year + "-" + month + "-" + day;
-  }
-
-  function getDateInputValue(id) {
-    const input = document.getElementById(id);
-    return input ? String(input.value || "").trim() : "";
-  }
-
-  function addDateToCalculateInput() {
-    if (!isAgePage()) return;
-
-    const birthdateInput = document.getElementById("birthdate");
-    if (!birthdateInput) return;
-
-    if (document.getElementById("dateToCalculate")) return;
-
-    const label = document.createElement("label");
-    label.setAttribute("for", "dateToCalculate");
-    label.textContent = "Date to calculate";
-
-    const input = document.createElement("input");
-    input.type = "date";
-    input.id = "dateToCalculate";
-    input.setAttribute("aria-label", "Date to calculate");
-    input.value = todayValue();
-
-    birthdateInput.insertAdjacentElement("afterend", input);
-    input.insertAdjacentElement("beforebegin", label);
-  }
-
-  function calculateNormalAge(birthdateValue, calculateDateValue) {
-    const birth = new Date(birthdateValue + "T00:00:00");
-    const target = new Date(calculateDateValue + "T00:00:00");
-
-    if (birth > target) return "";
-
-    let years = target.getFullYear() - birth.getFullYear();
-
-    const birthdayThisYear = new Date(
-      target.getFullYear(),
-      birth.getMonth(),
-      birth.getDate()
-    );
-
-    if (target < birthdayThisYear) {
-      years -= 1;
-    }
-
-    return years + " years old";
-  }
-
-  function calculateAsianAge(birthdateValue, calculateDateValue) {
-    const birthYear = Number(birthdateValue.split("-")[0]);
-    const targetYear = Number(calculateDateValue.split("-")[0]);
-
-    if (!birthYear || !targetYear || birthYear > targetYear) return "";
-
-    return targetYear - birthYear + 1 + " years old";
-  }
-
-  function ensureAgeResultElement() {
-    let result = document.getElementById("ageResult");
-
-    if (!result) {
-      const calculator = document.querySelector(".calculator");
-
-      if (!calculator) return null;
-
-      result = document.createElement("h2");
-      result.id = "ageResult";
-      calculator.appendChild(result);
-    }
-
-    return result;
-  }
-
-  function getOrCreateAgeOutputPanel() {
-    const main =
-      document.querySelector("main.pc-calculator-layout") ||
-      document.querySelector("main");
-
-    const calculator = main ? main.querySelector(".calculator") : null;
-
-    if (!main || !calculator) return null;
-
-    let panel = document.getElementById("universalLoanStyleOutput");
-
-    if (!panel) {
-      panel = document.createElement("section");
-      panel.id = "universalLoanStyleOutput";
-      panel.className = "loan-style-output-panel";
-      panel.setAttribute("aria-label", "Age result table");
-
-      panel.innerHTML = `
-        <div class="loan-output-top">
-          <div class="loan-result-panel">
-            <h2 class="loan-panel-title">Result</h2>
-            <div class="loan-result-body"></div>
-          </div>
-
-          <div class="loan-copy-side">
-            <button type="button" class="loan-copy-btn">Copy</button>
-          </div>
-        </div>
-      `;
-
-      calculator.insertAdjacentElement("afterend", panel);
-    }
-
-    return panel;
-  }
-
-  function makeAgeTable(birthdate, calculateDate, normalAge, asianAge) {
-    return `
-      <div class="loan-result-table-scroll">
-        <table class="loan-result-table universal-loan-result-table">
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Value</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>Birthdate</td>
-              <td>${birthdate}</td>
-            </tr>
-
-            <tr>
-              <td>Date to calculate</td>
-              <td>${calculateDate}</td>
-            </tr>
-
-            <tr>
-              <td>Normal age</td>
-              <td>${normalAge}</td>
-            </tr>
-
-            <tr>
-              <td>Asian age</td>
-              <td>${asianAge}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    `;
-  }
-
-  function copyAgeTable(panel, button) {
-    const table = panel.querySelector("table");
-    if (!table) return;
-
-    const text = Array.from(table.querySelectorAll("tr"))
-      .map(function (row) {
-        return Array.from(row.querySelectorAll("th, td"))
-          .map(function (cell) {
-            return cell.textContent.trim();
-          })
-          .join("\t");
-      })
-      .join("\n");
-
-    if (!text) return;
-
-    function copied() {
-      const oldText = button.textContent;
-      button.textContent = "Copied!";
-
-      setTimeout(function () {
-        button.textContent = oldText;
-      }, 1000);
-    }
-
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(copied).catch(function () {
-        fallbackCopy(text);
-        copied();
-      });
-    } else {
-      fallbackCopy(text);
-      copied();
-    }
-  }
-
-  function fallbackCopy(text) {
-    const textarea = document.createElement("textarea");
-
-    textarea.value = text;
-    textarea.style.position = "fixed";
-    textarea.style.left = "-9999px";
-    textarea.style.top = "-9999px";
-
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-
-    document.execCommand("copy");
-    textarea.remove();
-  }
-
-  function setupAgeCopyButton(panel) {
-    const button = panel.querySelector(".loan-copy-btn");
-    if (!button || button.dataset.ageDateTableCopyReady === "true") return;
-
-    button.dataset.ageDateTableCopyReady = "true";
-
-    button.addEventListener(
-      "click",
-      function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-
-        copyAgeTable(panel, button);
-      },
-      true
-    );
-  }
-
-  function calculateAgeWithTargetDate() {
-    if (!isAgePage()) return;
-
-    const birthdate = getDateInputValue("birthdate");
-    const dateToCalculateInput = document.getElementById("dateToCalculate");
-    const result = ensureAgeResultElement();
-    const panel = getOrCreateAgeOutputPanel();
-
-    if (!result || !panel) return;
-
-    if (!birthdate) {
-      result.innerText = "Please select your birthdate.";
-      panel.hidden = true;
-      return;
-    }
-
-    if (dateToCalculateInput && !dateToCalculateInput.value) {
-      dateToCalculateInput.value = todayValue();
-    }
-
-    const calculateDate = getDateInputValue("dateToCalculate") || todayValue();
-
-    const normalAge = calculateNormalAge(birthdate, calculateDate);
-    const asianAge = calculateAsianAge(birthdate, calculateDate);
-
-    if (!normalAge || !asianAge) {
-      result.innerText = "Date to calculate must be after birthdate.";
-      panel.hidden = true;
-      return;
-    }
-
-    result.innerText =
-      "Birthdate: " + birthdate + "\n" +
-      "Date to calculate: " + calculateDate + "\n" +
-      "Normal age: " + normalAge + "\n" +
-      "Asian age: " + asianAge;
-
-    result.style.display = "none";
-
-    const body = panel.querySelector(".loan-result-body");
-    if (body) {
-      body.innerHTML = makeAgeTable(birthdate, calculateDate, normalAge, asianAge);
-    }
-
-    panel.hidden = false;
-    setupAgeCopyButton(panel);
-  }
-
-  function startAgeDateToCalculate() {
-    if (!isAgePage()) return;
-
-    document.body.classList.add("age-page");
-    document.body.dataset.page = "age";
-
-    addDateToCalculateInput();
-
-    const dateToCalculateInput = document.getElementById("dateToCalculate");
-    if (dateToCalculateInput && !dateToCalculateInput.value) {
-      dateToCalculateInput.value = todayValue();
-    }
-
-    window.calculateAge = calculateAgeWithTargetDate;
-
-    document.addEventListener(
-      "click",
-      function (event) {
-        const button = event.target.closest("button");
-        if (!button) return;
-
-        const text = button.textContent.trim().toLowerCase();
-        const onclick = button.getAttribute("onclick") || "";
-
-        if (text.includes("calculate") || onclick.includes("calculateAge")) {
-          setTimeout(calculateAgeWithTargetDate, 0);
-          setTimeout(calculateAgeWithTargetDate, 150);
-        }
-      },
-      true
-    );
-
-    setTimeout(addDateToCalculateInput, 300);
-    setTimeout(addDateToCalculateInput, 900);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startAgeDateToCalculate);
-  } else {
-    startAgeDateToCalculate();
-  }
 })();
 /* =====================================================
    BASIC CALCULATOR ONLY: result shows "= answer"
@@ -2052,695 +1905,6 @@
     document.addEventListener("DOMContentLoaded", startBasicEqualNoTable);
   } else {
     startBasicEqualNoTable();
-  }
-})();
-/* =====================================================
-   BASIC + AGE: STABLE RESULT PANEL FIX
-   Fixes result bar appearing for 1 second then disappearing
-   - Basic result: = answer, no table
-   - Age result: stable result table
-===================================================== */
-(function () {
-  "use strict";
-
-  const PANEL_ID = "stableBasicAgeOutput";
-
-  function getPageType() {
-    const h1 = document.querySelector("h1");
-    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
-
-    if (title.includes("basic") || document.getElementById("display")) return "basic";
-    if (title.includes("age") || document.getElementById("birthdate")) return "age";
-
-    return "";
-  }
-
-  function todayValue() {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-
-    return year + "-" + month + "-" + day;
-  }
-
-  function escapeHtml(value) {
-    return String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
-  function getMain() {
-    return document.querySelector("main.pc-calculator-layout") || document.querySelector("main");
-  }
-
-  function getCalculator() {
-    const main = getMain();
-    return main ? main.querySelector(".calculator") : null;
-  }
-
-  function markPage() {
-    const type = getPageType();
-
-    if (type === "basic") {
-      document.body.classList.add("basic-page", "stable-result-page");
-      document.body.dataset.page = "basic";
-    }
-
-    if (type === "age") {
-      document.body.classList.add("age-page", "stable-result-page");
-      document.body.dataset.page = "age";
-    }
-  }
-
-  function hideOldUniversalPanel() {
-    const type = getPageType();
-    if (type !== "basic" && type !== "age") return;
-
-    const oldPanel = document.getElementById("universalLoanStyleOutput");
-
-    if (oldPanel) {
-      oldPanel.hidden = true;
-      oldPanel.style.setProperty("display", "none", "important");
-    }
-  }
-
-  function getStablePanel() {
-    const calculator = getCalculator();
-    if (!calculator) return null;
-
-    let panel = document.getElementById(PANEL_ID);
-
-    if (!panel) {
-      panel = document.createElement("section");
-      panel.id = PANEL_ID;
-      panel.className = "stable-result-output";
-      panel.setAttribute("aria-label", "Stable calculator result");
-
-      panel.innerHTML =
-        '<div class="stable-result-top">' +
-          '<div class="stable-result-panel">' +
-            '<h2 class="stable-result-title">Result</h2>' +
-            '<div class="stable-result-body"></div>' +
-          '</div>' +
-          '<div class="stable-copy-side">' +
-            '<button type="button" class="stable-copy-btn">Copy</button>' +
-          '</div>' +
-        '</div>';
-
-      calculator.insertAdjacentElement("afterend", panel);
-    }
-
-    return panel;
-  }
-
-  function copyText(text, button) {
-    const value = String(text || "").trim();
-    if (!value) return;
-
-    function copied() {
-      const old = button.textContent;
-      button.textContent = "Copied!";
-
-      setTimeout(function () {
-        button.textContent = old;
-      }, 1000);
-    }
-
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(value).then(copied).catch(function () {
-        fallbackCopy(value);
-        copied();
-      });
-    } else {
-      fallbackCopy(value);
-      copied();
-    }
-  }
-
-  function fallbackCopy(text) {
-    const textarea = document.createElement("textarea");
-
-    textarea.value = text;
-    textarea.style.position = "fixed";
-    textarea.style.left = "-9999px";
-    textarea.style.top = "-9999px";
-
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-
-    document.execCommand("copy");
-    textarea.remove();
-  }
-
-  function setupCopy(panel, textGetter) {
-    const button = panel.querySelector(".stable-copy-btn");
-    if (!button) return;
-
-    button.onclick = function (event) {
-      event.preventDefault();
-      event.stopPropagation();
-
-      copyText(textGetter(), button);
-    };
-  }
-
-  function renderBasicStableResult() {
-    const display = document.getElementById("display");
-    if (!display) return;
-
-    const answer = String(display.value || "").trim();
-    const panel = getStablePanel();
-
-    if (!panel) return;
-
-    if (!answer || answer === "Error") {
-      panel.hidden = true;
-      return;
-    }
-
-    const body = panel.querySelector(".stable-result-body");
-    if (!body) return;
-
-    body.innerHTML =
-      '<div class="basic-stable-equal-result">' +
-        '<span class="basic-stable-equal-symbol">=</span>' +
-        '<span class="basic-stable-equal-answer">' + escapeHtml(answer) + '</span>' +
-      '</div>';
-
-    panel.hidden = false;
-
-    setupCopy(panel, function () {
-      return answer;
-    });
-  }
-
-  function ensureDateToCalculateInput() {
-    const birthdate = document.getElementById("birthdate");
-    if (!birthdate) return null;
-
-    let target = document.getElementById("dateToCalculate");
-
-    if (!target) {
-      const label = document.createElement("label");
-      label.setAttribute("for", "dateToCalculate");
-      label.textContent = "Date to calculate:";
-
-      target = document.createElement("input");
-      target.type = "date";
-      target.id = "dateToCalculate";
-      target.setAttribute("aria-label", "Date to calculate");
-
-      birthdate.insertAdjacentElement("afterend", target);
-      target.insertAdjacentElement("beforebegin", label);
-    }
-
-    if (!target.value) {
-      target.value = todayValue();
-    }
-
-    return target;
-  }
-
-  function calculateNormalAge(birthdateValue, targetValue) {
-    const birth = new Date(birthdateValue + "T00:00:00");
-    const target = new Date(targetValue + "T00:00:00");
-
-    if (birth > target) return "";
-
-    let years = target.getFullYear() - birth.getFullYear();
-
-    const birthdayThisYear = new Date(
-      target.getFullYear(),
-      birth.getMonth(),
-      birth.getDate()
-    );
-
-    if (target < birthdayThisYear) {
-      years -= 1;
-    }
-
-    return years;
-  }
-
-  function calculateAsianAge(birthdateValue, targetValue) {
-    const birthYear = Number(birthdateValue.split("-")[0]);
-    const targetYear = Number(targetValue.split("-")[0]);
-
-    if (!birthYear || !targetYear || birthYear > targetYear) return "";
-
-    return targetYear - birthYear + 1;
-  }
-
-  function renderAgeStableResult() {
-    const birthdateInput = document.getElementById("birthdate");
-    const targetInput = ensureDateToCalculateInput();
-    const panel = getStablePanel();
-
-    if (!birthdateInput || !targetInput || !panel) return;
-
-    const birthdate = String(birthdateInput.value || "").trim();
-
-    if (!birthdate) {
-      panel.hidden = true;
-      return;
-    }
-
-    if (!targetInput.value) {
-      targetInput.value = todayValue();
-    }
-
-    const targetDate = String(targetInput.value || "").trim();
-    const normalAge = calculateNormalAge(birthdate, targetDate);
-    const asianAge = calculateAsianAge(birthdate, targetDate);
-
-    if (normalAge === "" || asianAge === "") {
-      panel.hidden = true;
-      return;
-    }
-
-    const body = panel.querySelector(".stable-result-body");
-    if (!body) return;
-
-    body.innerHTML =
-      '<div class="loan-result-table-scroll">' +
-        '<table class="loan-result-table stable-age-result-table">' +
-          '<thead>' +
-            '<tr><th>Item</th><th>Value</th></tr>' +
-          '</thead>' +
-          '<tbody>' +
-            '<tr><td>Birthdate</td><td>' + escapeHtml(birthdate) + '</td></tr>' +
-            '<tr><td>Date to calculate</td><td>' + escapeHtml(targetDate) + '</td></tr>' +
-            '<tr><td>Normal age</td><td>' + normalAge + ' years old</td></tr>' +
-            '<tr><td>Asian age</td><td>' + asianAge + ' years old</td></tr>' +
-          '</tbody>' +
-        '</table>' +
-      '</div>';
-
-    panel.hidden = false;
-
-    setupCopy(panel, function () {
-      return (
-        "Item\tValue\n" +
-        "Birthdate\t" + birthdate + "\n" +
-        "Date to calculate\t" + targetDate + "\n" +
-        "Normal age\t" + normalAge + " years old\n" +
-        "Asian age\t" + asianAge + " years old"
-      );
-    });
-
-    const result = document.getElementById("result") || document.getElementById("ageResult");
-    if (result) {
-      result.style.display = "none";
-    }
-  }
-
-  function renderStableResult() {
-    const type = getPageType();
-
-    if (type !== "basic" && type !== "age") return;
-
-    markPage();
-    hideOldUniversalPanel();
-
-    if (type === "basic") {
-      renderBasicStableResult();
-    }
-
-    if (type === "age") {
-      renderAgeStableResult();
-    }
-  }
-
-  function startStableResultFix() {
-    const type = getPageType();
-    if (type !== "basic" && type !== "age") return;
-
-    markPage();
-
-    if (type === "age") {
-      ensureDateToCalculateInput();
-    }
-
-    document.addEventListener(
-      "click",
-      function (event) {
-        const button = event.target.closest("button");
-        if (!button) return;
-
-        const text = button.textContent.trim().toLowerCase();
-
-        if (
-          text === "=" ||
-          text.includes("calculate") ||
-          text.includes("age")
-        ) {
-          setTimeout(renderStableResult, 0);
-          setTimeout(renderStableResult, 200);
-          setTimeout(renderStableResult, 500);
-          setTimeout(renderStableResult, 900);
-        }
-
-        if (text.includes("clear") || text === "ac") {
-          const panel = document.getElementById(PANEL_ID);
-          if (panel) panel.hidden = true;
-
-          hideOldUniversalPanel();
-        }
-      },
-      true
-    );
-
-    document.addEventListener(
-      "keydown",
-      function (event) {
-        if (event.key === "Enter" || event.key === "=") {
-          setTimeout(renderStableResult, 0);
-          setTimeout(renderStableResult, 200);
-          setTimeout(renderStableResult, 500);
-          setTimeout(renderStableResult, 900);
-        }
-      },
-      true
-    );
-
-    setTimeout(hideOldUniversalPanel, 300);
-    setTimeout(renderStableResult, 700);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startStableResultFix);
-  } else {
-    startStableResultFix();
-  }
-})();
-/* =====================================================
-   AGE CALCULATOR ONLY: result in bullet form
-   Replaces age result table with bullet list
-===================================================== */
-(function () {
-  "use strict";
-
-  const PANEL_ID = "stableBasicAgeOutput";
-
-  function isAgePage() {
-    return (
-      document.body.classList.contains("age-page") ||
-      document.body.dataset.page === "age" ||
-      !!document.getElementById("birthdate")
-    );
-  }
-
-  function todayValue() {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-
-    return year + "-" + month + "-" + day;
-  }
-
-  function escapeHtml(value) {
-    return String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
-  function getMain() {
-    return document.querySelector("main.pc-calculator-layout") || document.querySelector("main");
-  }
-
-  function getCalculator() {
-    const main = getMain();
-    return main ? main.querySelector(".calculator") : null;
-  }
-
-  function ensureDateToCalculateInput() {
-    const birthdate = document.getElementById("birthdate");
-    if (!birthdate) return null;
-
-    let target = document.getElementById("dateToCalculate");
-
-    if (!target) {
-      const label = document.createElement("label");
-      label.setAttribute("for", "dateToCalculate");
-      label.textContent = "Date to calculate:";
-
-      target = document.createElement("input");
-      target.type = "date";
-      target.id = "dateToCalculate";
-      target.setAttribute("aria-label", "Date to calculate");
-
-      birthdate.insertAdjacentElement("afterend", target);
-      target.insertAdjacentElement("beforebegin", label);
-    }
-
-    if (!target.value) {
-      target.value = todayValue();
-    }
-
-    return target;
-  }
-
-  function calculateNormalAge(birthdateValue, targetValue) {
-    const birth = new Date(birthdateValue + "T00:00:00");
-    const target = new Date(targetValue + "T00:00:00");
-
-    if (birth > target) return "";
-
-    let years = target.getFullYear() - birth.getFullYear();
-
-    const birthdayThisYear = new Date(
-      target.getFullYear(),
-      birth.getMonth(),
-      birth.getDate()
-    );
-
-    if (target < birthdayThisYear) {
-      years -= 1;
-    }
-
-    return years;
-  }
-
-  function calculateAsianAge(birthdateValue, targetValue) {
-    const birthYear = Number(birthdateValue.split("-")[0]);
-    const targetYear = Number(targetValue.split("-")[0]);
-
-    if (!birthYear || !targetYear || birthYear > targetYear) return "";
-
-    return targetYear - birthYear + 1;
-  }
-
-  function getOrCreateAgeBulletPanel() {
-    const calculator = getCalculator();
-    if (!calculator) return null;
-
-    let panel = document.getElementById(PANEL_ID);
-
-    if (!panel) {
-      panel = document.createElement("section");
-      panel.id = PANEL_ID;
-      panel.className = "stable-result-output age-bullet-output";
-      panel.setAttribute("aria-label", "Age calculator result");
-
-      panel.innerHTML =
-        '<div class="stable-result-top">' +
-          '<div class="stable-result-panel">' +
-            '<h2 class="stable-result-title">Result</h2>' +
-            '<div class="stable-result-body"></div>' +
-          '</div>' +
-          '<div class="stable-copy-side">' +
-            '<button type="button" class="stable-copy-btn">Copy</button>' +
-          '</div>' +
-        '</div>';
-
-      calculator.insertAdjacentElement("afterend", panel);
-    }
-
-    panel.classList.add("age-bullet-output");
-
-    return panel;
-  }
-
-  function hideOldAgePanels() {
-    const oldPanel = document.getElementById("universalLoanStyleOutput");
-
-    if (oldPanel) {
-      oldPanel.hidden = true;
-      oldPanel.style.setProperty("display", "none", "important");
-    }
-
-    const result = document.getElementById("result") || document.getElementById("ageResult");
-
-    if (result) {
-      result.style.display = "none";
-    }
-  }
-
-  function copyText(text, button) {
-    if (!text) return;
-
-    function copied() {
-      const oldText = button.textContent;
-      button.textContent = "Copied!";
-
-      setTimeout(function () {
-        button.textContent = oldText;
-      }, 1000);
-    }
-
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(copied).catch(function () {
-        fallbackCopy(text);
-        copied();
-      });
-    } else {
-      fallbackCopy(text);
-      copied();
-    }
-  }
-
-  function fallbackCopy(text) {
-    const textarea = document.createElement("textarea");
-
-    textarea.value = text;
-    textarea.style.position = "fixed";
-    textarea.style.left = "-9999px";
-    textarea.style.top = "-9999px";
-
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-
-    document.execCommand("copy");
-    textarea.remove();
-  }
-
-  function renderAgeBulletResult() {
-    if (!isAgePage()) return;
-
-    document.body.classList.add("age-page", "stable-result-page");
-    document.body.dataset.page = "age";
-
-    const birthdateInput = document.getElementById("birthdate");
-    const targetInput = ensureDateToCalculateInput();
-    const panel = getOrCreateAgeBulletPanel();
-
-    if (!birthdateInput || !targetInput || !panel) return;
-
-    const birthdate = String(birthdateInput.value || "").trim();
-
-    if (!birthdate) {
-      panel.hidden = true;
-      return;
-    }
-
-    if (!targetInput.value) {
-      targetInput.value = todayValue();
-    }
-
-    const targetDate = String(targetInput.value || "").trim();
-
-    const normalAge = calculateNormalAge(birthdate, targetDate);
-    const asianAge = calculateAsianAge(birthdate, targetDate);
-
-    if (normalAge === "" || asianAge === "") {
-      panel.hidden = true;
-      return;
-    }
-
-    hideOldAgePanels();
-
-    const body = panel.querySelector(".stable-result-body");
-    if (!body) return;
-
-    body.innerHTML =
-      '<ul class="age-bullet-result">' +
-        '<li><strong>Birthdate:</strong> ' + escapeHtml(birthdate) + '</li>' +
-        '<li><strong>Date to calculate:</strong> ' + escapeHtml(targetDate) + '</li>' +
-        '<li><strong>Normal age:</strong> ' + normalAge + ' years old</li>' +
-        '<li><strong>Asian age:</strong> ' + asianAge + ' years old</li>' +
-      '</ul>';
-
-    panel.hidden = false;
-
-    const copyBtn = panel.querySelector(".stable-copy-btn");
-
-    if (copyBtn) {
-      copyBtn.onclick = function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        copyText(
-          "• Birthdate: " + birthdate + "\n" +
-          "• Date to calculate: " + targetDate + "\n" +
-          "• Normal age: " + normalAge + " years old\n" +
-          "• Asian age: " + asianAge + " years old",
-          copyBtn
-        );
-      };
-    }
-  }
-
-  function startAgeBulletResult() {
-    if (!isAgePage()) return;
-
-    ensureDateToCalculateInput();
-
-    /*
-      This overrides older calculateAge code.
-      Important: remove old inline script from age-calculator.html if it still exists.
-    */
-    window.calculateAge = function () {
-      renderAgeBulletResult();
-    };
-
-    document.addEventListener(
-      "click",
-      function (event) {
-        const button = event.target.closest("button");
-        if (!button) return;
-
-        const text = button.textContent.trim().toLowerCase();
-        const onclick = button.getAttribute("onclick") || "";
-
-        if (text.includes("calculate") || onclick.includes("calculateAge")) {
-          setTimeout(renderAgeBulletResult, 0);
-          setTimeout(renderAgeBulletResult, 200);
-          setTimeout(renderAgeBulletResult, 600);
-          setTimeout(renderAgeBulletResult, 1000);
-        }
-      },
-      true
-    );
-
-    document.addEventListener(
-      "keydown",
-      function (event) {
-        if (event.key === "Enter") {
-          setTimeout(renderAgeBulletResult, 0);
-          setTimeout(renderAgeBulletResult, 200);
-          setTimeout(renderAgeBulletResult, 600);
-        }
-      },
-      true
-    );
-
-    setTimeout(hideOldAgePanels, 300);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startAgeBulletResult);
-  } else {
-    startAgeBulletResult();
   }
 })();
 /* =====================================================
@@ -6208,292 +5372,6 @@
   }
 })();
 /* =====================================================
-   AGE CALCULATOR RESULT: dd/mm/yyyy to dd/mm/yyyy
-   - Changes result date display into one range line
-   - Keeps normal age and Asian age
-===================================================== */
-(function () {
-  "use strict";
-
-  const PANEL_ID = "stableBasicAgeOutput";
-
-  function isAgePage() {
-    return (
-      document.body.classList.contains("age-page") ||
-      document.body.dataset.page === "age" ||
-      !!document.getElementById("birthdate")
-    );
-  }
-
-  function todayValue() {
-    const today = new Date();
-    const y = today.getFullYear();
-    const m = String(today.getMonth() + 1).padStart(2, "0");
-    const d = String(today.getDate()).padStart(2, "0");
-    return y + "-" + m + "-" + d;
-  }
-
-  function formatDDMMYYYY(value) {
-    if (!value) return "";
-
-    const parts = String(value).split("-");
-
-    if (parts.length !== 3) return value;
-
-    return parts[2] + "/" + parts[1] + "/" + parts[0];
-  }
-
-  function getValue(id) {
-    const input = document.getElementById(id);
-    return input ? String(input.value || "").trim() : "";
-  }
-
-  function ensureDateToCalculateInput() {
-    const birthdate = document.getElementById("birthdate");
-    if (!birthdate) return null;
-
-    let target = document.getElementById("dateToCalculate");
-
-    if (!target) {
-      const label = document.createElement("label");
-      label.setAttribute("for", "dateToCalculate");
-      label.textContent = "Date to calculate:";
-
-      target = document.createElement("input");
-      target.type = "date";
-      target.id = "dateToCalculate";
-      target.setAttribute("aria-label", "Date to calculate");
-
-      birthdate.insertAdjacentElement("afterend", target);
-      target.insertAdjacentElement("beforebegin", label);
-    }
-
-    if (!target.value) {
-      target.value = todayValue();
-    }
-
-    return target;
-  }
-
-  function calculateNormalAge(birthdateValue, targetValue) {
-    const birth = new Date(birthdateValue + "T00:00:00");
-    const target = new Date(targetValue + "T00:00:00");
-
-    if (birth > target) return "";
-
-    let years = target.getFullYear() - birth.getFullYear();
-
-    const birthdayThisYear = new Date(
-      target.getFullYear(),
-      birth.getMonth(),
-      birth.getDate()
-    );
-
-    if (target < birthdayThisYear) {
-      years -= 1;
-    }
-
-    return years;
-  }
-
-  function calculateAsianAge(birthdateValue, targetValue) {
-    const birthYear = Number(birthdateValue.split("-")[0]);
-    const targetYear = Number(targetValue.split("-")[0]);
-
-    if (!birthYear || !targetYear || birthYear > targetYear) return "";
-
-    return targetYear - birthYear + 1;
-  }
-
-  function getOrCreateAgePanel() {
-    const main =
-      document.querySelector("main.pc-calculator-layout") ||
-      document.querySelector("main");
-
-    const calculator = main ? main.querySelector(".calculator") : null;
-    if (!calculator) return null;
-
-    let panel = document.getElementById(PANEL_ID);
-
-    if (!panel) {
-      panel = document.createElement("section");
-      panel.id = PANEL_ID;
-      panel.className = "stable-result-output age-bullet-output";
-      panel.setAttribute("aria-label", "Age calculator result");
-
-      panel.innerHTML =
-        '<div class="stable-result-top">' +
-          '<div class="stable-result-panel">' +
-            '<h2 class="stable-result-title">Result</h2>' +
-            '<div class="stable-result-body"></div>' +
-          '</div>' +
-          '<div class="stable-copy-side">' +
-            '<button type="button" class="stable-copy-btn">Copy</button>' +
-          '</div>' +
-        '</div>';
-
-      calculator.insertAdjacentElement("afterend", panel);
-    }
-
-    panel.classList.add("age-bullet-output");
-
-    return panel;
-  }
-
-  function hideOldAgePanels() {
-    const oldPanel = document.getElementById("universalLoanStyleOutput");
-
-    if (oldPanel) {
-      oldPanel.hidden = true;
-      oldPanel.style.setProperty("display", "none", "important");
-    }
-
-    const result = document.getElementById("result") || document.getElementById("ageResult");
-
-    if (result) {
-      result.style.display = "none";
-    }
-  }
-
-  function copyText(text, button) {
-    if (!text) return;
-
-    function copied() {
-      const old = button.textContent;
-      button.textContent = "Copied!";
-
-      setTimeout(function () {
-        button.textContent = old;
-      }, 1000);
-    }
-
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(copied).catch(function () {
-        fallbackCopy(text);
-        copied();
-      });
-    } else {
-      fallbackCopy(text);
-      copied();
-    }
-  }
-
-  function fallbackCopy(text) {
-    const textarea = document.createElement("textarea");
-
-    textarea.value = text;
-    textarea.style.position = "fixed";
-    textarea.style.left = "-9999px";
-    textarea.style.top = "-9999px";
-
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-
-    document.execCommand("copy");
-    textarea.remove();
-  }
-
-  function renderAgeRangeResult() {
-    if (!isAgePage()) return;
-
-    document.body.classList.add("age-page", "stable-result-page");
-    document.body.dataset.page = "age";
-
-    const birthdateInput = document.getElementById("birthdate");
-    const targetInput = ensureDateToCalculateInput();
-    const panel = getOrCreateAgePanel();
-
-    if (!birthdateInput || !targetInput || !panel) return;
-
-    const birthdate = getValue("birthdate");
-
-    if (!birthdate) {
-      panel.hidden = true;
-      return;
-    }
-
-    if (!targetInput.value) {
-      targetInput.value = todayValue();
-    }
-
-    const targetDate = getValue("dateToCalculate") || todayValue();
-
-    const normalAge = calculateNormalAge(birthdate, targetDate);
-    const asianAge = calculateAsianAge(birthdate, targetDate);
-
-    if (normalAge === "" || asianAge === "") {
-      panel.hidden = true;
-      return;
-    }
-
-    const dateRange = formatDDMMYYYY(birthdate) + " to " + formatDDMMYYYY(targetDate);
-
-    hideOldAgePanels();
-
-    const body = panel.querySelector(".stable-result-body");
-
-    if (body) {
-      body.innerHTML =
-        '<ul class="age-bullet-result">' +
-          '<li><strong>Date range:</strong> ' + dateRange + '</li>' +
-          '<li><strong>Normal age:</strong> ' + normalAge + ' years old</li>' +
-          '<li><strong>Asian age:</strong> ' + asianAge + ' years old</li>' +
-        '</ul>';
-    }
-
-    panel.hidden = false;
-
-    const copyBtn = panel.querySelector(".stable-copy-btn");
-
-    if (copyBtn) {
-      copyBtn.onclick = function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        copyText(
-          "• Date range: " + dateRange + "\n" +
-          "• Normal age: " + normalAge + " years old\n" +
-          "• Asian age: " + asianAge + " years old",
-          copyBtn
-        );
-      };
-    }
-  }
-
-  function startAgeRangeResult() {
-    if (!isAgePage()) return;
-
-    ensureDateToCalculateInput();
-
-    window.calculateAge = renderAgeRangeResult;
-
-    document.addEventListener(
-      "click",
-      function (event) {
-        const button = event.target.closest("button");
-        if (!button) return;
-
-        const text = button.textContent.trim().toLowerCase();
-        const onclick = button.getAttribute("onclick") || "";
-
-        if (text.includes("calculate") || onclick.includes("calculateAge")) {
-          setTimeout(renderAgeRangeResult, 0);
-          setTimeout(renderAgeRangeResult, 200);
-          setTimeout(renderAgeRangeResult, 600);
-        }
-      },
-      true
-    );
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startAgeRangeResult);
-  } else {
-    startAgeRangeResult();
-  }
-})();
-/* =====================================================
    BMI: INPUT HISTORY INCLUDE USER PROFILE
    - Age group
    - Sex
@@ -7127,335 +6005,5 @@
     document.addEventListener("DOMContentLoaded", startBasicSqrtSymbolFix);
   } else {
     startBasicSqrtSymbolFix();
-  }
-})();
-/* =====================================================
-   AGE CALCULATOR: FORCE RESULT DATE RANGE FORMAT
-   Final bottom result format:
-   dd/mm/yyyy to dd/mm/yyyy
-   Normal age
-   Asian age
-===================================================== */
-(function () {
-  "use strict";
-
-  const PANEL_ID = "stableBasicAgeOutput";
-
-  function isAgePage() {
-    return (
-      document.body.classList.contains("age-page") ||
-      document.body.dataset.page === "age" ||
-      !!document.getElementById("birthdate")
-    );
-  }
-
-  function todayValue() {
-    const today = new Date();
-    const y = today.getFullYear();
-    const m = String(today.getMonth() + 1).padStart(2, "0");
-    const d = String(today.getDate()).padStart(2, "0");
-    return y + "-" + m + "-" + d;
-  }
-
-  function formatDDMMYYYY(value) {
-    const parts = String(value || "").split("-");
-    if (parts.length !== 3) return value || "";
-    return parts[2] + "/" + parts[1] + "/" + parts[0];
-  }
-
-  function getValue(id) {
-    const input = document.getElementById(id);
-    return input ? String(input.value || "").trim() : "";
-  }
-
-  function ensureDateToCalculateInput() {
-    const birthdate = document.getElementById("birthdate");
-    if (!birthdate) return null;
-
-    let target = document.getElementById("dateToCalculate");
-
-    if (!target) {
-      const label = document.createElement("label");
-      label.setAttribute("for", "dateToCalculate");
-      label.textContent = "Date to calculate:";
-
-      target = document.createElement("input");
-      target.type = "date";
-      target.id = "dateToCalculate";
-      target.setAttribute("aria-label", "Date to calculate");
-
-      birthdate.insertAdjacentElement("afterend", target);
-      target.insertAdjacentElement("beforebegin", label);
-    }
-
-    if (!target.value) {
-      target.value = todayValue();
-    }
-
-    return target;
-  }
-
-  function calculateNormalAge(birthdateValue, targetValue) {
-    const birth = new Date(birthdateValue + "T00:00:00");
-    const target = new Date(targetValue + "T00:00:00");
-
-    if (birth > target) return "";
-
-    let years = target.getFullYear() - birth.getFullYear();
-
-    const birthdayThisYear = new Date(
-      target.getFullYear(),
-      birth.getMonth(),
-      birth.getDate()
-    );
-
-    if (target < birthdayThisYear) {
-      years -= 1;
-    }
-
-    return years;
-  }
-
-  function calculateAsianAge(birthdateValue, targetValue) {
-    const birthYear = Number(String(birthdateValue).split("-")[0]);
-    const targetYear = Number(String(targetValue).split("-")[0]);
-
-    if (!birthYear || !targetYear || birthYear > targetYear) return "";
-
-    return targetYear - birthYear + 1;
-  }
-
-  function getOrCreateFinalAgePanel() {
-    const main =
-      document.querySelector("main.pc-calculator-layout") ||
-      document.querySelector("main");
-
-    const calculator = main ? main.querySelector(".calculator") : null;
-    if (!calculator) return null;
-
-    let panel = document.getElementById(PANEL_ID);
-
-    if (!panel) {
-      panel = document.createElement("section");
-      panel.id = PANEL_ID;
-      panel.className = "stable-result-output age-bullet-output";
-      panel.setAttribute("aria-label", "Age calculator result");
-
-      panel.innerHTML =
-        '<div class="stable-result-top">' +
-          '<div class="stable-result-panel">' +
-            '<h2 class="stable-result-title">Result</h2>' +
-            '<div class="stable-result-body"></div>' +
-          '</div>' +
-          '<div class="stable-copy-side">' +
-            '<button type="button" class="stable-copy-btn">Copy</button>' +
-          '</div>' +
-        '</div>';
-
-      calculator.insertAdjacentElement("afterend", panel);
-    }
-
-    panel.classList.add("age-bullet-output", "age-final-range-output");
-
-    return panel;
-  }
-
-  function hideOldAgeOutputPanels() {
-    const universal = document.getElementById("universalLoanStyleOutput");
-
-    if (universal) {
-      universal.hidden = true;
-      universal.style.setProperty("display", "none", "important");
-      universal.style.setProperty("visibility", "hidden", "important");
-      universal.style.setProperty("pointer-events", "none", "important");
-    }
-
-    const oldResult = document.getElementById("ageResult") || document.getElementById("result");
-
-    if (oldResult) {
-      oldResult.style.display = "none";
-    }
-  }
-
-  function copyText(text, button) {
-    if (!text) return;
-
-    function copied() {
-      const old = button.textContent;
-      button.textContent = "Copied!";
-
-      setTimeout(function () {
-        button.textContent = old;
-      }, 1000);
-    }
-
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(copied).catch(function () {
-        fallbackCopy(text);
-        copied();
-      });
-    } else {
-      fallbackCopy(text);
-      copied();
-    }
-  }
-
-  function fallbackCopy(text) {
-    const textarea = document.createElement("textarea");
-
-    textarea.value = text;
-    textarea.style.position = "fixed";
-    textarea.style.left = "-9999px";
-    textarea.style.top = "-9999px";
-
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-
-    document.execCommand("copy");
-    textarea.remove();
-  }
-
-  function renderFinalAgeRangeResult() {
-    if (!isAgePage()) return;
-
-    document.body.classList.add("age-page", "stable-result-page");
-    document.body.dataset.page = "age";
-
-    const birthdateInput = document.getElementById("birthdate");
-    const targetInput = ensureDateToCalculateInput();
-    const panel = getOrCreateFinalAgePanel();
-
-    if (!birthdateInput || !targetInput || !panel) return;
-
-    const birthdate = getValue("birthdate");
-
-    if (!birthdate) {
-      panel.hidden = true;
-      hideOldAgeOutputPanels();
-      return;
-    }
-
-    if (!targetInput.value) {
-      targetInput.value = todayValue();
-    }
-
-    const targetDate = getValue("dateToCalculate") || todayValue();
-
-    const normalAge = calculateNormalAge(birthdate, targetDate);
-    const asianAge = calculateAsianAge(birthdate, targetDate);
-
-    if (normalAge === "" || asianAge === "") {
-      panel.hidden = true;
-      hideOldAgeOutputPanels();
-      return;
-    }
-
-    const dateRange =
-      formatDDMMYYYY(birthdate) + " to " + formatDDMMYYYY(targetDate);
-
-    const body = panel.querySelector(".stable-result-body");
-
-    if (body) {
-      body.innerHTML =
-        '<ul class="age-bullet-result age-final-range-result">' +
-          '<li><strong>Date range:</strong> ' + dateRange + '</li>' +
-          '<li><strong>Normal age:</strong> ' + normalAge + ' years old</li>' +
-          '<li><strong>Asian age:</strong> ' + asianAge + ' years old</li>' +
-        '</ul>';
-    }
-
-    panel.hidden = false;
-    panel.style.removeProperty("display");
-
-    const copyBtn = panel.querySelector(".stable-copy-btn");
-
-    if (copyBtn) {
-      copyBtn.onclick = function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        copyText(
-          "• Date range: " + dateRange + "\n" +
-          "• Normal age: " + normalAge + " years old\n" +
-          "• Asian age: " + asianAge + " years old",
-          copyBtn
-        );
-      };
-    }
-
-    hideOldAgeOutputPanels();
-  }
-
-  function watchAgeResultPanel() {
-    const main =
-      document.querySelector("main.pc-calculator-layout") ||
-      document.querySelector("main");
-
-    if (!main || main.dataset.ageRangeFinalObserverReady === "true") return;
-
-    main.dataset.ageRangeFinalObserverReady = "true";
-
-    const observer = new MutationObserver(function () {
-      if (!isAgePage()) return;
-
-      const text = main.textContent || "";
-
-      if (
-        text.includes("Birthdate") ||
-        text.includes("Date to calculate") ||
-        text.includes("<table")
-      ) {
-        setTimeout(renderFinalAgeRangeResult, 0);
-      }
-    });
-
-    observer.observe(main, {
-      childList: true,
-      subtree: true,
-      characterData: true
-    });
-  }
-
-  function startFinalAgeRangeResult() {
-    if (!isAgePage()) return;
-
-    ensureDateToCalculateInput();
-
-    window.calculateAge = function () {
-      renderFinalAgeRangeResult();
-    };
-
-    watchAgeResultPanel();
-    hideOldAgeOutputPanels();
-
-    document.addEventListener(
-      "click",
-      function (event) {
-        const button = event.target.closest("button");
-        if (!button) return;
-
-        const text = button.textContent.trim().toLowerCase();
-        const onclick = button.getAttribute("onclick") || "";
-
-        if (text.includes("calculate") || onclick.includes("calculateAge")) {
-          setTimeout(renderFinalAgeRangeResult, 0);
-          setTimeout(renderFinalAgeRangeResult, 150);
-          setTimeout(renderFinalAgeRangeResult, 400);
-          setTimeout(renderFinalAgeRangeResult, 900);
-          setTimeout(renderFinalAgeRangeResult, 1500);
-        }
-      },
-      true
-    );
-
-    setTimeout(hideOldAgeOutputPanels, 300);
-    setTimeout(renderFinalAgeRangeResult, 700);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startFinalAgeRangeResult);
-  } else {
-    startFinalAgeRangeResult();
   }
 })();
