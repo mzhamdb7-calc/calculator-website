@@ -2612,3 +2612,17 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     text-align: center !important;
   }
 }
+/* =====================================================
+   PC ONLY: BMI input history with user profile
+===================================================== */
+@media (min-width: 851px) {
+  .bmi-profile-history-item .history-text {
+    line-height: 1.45 !important;
+    font-weight: bold !important;
+    text-align: center !important;
+  }
+
+  .bmi-profile-history-item strong {
+    color: var(--black) !important;
+  }
+}
