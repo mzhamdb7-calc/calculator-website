@@ -2170,3 +2170,116 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     color: var(--black) !important;
   }
 }
+/* =====================================================
+   PC ONLY: Cartoonish Loan Graph Style
+===================================================== */
+@media (min-width: 851px) {
+  body.loan-page .loan-graph-panel,
+  .loan-page .loan-graph-panel {
+    background: #fff4b8 !important;
+    border: 5px solid var(--black) !important;
+    box-shadow: 9px 9px 0 var(--black) !important;
+    border-radius: 18px !important;
+    padding: 18px !important;
+    transform: rotate(-0.5deg) !important;
+  }
+
+  body.loan-page .loan-graph-body,
+  .loan-page .loan-graph-body {
+    background: #d9f7ff !important;
+    border: 4px solid var(--black) !important;
+    box-shadow: inset 5px 5px 0 rgba(0, 0, 0, 0.12) !important;
+    border-radius: 18px !important;
+    padding: 18px !important;
+    overflow: visible !important;
+  }
+
+  body.loan-page .loan-graph,
+  .loan-page .loan-graph {
+    width: 100% !important;
+    min-width: 650px !important;
+    height: auto !important;
+
+    background:
+      radial-gradient(circle at 18px 18px, rgba(255, 255, 255, 0.9) 0 5px, transparent 6px),
+      radial-gradient(circle at 58px 46px, rgba(255, 255, 255, 0.55) 0 4px, transparent 5px),
+      #d9f7ff !important;
+
+    border: 4px solid var(--black) !important;
+    border-radius: 16px !important;
+    box-shadow: 6px 6px 0 var(--black) !important;
+
+    padding: 8px !important;
+    overflow: visible !important;
+  }
+
+  body.loan-page .loan-graph-grid,
+  .loan-page .loan-graph-grid {
+    stroke: rgba(0, 0, 0, 0.22) !important;
+    stroke-width: 2.5px !important;
+    stroke-dasharray: 8 8 !important;
+    stroke-linecap: round !important;
+  }
+
+  body.loan-page .loan-graph-axis,
+  .loan-page .loan-graph-axis {
+    stroke: var(--black) !important;
+    stroke-width: 5px !important;
+    stroke-linecap: round !important;
+  }
+
+  body.loan-page .loan-graph-line,
+  .loan-page .loan-graph-line {
+    fill: none !important;
+    stroke: #ff5fa2 !important;
+    stroke-width: 7px !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+    filter: drop-shadow(4px 4px 0 var(--black)) !important;
+  }
+
+  body.loan-page .loan-graph circle,
+  .loan-page .loan-graph circle {
+    fill: var(--yellow) !important;
+    stroke: var(--black) !important;
+    stroke-width: 4px !important;
+    filter: drop-shadow(3px 3px 0 var(--black)) !important;
+  }
+
+  body.loan-page .loan-graph circle:hover,
+  .loan-page .loan-graph circle:hover {
+    fill: #ff9fcb !important;
+    transform: scale(1.18) !important;
+    transform-box: fill-box !important;
+    transform-origin: center !important;
+  }
+
+  body.loan-page .loan-graph text,
+  .loan-page .loan-graph text {
+    fill: var(--black) !important;
+    font-family: "Comic Neue", "Comic Sans MS", cursive, sans-serif !important;
+    font-size: 13px !important;
+    font-weight: bold !important;
+    paint-order: stroke !important;
+    stroke: #ffffff !important;
+    stroke-width: 3px !important;
+    stroke-linejoin: round !important;
+  }
+
+  body.loan-page .loan-graph-value,
+  .loan-page .loan-graph-value {
+    font-size: 11px !important;
+  }
+
+  body.loan-page .loan-graph-panel .loan-panel-title,
+  .loan-page .loan-graph-panel .loan-panel-title {
+    background: #ff9fcb !important;
+    color: var(--black) !important;
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+    border-radius: 14px !important;
+    padding: 10px 14px !important;
+    text-align: center !important;
+    transform: rotate(0.5deg) !important;
+  }
+}
