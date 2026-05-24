@@ -6108,3 +6108,169 @@
   }
 })();
 
+/* =====================================================
+   AGE CALCULATOR: Remove "Date range:" text from result
+   Keeps only: dd/mm/yyyy to dd/mm/yyyy
+===================================================== */
+(function () {
+  "use strict";
+
+  function isAgePage() {
+    return (
+      document.body.classList.contains("age-page") ||
+      document.body.dataset.page === "age" ||
+      !!document.getElementById("birthdate")
+    );
+  }
+
+  function formatDateDMY(value) {
+    const parts = String(value || "").split("-");
+    if (parts.length !== 3) return value || "";
+    return parts[2] + "/" + parts[1] + "/" + parts[0];
+  }
+
+  function getDateRangeText() {
+    const birthdate = document.getElementById("birthdate");
+    const target = document.getElementById("dateToCalculate");
+
+    if (!birthdate || !birthdate.value) return "";
+
+    const targetValue = target && target.value ? target.value : "";
+
+    if (!targetValue) {
+      return formatDateDMY(birthdate.value);
+    }
+
+    return formatDateDMY(birthdate.value) + " to " + formatDateDMY(targetValue);
+  }
+
+  function copyText(text, button) {
+    if (!text) return;
+
+    function copied() {
+      const old = button.textContent;
+      button.textContent = "Copied!";
+
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(copied).catch(function () {
+        fallbackCopy(text);
+        copied();
+      });
+    } else {
+      fallbackCopy(text);
+      copied();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function removeAgeDateRangeLabel() {
+    if (!isAgePage()) return;
+
+    const panel = document.getElementById("stableBasicAgeOutput");
+    if (!panel) return;
+
+    const list =
+      panel.querySelector(".age-final-range-result") ||
+      panel.querySelector(".age-bullet-result");
+
+    if (!list) return;
+
+    const items = Array.from(list.querySelectorAll("li"));
+    if (!items.length) return;
+
+    const dateRange = getDateRangeText();
+
+    if (dateRange) {
+      items[0].innerHTML = "<strong>" + dateRange + "</strong>";
+    } else {
+      items[0].textContent = items[0].textContent.replace(/^Date range:\s*/i, "");
+    }
+
+    const copyBtn = panel.querySelector(".stable-copy-btn");
+
+    if (copyBtn) {
+      copyBtn.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const copyValue = Array.from(list.querySelectorAll("li"))
+          .map(function (li) {
+            return "• " + li.textContent.trim();
+          })
+          .join("\n");
+
+        copyText(copyValue, copyBtn);
+      };
+    }
+
+    const hiddenResult = document.getElementById("result") || document.getElementById("ageResult");
+
+    if (hiddenResult && hiddenResult.textContent.includes("Date range:")) {
+      hiddenResult.textContent = hiddenResult.textContent.replace(/^Date range:\s*/m, "");
+    }
+  }
+
+  function start() {
+    if (!isAgePage()) return;
+
+    removeAgeDateRangeLabel();
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (text.includes("calculate") || onclick.includes("calculateAge")) {
+          setTimeout(removeAgeDateRangeLabel, 0);
+          setTimeout(removeAgeDateRangeLabel, 150);
+          setTimeout(removeAgeDateRangeLabel, 500);
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key === "Enter") {
+          setTimeout(removeAgeDateRangeLabel, 150);
+          setTimeout(removeAgeDateRangeLabel, 500);
+        }
+      },
+      true
+    );
+
+    setTimeout(removeAgeDateRangeLabel, 500);
+    setTimeout(removeAgeDateRangeLabel, 1200);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
