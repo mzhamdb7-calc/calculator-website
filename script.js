@@ -4912,3 +4912,92 @@
     startLoanPointOnlyResult();
   }
 })();
+/* =====================================================
+   LOAN: OPTIONAL MORTGAGE COSTS EXPAND / CLOSE BOX
+   - Closed by default
+   - Click title to open
+   - Click again to close
+===================================================== */
+(function () {
+  "use strict";
+
+  function isLoanPage() {
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      !!document.getElementById("loanResult")
+    );
+  }
+
+  function hasMortgageValue(box) {
+    return Array.from(box.querySelectorAll("input")).some(function (input) {
+      return String(input.value || "").trim() !== "";
+    });
+  }
+
+  function setupOptionalMortgageToggle() {
+    if (!isLoanPage()) return;
+
+    const box = document.querySelector(".optional-mortgage-costs");
+    if (!box || box.dataset.expandReady === "true") return;
+
+    box.dataset.expandReady = "true";
+
+    const oldTitle = box.querySelector(".optional-mortgage-title");
+    const titleText = oldTitle ? oldTitle.textContent.trim() : "Optional mortgage costs";
+
+    const toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "optional-mortgage-toggle";
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.innerHTML = `<span>${titleText}</span><span class="optional-mortgage-arrow">▼</span>`;
+
+    const content = document.createElement("div");
+    content.className = "optional-mortgage-content";
+
+    Array.from(box.childNodes).forEach(function (node) {
+      if (node !== oldTitle) {
+        content.appendChild(node);
+      }
+    });
+
+    box.innerHTML = "";
+    box.appendChild(toggle);
+    box.appendChild(content);
+
+    function setOpen(open) {
+      box.classList.toggle("is-open", open);
+      box.classList.toggle("is-closed", !open);
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+
+      const arrow = toggle.querySelector(".optional-mortgage-arrow");
+      if (arrow) arrow.textContent = open ? "▲" : "▼";
+    }
+
+    setOpen(hasMortgageValue(box));
+
+    toggle.addEventListener("click", function () {
+      setOpen(!box.classList.contains("is-open"));
+    });
+  }
+
+  function start() {
+    if (!isLoanPage()) return;
+
+    setupOptionalMortgageToggle();
+
+    setTimeout(setupOptionalMortgageToggle, 300);
+    setTimeout(setupOptionalMortgageToggle, 900);
+    setTimeout(setupOptionalMortgageToggle, 1500);
+
+    document.addEventListener("click", function () {
+      setTimeout(setupOptionalMortgageToggle, 0);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();

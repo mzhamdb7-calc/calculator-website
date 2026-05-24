@@ -2440,3 +2440,67 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     color: var(--black) !important;
   }
 }
+/* =====================================================
+   PC ONLY: Optional mortgage costs expandable box
+===================================================== */
+@media (min-width: 851px) {
+  .optional-mortgage-costs {
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .optional-mortgage-toggle {
+    width: 100% !important;
+    min-height: 58px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+
+    padding: 12px 16px !important;
+
+    background: #fff4b8 !important;
+    color: var(--black) !important;
+
+    border: none !important;
+    border-bottom: 4px solid var(--black) !important;
+
+    font-family: inherit !important;
+    font-size: 22px !important;
+    font-weight: bold !important;
+
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+  }
+
+  .optional-mortgage-toggle:hover {
+    background: var(--yellow) !important;
+  }
+
+  .optional-mortgage-arrow {
+    font-size: 20px !important;
+    font-weight: bold !important;
+  }
+
+  .optional-mortgage-content {
+    padding: 14px !important;
+    box-sizing: border-box !important;
+  }
+
+  .optional-mortgage-costs.is-closed .optional-mortgage-content {
+    display: none !important;
+  }
+
+  .optional-mortgage-costs.is-open .optional-mortgage-content {
+    display: block !important;
+  }
+
+  .optional-mortgage-costs.is-closed .optional-mortgage-toggle {
+    border-bottom: none !important;
+  }
+
+  .optional-mortgage-costs.is-open .optional-mortgage-toggle {
+    border-bottom: 4px solid var(--black) !important;
+  }
+}
