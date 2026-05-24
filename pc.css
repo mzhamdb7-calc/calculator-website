@@ -3055,3 +3055,50 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
   }
 }
 
+/* =====================================================
+   PC ONLY: Discount page orientation + result box
+===================================================== */
+@media (min-width: 851px) {
+  body.discount-page main.discount-calculator-container:not(.pc-calculator-layout) {
+    display: grid !important;
+    grid-template-columns: minmax(260px, 1fr) minmax(320px, 1fr) !important;
+    gap: 24px !important;
+    align-items: start !important;
+    box-sizing: border-box !important;
+  }
+
+  body.discount-page main.discount-calculator-container > .discount-history-box {
+    grid-column: 1 !important;
+  }
+
+  body.discount-page main.discount-calculator-container > .calculator {
+    grid-column: 2 !important;
+  }
+
+  body.discount-page #stableDiscountOutput {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  body.discount-page #universalLoanStyleOutput {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  body.discount-page .discount-point-result {
+    list-style-position: inside !important;
+    text-align: center !important;
+    font-weight: bold !important;
+    line-height: 1.5 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body.discount-page .discount-point-result li {
+    text-align: center !important;
+    margin: 8px 0 !important;
+  }
+}

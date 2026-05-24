@@ -14,13 +14,15 @@
   <meta name="description" content="Free discount calculator to calculate sale price and savings online.">
 
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="pc.css" media="screen and (min-width: 851px)">
-<link rel="stylesheet" href="phone.css" media="screen and (max-width: 850px)">
+  <link rel="stylesheet" href="pc.css" media="screen and (min-width: 851px)">
+  <link rel="stylesheet" href="phone.css" media="screen and (max-width: 850px)">
+
   <link rel="icon" href="favicon.ico">
 </head>
 
-<body>
+<body class="discount-page" data-page="discount">
 
   <!-- Go Up Button -->
   <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
@@ -38,7 +40,7 @@
     <a href="index.html">home</a>
 
     <div class="dropdown">
-      <button type="button" class="dropbtn">
+      <button type="button" class="dropbtn" aria-expanded="false">
         calculator
       </button>
 
@@ -59,7 +61,7 @@
           <summary>finance</summary>
 
           <div class="nav-group-links">
-            <a href="loan-calculator.html">loan</a>
+            <a href="loan-calculator.html">mortgage / personal loan</a>
             <a href="discount-calculator.html">discount</a>
             <a href="compound-interest-calculator.html">compound interest</a>
           </div>
@@ -71,7 +73,7 @@
     </div>
 
     <div class="dropdown about-dropdown">
-      <button type="button" class="dropbtn">
+      <button type="button" class="dropbtn" aria-expanded="false">
         info
       </button>
 
@@ -90,9 +92,9 @@
     <section class="discount-history-box">
 
       <div class="discount-history-top">
-        <h3>History</h3>
+        <h3>Input</h3>
 
-        <button type="button" onclick="clearDiscountHistory()" class="clear-btn">
+        <button type="button" onclick="clearInputHistory('discount')" class="clear-btn">
           Clear
         </button>
       </div>
@@ -110,168 +112,24 @@
       </p>
 
       <label for="price">Original price:</label>
-      <input type="number" id="price" placeholder="Example: 100">
+      <input type="number" id="price" placeholder="Example: 100" inputmode="decimal">
 
-      <label for="discount">Discount percentage (%):</label>
-      <input type="number" id="discount" placeholder="Example: 20">
+      <label for="discount">Discount percentage:</label>
+      <input type="number" id="discount" placeholder="Example: 20" inputmode="decimal">
 
       <button type="button" onclick="calculateDiscount()" class="main-btn">
         calculate discount
       </button>
 
-      <h2 id="result"></h2>
+      <h2 id="discountResult"></h2>
 
     </section>
 
   </main>
 
   <script src="script.js"></script>
-<script src="pc.js"></script>
-<script src="phone.js"></script>
-
-  <script>
-    let discountHistory = [];
-
-    try {
-      discountHistory = JSON.parse(localStorage.getItem("discountHistory")) || [];
-    } catch {
-      discountHistory = [];
-    }
-
-    function calculateDiscount() {
-      const price = Number(document.getElementById("price").value);
-      const discount = Number(document.getElementById("discount").value);
-      const result = document.getElementById("result");
-
-      if (price <= 0) {
-        result.innerText = "Please enter a valid original price.";
-        return;
-      }
-
-      if (discount < 0 || discount > 100) {
-        result.innerText = "Please enter a discount between 0 and 100.";
-        return;
-      }
-
-      const savings = price * discount / 100;
-      const finalPrice = price - savings;
-
-      const answer =
-        "Original price: " + price.toFixed(2) + "\n" +
-        "Discount: " + discount + "%\n" +
-        "Final price: " + finalPrice.toFixed(2) + "\n" +
-        "You save: " + savings.toFixed(2);
-
-      result.innerText = answer;
-
-      saveDiscountHistory(answer);
-    }
-
-    function saveDiscountHistory(answer) {
-      const item = answer.replace(/\n/g, " | ");
-
-      discountHistory.push(item);
-
-      if (discountHistory.length > 50) {
-        discountHistory.shift();
-      }
-
-      localStorage.setItem("discountHistory", JSON.stringify(discountHistory));
-
-      showDiscountHistory();
-    }
-
-    function showDiscountHistory() {
-      const list = document.getElementById("discountHistoryList");
-
-      if (!list) return;
-
-      list.innerHTML = "";
-
-      discountHistory.slice().reverse().forEach(function (item) {
-        const li = document.createElement("li");
-        li.className = "history-item";
-
-        const text = document.createElement("span");
-        text.className = "history-text";
-        text.textContent = item;
-
-        const copyBtn = document.createElement("button");
-        copyBtn.type = "button";
-        copyBtn.className = "history-copy-btn";
-        copyBtn.textContent = "copy";
-
-        copyBtn.onclick = function () {
-          copyDiscountText(item, copyBtn);
-        };
-
-        li.appendChild(text);
-        li.appendChild(copyBtn);
-
-        list.appendChild(li);
-      });
-    }
-
-    function copyDiscountText(text, button) {
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text)
-          .then(function () {
-            showDiscountCopied(button);
-          })
-          .catch(function () {
-            fallbackDiscountCopy(text, button);
-          });
-      } else {
-        fallbackDiscountCopy(text, button);
-      }
-    }
-
-    function fallbackDiscountCopy(text, button) {
-      const tempInput = document.createElement("textarea");
-
-      tempInput.value = text;
-      tempInput.style.position = "fixed";
-      tempInput.style.left = "-9999px";
-      tempInput.style.top = "-9999px";
-
-      document.body.appendChild(tempInput);
-      tempInput.focus();
-      tempInput.select();
-
-      try {
-        document.execCommand("copy");
-        showDiscountCopied(button);
-      } catch {
-        button.textContent = "failed";
-
-        setTimeout(function () {
-          button.textContent = "copy";
-        }, 1000);
-      }
-
-      document.body.removeChild(tempInput);
-    }
-
-    function showDiscountCopied(button) {
-      button.textContent = "copied";
-
-      setTimeout(function () {
-        button.textContent = "copy";
-      }, 1000);
-    }
-
-    function clearDiscountHistory() {
-      discountHistory = [];
-      localStorage.removeItem("discountHistory");
-
-      showDiscountHistory();
-
-      const result = document.getElementById("result");
-      if (result) result.innerText = "";
-    }
-
-    document.addEventListener("DOMContentLoaded", showDiscountHistory);
-  </script>
+  <script src="pc.js"></script>
+  <script src="phone.js"></script>
 
 </body>
 </html>
