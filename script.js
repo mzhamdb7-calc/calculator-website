@@ -7538,13 +7538,14 @@
 })();
 
 /* =====================================================
-   FINAL LOAN MONTHS MODE
+   SAFE LOAN MONTHS MODE
    Mortgage / Personal Loan Calculator
    - Loan term input uses months directly
    - Adds Down payment inside Optional costs
    - Optional cost items included in Loan Input history if not empty
    - Result keeps only:
      Monthly payment / Full loan interest / Full payment value
+   - No MutationObserver loop, so the loan page will not keep loading
 ===================================================== */
 (function () {
   "use strict";
@@ -7604,6 +7605,23 @@
     });
   }
 
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+    textarea.setAttribute("readonly", "");
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
   function copyText(text, button) {
     const value = String(text || "").trim();
     if (!value) return;
@@ -7628,23 +7646,6 @@
     }
   }
 
-  function fallbackCopy(text) {
-    const textarea = document.createElement("textarea");
-
-    textarea.value = text;
-    textarea.style.position = "fixed";
-    textarea.style.left = "-9999px";
-    textarea.style.top = "-9999px";
-    textarea.setAttribute("readonly", "");
-
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-
-    document.execCommand("copy");
-    textarea.remove();
-  }
-
   function findCalculateButton() {
     const calculator = document.querySelector(".calculator");
     if (!calculator) return null;
@@ -7652,8 +7653,7 @@
     return (
       calculator.querySelector("button.main-btn") ||
       Array.from(calculator.querySelectorAll("button")).find(function (button) {
-        const text = button.textContent.trim().toLowerCase();
-        return text.includes("calculate");
+        return button.textContent.trim().toLowerCase().includes("calculate");
       }) ||
       null
     );
@@ -7801,7 +7801,7 @@
     return box;
   }
 
-  function addOptionalInput(content, id, labelText, placeholder) {
+  function appendOptionalInput(content, id, labelText, placeholder) {
     if (document.getElementById(id)) return;
 
     const label = document.createElement("label");
@@ -7826,13 +7826,7 @@
       box.querySelector(".optional-mortgage-content") ||
       box;
 
-    /*
-      Put Down payment first. Other inputs are added only if your older
-      script did not already create them.
-    */
     if (!document.getElementById("downPayment")) {
-      const firstChild = content.firstChild;
-
       const label = document.createElement("label");
       label.setAttribute("for", "downPayment");
       label.textContent = "Down payment:";
@@ -7843,13 +7837,13 @@
       input.placeholder = "Optional, example: 8000";
       input.setAttribute("inputmode", "decimal");
 
-      content.insertBefore(input, firstChild);
+      content.insertBefore(input, content.firstChild);
       content.insertBefore(label, input);
     }
 
-    addOptionalInput(content, "propertyTaxYearly", "Property tax yearly:", "Optional");
-    addOptionalInput(content, "homeInsuranceYearly", "Home insurance yearly:", "Optional");
-    addOptionalInput(content, "otherMonthlyFees", "Other monthly fees:", "Optional");
+    appendOptionalInput(content, "propertyTaxYearly", "Property tax yearly:", "Optional");
+    appendOptionalInput(content, "homeInsuranceYearly", "Home insurance yearly:", "Optional");
+    appendOptionalInput(content, "otherMonthlyFees", "Other monthly fees:", "Optional");
   }
 
   function calculateMonthlyPaymentFromMonths(principal, annualRate, months) {
@@ -7873,22 +7867,11 @@
     const insuranceYearly = getNumber(["homeInsuranceYearly"]);
     const otherMonthly = getNumber(["otherMonthlyFees", "hoaMonthly"]);
 
-    const propertyTaxMonthly =
-      Number.isFinite(propertyTaxYearly) && propertyTaxYearly > 0
-        ? propertyTaxYearly / 12
-        : 0;
-
-    const insuranceMonthly =
-      Number.isFinite(insuranceYearly) && insuranceYearly > 0
-        ? insuranceYearly / 12
-        : 0;
-
-    const otherMonthlyCost =
-      Number.isFinite(otherMonthly) && otherMonthly > 0
-        ? otherMonthly
-        : 0;
-
-    return propertyTaxMonthly + insuranceMonthly + otherMonthlyCost;
+    return (
+      (Number.isFinite(propertyTaxYearly) && propertyTaxYearly > 0 ? propertyTaxYearly / 12 : 0) +
+      (Number.isFinite(insuranceYearly) && insuranceYearly > 0 ? insuranceYearly / 12 : 0) +
+      (Number.isFinite(otherMonthly) && otherMonthly > 0 ? otherMonthly : 0)
+    );
   }
 
   function getLoanPanel() {
@@ -8089,10 +8072,6 @@
       const items = Array.isArray(value) ? value : [];
 
       return items.filter(function (item) {
-        /*
-          Drop old entries made by earlier loan history code
-          that still used "Years:".
-        */
         return !/\|\s*Years\s*:/i.test(String(item)) &&
                !/Loan amount:\s*.*\|\s*Interest rate:\s*.*\|\s*Years:/i.test(String(item));
       });
@@ -8126,30 +8105,56 @@
     const history = loadLoanHistory();
     saveLoanHistory(history);
 
-    list.innerHTML = "";
+    /*
+      Only rebuild when the content actually changed.
+      This prevents continuous loading / repaint loops.
+    */
+    const nextHtml = history.slice().reverse().map(function (item) {
+      return (
+        '<li class="history-item loan-input-history-item">' +
+          '<span class="history-text"></span>' +
+          '<button type="button" class="history-copy-btn">copy</button>' +
+        '</li>'
+      );
+    }).join("");
 
-    history.slice().reverse().forEach(function (item) {
-      const li = document.createElement("li");
-      li.className = "history-item loan-input-history-item";
+    if (list.dataset.loanHistoryCount !== String(history.length)) {
+      list.dataset.loanHistoryCount = String(history.length);
+      list.innerHTML = nextHtml;
 
-      const text = document.createElement("span");
-      text.className = "history-text";
-      text.textContent = item;
+      Array.from(list.querySelectorAll(".history-item")).forEach(function (li, index) {
+        const item = history.slice().reverse()[index];
+        const text = li.querySelector(".history-text");
+        const copyBtn = li.querySelector(".history-copy-btn");
 
-      const copyBtn = document.createElement("button");
-      copyBtn.type = "button";
-      copyBtn.className = "history-copy-btn";
-      copyBtn.textContent = "copy";
+        if (text) text.textContent = item;
 
-      copyBtn.addEventListener("click", function (event) {
-        event.stopPropagation();
-        copyText(item, copyBtn);
+        if (copyBtn) {
+          copyBtn.onclick = function (event) {
+            event.stopPropagation();
+            copyText(item, copyBtn);
+          };
+        }
       });
+    } else {
+      Array.from(list.querySelectorAll(".history-item")).forEach(function (li, index) {
+        const item = history.slice().reverse()[index];
+        const text = li.querySelector(".history-text");
+        const copyBtn = li.querySelector(".history-copy-btn");
 
-      li.appendChild(text);
-      li.appendChild(copyBtn);
-      list.appendChild(li);
-    });
+        if (text && text.textContent !== item) {
+          text.textContent = item;
+        }
+
+        if (copyBtn && copyBtn.dataset.loanCopyReady !== "true") {
+          copyBtn.dataset.loanCopyReady = "true";
+          copyBtn.onclick = function (event) {
+            event.stopPropagation();
+            copyText(item, copyBtn);
+          };
+        }
+      });
+    }
   }
 
   function addLoanHistoryWithMonths() {
@@ -8178,7 +8183,11 @@
       /* ignore */
     }
 
-    renderLoanHistoryMonths();
+    const list = document.getElementById("loanHistoryList");
+    if (list) {
+      list.dataset.loanHistoryCount = "";
+      list.innerHTML = "";
+    }
 
     const panel = document.getElementById("loanExternalOutput");
     if (panel) {
@@ -8214,9 +8223,6 @@
         if (text.includes("calculate") || onclick.includes("calculateLoan")) {
           setTimeout(renderLoanMonthsResult, 0);
           setTimeout(renderLoanMonthsResult, 250);
-          setTimeout(renderLoanMonthsResult, 800);
-          setTimeout(renderLoanMonthsResult, 1500);
-          setTimeout(renderLoanMonthsResult, 2300);
         }
 
         if (text.includes("clear")) {
@@ -8231,29 +8237,17 @@
       function (event) {
         if (event.key === "Enter") {
           setTimeout(renderLoanMonthsResult, 250);
-          setTimeout(renderLoanMonthsResult, 900);
         }
       },
       true
     );
 
-    const main = document.querySelector("main");
-
-    if (main && main.dataset.loanMonthsFinalObserverReady !== "true") {
-      main.dataset.loanMonthsFinalObserverReady = "true";
-
-      const observer = new MutationObserver(function () {
-        updateLoanLabelsToMonths();
-        ensureOptionalCostInputs();
-        renderLoanHistoryMonths();
-      });
-
-      observer.observe(main, {
-        childList: true,
-        subtree: true
-      });
-    }
-
+    /*
+      Important:
+      No MutationObserver here. The old version watched <main> and then
+      changed the history list inside the observer, which could make the
+      loan page keep loading.
+    */
     setTimeout(updateLoanLabelsToMonths, 300);
     setTimeout(ensureOptionalCostInputs, 500);
     setTimeout(renderLoanHistoryMonths, 900);
@@ -8266,259 +8260,3 @@
   }
 })();
 
-/* =====================================================
-   DISCOUNT CALCULATOR: Bottom result box like other pages
-   - Result appears in external box below calculator
-   - Point form result
-   - Copy button included
-   - Hides old table/result output
-===================================================== */
-(function () {
-  "use strict";
-
-  const PANEL_ID = "stableDiscountOutput";
-
-  function isDiscountPage() {
-    const h1 = document.querySelector("h1");
-    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
-
-    return (
-      document.body.classList.contains("discount-page") ||
-      document.body.dataset.page === "discount" ||
-      title.includes("discount") ||
-      window.location.pathname.includes("discount-calculator") ||
-      !!document.getElementById("discountResult") ||
-      !!document.getElementById("discountHistoryList")
-    );
-  }
-
-  function getNumber(ids) {
-    for (const id of ids) {
-      const input = document.getElementById(id);
-      if (!input) continue;
-
-      const value = Number(String(input.value || "").replace(/,/g, "").trim());
-
-      if (Number.isFinite(value)) {
-        return value;
-      }
-    }
-
-    return NaN;
-  }
-
-  function money(value) {
-    return Number(value).toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-  }
-
-  function getDiscountPanel() {
-    const main =
-      document.querySelector("main.pc-calculator-layout") ||
-      document.querySelector("main");
-
-    const calculator = main ? main.querySelector(".calculator") : null;
-    if (!calculator) return null;
-
-    let panel = document.getElementById(PANEL_ID);
-
-    if (!panel) {
-      panel = document.createElement("section");
-      panel.id = PANEL_ID;
-      panel.className = "stable-result-output discount-result-output";
-      panel.setAttribute("aria-label", "Discount calculator result");
-
-      panel.innerHTML =
-        '<div class="stable-result-top">' +
-          '<div class="stable-result-panel">' +
-            '<h2 class="stable-result-title">Result</h2>' +
-            '<div class="stable-result-body"></div>' +
-          '</div>' +
-          '<div class="stable-copy-side">' +
-            '<button type="button" class="stable-copy-btn">Copy</button>' +
-          '</div>' +
-        '</div>';
-
-      calculator.insertAdjacentElement("afterend", panel);
-    }
-
-    return panel;
-  }
-
-  function hideOldDiscountOutputs() {
-    const oldUniversal = document.getElementById("universalLoanStyleOutput");
-
-    if (oldUniversal) {
-      oldUniversal.hidden = true;
-      oldUniversal.style.setProperty("display", "none", "important");
-      oldUniversal.style.setProperty("visibility", "hidden", "important");
-      oldUniversal.style.setProperty("pointer-events", "none", "important");
-    }
-
-    const result =
-      document.getElementById("discountResult") ||
-      document.getElementById("result");
-
-    if (result) {
-      result.style.display = "none";
-    }
-  }
-
-  function copyText(text, button) {
-    const value = String(text || "").trim();
-    if (!value) return;
-
-    function copied() {
-      const old = button.textContent;
-      button.textContent = "Copied!";
-
-      setTimeout(function () {
-        button.textContent = old;
-      }, 1000);
-    }
-
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(value).then(copied).catch(function () {
-        fallbackCopy(value);
-        copied();
-      });
-    } else {
-      fallbackCopy(value);
-      copied();
-    }
-  }
-
-  function fallbackCopy(text) {
-    const textarea = document.createElement("textarea");
-
-    textarea.value = text;
-    textarea.style.position = "fixed";
-    textarea.style.left = "-9999px";
-    textarea.style.top = "-9999px";
-    textarea.setAttribute("readonly", "");
-
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-
-    document.execCommand("copy");
-    textarea.remove();
-  }
-
-  function renderDiscountResultBox() {
-    if (!isDiscountPage()) return;
-
-    document.body.classList.add("discount-page");
-    document.body.dataset.page = "discount";
-
-    const price = getNumber(["price", "originalPrice", "amount"]);
-    const discount = getNumber(["discount", "discountRate", "percent"]);
-
-    const panel = getDiscountPanel();
-    const result =
-      document.getElementById("discountResult") ||
-      document.getElementById("result");
-
-    if (!panel) return;
-
-    if (
-      !Number.isFinite(price) ||
-      !Number.isFinite(discount) ||
-      price <= 0 ||
-      discount < 0 ||
-      discount > 100
-    ) {
-      if (result) {
-        result.style.display = "block";
-        result.innerText = "Please enter valid discount details.";
-      }
-
-      panel.hidden = true;
-      hideOldDiscountOutputs();
-      return;
-    }
-
-    const savings = price * discount / 100;
-    const finalPrice = price - savings;
-
-    const resultText =
-      "• Original price: " + money(price) + "\n" +
-      "• Discount: " + discount + "%\n" +
-      "• Savings: " + money(savings) + "\n" +
-      "• Final price: " + money(finalPrice);
-
-    const body = panel.querySelector(".stable-result-body");
-
-    if (body) {
-      body.innerHTML =
-        '<ul class="discount-point-result">' +
-          '<li><strong>Original price:</strong> ' + money(price) + '</li>' +
-          '<li><strong>Discount:</strong> ' + discount + '%</li>' +
-          '<li><strong>Savings:</strong> ' + money(savings) + '</li>' +
-          '<li><strong>Final price:</strong> ' + money(finalPrice) + '</li>' +
-        '</ul>';
-    }
-
-    panel.hidden = false;
-    panel.style.removeProperty("display");
-
-    const copyBtn = panel.querySelector(".stable-copy-btn");
-
-    if (copyBtn) {
-      copyBtn.onclick = function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        copyText(resultText, copyBtn);
-      };
-    }
-
-    hideOldDiscountOutputs();
-  }
-
-  function startDiscountResultBox() {
-    if (!isDiscountPage()) return;
-
-    window.calculateDiscount = renderDiscountResultBox;
-
-    document.addEventListener(
-      "click",
-      function (event) {
-        const button = event.target.closest("button");
-        if (!button) return;
-
-        const text = button.textContent.trim().toLowerCase();
-        const onclick = button.getAttribute("onclick") || "";
-
-        if (text.includes("calculate") || onclick.includes("calculateDiscount")) {
-          setTimeout(renderDiscountResultBox, 0);
-          setTimeout(renderDiscountResultBox, 250);
-          setTimeout(renderDiscountResultBox, 700);
-          setTimeout(renderDiscountResultBox, 1200);
-        }
-      },
-      true
-    );
-
-    document.addEventListener(
-      "keydown",
-      function (event) {
-        if (event.key === "Enter") {
-          setTimeout(renderDiscountResultBox, 250);
-          setTimeout(renderDiscountResultBox, 700);
-        }
-      },
-      true
-    );
-
-    setTimeout(hideOldDiscountOutputs, 500);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startDiscountResultBox);
-  } else {
-    startDiscountResultBox();
-  }
-})();
