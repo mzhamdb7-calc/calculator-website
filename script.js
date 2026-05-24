@@ -759,7 +759,7 @@
 
     if (result) {
       result.innerText =
-        formatDateDMY(birthdate) + " to " + formatDateDMY(targetDate) + "\n" +
+        "Date range: " + formatDateDMY(birthdate) + " to " + formatDateDMY(targetDate) + "\n" +
         "Normal age: " + normalAge + " years old\n" +
         "Asian age: " + asianAge + " years old";
       result.style.display = "none";
@@ -1429,7 +1429,7 @@
       if (!birthdate || normalAge === "" || asianAge === "") return [];
 
       return [
-        [ formatDateDMY(birthdate) + " to " + formatDateDMY(targetDate)],
+        ["Date range", formatDateDMY(birthdate) + " to " + formatDateDMY(targetDate)],
         ["Normal age", normalAge + " years old"],
         ["Asian age", asianAge + " years old"]
       ];
