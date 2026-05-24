@@ -4660,3 +4660,255 @@
     startRenameLoanMonthlyLabels();
   }
 })();
+/* =====================================================
+   LOAN CALCULATOR: POINT FORM RESULT ONLY
+   - Removes result table
+   - Removes graph
+   - Shows result in point/bullet form
+   - Keeps optional mortgage costs ignored for these loan-only values
+===================================================== */
+(function () {
+  "use strict";
+
+  function isLoanPage() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      title.includes("loan") ||
+      !!document.getElementById("loanResult")
+    );
+  }
+
+  function getNumber(ids) {
+    for (const id of ids) {
+      const input = document.getElementById(id);
+      if (!input) continue;
+
+      const value = Number(String(input.value || "").replace(/,/g, "").trim());
+      if (Number.isFinite(value)) return value;
+    }
+
+    return NaN;
+  }
+
+  function money(value) {
+    return Number(value).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function calculateLoanPaymentFinal(principal, annualRate, years) {
+    const months = years * 12;
+    const monthlyRate = annualRate / 100 / 12;
+
+    if (monthlyRate === 0) {
+      return principal / months;
+    }
+
+    return (
+      principal *
+      monthlyRate *
+      Math.pow(1 + monthlyRate, months)
+    ) / (
+      Math.pow(1 + monthlyRate, months) - 1
+    );
+  }
+
+  function getLoanPointPanel() {
+    const main =
+      document.querySelector("main.pc-calculator-layout") ||
+      document.querySelector("main");
+
+    const calculator = main ? main.querySelector(".calculator") : null;
+    if (!calculator) return null;
+
+    let panel = document.getElementById("loanExternalOutput");
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = "loanExternalOutput";
+      panel.className = "loan-external-output loan-point-output";
+      panel.setAttribute("aria-label", "Loan result");
+      calculator.insertAdjacentElement("afterend", panel);
+    }
+
+    panel.classList.add("loan-point-output");
+
+    return panel;
+  }
+
+  function copyText(text, button) {
+    if (!text) return;
+
+    function copied() {
+      const old = button.textContent;
+      button.textContent = "Copied!";
+
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(copied).catch(function () {
+        fallbackCopy(text);
+        copied();
+      });
+    } else {
+      fallbackCopy(text);
+      copied();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function renderLoanPointResult(amount, annualRate, years) {
+    const panel = getLoanPointPanel();
+    if (!panel) return;
+
+    const monthlyPI = calculateLoanPaymentFinal(amount, annualRate, years);
+    const fullPaymentValue = monthlyPI * years * 12;
+    const fullLoanInterest = fullPaymentValue - amount;
+    const yearlyInterest = fullLoanInterest / years;
+    const yearlyPayment = monthlyPI * 12;
+
+    panel.hidden = false;
+
+    panel.innerHTML =
+      '<div class="loan-output-top loan-point-top">' +
+        '<div class="loan-result-panel loan-point-panel">' +
+          '<h2 class="loan-panel-title">Result</h2>' +
+          '<div class="loan-result-body">' +
+            '<ul class="loan-point-result">' +
+              '<li><strong>Principal + interest monthly:</strong> ' + money(monthlyPI) + '</li>' +
+              '<li><strong>Yearly interest:</strong> ' + money(yearlyInterest) + '</li>' +
+              '<li><strong>Yearly payment:</strong> ' + money(yearlyPayment) + '</li>' +
+              '<li><strong>Full loan interest:</strong> ' + money(fullLoanInterest) + '</li>' +
+              '<li><strong>Full payment value:</strong> ' + money(fullPaymentValue) + '</li>' +
+            '</ul>' +
+          '</div>' +
+        '</div>' +
+        '<div class="loan-copy-side">' +
+          '<button type="button" class="loan-copy-btn">Copy</button>' +
+        '</div>' +
+      '</div>';
+
+    const copyBtn = panel.querySelector(".loan-copy-btn");
+
+    if (copyBtn) {
+      copyBtn.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        copyText(
+          "• Principal + interest monthly: " + money(monthlyPI) + "\n" +
+          "• Yearly interest: " + money(yearlyInterest) + "\n" +
+          "• Yearly payment: " + money(yearlyPayment) + "\n" +
+          "• Full loan interest: " + money(fullLoanInterest) + "\n" +
+          "• Full payment value: " + money(fullPaymentValue),
+          copyBtn
+        );
+      };
+    }
+
+    const result = document.getElementById("loanResult") || document.getElementById("result");
+
+    if (result) {
+      result.innerText =
+        "Principal + interest monthly: " + money(monthlyPI) + "\n" +
+        "Yearly interest: " + money(yearlyInterest) + "\n" +
+        "Yearly payment: " + money(yearlyPayment) + "\n" +
+        "Full loan interest: " + money(fullLoanInterest) + "\n" +
+        "Full payment value: " + money(fullPaymentValue);
+
+      result.style.display = "none";
+    }
+  }
+
+  function calculateLoanPointOnly() {
+    if (!isLoanPage()) return;
+
+    const amount = getNumber(["amount", "loanAmount", "principal", "loanPrincipal"]);
+    const annualRate = getNumber(["interest", "loanRate", "interestRate", "annualRate", "rate"]);
+    const years = getNumber(["years", "loanYears", "loanTerm", "term"]);
+
+    const result = document.getElementById("loanResult") || document.getElementById("result");
+
+    if (
+      !Number.isFinite(amount) ||
+      !Number.isFinite(annualRate) ||
+      !Number.isFinite(years) ||
+      amount <= 0 ||
+      annualRate < 0 ||
+      years <= 0
+    ) {
+      if (result) {
+        result.style.display = "block";
+        result.innerText = "Please enter valid loan details.";
+      }
+
+      const panel = document.getElementById("loanExternalOutput");
+      if (panel) panel.hidden = true;
+
+      return;
+    }
+
+    renderLoanPointResult(amount, annualRate, years);
+  }
+
+  function startLoanPointOnlyResult() {
+    if (!isLoanPage()) return;
+
+    document.body.classList.add("loan-page");
+    document.body.dataset.page = "loan";
+
+    window.calculateLoan = calculateLoanPointOnly;
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (text.includes("calculate") || onclick.includes("calculateLoan")) {
+          setTimeout(calculateLoanPointOnly, 0);
+          setTimeout(calculateLoanPointOnly, 150);
+          setTimeout(calculateLoanPointOnly, 400);
+        }
+
+        if (text.includes("clear")) {
+          const panel = document.getElementById("loanExternalOutput");
+          if (panel) panel.hidden = true;
+        }
+      },
+      true
+    );
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startLoanPointOnlyResult);
+  } else {
+    startLoanPointOnlyResult();
+  }
+})();
