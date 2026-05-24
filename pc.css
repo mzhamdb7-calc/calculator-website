@@ -3025,3 +3025,34 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     margin: 8px 0 !important;
   }
 }
+
+/* =====================================================
+   PC ONLY: Discount result box point form
+===================================================== */
+@media (min-width: 851px) {
+  body.discount-page #universalLoanStyleOutput {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  body.discount-page #stableDiscountOutput {
+    grid-column: 1 / 3 !important;
+  }
+
+  body.discount-page .discount-point-result {
+    list-style-position: inside !important;
+    text-align: center !important;
+    font-weight: bold !important;
+    line-height: 1.5 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body.discount-page .discount-point-result li {
+    text-align: center !important;
+    margin: 8px 0 !important;
+  }
+}
+
+
