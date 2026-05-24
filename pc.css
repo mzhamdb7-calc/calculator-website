@@ -2737,3 +2737,36 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
   }
 }
 
+/* =====================================================
+   PC ONLY: BMI waist/height fraction label
+===================================================== */
+@media (min-width: 851px) {
+  .bmi-fraction-label {
+    display: inline-grid !important;
+    grid-template-rows: auto 3px auto !important;
+    align-items: center !important;
+    justify-items: center !important;
+
+    margin: 0 4px !important;
+    vertical-align: middle !important;
+
+    font-weight: bold !important;
+    line-height: 1 !important;
+  }
+
+  .bmi-fraction-top,
+  .bmi-fraction-bottom {
+    display: block !important;
+    font-size: 0.8em !important;
+    line-height: 1 !important;
+    text-align: center !important;
+  }
+
+  .bmi-fraction-line {
+    width: 100% !important;
+    min-width: 48px !important;
+    height: 3px !important;
+    background: var(--black) !important;
+    display: block !important;
+  }
+}
