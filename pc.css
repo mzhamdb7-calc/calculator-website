@@ -2914,3 +2914,93 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     box-sizing: border-box !important;
   }
 }
+/* =====================================================
+   PC ONLY: Loan optional cost box smaller, close to input size
+   - Outer optional box no longer full calculator width
+   - Inputs inside stay same size as normal loan inputs
+===================================================== */
+@media (min-width: 851px) {
+  body.loan-page .calculator .optional-mortgage-costs,
+  .loan-calculator-container .calculator .optional-mortgage-costs,
+  main.pc-calculator-layout > .calculator .optional-mortgage-costs {
+    width: min(100%, 540px) !important;
+    max-width: 540px !important;
+    min-width: 0 !important;
+
+    margin: 18px auto 22px !important;
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+    text-align: center !important;
+  }
+
+  body.loan-page .calculator .optional-mortgage-toggle,
+  .loan-calculator-container .calculator .optional-mortgage-toggle,
+  main.pc-calculator-layout > .calculator .optional-mortgage-toggle {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-height: 58px !important;
+    padding: 10px 16px !important;
+
+    font-size: 22px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .calculator .optional-mortgage-content,
+  .loan-calculator-container .calculator .optional-mortgage-content,
+  main.pc-calculator-layout > .calculator .optional-mortgage-content {
+    width: 100% !important;
+    padding: 18px !important;
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .calculator .optional-mortgage-costs label,
+  .loan-calculator-container .calculator .optional-mortgage-costs label,
+  main.pc-calculator-layout > .calculator .optional-mortgage-costs label {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 450px !important;
+
+    display: block !important;
+    margin: 0 auto 12px !important;
+
+    font-size: 24px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .calculator .optional-mortgage-costs input[type="number"],
+  body.loan-page .calculator .optional-mortgage-costs input[type="text"],
+  .loan-calculator-container .calculator .optional-mortgage-costs input[type="number"],
+  .loan-calculator-container .calculator .optional-mortgage-costs input[type="text"],
+  main.pc-calculator-layout > .calculator .optional-mortgage-costs input[type="number"],
+  main.pc-calculator-layout > .calculator .optional-mortgage-costs input[type="text"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 450px !important;
+
+    height: 70px !important;
+    min-height: 70px !important;
+
+    display: block !important;
+    margin: 0 auto 22px !important;
+    padding: 10px 18px !important;
+
+    border: 5px solid var(--black) !important;
+    background: #f8f8f8 !important;
+    box-shadow: inset 4px 4px 0 #ddd !important;
+
+    font-family: inherit !important;
+    font-size: 28px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+
+    box-sizing: border-box !important;
+  }
+}
