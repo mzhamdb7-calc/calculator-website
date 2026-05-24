@@ -2538,3 +2538,16 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     text-align: center !important;
   }
 }
+/* =====================================================
+   PC ONLY: BMI detailed result style
+===================================================== */
+@media (min-width: 851px) {
+  .bmi-detailed-result {
+    min-width: 800px !important;
+    text-align: center !important;
+  }
+
+  .bmi-detailed-result li {
+    text-align: center !important;
+  }
+}
