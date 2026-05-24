@@ -11,16 +11,21 @@
   <title>Mortgage / Personal Loan Calculator</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Free loan calculator to estimate monthly loan payments online.">
+  <meta
+    name="description"
+    content="Free mortgage and personal loan calculator to estimate monthly payment, full loan interest, and full payment value."
+  >
 
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="pc.css" media="screen and (min-width: 851px)">
-<link rel="stylesheet" href="phone.css" media="screen and (max-width: 850px)">
+  <link rel="stylesheet" href="pc.css" media="screen and (min-width: 851px)">
+  <link rel="stylesheet" href="phone.css" media="screen and (max-width: 850px)">
+
   <link rel="icon" href="favicon.ico">
 </head>
 
-<body class="loan-page">
+<body class="loan-page" data-page="loan">
 
   <!-- Go Up Button -->
   <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
@@ -38,7 +43,7 @@
     <a href="index.html">home</a>
 
     <div class="dropdown">
-      <button type="button" class="dropbtn">
+      <button type="button" class="dropbtn" aria-expanded="false">
         calculator
       </button>
 
@@ -59,7 +64,7 @@
           <summary>finance</summary>
 
           <div class="nav-group-links">
-            <a href="loan-calculator.html">loan</a>
+            <a href="loan-calculator.html">mortgage / personal loan</a>
             <a href="discount-calculator.html">discount</a>
             <a href="compound-interest-calculator.html">compound interest</a>
           </div>
@@ -71,7 +76,7 @@
     </div>
 
     <div class="dropdown about-dropdown">
-      <button type="button" class="dropbtn">
+      <button type="button" class="dropbtn" aria-expanded="false">
         info
       </button>
 
@@ -90,7 +95,7 @@
     <section class="loan-history-box">
 
       <div class="loan-history-top">
-        <h3>History</h3>
+        <h3>Input</h3>
 
         <button type="button" onclick="clearLoanHistory()" class="clear-btn">
           Clear
@@ -106,18 +111,34 @@
       <h1>Mortgage / Personal Loan Calculator</h1>
 
       <p class="subtitle">
-        Estimate your monthly loan payment.
+        Estimate your monthly payment, full loan interest, and full payment value.
       </p>
 
-      <label for="amount">Loan amount:</label>
-      <input type="number" id="amount" placeholder="Example: 10000">
+      <label for="amount">Loan amount / purchase price:</label>
+      <input
+        type="number"
+        id="amount"
+        placeholder="Example: 10000"
+        inputmode="decimal"
+      >
 
       <label for="interest">Annual interest rate (%):</label>
-      <input type="number" id="interest" placeholder="Example: 5">
-    
+      <input
+        type="number"
+        id="interest"
+        placeholder="Example: 5"
+        inputmode="decimal"
+      >
 
-      <label for="years">Loan years:</label>
-      <input type="number" id="years" placeholder="Example: 2">
+      <label for="years">Loan term in months:</label>
+      <input
+        type="number"
+        id="years"
+        placeholder="Example: 360"
+        inputmode="decimal"
+        aria-label="Loan term in months"
+        data-term-unit="months"
+      >
 
       <button type="button" onclick="calculateLoan()" class="main-btn">
         calculate loan

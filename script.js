@@ -7346,3 +7346,193 @@
     start();
   }
 })();
+/* =====================================================
+   LOAN CALCULATOR: Simplify result box
+   Keep only:
+   - Monthly payment
+   - Full loan interest
+   - Full payment value
+===================================================== */
+(function () {
+  "use strict";
+
+  const KEEP_LABELS = [
+    "monthly payment",
+    "full loan interest",
+    "full payment value"
+  ];
+
+  function isLoanPage() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      title.includes("loan") ||
+      title.includes("mortgage") ||
+      !!document.getElementById("loanResult") ||
+      !!document.getElementById("loanExternalOutput")
+    );
+  }
+
+  function getLabelFromText(text) {
+    return String(text || "")
+      .replace(/^•\s*/g, "")
+      .split(":")[0]
+      .trim()
+      .toLowerCase();
+  }
+
+  function shouldKeep(text) {
+    const label = getLabelFromText(text);
+    return KEEP_LABELS.includes(label);
+  }
+
+  function copyText(text, button) {
+    if (!text) return;
+
+    function copied() {
+      const old = button.textContent;
+      button.textContent = "Copied!";
+
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(copied).catch(function () {
+        fallbackCopy(text);
+        copied();
+      });
+    } else {
+      fallbackCopy(text);
+      copied();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function simplifyLoanResult() {
+    if (!isLoanPage()) return;
+
+    const panel = document.getElementById("loanExternalOutput");
+    if (!panel) return;
+
+    const list = panel.querySelector(".loan-point-result");
+
+    if (list) {
+      Array.from(list.querySelectorAll("li")).forEach(function (li) {
+        if (!shouldKeep(li.textContent)) {
+          li.remove();
+        }
+      });
+    }
+
+    const table = panel.querySelector(".loan-result-table");
+
+    if (table) {
+      Array.from(table.querySelectorAll("tbody tr")).forEach(function (row) {
+        const firstCell = row.querySelector("td");
+        if (firstCell && !shouldKeep(firstCell.textContent)) {
+          row.remove();
+        }
+      });
+    }
+
+    const copyBtn = panel.querySelector(".loan-copy-btn");
+
+    if (copyBtn) {
+      copyBtn.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        let copyValue = "";
+
+        const finalList = panel.querySelector(".loan-point-result");
+
+        if (finalList) {
+          copyValue = Array.from(finalList.querySelectorAll("li"))
+            .map(function (li) {
+              return "• " + li.textContent.trim();
+            })
+            .join("\n");
+        } else {
+          copyValue = Array.from(panel.querySelectorAll("tbody tr"))
+            .map(function (row) {
+              return Array.from(row.querySelectorAll("td"))
+                .map(function (cell) {
+                  return cell.textContent.trim();
+                })
+                .join(": ");
+            })
+            .filter(Boolean)
+            .join("\n");
+        }
+
+        copyText(copyValue, copyBtn);
+      };
+    }
+  }
+
+  function start() {
+    if (!isLoanPage()) return;
+
+    simplifyLoanResult();
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (text.includes("calculate") || onclick.includes("calculateLoan")) {
+          setTimeout(simplifyLoanResult, 0);
+          setTimeout(simplifyLoanResult, 200);
+          setTimeout(simplifyLoanResult, 700);
+          setTimeout(simplifyLoanResult, 1200);
+        }
+      },
+      true
+    );
+
+    const main = document.querySelector("main");
+
+    if (main && main.dataset.loanSimpleResultObserverReady !== "true") {
+      main.dataset.loanSimpleResultObserverReady = "true";
+
+      const observer = new MutationObserver(function () {
+        setTimeout(simplifyLoanResult, 0);
+      });
+
+      observer.observe(main, {
+        childList: true,
+        subtree: true
+      });
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
