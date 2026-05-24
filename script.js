@@ -1429,7 +1429,7 @@
       if (!birthdate || normalAge === "" || asianAge === "") return [];
 
       return [
-        ["Date range", formatDateDMY(birthdate) + " to " + formatDateDMY(targetDate)],
+        [ formatDateDMY(birthdate) + " to " + formatDateDMY(targetDate)],
         ["Normal age", normalAge + " years old"],
         ["Asian age", asianAge + " years old"]
       ];
