@@ -5001,3 +5001,71 @@
     start();
   }
 })();
+/* =====================================================
+   LOAN: REMOVE "MORTGAGE" AND "HOA" TEXT
+   - Optional mortgage costs -> Optional costs
+   - HOA / other fees per month -> Other monthly fees
+===================================================== */
+(function () {
+  "use strict";
+
+  function isLoanPage() {
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      !!document.getElementById("loanResult")
+    );
+  }
+
+  function cleanOptionalCostText() {
+    if (!isLoanPage()) return;
+
+    const box = document.querySelector(".optional-mortgage-costs");
+    if (!box) return;
+
+    const title =
+      box.querySelector(".optional-mortgage-title") ||
+      box.querySelector(".optional-mortgage-toggle span:first-child");
+
+    if (title) {
+      title.textContent = "Optional costs";
+    }
+
+    const labels = box.querySelectorAll("label");
+
+    labels.forEach(function (label) {
+      const text = label.textContent.trim().toLowerCase();
+
+      if (text.includes("hoa")) {
+        label.textContent = "Other monthly fees:";
+      }
+    });
+
+    const note = box.querySelector(".optional-mortgage-note");
+
+    if (note) {
+      note.textContent = "Leave these empty if you only want the basic loan payment.";
+    }
+  }
+
+  function startCleanOptionalCostText() {
+    if (!isLoanPage()) return;
+
+    cleanOptionalCostText();
+
+    setTimeout(cleanOptionalCostText, 300);
+    setTimeout(cleanOptionalCostText, 900);
+    setTimeout(cleanOptionalCostText, 1500);
+
+    document.addEventListener("click", function () {
+      setTimeout(cleanOptionalCostText, 0);
+      setTimeout(cleanOptionalCostText, 200);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startCleanOptionalCostText);
+  } else {
+    startCleanOptionalCostText();
+  }
+})();
