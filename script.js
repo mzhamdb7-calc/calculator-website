@@ -4579,3 +4579,84 @@
     startOptionalMortgageCosts();
   }
 })();
+/* =====================================================
+   LOAN / MORTGAGE: Rename "Total monthly payment"
+   to "Monthly payment"
+===================================================== */
+(function () {
+  "use strict";
+
+  function isLoanPage() {
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      !!document.getElementById("loanResult")
+    );
+  }
+
+  function renameLoanMonthlyLabels() {
+    if (!isLoanPage()) return;
+
+    const panel = document.getElementById("loanExternalOutput");
+    if (!panel) return;
+
+    panel.querySelectorAll("th, td").forEach(function (cell) {
+      const text = cell.textContent.trim().toLowerCase();
+
+      if (
+        text === "total monthly payment" ||
+        text === "total monthly" ||
+        text === "total monthly payment by years"
+      ) {
+        cell.textContent = "Monthly payment";
+      }
+    });
+  }
+
+  function startRenameLoanMonthlyLabels() {
+    if (!isLoanPage()) return;
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (text.includes("calculate") || onclick.includes("calculateLoan")) {
+          setTimeout(renameLoanMonthlyLabels, 0);
+          setTimeout(renameLoanMonthlyLabels, 200);
+          setTimeout(renameLoanMonthlyLabels, 600);
+        }
+      },
+      true
+    );
+
+    const panel = document.getElementById("loanExternalOutput");
+
+    if (panel && panel.dataset.monthlyLabelObserverReady !== "true") {
+      panel.dataset.monthlyLabelObserverReady = "true";
+
+      const observer = new MutationObserver(function () {
+        setTimeout(renameLoanMonthlyLabels, 0);
+      });
+
+      observer.observe(panel, {
+        childList: true,
+        subtree: true,
+        characterData: true
+      });
+    }
+
+    setTimeout(renameLoanMonthlyLabels, 300);
+    setTimeout(renameLoanMonthlyLabels, 900);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startRenameLoanMonthlyLabels);
+  } else {
+    startRenameLoanMonthlyLabels();
+  }
+})();
