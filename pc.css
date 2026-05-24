@@ -2504,3 +2504,37 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     border-bottom: 4px solid var(--black) !important;
   }
 }
+/* =====================================================
+   PC ONLY: Center optional cost box text
+===================================================== */
+@media (min-width: 851px) {
+  .optional-mortgage-costs,
+  .optional-mortgage-costs * {
+    text-align: center !important;
+  }
+
+  .optional-mortgage-toggle {
+    justify-content: center !important;
+    text-align: center !important;
+    position: relative !important;
+  }
+
+  .optional-mortgage-toggle span:first-child {
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  .optional-mortgage-arrow {
+    position: absolute !important;
+    right: 16px !important;
+  }
+
+  .optional-mortgage-content label,
+  .optional-mortgage-note {
+    text-align: center !important;
+  }
+
+  .optional-mortgage-content input {
+    text-align: center !important;
+  }
+}
