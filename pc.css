@@ -2653,3 +2653,22 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     color: var(--black) !important;
   }
 }
+/* =====================================================
+   PC ONLY: Force Age result date range format
+===================================================== */
+@media (min-width: 851px) {
+  body.age-page #universalLoanStyleOutput {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  body.age-page .age-final-range-result {
+    text-align: center !important;
+    list-style-position: inside !important;
+  }
+
+  body.age-page .age-final-range-result li {
+    text-align: center !important;
+  }
+}
