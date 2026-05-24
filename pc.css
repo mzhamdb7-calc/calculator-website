@@ -2653,3 +2653,75 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     color: var(--black) !important;
   }
 }
+/* =====================================================
+   PC ONLY: Make every page/item 15% smaller
+   Applies to all PC pages only
+===================================================== */
+@media (min-width: 851px) {
+  html {
+    font-size: 85% !important;
+  }
+
+  body {
+    zoom: 0.85 !important;
+  }
+
+  /* Keep page width normal after zoom shrink */
+  body {
+    width: 117.647% !important;
+  }
+
+  /* Smaller thick cartoon borders */
+  .calculator,
+  .calculator-box,
+  .history,
+  .age-history-box,
+  .bmi-history-box,
+  .loan-history-box,
+  .discount-history-box,
+  .percentage-history-box,
+  .compound-history-box,
+  .instruction-box,
+  .reference-box,
+  .card,
+  .group-card,
+  .loan-result-panel,
+  .loan-graph-panel,
+  .stable-result-panel,
+  .optional-mortgage-costs,
+  .bmi-extra-profile-box {
+    border-width: 4px !important;
+    box-shadow: 6px 6px 0 var(--black) !important;
+  }
+
+  /* Smaller buttons */
+  button,
+  .main-btn,
+  .clear-btn,
+  .copy-btn,
+  .history-copy-btn,
+  .loan-copy-btn,
+  .stable-copy-btn,
+  .loan-graph-copy-btn,
+  .ans-btn {
+    border-width: 3px !important;
+    box-shadow: 3px 3px 0 var(--black) !important;
+  }
+
+  /* Smaller input boxes */
+  input,
+  select,
+  textarea {
+    border-width: 3px !important;
+    box-shadow: 3px 3px 0 var(--black) !important;
+  }
+
+  /* Keep fixed buttons usable */
+  #scrollTopBtn,
+  #menuIcon,
+  #pcHelpQuestionButton,
+  #pcQuestionOverlayButton {
+    transform: scale(0.9) !important;
+    transform-origin: center !important;
+  }
+}
