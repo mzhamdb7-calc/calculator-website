@@ -3004,3 +3004,24 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     box-sizing: border-box !important;
   }
 }
+/* =====================================================
+   PC ONLY: Discount result point form
+===================================================== */
+@media (min-width: 851px) {
+  body.discount-page #universalLoanStyleOutput {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  .discount-point-result {
+    list-style-position: inside !important;
+    text-align: center !important;
+    font-weight: bold !important;
+  }
+
+  .discount-point-result li {
+    text-align: center !important;
+    margin: 8px 0 !important;
+  }
+}
