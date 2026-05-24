@@ -5112,3 +5112,301 @@
     start();
   }
 })();
+/* =====================================================
+   BMI CALCULATOR: MORE DETAILED RESULT
+   Adds:
+   - BMI
+   - BMI status
+   - Asian BMI status
+   - Healthy weight range
+   - Weight difference
+   - W/H ratio
+   - W/H condition
+   - Formula used
+===================================================== */
+(function () {
+  "use strict";
+
+  const PANEL_ID = "stableBmiOutput";
+
+  function isBmiPage() {
+    return (
+      document.body.classList.contains("bmi-page") ||
+      document.body.dataset.page === "bmi" ||
+      !!document.getElementById("bmiResult") ||
+      !!document.getElementById("bmiHistoryList")
+    );
+  }
+
+  function getNumber(id) {
+    const input = document.getElementById(id);
+    if (!input) return NaN;
+
+    const value = Number(String(input.value || "").replace(/,/g, "").trim());
+    return Number.isFinite(value) ? value : NaN;
+  }
+
+  function getCurrentUnit() {
+    const btn = document.getElementById("unitToggleBtn");
+
+    if (btn && btn.dataset.currentUnit) {
+      return btn.dataset.currentUnit.toLowerCase() === "us" ? "us" : "si";
+    }
+
+    const saved = localStorage.getItem("bmiUnit") || document.body.dataset.bmiUnit || "si";
+    return String(saved).toLowerCase() === "us" ? "us" : "si";
+  }
+
+  function money(value) {
+    return Number(value).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function bmiStatusStandard(bmi) {
+    if (bmi < 18.5) return "Underweight";
+    if (bmi < 25) return "Healthy weight";
+    if (bmi < 30) return "Overweight";
+    if (bmi < 35) return "Obesity class 1";
+    if (bmi < 40) return "Obesity class 2";
+    return "Obesity class 3";
+  }
+
+  function bmiStatusAsian(bmi) {
+    if (bmi < 18.5) return "Underweight";
+    if (bmi < 23) return "Normal";
+    if (bmi < 27.5) return "Overweight";
+    return "Obese";
+  }
+
+  function whCondition(ratio) {
+    if (!Number.isFinite(ratio)) return "-";
+    if (ratio < 0.4) return "Below healthy range";
+    if (ratio < 0.5) return "Healthy";
+    if (ratio < 0.6) return "Increased risk";
+    return "High risk";
+  }
+
+  function getOrCreatePanel() {
+    const main =
+      document.querySelector("main.pc-calculator-layout") ||
+      document.querySelector("main");
+
+    const calculator = main ? main.querySelector(".calculator") : null;
+    if (!calculator) return null;
+
+    let panel = document.getElementById(PANEL_ID);
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = PANEL_ID;
+      panel.className = "stable-result-output bmi-point-output";
+      panel.setAttribute("aria-label", "BMI detailed result");
+
+      panel.innerHTML =
+        '<div class="stable-result-top">' +
+          '<div class="stable-result-panel">' +
+            '<h2 class="stable-result-title">Result</h2>' +
+            '<div class="stable-result-body"></div>' +
+          '</div>' +
+          '<div class="stable-copy-side">' +
+            '<button type="button" class="stable-copy-btn">Copy</button>' +
+          '</div>' +
+        '</div>';
+
+      calculator.insertAdjacentElement("afterend", panel);
+    }
+
+    return panel;
+  }
+
+  function copyText(text, button) {
+    if (!text) return;
+
+    function copied() {
+      const old = button.textContent;
+      button.textContent = "Copied!";
+
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(copied).catch(function () {
+        fallbackCopy(text);
+        copied();
+      });
+    } else {
+      fallbackCopy(text);
+      copied();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function calculateDetailedBMI() {
+    if (!isBmiPage()) return;
+
+    const unit = getCurrentUnit();
+    const weight = getNumber("weight");
+    const height = getNumber("height");
+    const waist = getNumber("waist");
+
+    const result = document.getElementById("bmiResult") || document.getElementById("result");
+    const panel = getOrCreatePanel();
+
+    if (
+      !Number.isFinite(weight) ||
+      !Number.isFinite(height) ||
+      weight <= 0 ||
+      height <= 0
+    ) {
+      if (result) {
+        result.style.display = "block";
+        result.textContent = "Please enter valid weight and height.";
+      }
+
+      if (panel) panel.hidden = true;
+      return;
+    }
+
+    let bmi;
+    let formulaUsed;
+    let heightM;
+    let healthyMinWeight;
+    let healthyMaxWeight;
+    let weightUnit;
+    let heightUnit;
+    let waistUnit;
+
+    if (unit === "us") {
+      bmi = 703 * weight / (height * height);
+      formulaUsed = "BMI = weight lb ÷ height in² × 703";
+
+      const heightIn = height;
+      healthyMinWeight = 18.5 * heightIn * heightIn / 703;
+      healthyMaxWeight = 24.9 * heightIn * heightIn / 703;
+
+      weightUnit = "lb";
+      heightUnit = "in";
+      waistUnit = "in";
+    } else {
+      heightM = height / 100;
+      bmi = weight / (heightM * heightM);
+      formulaUsed = "BMI = weight kg ÷ height m²";
+
+      healthyMinWeight = 18.5 * heightM * heightM;
+      healthyMaxWeight = 24.9 * heightM * heightM;
+
+      weightUnit = "kg";
+      heightUnit = "cm";
+      waistUnit = "cm";
+    }
+
+    let weightDifference = "Within healthy weight range";
+
+    if (weight < healthyMinWeight) {
+      weightDifference = "Need about " + money(healthyMinWeight - weight) + " " + weightUnit + " to reach healthy range";
+    } else if (weight > healthyMaxWeight) {
+      weightDifference = "Need about " + money(weight - healthyMaxWeight) + " " + weightUnit + " to reach healthy range";
+    }
+
+    const whRatio = Number.isFinite(waist) && waist > 0 ? waist / height : NaN;
+    const whRatioText = Number.isFinite(whRatio) ? whRatio.toFixed(2) : "-";
+
+    const standardStatus = bmiStatusStandard(bmi);
+    const asianStatus = bmiStatusAsian(bmi);
+    const whStatus = whCondition(whRatio);
+
+    const resultText =
+      "• BMI: " + bmi.toFixed(2) + "\n" +
+      "• BMI status: " + standardStatus + "\n" +
+      "• Asian BMI status: " + asianStatus + "\n" +
+      "• Healthy weight range: " + money(healthyMinWeight) + " - " + money(healthyMaxWeight) + " " + weightUnit + "\n" +
+      "• Weight difference: " + weightDifference + "\n" +
+      "• W/H ratio: " + whRatioText + "\n" +
+      "• W/H condition: " + whStatus + "\n" +
+      "• Formula used: " + formulaUsed;
+
+    if (result) {
+      result.textContent = resultText;
+      result.style.display = "none";
+    }
+
+    if (!panel) return;
+
+    const body = panel.querySelector(".stable-result-body");
+    const copyBtn = panel.querySelector(".stable-copy-btn");
+
+    if (body) {
+      body.innerHTML =
+        '<ul class="bmi-point-result bmi-detailed-result">' +
+          '<li><strong>BMI:</strong> ' + bmi.toFixed(2) + '</li>' +
+          '<li><strong>BMI status:</strong> ' + standardStatus + '</li>' +
+          '<li><strong>Asian BMI status:</strong> ' + asianStatus + '</li>' +
+          '<li><strong>Healthy weight range:</strong> ' + money(healthyMinWeight) + ' - ' + money(healthyMaxWeight) + ' ' + weightUnit + '</li>' +
+          '<li><strong>Weight difference:</strong> ' + weightDifference + '</li>' +
+          '<li><strong>W/H ratio:</strong> ' + whRatioText + '</li>' +
+          '<li><strong>W/H condition:</strong> ' + whStatus + '</li>' +
+          '<li><strong>Formula used:</strong> ' + formulaUsed + '</li>' +
+        '</ul>';
+    }
+
+    panel.hidden = false;
+
+    if (copyBtn) {
+      copyBtn.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        copyText(resultText, copyBtn);
+      };
+    }
+  }
+
+  function startDetailedBmiResult() {
+    if (!isBmiPage()) return;
+
+    window.calculateBMI = calculateDetailedBMI;
+    window.calculateBmi = calculateDetailedBMI;
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (text.includes("calculate bmi") || onclick.includes("calculateBMI")) {
+          setTimeout(calculateDetailedBMI, 0);
+          setTimeout(calculateDetailedBMI, 200);
+          setTimeout(calculateDetailedBMI, 600);
+        }
+      },
+      true
+    );
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startDetailedBmiResult);
+  } else {
+    startDetailedBmiResult();
+  }
+})();
