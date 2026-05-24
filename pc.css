@@ -2770,3 +2770,78 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     display: block !important;
   }
 }
+/* =====================================================
+   PC ONLY: Loan optional cost inputs same size as calculator inputs
+===================================================== */
+@media (min-width: 851px) {
+  body.loan-page .calculator .optional-mortgage-costs,
+  .loan-calculator-container .calculator .optional-mortgage-costs,
+  main.pc-calculator-layout > .calculator .optional-mortgage-costs {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+  }
+
+  body.loan-page .calculator .optional-mortgage-content label,
+  .loan-calculator-container .calculator .optional-mortgage-content label,
+  main.pc-calculator-layout > .calculator .optional-mortgage-content label {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    display: block !important;
+    margin: 8px auto 6px !important;
+
+    font-size: 16px !important;
+    line-height: 1.25 !important;
+    font-weight: bold !important;
+    text-align: center !important;
+  }
+
+  body.loan-page .calculator .optional-mortgage-content input,
+  body.loan-page .calculator .optional-mortgage-content select,
+  .loan-calculator-container .calculator .optional-mortgage-content input,
+  .loan-calculator-container .calculator .optional-mortgage-content select,
+  main.pc-calculator-layout > .calculator .optional-mortgage-content input,
+  main.pc-calculator-layout > .calculator .optional-mortgage-content select {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    min-height: 40px !important;
+    height: auto !important;
+
+    padding: 8px 10px !important;
+    margin: 5px 0 9px !important;
+
+    font-family: inherit !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+
+    text-align: center !important;
+    text-align-last: center !important;
+
+    border: 3px solid var(--black) !important;
+    background: #f8f8f8 !important;
+    box-shadow: inset 3px 3px 0 #ddd !important;
+
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .calculator .optional-mortgage-toggle,
+  .loan-calculator-container .calculator .optional-mortgage-toggle,
+  main.pc-calculator-layout > .calculator .optional-mortgage-toggle {
+    width: 100% !important;
+    min-height: 40px !important;
+
+    padding: 8px 10px !important;
+
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+
+    box-sizing: border-box !important;
+  }
+}
