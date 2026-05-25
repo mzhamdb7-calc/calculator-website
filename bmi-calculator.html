@@ -85,7 +85,22 @@
   </nav>
 
   <!-- Main Content -->
-  <main class="bmi-calculator-container no-history-layout">
+  <main class="bmi-calculator-container">
+
+    <section class="bmi-history-box">
+
+      <div class="bmi-history-top">
+        <h3>History</h3>
+
+        <button type="button" onclick="clearBMIHistory()" class="clear-btn">
+          Clear
+        </button>
+      </div>
+
+      <ul id="bmiHistoryList"></ul>
+
+    </section>
+
     <section class="calculator bmi-calculator-box">
 
       <div class="bmi-title-row">
@@ -104,28 +119,21 @@
 </button>
       </div>
 
-      <div class="bmi-input-two-box-row">
+      <label for="weight" id="weightLabel">Weight in kg:</label>
+      <input type="number" id="weight" placeholder="Example: 70">
 
-  <div class="bmi-body-input-box">
-    <h2 class="bmi-box-title">Body details</h2>
+      <label for="height" id="heightLabel">Height in cm:</label>
+      <input type="number" id="height" placeholder="Example: 170">
 
-    <label for="weight" id="weightLabel">Weight in kg:</label>
-    <input type="number" id="weight" placeholder="Example: 70">
+      <label for="waist" id="waistLabel">Waist circumference in cm:</label>
+      <input type="number" id="waist" placeholder="Optional, Example: 80">
 
-    <label for="height" id="heightLabel">Height in cm:</label>
-    <input type="number" id="height" placeholder="Example: 170">
+      <button type="button" onclick="calculateBMI()" class="main-btn">
+        calculate bmi
+      </button>
 
-    <label for="waist" id="waistLabel">Waist circumference in cm:</label>
-    <input type="number" id="waist" placeholder="Optional, Example: 80">
-  </div>
+      <h2 id="bmiResult"></h2>
 
-  <div class="bmi-extra-profile-box">
-    <h2 class="bmi-box-title">Profile</h2>
-  </div>
-
-</div>
-
-<h2 id="bmiResult"></h2>
     </section>
 
   </main>

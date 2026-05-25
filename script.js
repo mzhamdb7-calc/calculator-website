@@ -1106,7 +1106,7 @@
       },
       age: {
         what: "It calculates normal age and Asian age from a selected birth date.",
-        how: "Select your birth date and the result updates automatically.",
+        how: "Select your birth date, then press calculate age.",
         formula: "Normal age is based on the difference between today and the birth date. Asian age uses current year − birth year + 1.",
         example: "If someone was born in 2000 and the current year is 2026, Asian age is 27.",
         references: [
@@ -1115,7 +1115,7 @@
       },
       bmi: {
         what: "It calculates Body Mass Index and can also check waist-to-height ratio.",
-        how: "Choose SI or US units, enter weight and height, optionally enter waist size, and the result updates automatically.",
+        how: "Choose SI or US units, enter weight and height, optionally enter waist size, then press calculate BMI.",
         formula: "SI: BMI = weight kg ÷ height m². US: BMI = weight lb ÷ height inch² × 703.",
         example: "70 kg and 1.70 m gives BMI = 70 ÷ 1.70² = 24.22.",
         references: [
@@ -1124,7 +1124,7 @@
       },
       loan: {
         what: "It estimates mortgage or personal loan monthly payment, interest, total payment, and remaining balance.",
-        how: "Enter loan amount or purchase price, annual interest rate, and loan term in months. The result updates automatically.",
+        how: "Enter loan amount or purchase price, annual interest rate, and loan term in months. Then press calculate loan.",
         formula: "Monthly Payment = P × r × (1 + r)ⁿ ÷ ((1 + r)ⁿ − 1), where n is the loan term in months.",
         example: "A 10,000 loan at 5% yearly for 60 months gives an estimated monthly payment using the amortization formula.",
         references: [
@@ -1134,7 +1134,7 @@
       },
       discount: {
         what: "It calculates final price after discount and how much money you save.",
-        how: "Enter the original price and discount percentage and the result updates automatically.",
+        how: "Enter the original price and discount percentage, then press calculate discount.",
         formula: "Savings = original price × discount ÷ 100. Final price = original price − savings.",
         example: "If price is 100 and discount is 20%, savings = 20 and final price = 80.",
         references: [
@@ -1144,7 +1144,7 @@
       },
       percentage: {
         what: "It calculates a percentage of a number.",
-        how: "Enter the percentage value and the number and the result updates automatically.",
+        how: "Enter the percentage value and the number, then press calculate percentage.",
         formula: "Result = percentage ÷ 100 × number.",
         example: "20% of 150 = 20 ÷ 100 × 150 = 30.",
         references: [
@@ -1154,7 +1154,7 @@
       },
       compound: {
         what: "It estimates how much your money can grow when interest is added repeatedly over time.",
-        how: "Enter principal amount, annual interest rate, time in years, and compounding frequency. The result updates automatically.",
+        how: "Enter principal amount, annual interest rate, time in years, and compounding frequency. Then press calculate compound interest.",
         formula: "A = P(1 + r/n)ⁿᵗ. Compound Interest = A − P.",
         example: "P = 1000, r = 5%, t = 10 years, n = 12 gives about 1,647.01 future value and 647.01 compound interest.",
         references: [
@@ -1699,9 +1699,8 @@
       hideOldAgePanels();
     }
 
-    if (getPageType() === "basic") {
-      showHistory();
-    }
+    if (getPageType() === "basic") showHistory();
+    else renderInputHistory(getPageType());
 
     setTimeout(renderUniversalLoanStyleResult, 250);
   }
@@ -3737,31 +3736,7 @@
     return box;
   }
 
-  function removeDuplicateOtherMonthlyFees() {
-    const legacyInput = document.getElementById("hoaMonthly");
-    const newerInput = document.getElementById("otherMonthlyFees");
-
-    if (!legacyInput) return;
-
-    const legacyLabel = document.querySelector('label[for="hoaMonthly"]');
-    if (legacyLabel) legacyLabel.textContent = "Other monthly fees:";
-
-    legacyInput.placeholder = "Optional";
-    legacyInput.setAttribute("inputmode", "decimal");
-
-    if (newerInput) {
-      const newerLabel = document.querySelector('label[for="otherMonthlyFees"]');
-      if (newerLabel) newerLabel.remove();
-      newerInput.remove();
-    }
-  }
-
   function appendOptionalInput(content, id, labelText, placeholder) {
-    if (id === "otherMonthlyFees" && document.getElementById("hoaMonthly")) {
-      removeDuplicateOtherMonthlyFees();
-      return;
-    }
-
     if (document.getElementById(id)) return;
 
     const label = document.createElement("label");
@@ -3804,7 +3779,6 @@
     appendOptionalInput(content, "propertyTaxYearly", "Property tax yearly:", "Optional");
     appendOptionalInput(content, "homeInsuranceYearly", "Home insurance yearly:", "Optional");
     appendOptionalInput(content, "otherMonthlyFees", "Other monthly fees:", "Optional");
-    removeDuplicateOtherMonthlyFees();
   }
 
   function calculateMonthlyPaymentFromMonths(principal, annualRate, months) {
