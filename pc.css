@@ -5211,3 +5211,107 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     box-sizing: border-box !important;
   }
 }
+/* =====================================================
+   PC: Make every "What does this calculator do?" box
+   same size as Basic Calculator what box
+   CSS only - no JavaScript
+===================================================== */
+@media (min-width: 851px) {
+  /* Give non-basic pages enough page width for the Basic-size What box */
+  body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout,
+  body:not(.basic-page) main.pc-calculator-layout.no-history-layout,
+  body:not(.basic-page) main.no-history-layout {
+    width: 100% !important;
+    max-width: min(1220px, calc(100vw - 32px)) !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    justify-content: center !important;
+    overflow: visible !important;
+  }
+
+  /* Keep calculator/input box normal size while What box becomes Basic-size */
+  body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout > .calculator,
+  body:not(.basic-page) main.pc-calculator-layout.no-history-layout > .calculator,
+  body:not(.basic-page) main.no-history-layout > .calculator {
+    width: 100% !important;
+    max-width: 760px !important;
+    justify-self: center !important;
+  }
+
+  /* Main What box wrapper - same width as Basic Calculator */
+  main.pc-calculator-layout > .pc-what-slot,
+  body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout > .pc-what-slot,
+  body:not(.basic-page) main.pc-calculator-layout.no-history-layout > .pc-what-slot,
+  body:not(.basic-page) main.no-history-layout > .pc-what-slot {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+
+    width: min(1220px, calc(100vw - 32px)) !important;
+    max-width: min(1220px, calc(100vw - 32px)) !important;
+    min-width: 0 !important;
+
+    margin: 0 auto !important;
+    padding: 0 !important;
+
+    justify-self: center !important;
+    align-self: start !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  /* Actual What box - same height/style as Basic Calculator */
+  main.pc-calculator-layout > .pc-what-slot .instruction-what-box,
+  body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout > .pc-what-slot .instruction-what-box,
+  body:not(.basic-page) main.pc-calculator-layout.no-history-layout > .pc-what-slot .instruction-what-box,
+  body:not(.basic-page) main.no-history-layout > .pc-what-slot .instruction-what-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    min-height: 92px !important;
+    margin: 0 !important;
+    padding: 14px 18px !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: #ffd3d3 !important;
+    color: var(--black) !important;
+
+    border: 5px solid var(--black) !important;
+    box-shadow: 8px 8px 0 var(--black) !important;
+
+    text-align: center !important;
+    box-sizing: border-box !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+  }
+
+  main.pc-calculator-layout > .pc-what-slot .instruction-what-box h3 {
+    width: 100% !important;
+    min-height: 26px !important;
+    margin: 0 0 6px !important;
+
+    font-size: 18px !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+  }
+
+  main.pc-calculator-layout > .pc-what-slot .instruction-what-box p {
+    width: 100% !important;
+    min-height: 42px !important;
+    margin: 0 !important;
+
+    font-size: 15px !important;
+    font-weight: bold !important;
+    line-height: 1.35 !important;
+    text-align: center !important;
+  }
+}
