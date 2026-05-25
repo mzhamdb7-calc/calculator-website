@@ -9644,3 +9644,487 @@
     start();
   }
 })();
+/* =====================================================
+   COMPOUND INTEREST: Monthly / Weekly / Daily additional money
+   - Adds optional additional money input
+   - Adds contribution frequency: monthly / weekly / daily
+   - Replaces old compound result table
+   - New table: item row vs year column
+===================================================== */
+(function () {
+  "use strict";
+
+  const PANEL_ID = "compoundYearMatrixOutput";
+
+  function isCompoundPage() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    return (
+      document.body.classList.contains("compound-page") ||
+      document.body.dataset.page === "compound" ||
+      title.includes("compound") ||
+      window.location.pathname.includes("compound-interest-calculator") ||
+      !!document.getElementById("compoundResult")
+    );
+  }
+
+  function getNumber(ids) {
+    for (const id of ids) {
+      const input = document.getElementById(id);
+      if (!input) continue;
+
+      const value = Number(String(input.value || "").replace(/,/g, "").trim());
+      if (Number.isFinite(value)) return value;
+    }
+
+    return NaN;
+  }
+
+  function getValue(ids) {
+    for (const id of ids) {
+      const input = document.getElementById(id);
+      if (!input) continue;
+
+      const value = String(input.value || "").trim();
+      if (value) return value;
+    }
+
+    return "";
+  }
+
+  function money(value) {
+    return Number(value).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function getCompoundingPerYear(value) {
+    const text = String(value || "").trim().toLowerCase();
+
+    if (text === "daily") return 365;
+    if (text === "weekly") return 52;
+    if (text === "monthly") return 12;
+    if (text === "quarterly") return 4;
+    if (text === "yearly" || text === "annually" || text === "annual") return 1;
+
+    const number = Number(text);
+    return Number.isFinite(number) && number > 0 ? number : 1;
+  }
+
+  function getContributionPerYear(value) {
+    const text = String(value || "").trim().toLowerCase();
+
+    if (text === "daily") return 365;
+    if (text === "weekly") return 52;
+
+    return 12;
+  }
+
+  function getContributionLabel(value) {
+    const text = String(value || "").trim().toLowerCase();
+
+    if (text === "daily") return "Daily";
+    if (text === "weekly") return "Weekly";
+
+    return "Monthly";
+  }
+
+  function ensureAdditionalMoneyInputs() {
+    if (!isCompoundPage()) return;
+
+    const calculator = document.querySelector(".calculator");
+    if (!calculator) return;
+
+    const calculateBtn =
+      calculator.querySelector("button.main-btn") ||
+      Array.from(calculator.querySelectorAll("button")).find(function (button) {
+        return button.textContent.trim().toLowerCase().includes("calculate");
+      });
+
+    if (!calculateBtn) return;
+
+    if (!document.getElementById("additionalMoney")) {
+      const label = document.createElement("label");
+      label.setAttribute("for", "additionalMoney");
+      label.textContent = "Additional money:";
+
+      const input = document.createElement("input");
+      input.type = "number";
+      input.id = "additionalMoney";
+      input.placeholder = "Optional, example: 100";
+      input.setAttribute("inputmode", "decimal");
+
+      calculateBtn.insertAdjacentElement("beforebegin", input);
+      input.insertAdjacentElement("beforebegin", label);
+    }
+
+    if (!document.getElementById("additionalMoneyFrequency")) {
+      const label = document.createElement("label");
+      label.setAttribute("for", "additionalMoneyFrequency");
+      label.textContent = "Add money every:";
+
+      const select = document.createElement("select");
+      select.id = "additionalMoneyFrequency";
+      select.innerHTML =
+        '<option value="monthly">Monthly</option>' +
+        '<option value="weekly">Weekly</option>' +
+        '<option value="daily">Daily</option>';
+
+      calculateBtn.insertAdjacentElement("beforebegin", select);
+      select.insertAdjacentElement("beforebegin", label);
+    }
+  }
+
+  function getPanel() {
+    const main =
+      document.querySelector("main.pc-calculator-layout") ||
+      document.querySelector("main");
+
+    const calculator = main ? main.querySelector(".calculator") : null;
+    if (!calculator) return null;
+
+    let panel = document.getElementById(PANEL_ID);
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = PANEL_ID;
+      panel.className = "loan-style-output-panel compound-year-matrix-output";
+      panel.setAttribute("aria-label", "Compound interest result table");
+
+      calculator.insertAdjacentElement("afterend", panel);
+    }
+
+    return panel;
+  }
+
+  function hideOldCompoundOutputs() {
+    const universal = document.getElementById("universalLoanStyleOutput");
+
+    if (universal) {
+      universal.hidden = true;
+      universal.style.setProperty("display", "none", "important");
+      universal.style.setProperty("visibility", "hidden", "important");
+      universal.style.setProperty("pointer-events", "none", "important");
+    }
+
+    const result =
+      document.getElementById("compoundResult") ||
+      document.getElementById("result");
+
+    if (result) {
+      result.style.display = "none";
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+    textarea.setAttribute("readonly", "");
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function copyText(text, button) {
+    const value = String(text || "").trim();
+    if (!value) return;
+
+    function copied() {
+      const old = button.textContent;
+      button.textContent = "Copied!";
+
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(value).then(copied).catch(function () {
+        fallbackCopy(value);
+        copied();
+      });
+    } else {
+      fallbackCopy(value);
+      copied();
+    }
+  }
+
+  function buildYearPoints(years) {
+    const fullYears = Math.floor(years);
+    const points = [];
+
+    for (let year = 1; year <= fullYears; year += 1) {
+      points.push(year);
+    }
+
+    if (years > 0 && !Number.isInteger(years)) {
+      points.push(years);
+    }
+
+    return points.slice(0, 60);
+  }
+
+  function calculateYearValue(principal, annualRate, compoundPerYear, year, contribution, contributionPerYear) {
+    const nominalRate = annualRate / 100;
+
+    const effectiveAnnualRate =
+      compoundPerYear > 0
+        ? Math.pow(1 + nominalRate / compoundPerYear, compoundPerYear) - 1
+        : nominalRate;
+
+    const contributionPeriodRate =
+      Math.pow(1 + effectiveAnnualRate, 1 / contributionPerYear) - 1;
+
+    const periods = Math.floor(year * contributionPerYear);
+    const principalValue = principal * Math.pow(1 + effectiveAnnualRate, year);
+
+    let contributionValue = 0;
+
+    if (contribution > 0 && periods > 0) {
+      if (contributionPeriodRate === 0) {
+        contributionValue = contribution * periods;
+      } else {
+        contributionValue =
+          contribution *
+          ((Math.pow(1 + contributionPeriodRate, periods) - 1) / contributionPeriodRate);
+      }
+    }
+
+    const additionalMoney = contribution * periods;
+    const totalMoneyAdded = principal + additionalMoney;
+    const futureValue = principalValue + contributionValue;
+    const interestEarned = futureValue - totalMoneyAdded;
+
+    return {
+      year: year,
+      principal: principal,
+      additionalMoney: additionalMoney,
+      totalMoneyAdded: totalMoneyAdded,
+      interestEarned: interestEarned,
+      futureValue: futureValue
+    };
+  }
+
+  function renderCompoundWithContributionFrequency() {
+    if (!isCompoundPage()) return;
+
+    document.body.classList.add("compound-page");
+    document.body.dataset.page = "compound";
+
+    ensureAdditionalMoneyInputs();
+
+    const principal = getNumber(["principal", "compoundPrincipal", "amount"]);
+    const rate = getNumber(["rate", "compoundRate", "interest", "interestRate"]);
+    const years = getNumber(["years", "compoundYears", "time"]);
+
+    const frequencyRaw = getValue(["frequency", "compoundFrequency"]);
+    const compoundPerYear = getCompoundingPerYear(frequencyRaw);
+
+    const additionalRaw = getNumber(["additionalMoney"]);
+    const additionalMoney =
+      Number.isFinite(additionalRaw) && additionalRaw > 0
+        ? additionalRaw
+        : 0;
+
+    const contributionFrequency = getValue(["additionalMoneyFrequency"]) || "monthly";
+    const contributionPerYear = getContributionPerYear(contributionFrequency);
+    const contributionLabel = getContributionLabel(contributionFrequency);
+
+    const result =
+      document.getElementById("compoundResult") ||
+      document.getElementById("result");
+
+    const panel = getPanel();
+    if (!panel) return;
+
+    if (
+      !Number.isFinite(principal) ||
+      !Number.isFinite(rate) ||
+      !Number.isFinite(years) ||
+      principal <= 0 ||
+      rate < 0 ||
+      years <= 0 ||
+      compoundPerYear <= 0
+    ) {
+      if (result) {
+        result.style.display = "block";
+        result.innerText = "Please enter valid compound interest details.";
+      }
+
+      panel.hidden = true;
+      return;
+    }
+
+    const yearPoints = buildYearPoints(years);
+
+    const values = yearPoints.map(function (year) {
+      return calculateYearValue(
+        principal,
+        rate,
+        compoundPerYear,
+        year,
+        additionalMoney,
+        contributionPerYear
+      );
+    });
+
+    const finalItem = values[values.length - 1];
+    const finalValue = finalItem ? finalItem.futureValue : principal;
+    const finalInterest = finalItem ? finalItem.interestEarned : 0;
+    const finalTotalAdded = finalItem ? finalItem.totalMoneyAdded : principal;
+
+    const headers = values.map(function (item) {
+      return "<th>Year " + item.year + "</th>";
+    }).join("");
+
+    function row(label, key) {
+      return (
+        "<tr>" +
+          "<th>" + label + "</th>" +
+          values.map(function (item) {
+            return "<td>" + money(item[key]) + "</td>";
+          }).join("") +
+        "</tr>"
+      );
+    }
+
+    const copyValue =
+      "Additional money: " + money(additionalMoney) + " " + contributionLabel.toLowerCase() + "\n\n" +
+      "Item\t" + values.map(function (item) { return "Year " + item.year; }).join("\t") + "\n" +
+      "Principal\t" + values.map(function (item) { return money(item.principal); }).join("\t") + "\n" +
+      "Additional money\t" + values.map(function (item) { return money(item.additionalMoney); }).join("\t") + "\n" +
+      "Total money added\t" + values.map(function (item) { return money(item.totalMoneyAdded); }).join("\t") + "\n" +
+      "Interest earned\t" + values.map(function (item) { return money(item.interestEarned); }).join("\t") + "\n" +
+      "Future value\t" + values.map(function (item) { return money(item.futureValue); }).join("\t");
+
+    panel.hidden = false;
+
+    panel.innerHTML =
+      '<div class="loan-output-top">' +
+        '<div class="loan-result-panel compound-year-result-panel">' +
+          '<h2 class="loan-panel-title">Result</h2>' +
+
+          '<div class="compound-summary-row">' +
+            '<div class="compound-summary-card">' +
+              '<span>Future value</span>' +
+              '<strong>' + money(finalValue) + '</strong>' +
+            '</div>' +
+
+            '<div class="compound-summary-card">' +
+              '<span>Interest earned</span>' +
+              '<strong>' + money(finalInterest) + '</strong>' +
+            '</div>' +
+
+            '<div class="compound-summary-card">' +
+              '<span>Total money added</span>' +
+              '<strong>' + money(finalTotalAdded) + '</strong>' +
+            '</div>' +
+          '</div>' +
+
+          '<p class="compound-contribution-note">' +
+            '<strong>Additional money:</strong> ' + money(additionalMoney) + ' ' + contributionLabel.toLowerCase() +
+          '</p>' +
+
+          '<div class="loan-result-body compound-year-table-body">' +
+            '<div class="compound-year-table-box">' +
+              '<h3>Compound interest by year</h3>' +
+
+              '<div class="compound-year-table-scroll">' +
+                '<table class="compound-year-matrix-table">' +
+                  '<thead>' +
+                    '<tr>' +
+                      '<th>Item</th>' +
+                      headers +
+                    '</tr>' +
+                  '</thead>' +
+                  '<tbody>' +
+                    row("Principal", "principal") +
+                    row("Additional money", "additionalMoney") +
+                    row("Total money added", "totalMoneyAdded") +
+                    row("Interest earned", "interestEarned") +
+                    row("Future value", "futureValue") +
+                  '</tbody>' +
+                '</table>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="loan-copy-side">' +
+          '<button type="button" class="loan-copy-btn">Copy</button>' +
+        '</div>' +
+      '</div>';
+
+    hideOldCompoundOutputs();
+
+    const copyBtn = panel.querySelector(".loan-copy-btn");
+
+    if (copyBtn) {
+      copyBtn.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        copyText(copyValue, copyBtn);
+      };
+    }
+  }
+
+  function start() {
+    if (!isCompoundPage()) return;
+
+    ensureAdditionalMoneyInputs();
+
+    window.calculateCompound = renderCompoundWithContributionFrequency;
+    window.calculateCompoundInterest = renderCompoundWithContributionFrequency;
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (text.includes("calculate") || onclick.includes("calculateCompound")) {
+          setTimeout(renderCompoundWithContributionFrequency, 0);
+          setTimeout(renderCompoundWithContributionFrequency, 250);
+          setTimeout(renderCompoundWithContributionFrequency, 700);
+          setTimeout(renderCompoundWithContributionFrequency, 1300);
+          setTimeout(renderCompoundWithContributionFrequency, 1800);
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key === "Enter") {
+          setTimeout(renderCompoundWithContributionFrequency, 250);
+          setTimeout(renderCompoundWithContributionFrequency, 700);
+          setTimeout(renderCompoundWithContributionFrequency, 1300);
+        }
+      },
+      true
+    );
+
+    setTimeout(ensureAdditionalMoneyInputs, 300);
+    setTimeout(hideOldCompoundOutputs, 500);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
