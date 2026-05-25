@@ -8644,109 +8644,61 @@
   }
 })();
 
+
 /* =====================================================
-   AUTO CALCULATE: All calculators except Basic
-   - Runs when user types/selects input
-   - Excludes Basic calculator display
-   - Debounced so it does not calculate every keystroke instantly
+   FINAL AUTO CALCULATE SYSTEM: All calculators except Basic
+   - Removes calculate buttons on non-basic pages
+   - Auto-calculates when inputs/selects change
+   - Adds fallback containers/fields needed by newer Loan and Compound code
+   - Replaces older auto-calc overlay safely
    - No MutationObserver, no loading loop
 ===================================================== */
 (function () {
   "use strict";
 
-  const AUTO_DELAY = 650;
+  const AUTO_DELAY = 450;
 
-  if (window.__nonBasicAutoCalcController) {
-    window.__nonBasicAutoCalcController.abort();
+  if (window.__finalAutoCalcNoButtonController) {
+    window.__finalAutoCalcNoButtonController.abort();
   }
 
   const controller = new AbortController();
-  window.__nonBasicAutoCalcController = controller;
+  window.__finalAutoCalcNoButtonController = controller;
 
   let autoTimer = null;
-  let isAutoCalculating = false;
+  let isCalculating = false;
 
-  function getPageTitle() {
+  function titleText() {
     const h1 = document.querySelector("h1");
     return h1 ? h1.textContent.trim().toLowerCase() : "";
   }
 
   function getPageType() {
-    const title = getPageTitle();
+    const title = titleText();
 
     if (
       document.body.classList.contains("basic-page") ||
       document.body.dataset.page === "basic" ||
       document.getElementById("display") ||
       title.includes("basic")
-    ) {
-      return "basic";
-    }
+    ) return "basic";
 
-    if (
-      document.body.classList.contains("age-page") ||
-      document.body.dataset.page === "age" ||
-      document.getElementById("birthdate") ||
-      title.includes("age")
-    ) {
-      return "age";
-    }
-
-    if (
-      document.body.classList.contains("bmi-page") ||
-      document.body.dataset.page === "bmi" ||
-      document.getElementById("bmiResult") ||
-      title.includes("bmi")
-    ) {
-      return "bmi";
-    }
-
-    if (
-      document.body.classList.contains("loan-page") ||
-      document.body.dataset.page === "loan" ||
-      document.getElementById("loanResult") ||
-      title.includes("loan") ||
-      title.includes("mortgage")
-    ) {
-      return "loan";
-    }
-
-    if (
-      document.body.classList.contains("discount-page") ||
-      document.body.dataset.page === "discount" ||
-      document.getElementById("discountResult") ||
-      title.includes("discount")
-    ) {
-      return "discount";
-    }
-
-    if (
-      document.body.classList.contains("percentage-page") ||
-      document.body.dataset.page === "percentage" ||
-      document.getElementById("percentageResult") ||
-      title.includes("percentage")
-    ) {
-      return "percentage";
-    }
-
-    if (
-      document.body.classList.contains("compound-page") ||
-      document.body.dataset.page === "compound" ||
-      document.getElementById("compoundResult") ||
-      title.includes("compound")
-    ) {
-      return "compound";
-    }
+    if (document.getElementById("birthdate") || title.includes("age")) return "age";
+    if (document.getElementById("bmiResult") || document.getElementById("bmiHistoryList") || title.includes("bmi")) return "bmi";
+    if (document.getElementById("loanResult") || document.body.classList.contains("loan-page") || title.includes("loan") || title.includes("mortgage")) return "loan";
+    if (document.getElementById("discountResult") || title.includes("discount")) return "discount";
+    if (document.getElementById("percentageResult") || title.includes("percentage")) return "percentage";
+    if (document.getElementById("compoundResult") || title.includes("compound")) return "compound";
 
     return "";
   }
 
   function getValue(ids) {
     for (const id of ids) {
-      const el = document.getElementById(id);
-      if (!el) continue;
+      const input = document.getElementById(id);
+      if (!input) continue;
 
-      const value = String(el.value || "").trim();
+      const value = String(input.value || "").trim();
       if (value) return value;
     }
 
@@ -8757,18 +8709,172 @@
     return getValue(ids) !== "";
   }
 
-  function isReadyToCalculate(type) {
-    if (type === "basic" || !type) return false;
+  function removeNonBasicCalculateButtons() {
+    const type = getPageType();
+    if (!type || type === "basic") return;
 
-    if (type === "age") {
-      return hasValue(["birthdate", "birthDate", "dob"]);
+    document.querySelectorAll(".calculator button").forEach(function (button) {
+      const text = button.textContent.trim().toLowerCase();
+      const onclick = (button.getAttribute("onclick") || "").toLowerCase();
+      const id = (button.id || "").toLowerCase();
+
+      const isCalculateButton =
+        button.classList.contains("main-btn") ||
+        onclick.includes("calculate") ||
+        id.indexOf("calculate") === 0 ||
+        text.indexOf("calculate") === 0;
+
+      if (isCalculateButton) {
+        button.remove();
+      }
+    });
+  }
+
+  function ensureCompoundAutoInputs() {
+    if (getPageType() !== "compound") return;
+
+    const calculator = document.querySelector(".calculator");
+    const result = document.getElementById("compoundResult");
+    if (!calculator) return;
+
+    function insertBeforeResult(element) {
+      if (result && result.parentElement === calculator) {
+        result.insertAdjacentElement("beforebegin", element);
+      } else {
+        calculator.appendChild(element);
+      }
     }
 
+    if (!document.getElementById("additionalMoney")) {
+      const label = document.createElement("label");
+      label.setAttribute("for", "additionalMoney");
+      label.textContent = "Additional money:";
+
+      const input = document.createElement("input");
+      input.type = "number";
+      input.id = "additionalMoney";
+      input.placeholder = "Optional, example: 100";
+      input.setAttribute("inputmode", "decimal");
+
+      insertBeforeResult(label);
+      label.insertAdjacentElement("afterend", input);
+    }
+
+    if (!document.getElementById("additionalMoneyFrequency")) {
+      const label = document.createElement("label");
+      label.setAttribute("for", "additionalMoneyFrequency");
+      label.textContent = "Add money every:";
+
+      const select = document.createElement("select");
+      select.id = "additionalMoneyFrequency";
+      select.innerHTML =
+        '<option value="monthly">Monthly</option>' +
+        '<option value="weekly">Weekly</option>' +
+        '<option value="daily">Daily</option>';
+
+      insertBeforeResult(label);
+      label.insertAdjacentElement("afterend", select);
+    }
+  }
+
+  function setupToggle(button, content) {
+    if (!button || !content || button.dataset.finalToggleReady === "true") return;
+
+    button.dataset.finalToggleReady = "true";
+    button.addEventListener("click", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const open = content.hidden || content.style.display === "none";
+      content.hidden = !open;
+      content.style.display = open ? "block" : "none";
+      button.setAttribute("aria-expanded", open ? "true" : "false");
+    }, { signal: controller.signal });
+  }
+
+  function ensureLoanOptionalBoxes() {
+    if (getPageType() !== "loan") return;
+
+    const calculator = document.querySelector(".calculator");
+    const result = document.getElementById("loanResult");
+    if (!calculator) return;
+
+    let row = document.querySelector(".loan-optional-row");
+    if (!row) {
+      row = document.createElement("div");
+      row.className = "loan-optional-row";
+
+      if (result && result.parentElement === calculator) {
+        result.insertAdjacentElement("beforebegin", row);
+      } else {
+        calculator.appendChild(row);
+      }
+    }
+
+    let optionalCostBox = document.querySelector(".optional-mortgage-costs") || document.querySelector(".optional-costs");
+    if (optionalCostBox && optionalCostBox.parentElement !== row) {
+      row.appendChild(optionalCostBox);
+    }
+
+    let earlyBox = document.querySelector(".early-settlement-box");
+    if (!earlyBox) {
+      earlyBox = document.createElement("div");
+      earlyBox.className = "early-settlement-box";
+      earlyBox.innerHTML =
+        '<button type="button" class="early-settlement-toggle" aria-expanded="false">Optional early settlement</button>' +
+        '<div class="early-settlement-content" hidden>' +
+          '<label for="extraMonthlyPayment">Extra monthly payment:</label>' +
+          '<input type="number" id="extraMonthlyPayment" placeholder="Optional, example: 200" inputmode="decimal">' +
+          '<label for="oneTimeExtraPayment">One-time extra payment:</label>' +
+          '<input type="number" id="oneTimeExtraPayment" placeholder="Optional, example: 5000" inputmode="decimal">' +
+          '<label for="yearlyLumpSumPayment">Yearly lump sum:</label>' +
+          '<input type="number" id="yearlyLumpSumPayment" placeholder="Optional, example: 5000" inputmode="decimal">' +
+        '</div>';
+    }
+
+    if (earlyBox.parentElement !== row) {
+      row.appendChild(earlyBox);
+    }
+
+    const oldMonthInput = document.getElementById("oneTimePaymentMonth");
+    if (oldMonthInput && !document.getElementById("yearlyLumpSumPayment")) {
+      oldMonthInput.id = "yearlyLumpSumPayment";
+      oldMonthInput.placeholder = "Optional, example: 5000";
+    }
+
+    const oldMonthLabel = document.querySelector('label[for="oneTimePaymentMonth"]');
+    if (oldMonthLabel) {
+      oldMonthLabel.setAttribute("for", "yearlyLumpSumPayment");
+      oldMonthLabel.textContent = "Yearly lump sum:";
+    }
+
+    const finalLabel = document.querySelector('label[for="yearlyLumpSumPayment"]');
+    if (finalLabel) finalLabel.textContent = "Yearly lump sum:";
+
+    setupToggle(
+      document.querySelector(".optional-mortgage-toggle"),
+      document.querySelector(".optional-mortgage-content")
+    );
+
+    setupToggle(
+      document.querySelector(".early-settlement-toggle"),
+      document.querySelector(".early-settlement-content")
+    );
+  }
+
+  function ensureDynamicFields() {
+    ensureCompoundAutoInputs();
+    ensureLoanOptionalBoxes();
+    removeNonBasicCalculateButtons();
+  }
+
+  function isReady(type) {
+    if (!type || type === "basic") return false;
+
+    if (type === "age") return hasValue(["birthdate", "birthDate", "dob"]);
+
     if (type === "bmi") {
-      return (
-        hasValue(["weight", "bmiWeight"]) &&
-        hasValue(["height", "bmiHeight"])
-      );
+      return hasValue(["weight", "bmiWeight"]) && hasValue(["height", "bmiHeight"]);
     }
 
     if (type === "loan") {
@@ -8780,17 +8886,11 @@
     }
 
     if (type === "discount") {
-      return (
-        hasValue(["price", "originalPrice", "amount"]) &&
-        hasValue(["discount", "discountRate", "percent"])
-      );
+      return hasValue(["price", "originalPrice", "amount"]) && hasValue(["discount", "discountRate", "percent"]);
     }
 
     if (type === "percentage") {
-      return (
-        hasValue(["percentage", "percent"]) &&
-        hasValue(["number", "amount", "value"])
-      );
+      return hasValue(["percentage", "percent"]) && hasValue(["number", "amount", "value"]);
     }
 
     if (type === "compound") {
@@ -8811,43 +8911,18 @@
     if (type === "discount") return window.calculateDiscount;
     if (type === "percentage") return window.calculatePercentage;
     if (type === "compound") return window.calculateCompoundInterest || window.calculateCompound;
-
     return null;
   }
 
-  function shouldWatchInput(input) {
-    if (!input) return false;
-
+  function runCalculate() {
     const type = getPageType();
-    if (type === "basic") return false;
-
-    if (!input.closest(".calculator")) return false;
-
-    if (input.id === "display") return false;
-    if (input.type === "hidden") return false;
-    if (input.type === "button") return false;
-    if (input.type === "submit") return false;
-    if (input.type === "reset") return false;
-
-    return (
-      input.matches("input") ||
-      input.matches("select") ||
-      input.matches("textarea")
-    );
-  }
-
-  function runAutoCalculate() {
-    const type = getPageType();
-    if (type === "basic" || !type) return;
-
-    if (!isReadyToCalculate(type)) return;
+    if (!isReady(type)) return;
 
     const calculateFn = getCalculateFunction(type);
     if (typeof calculateFn !== "function") return;
 
-    if (isAutoCalculating) return;
-
-    isAutoCalculating = true;
+    if (isCalculating) return;
+    isCalculating = true;
 
     try {
       calculateFn();
@@ -8856,54 +8931,56 @@
     }
 
     setTimeout(function () {
-      isAutoCalculating = false;
-    }, 100);
+      isCalculating = false;
+    }, 150);
   }
 
-  function scheduleAutoCalculate() {
+  function scheduleCalculate() {
     clearTimeout(autoTimer);
-
-    autoTimer = setTimeout(function () {
-      runAutoCalculate();
-    }, AUTO_DELAY);
+    autoTimer = setTimeout(runCalculate, AUTO_DELAY);
   }
 
-  function handleInputEvent(event) {
-    const input = event.target;
-
-    if (!shouldWatchInput(input)) return;
-
-    scheduleAutoCalculate();
-  }
-
-  function startAutoCalculate() {
+  function shouldWatch(target) {
     const type = getPageType();
-    if (type === "basic" || !type) return;
+    if (!target || !type || type === "basic") return false;
+    if (!target.closest(".calculator")) return false;
+    if (!target.matches("input, select, textarea")) return false;
+    if (target.id === "display" || target.type === "hidden") return false;
+    return true;
+  }
+
+  function start() {
+    ensureDynamicFields();
+
+    const type = getPageType();
+    if (!type || type === "basic") return;
 
     document.body.dataset.autoCalculateReady = "true";
 
-    document.addEventListener("input", handleInputEvent, {
-      signal: controller.signal,
-      capture: true
-    });
+    document.addEventListener("input", function (event) {
+      if (!shouldWatch(event.target)) return;
+      ensureDynamicFields();
+      scheduleCalculate();
+    }, { capture: true, signal: controller.signal });
 
-    document.addEventListener("change", handleInputEvent, {
-      signal: controller.signal,
-      capture: true
-    });
+    document.addEventListener("change", function (event) {
+      if (!shouldWatch(event.target)) return;
+      ensureDynamicFields();
+      scheduleCalculate();
+    }, { capture: true, signal: controller.signal });
+
+    setTimeout(ensureDynamicFields, 200);
+    setTimeout(ensureDynamicFields, 800);
 
     setTimeout(function () {
-      if (isReadyToCalculate(getPageType())) {
-        runAutoCalculate();
-      }
-    }, 800);
+      ensureDynamicFields();
+      runCalculate();
+    }, 1000);
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startAutoCalculate, {
-      signal: controller.signal
-    });
+    document.addEventListener("DOMContentLoaded", start, { signal: controller.signal });
   } else {
-    startAutoCalculate();
+    start();
   }
 })();
