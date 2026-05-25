@@ -4279,41 +4279,111 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
 
 /* =====================================================
    PC OPTIMIZED NON-BASIC LAYOUT
-   Keeps the instruction ? overlay working after history boxes are removed.
+   What box, calculator input, and result use same width.
+   Copy box stays beside result box.
 ===================================================== */
 @media (min-width: 851px) {
   body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout,
   body:not(.basic-page) main.pc-calculator-layout.no-history-layout {
-    grid-template-columns: minmax(560px, var(--pc-center-width)) !important;
+    width: 100% !important;
+    max-width: min(1220px, calc(100vw - 32px)) !important;
+
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
     grid-template-rows: auto auto auto !important;
-    max-width: min(900px, calc(100vw - 32px)) !important;
+    gap: 24px !important;
+
+    justify-content: center !important;
+    justify-items: stretch !important;
+    align-items: start !important;
+    box-sizing: border-box !important;
   }
 
   body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout > .pc-what-slot,
   body:not(.basic-page) main.pc-calculator-layout.no-history-layout > .pc-what-slot {
     grid-column: 1 !important;
     grid-row: 1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
 
   body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout > .calculator,
   body:not(.basic-page) main.pc-calculator-layout.no-history-layout > .calculator {
     grid-column: 1 !important;
     grid-row: 2 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    justify-self: stretch !important;
   }
 
-  body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout > #universalLoanStyleOutput,
+  body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout > #stableBasicAgeOutput,
+  body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout > #stableBmiOutput,
+  body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout > #stableDiscountOutput,
   body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout > #loanExternalOutput,
+  body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout > #compoundYearMatrixOutput,
+  body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout > #universalLoanStyleOutput,
   body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout > .universal-output-panel,
   body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout > .stable-result-output,
-  body:not(.basic-page) main.pc-calculator-layout.no-history-layout > #universalLoanStyleOutput,
+  body:not(.basic-page) main.pc-calculator-layout.no-history-layout > #stableBasicAgeOutput,
+  body:not(.basic-page) main.pc-calculator-layout.no-history-layout > #stableBmiOutput,
+  body:not(.basic-page) main.pc-calculator-layout.no-history-layout > #stableDiscountOutput,
   body:not(.basic-page) main.pc-calculator-layout.no-history-layout > #loanExternalOutput,
+  body:not(.basic-page) main.pc-calculator-layout.no-history-layout > #compoundYearMatrixOutput,
+  body:not(.basic-page) main.pc-calculator-layout.no-history-layout > #universalLoanStyleOutput,
   body:not(.basic-page) main.pc-calculator-layout.no-history-layout > .universal-output-panel,
   body:not(.basic-page) main.pc-calculator-layout.no-history-layout > .stable-result-output {
     grid-column: 1 !important;
     grid-row: 3 !important;
+
     width: 100% !important;
-    min-width: 0 !important;
     max-width: 100% !important;
+    min-width: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body:not(.basic-page) .stable-result-top,
+  body:not(.basic-page) .loan-output-top,
+  body:not(.basic-page) .universal-output-top {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 120px !important;
+    gap: 18px !important;
+
+    align-items: stretch !important;
+    box-sizing: border-box !important;
+  }
+
+  body:not(.basic-page) .stable-result-panel,
+  body:not(.basic-page) .loan-result-panel,
+  body:not(.basic-page) .universal-result-panel,
+  body:not(.basic-page) .compound-year-result-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body:not(.basic-page) .stable-copy-side,
+  body:not(.basic-page) .loan-copy-side,
+  body:not(.basic-page) .universal-copy-side {
+    width: 120px !important;
+    min-width: 120px !important;
+    max-width: 120px !important;
+    display: flex !important;
+    align-items: stretch !important;
+  }
+
+  body:not(.basic-page) .stable-copy-btn,
+  body:not(.basic-page) .loan-copy-btn,
+  body:not(.basic-page) .universal-copy-btn {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 62px !important;
   }
 }
 /* =====================================================

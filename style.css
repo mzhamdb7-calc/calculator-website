@@ -1822,35 +1822,43 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after, #
 
 /* =====================================================
    OPTIMIZED NON-BASIC PAGES
-   History boxes and calculate buttons are removed outside Basic.
-   Non-basic calculators use auto-calculate and a clean one-column layout.
+   Same width: What box, input box, result box
 ===================================================== */
 body:not(.basic-page) main.no-history-layout {
-  width: 100%;
-  max-width: min(920px, calc(100vw - 24px));
-  margin: 130px auto 80px;
-  padding: 30px;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 24px;
-  justify-items: center;
-  align-items: start;
+  width: 100% !important;
+  max-width: min(1220px, calc(100vw - 32px)) !important;
+  margin: 130px auto 80px !important;
+  padding: 30px !important;
+
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 24px !important;
+
+  justify-items: stretch !important;
+  align-items: start !important;
+  box-sizing: border-box !important;
 }
 
 body:not(.basic-page) main.no-history-layout > .calculator,
 body:not(.basic-page) main.no-history-layout > .instruction-box,
 body:not(.basic-page) main.no-history-layout > .pc-what-slot,
-body:not(.basic-page) main.no-history-layout > #universalLoanStyleOutput,
+body:not(.basic-page) main.no-history-layout > #stableBasicAgeOutput,
+body:not(.basic-page) main.no-history-layout > #stableBmiOutput,
+body:not(.basic-page) main.no-history-layout > #stableDiscountOutput,
 body:not(.basic-page) main.no-history-layout > #loanExternalOutput,
+body:not(.basic-page) main.no-history-layout > #compoundYearMatrixOutput,
+body:not(.basic-page) main.no-history-layout > #universalLoanStyleOutput,
+body:not(.basic-page) main.no-history-layout > .stable-result-output,
 body:not(.basic-page) main.no-history-layout > .universal-output-panel,
-body:not(.basic-page) main.no-history-layout > .stable-result-output {
-  grid-column: 1;
-  width: 100%;
-  max-width: 760px;
-}
-
-body:not(.basic-page) main.no-history-layout > .calculator {
-  margin: 0 auto;
+body:not(.basic-page) main.no-history-layout > .loan-style-output-panel,
+body:not(.basic-page) main.no-history-layout > .loan-external-output {
+  grid-column: 1 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
 }
 
 body:not(.basic-page) main.no-history-layout .main-btn {
