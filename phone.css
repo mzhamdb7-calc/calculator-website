@@ -872,3 +872,74 @@
     margin-top: 10px !important;
   }
 }
+/* =====================================================
+   Phone: BMI result box + copy same width as BMI input box
+===================================================== */
+@media (max-width: 850px) {
+  body.bmi-page .bmi-input-two-box-row,
+  body.bmi-page #stableBmiOutput,
+  body.bmi-page #bmiResult,
+  body.bmi-page .stable-result-output,
+  body.bmi-page .universal-output-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body.bmi-page #stableBmiOutput,
+  body.bmi-page .stable-result-output {
+    margin: 18px 0 0 !important;
+    padding: 0 !important;
+  }
+
+  body.bmi-page .stable-result-top,
+  body.bmi-page .universal-output-top {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body.bmi-page .stable-result-panel,
+  body.bmi-page .universal-result-panel,
+  body.bmi-page .stable-copy-side,
+  body.bmi-page .universal-copy-side {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body.bmi-page .stable-copy-btn,
+  body.bmi-page .universal-copy-btn {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    height: 58px !important;
+    margin: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    box-sizing: border-box !important;
+  }
+
+  body.bmi-page #bmiResult {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 18px 0 0 !important;
+    box-sizing: border-box !important;
+  }
+}
