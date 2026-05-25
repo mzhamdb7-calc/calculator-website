@@ -1740,3 +1740,37 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after, #
 .reference-card a:hover {
   background: var(--yellow);
 }
+/* =====================================================
+   BMI RESULT: Waist / Height fraction label
+===================================================== */
+.bmi-waist-height-fraction {
+  display: inline-grid !important;
+  grid-template-rows: auto 3px auto !important;
+  align-items: center !important;
+  justify-items: center !important;
+
+  margin: 0 5px !important;
+  vertical-align: middle !important;
+
+  font-weight: bold !important;
+  line-height: 1 !important;
+}
+
+.bmi-waist-height-top,
+.bmi-waist-height-bottom {
+  display: block !important;
+
+  font-size: 0.8em !important;
+  line-height: 1 !important;
+  text-align: center !important;
+}
+
+.bmi-waist-height-line {
+  width: 100% !important;
+  min-width: 52px !important;
+  height: 3px !important;
+
+  display: block !important;
+
+  background: var(--black) !important;
+}
