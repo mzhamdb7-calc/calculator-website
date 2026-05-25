@@ -1123,10 +1123,10 @@
         ]
       },
       loan: {
-        what: "It estimates monthly loan payment, total payment, and total interest.",
-        how: "Enter loan amount, annual interest rate, and loan years. Then press calculate loan.",
-        formula: "Monthly Payment = P × r × (1 + r)ⁿ ÷ ((1 + r)ⁿ − 1).",
-        example: "A 10,000 loan at 5% yearly for 5 years gives an estimated monthly payment using the amortization formula.",
+        what: "It estimates mortgage or personal loan monthly payment, interest, total payment, and remaining balance.",
+        how: "Enter loan amount or purchase price, annual interest rate, and loan term in months. Then press calculate loan.",
+        formula: "Monthly Payment = P × r × (1 + r)ⁿ ÷ ((1 + r)ⁿ − 1), where n is the loan term in months.",
+        example: "A 10,000 loan at 5% yearly for 60 months gives an estimated monthly payment using the amortization formula.",
         references: [
           ["Loan amortization", "Chase explains fixed-payment amortized loan calculations.", "https://www.chase.com/personal/mortgage/education/financing-a-home/loan-amortization"],
           ["Mortgage formula", "Investopedia lists the mortgage payment formula using principal, rate, and months.", "https://www.investopedia.com/mortgage-calculator-5084794"]
@@ -3315,27 +3315,7 @@
     const list = document.getElementById("bmiHistoryList");
     if (list && list.dataset.bmiCleanObserverReady !== "true") {
       list.dataset.bmiCleanObserverReady = "true";
-
-      const observer = new MutationObserver(function () {
-        const text = list.textContent || "";
-
-        if (
-          text.includes("lb") && getCurrentUnit() === "si" ||
-          text.includes("kg") && getCurrentUnit() === "us" ||
-          text.includes("BMI status") ||
-          text.includes("W/H ratio") ||
-          text.includes("Condition") ||
-          text.includes("→")
-        ) {
-          setTimeout(renderHistory, 0);
-        }
-      });
-
-      observer.observe(list, {
-        childList: true,
-        subtree: true,
-        characterData: true
-      });
+      /* Background MutationObserver removed to stop loading loops. */
     }
   }
 
@@ -5047,15 +5027,7 @@
 
     if (main && main.dataset.basicResultRemoveObserver !== "true") {
       main.dataset.basicResultRemoveObserver = "true";
-
-      const observer = new MutationObserver(function () {
-        removeBasicBottomResult();
-      });
-
-      observer.observe(main, {
-        childList: true,
-        subtree: true
-      });
+      /* Background MutationObserver removed to stop loading loops. */
     }
 
     setTimeout(removeBasicBottomResult, 300);
@@ -5419,25 +5391,7 @@
 
     if (list && list.dataset.bmiProfileObserverReady !== "true") {
       list.dataset.bmiProfileObserverReady = "true";
-
-      const observer = new MutationObserver(function () {
-        const text = list.textContent || "";
-
-        if (
-          text.includes("BMI:") ||
-          text.includes("BMI status") ||
-          text.includes("W/H ratio") ||
-          !text.includes("Age group")
-        ) {
-          setTimeout(renderBmiProfileHistory, 0);
-        }
-      });
-
-      observer.observe(list, {
-        childList: true,
-        subtree: true,
-        characterData: true
-      });
+      /* Background MutationObserver removed to stop loading loops. */
     }
 
     setTimeout(renderBmiProfileHistory, 500);
@@ -5752,15 +5706,7 @@
 
     if (calculator && calculator.dataset.bmiSexFinalFixReady !== "true") {
       calculator.dataset.bmiSexFinalFixReady = "true";
-
-      const observer = new MutationObserver(function () {
-        fixBmiSexOptions();
-      });
-
-      observer.observe(calculator, {
-        childList: true,
-        subtree: true
-      });
+      /* Background MutationObserver removed to stop loading loops. */
     }
 
     setTimeout(fixBmiSexOptions, 300);
@@ -6073,16 +6019,7 @@
 
     if (main && main.dataset.bmiRatioLabelObserverReady !== "true") {
       main.dataset.bmiRatioLabelObserverReady = "true";
-
-      const observer = new MutationObserver(function () {
-        updateBmiRatioLabel();
-      });
-
-      observer.observe(main, {
-        childList: true,
-        subtree: true,
-        characterData: true
-      });
+      /* Background MutationObserver removed to stop loading loops. */
     }
 
     setTimeout(updateBmiRatioLabel, 500);
@@ -8742,27 +8679,4 @@
   } else {
     start();
   }
-})();
-/* =====================================================
-   SAFE GLOBAL NAV TEXT FIX
-   No MutationObserver, no loading loop
-===================================================== */
-(function () {
-  "use strict";
-
-  function fixLoanNavText() {
-    document.querySelectorAll('a[href="loan-calculator.html"]').forEach(function (link) {
-      if (link.textContent.trim().toLowerCase() !== "mortgage / personal loan") {
-        link.textContent = "mortgage / personal loan";
-      }
-    });
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", fixLoanNavText);
-  } else {
-    fixLoanNavText();
-  }
-
-  window.addEventListener("pageshow", fixLoanNavText);
 })();
