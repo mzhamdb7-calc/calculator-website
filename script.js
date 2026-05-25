@@ -8645,26 +8645,27 @@
 })();
 
 /* =====================================================
-   AUTO CALCULATE: All calculators except Basic
-   - Runs when user types/selects input
-   - Excludes Basic calculator display
-   - Debounced so it does not calculate every keystroke instantly
-   - No MutationObserver, no loading loop
+   FINAL AUTO COUNT + REMOVE CALCULATE BUTTONS
+   - All calculators auto-count when input is changed
+   - Basic calculator is excluded
+   - Calculate buttons are hidden/removed except Basic
+   - No MutationObserver and no loading loop
 ===================================================== */
 (function () {
   "use strict";
 
   const AUTO_DELAY = 650;
+  const REMOVE_BUTTON_DELAY = 2200;
 
-  if (window.__nonBasicAutoCalcController) {
-    window.__nonBasicAutoCalcController.abort();
+  if (window.__finalAutoCountNoButtonController) {
+    window.__finalAutoCountNoButtonController.abort();
   }
 
   const controller = new AbortController();
-  window.__nonBasicAutoCalcController = controller;
+  window.__finalAutoCountNoButtonController = controller;
 
   let autoTimer = null;
-  let isAutoCalculating = false;
+  let isRunning = false;
 
   function getPageTitle() {
     const h1 = document.querySelector("h1");
@@ -8743,10 +8744,10 @@
 
   function getValue(ids) {
     for (const id of ids) {
-      const el = document.getElementById(id);
-      if (!el) continue;
+      const element = document.getElementById(id);
+      if (!element) continue;
 
-      const value = String(el.value || "").trim();
+      const value = String(element.value || "").trim();
       if (value) return value;
     }
 
@@ -8758,7 +8759,7 @@
   }
 
   function isReadyToCalculate(type) {
-    if (type === "basic" || !type) return false;
+    if (!type || type === "basic") return false;
 
     if (type === "age") {
       return hasValue(["birthdate", "birthDate", "dob"]);
@@ -8815,95 +8816,179 @@
     return null;
   }
 
-  function shouldWatchInput(input) {
-    if (!input) return false;
+  function isCalculateButton(button) {
+    if (!button || button.tagName.toLowerCase() !== "button") return false;
 
     const type = getPageType();
     if (type === "basic") return false;
 
-    if (!input.closest(".calculator")) return false;
+    if (!button.closest(".calculator")) return false;
 
-    if (input.id === "display") return false;
-    if (input.type === "hidden") return false;
-    if (input.type === "button") return false;
-    if (input.type === "submit") return false;
-    if (input.type === "reset") return false;
+    const text = button.textContent.trim().toLowerCase();
+    const onclick = String(button.getAttribute("onclick") || "").toLowerCase();
 
     return (
-      input.matches("input") ||
-      input.matches("select") ||
-      input.matches("textarea")
+      button.classList.contains("main-btn") ||
+      text.includes("calculate") ||
+      onclick.includes("calculateage") ||
+      onclick.includes("calculatebmi") ||
+      onclick.includes("calculateloan") ||
+      onclick.includes("calculatediscount") ||
+      onclick.includes("calculatepercentage") ||
+      onclick.includes("calculatecompound")
     );
+  }
+
+  function hideCalculateButtons() {
+    const type = getPageType();
+    if (!type || type === "basic") return;
+
+    document.querySelectorAll(".calculator button").forEach(function (button) {
+      if (!isCalculateButton(button)) return;
+
+      button.classList.add("auto-count-hidden-calculate-button");
+      button.setAttribute("aria-hidden", "true");
+      button.tabIndex = -1;
+      button.style.setProperty("display", "none", "important");
+      button.style.setProperty("visibility", "hidden", "important");
+      button.style.setProperty("pointer-events", "none", "important");
+    });
+  }
+
+  function removeCalculateButtons() {
+    const type = getPageType();
+    if (!type || type === "basic") return;
+
+    document.querySelectorAll(".calculator button").forEach(function (button) {
+      if (!isCalculateButton(button)) return;
+      button.remove();
+    });
+  }
+
+  function shouldWatchTarget(target) {
+    const type = getPageType();
+
+    if (!type || type === "basic") return false;
+    if (!target) return false;
+    if (!target.closest(".calculator")) return false;
+
+    if (!target.matches("input, select, textarea")) return false;
+    if (target.id === "display") return false;
+    if (target.type === "hidden") return false;
+    if (target.type === "button") return false;
+    if (target.type === "submit") return false;
+    if (target.type === "reset") return false;
+
+    return true;
   }
 
   function runAutoCalculate() {
     const type = getPageType();
-    if (type === "basic" || !type) return;
 
+    if (!type || type === "basic") return;
     if (!isReadyToCalculate(type)) return;
 
     const calculateFn = getCalculateFunction(type);
     if (typeof calculateFn !== "function") return;
 
-    if (isAutoCalculating) return;
-
-    isAutoCalculating = true;
+    if (isRunning) return;
+    isRunning = true;
 
     try {
       calculateFn();
     } catch (error) {
-      console.error("Auto calculate error:", error);
+      console.error("Auto count error:", error);
     }
 
+    hideCalculateButtons();
+
     setTimeout(function () {
-      isAutoCalculating = false;
-    }, 100);
+      isRunning = false;
+    }, 120);
   }
 
-  function scheduleAutoCalculate() {
+  function scheduleAutoCalculate(delay) {
     clearTimeout(autoTimer);
 
     autoTimer = setTimeout(function () {
       runAutoCalculate();
-    }, AUTO_DELAY);
+    }, Number.isFinite(delay) ? delay : AUTO_DELAY);
   }
 
-  function handleInputEvent(event) {
-    const input = event.target;
-
-    if (!shouldWatchInput(input)) return;
-
-    scheduleAutoCalculate();
+  function handleInputChange(event) {
+    if (!shouldWatchTarget(event.target)) return;
+    scheduleAutoCalculate(AUTO_DELAY);
   }
 
-  function startAutoCalculate() {
+  function handleUnitOrOptionClick(event) {
+    const button = event.target.closest("button");
+    if (!button) return;
+
     const type = getPageType();
-    if (type === "basic" || !type) return;
+    if (!type || type === "basic") return;
 
-    document.body.dataset.autoCalculateReady = "true";
+    const text = button.textContent.trim().toLowerCase();
+    const id = String(button.id || "").toLowerCase();
+    const onclick = String(button.getAttribute("onclick") || "").toLowerCase();
 
-    document.addEventListener("input", handleInputEvent, {
+    if (
+      id.includes("unit") ||
+      text.includes("si") ||
+      text.includes("us") ||
+      text.includes("optional") ||
+      onclick.includes("toggle")
+    ) {
+      setTimeout(hideCalculateButtons, 0);
+      scheduleAutoCalculate(300);
+    }
+  }
+
+  function startAutoCountNoButtons() {
+    const type = getPageType();
+    if (!type || type === "basic") return;
+
+    document.body.dataset.autoCountReady = "true";
+
+    hideCalculateButtons();
+
+    document.addEventListener("input", handleInputChange, {
       signal: controller.signal,
       capture: true
     });
 
-    document.addEventListener("change", handleInputEvent, {
+    document.addEventListener("change", handleInputChange, {
       signal: controller.signal,
       capture: true
     });
+
+    document.addEventListener("click", handleUnitOrOptionClick, {
+      signal: controller.signal,
+      capture: true
+    });
+
+    /*
+      Some older optional boxes used the calculate button as an insert anchor.
+      Hide it immediately, then remove it after all older setup blocks have had
+      time to create their optional fields.
+    */
+    setTimeout(hideCalculateButtons, 0);
+    setTimeout(hideCalculateButtons, 400);
+    setTimeout(hideCalculateButtons, 1200);
+    setTimeout(removeCalculateButtons, REMOVE_BUTTON_DELAY);
+    setTimeout(removeCalculateButtons, REMOVE_BUTTON_DELAY + 1600);
 
     setTimeout(function () {
       if (isReadyToCalculate(getPageType())) {
         runAutoCalculate();
       }
-    }, 800);
+    }, 900);
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startAutoCalculate, {
+    document.addEventListener("DOMContentLoaded", startAutoCountNoButtons, {
       signal: controller.signal
     });
   } else {
-    startAutoCalculate();
+    startAutoCountNoButtons();
   }
 })();
