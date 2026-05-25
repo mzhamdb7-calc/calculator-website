@@ -87,8 +87,23 @@
   </nav>
 
   <!-- Main Content -->
-  <main class="discount-calculator-container no-history-layout">
-<section class="calculator">
+  <main class="discount-calculator-container">
+
+    <section class="discount-history-box">
+
+      <div class="discount-history-top">
+        <h3>Input</h3>
+
+        <button type="button" onclick="clearInputHistory('discount')" class="clear-btn">
+          Clear
+        </button>
+      </div>
+
+      <ul id="discountHistoryList"></ul>
+
+    </section>
+
+    <section class="calculator">
 
       <h1>Discount Calculator</h1>
 
@@ -101,7 +116,12 @@
 
       <label for="discount">Discount percentage:</label>
       <input type="number" id="discount" placeholder="Example: 20" inputmode="decimal">
-<h2 id="discountResult"></h2>
+
+      <button type="button" onclick="calculateDiscount()" class="main-btn">
+        calculate discount
+      </button>
+
+      <h2 id="discountResult"></h2>
 
     </section>
 
