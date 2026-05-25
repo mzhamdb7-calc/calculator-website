@@ -9305,3 +9305,342 @@
     start();
   }
 })();
+/* =====================================================
+   COMPOUND INTEREST: Item row vs Year column table
+   - Removes current universal result table
+   - New table:
+     Item rows, Year columns
+===================================================== */
+(function () {
+  "use strict";
+
+  const PANEL_ID = "compoundYearMatrixOutput";
+
+  function isCompoundPage() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    return (
+      document.body.classList.contains("compound-page") ||
+      document.body.dataset.page === "compound" ||
+      title.includes("compound") ||
+      window.location.pathname.includes("compound-interest-calculator") ||
+      !!document.getElementById("compoundResult")
+    );
+  }
+
+  function getNumber(ids) {
+    for (const id of ids) {
+      const input = document.getElementById(id);
+      if (!input) continue;
+
+      const value = Number(String(input.value || "").replace(/,/g, "").trim());
+      if (Number.isFinite(value)) return value;
+    }
+
+    return NaN;
+  }
+
+  function getValue(ids) {
+    for (const id of ids) {
+      const input = document.getElementById(id);
+      if (!input) continue;
+
+      const value = String(input.value || "").trim();
+      if (value) return value;
+    }
+
+    return "";
+  }
+
+  function money(value) {
+    return Number(value).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function getPanel() {
+    const main =
+      document.querySelector("main.pc-calculator-layout") ||
+      document.querySelector("main");
+
+    const calculator = main ? main.querySelector(".calculator") : null;
+    if (!calculator) return null;
+
+    let panel = document.getElementById(PANEL_ID);
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = PANEL_ID;
+      panel.className = "loan-style-output-panel compound-year-matrix-output";
+      panel.setAttribute("aria-label", "Compound interest result table");
+
+      calculator.insertAdjacentElement("afterend", panel);
+    }
+
+    return panel;
+  }
+
+  function hideOldCompoundOutputs() {
+    const universal = document.getElementById("universalLoanStyleOutput");
+    if (universal) {
+      universal.hidden = true;
+      universal.style.setProperty("display", "none", "important");
+      universal.style.setProperty("visibility", "hidden", "important");
+      universal.style.setProperty("pointer-events", "none", "important");
+    }
+
+    const result =
+      document.getElementById("compoundResult") ||
+      document.getElementById("result");
+
+    if (result) {
+      result.style.display = "none";
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+    textarea.setAttribute("readonly", "");
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function copyText(text, button) {
+    const value = String(text || "").trim();
+    if (!value) return;
+
+    function copied() {
+      const old = button.textContent;
+      button.textContent = "Copied!";
+
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(value).then(copied).catch(function () {
+        fallbackCopy(value);
+        copied();
+      });
+    } else {
+      fallbackCopy(value);
+      copied();
+    }
+  }
+
+  function buildYearPoints(years) {
+    const fullYears = Math.floor(years);
+    const points = [];
+
+    for (let year = 1; year <= fullYears; year += 1) {
+      points.push(year);
+    }
+
+    if (years > 0 && !Number.isInteger(years)) {
+      points.push(years);
+    }
+
+    return points.slice(0, 60);
+  }
+
+  function renderCompoundYearMatrix() {
+    if (!isCompoundPage()) return;
+
+    document.body.classList.add("compound-page");
+    document.body.dataset.page = "compound";
+
+    const principal = getNumber(["principal", "compoundPrincipal", "amount"]);
+    const rate = getNumber(["rate", "compoundRate", "interest", "interestRate"]);
+    const years = getNumber(["years", "compoundYears", "time"]);
+    const frequencyRaw = getValue(["frequency", "compoundFrequency"]);
+    const frequency = Number(frequencyRaw) || 1;
+
+    const result =
+      document.getElementById("compoundResult") ||
+      document.getElementById("result");
+
+    const panel = getPanel();
+    if (!panel) return;
+
+    if (
+      !Number.isFinite(principal) ||
+      !Number.isFinite(rate) ||
+      !Number.isFinite(years) ||
+      principal <= 0 ||
+      rate < 0 ||
+      years <= 0 ||
+      frequency <= 0
+    ) {
+      if (result) {
+        result.style.display = "block";
+        result.innerText = "Please enter valid compound interest details.";
+      }
+
+      panel.hidden = true;
+      return;
+    }
+
+    const yearPoints = buildYearPoints(years);
+
+    const values = yearPoints.map(function (year) {
+      const futureValue = principal * Math.pow(1 + rate / 100 / frequency, frequency * year);
+      const previousYear = Math.max(0, year - 1);
+      const previousValue = principal * Math.pow(1 + rate / 100 / frequency, frequency * previousYear);
+
+      return {
+        year: year,
+        principal: principal,
+        interestThisYear: futureValue - previousValue,
+        totalInterest: futureValue - principal,
+        futureValue: futureValue
+      };
+    });
+
+    const headers = values.map(function (item) {
+      return "<th>Year " + item.year + "</th>";
+    }).join("");
+
+    function row(label, key) {
+      return (
+        "<tr>" +
+          "<th>" + label + "</th>" +
+          values.map(function (item) {
+            return "<td>" + money(item[key]) + "</td>";
+          }).join("") +
+        "</tr>"
+      );
+    }
+
+    const finalValue = values.length ? values[values.length - 1].futureValue : principal;
+    const finalInterest = finalValue - principal;
+
+    const copyValue =
+      "Item\t" + values.map(function (item) { return "Year " + item.year; }).join("\t") + "\n" +
+      "Principal\t" + values.map(function (item) { return money(item.principal); }).join("\t") + "\n" +
+      "Interest this year\t" + values.map(function (item) { return money(item.interestThisYear); }).join("\t") + "\n" +
+      "Total interest\t" + values.map(function (item) { return money(item.totalInterest); }).join("\t") + "\n" +
+      "Future value\t" + values.map(function (item) { return money(item.futureValue); }).join("\t");
+
+    panel.hidden = false;
+
+    panel.innerHTML =
+      '<div class="loan-output-top">' +
+        '<div class="loan-result-panel compound-year-result-panel">' +
+          '<h2 class="loan-panel-title">Result</h2>' +
+
+          '<div class="compound-summary-row">' +
+            '<div class="compound-summary-card">' +
+              '<span>Future value</span>' +
+              '<strong>' + money(finalValue) + '</strong>' +
+            '</div>' +
+
+            '<div class="compound-summary-card">' +
+              '<span>Compound interest</span>' +
+              '<strong>' + money(finalInterest) + '</strong>' +
+            '</div>' +
+
+            '<div class="compound-summary-card">' +
+              '<span>Principal</span>' +
+              '<strong>' + money(principal) + '</strong>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="loan-result-body compound-year-table-body">' +
+            '<div class="compound-year-table-box">' +
+              '<h3>Compound interest by year</h3>' +
+
+              '<div class="compound-year-table-scroll">' +
+                '<table class="compound-year-matrix-table">' +
+                  '<thead>' +
+                    '<tr>' +
+                      '<th>Item</th>' +
+                      headers +
+                    '</tr>' +
+                  '</thead>' +
+                  '<tbody>' +
+                    row("Principal", "principal") +
+                    row("Interest this year", "interestThisYear") +
+                    row("Total interest", "totalInterest") +
+                    row("Future value", "futureValue") +
+                  '</tbody>' +
+                '</table>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="loan-copy-side">' +
+          '<button type="button" class="loan-copy-btn">Copy</button>' +
+        '</div>' +
+      '</div>';
+
+    hideOldCompoundOutputs();
+
+    const copyBtn = panel.querySelector(".loan-copy-btn");
+    if (copyBtn) {
+      copyBtn.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        copyText(copyValue, copyBtn);
+      };
+    }
+  }
+
+  function start() {
+    if (!isCompoundPage()) return;
+
+    window.calculateCompound = renderCompoundYearMatrix;
+    window.calculateCompoundInterest = renderCompoundYearMatrix;
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (text.includes("calculate") || onclick.includes("calculateCompound")) {
+          setTimeout(renderCompoundYearMatrix, 0);
+          setTimeout(renderCompoundYearMatrix, 250);
+          setTimeout(renderCompoundYearMatrix, 700);
+          setTimeout(renderCompoundYearMatrix, 1200);
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key === "Enter") {
+          setTimeout(renderCompoundYearMatrix, 250);
+          setTimeout(renderCompoundYearMatrix, 700);
+        }
+      },
+      true
+    );
+
+    setTimeout(hideOldCompoundOutputs, 500);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
