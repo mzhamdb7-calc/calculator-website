@@ -95,23 +95,7 @@
   </nav>
 
   <!-- Main Content -->
-  <main class="compound-calculator-container compound-interest-container has-instructions">
-
-    <!-- Result / History -->
-    <aside class="compound-history-box" aria-label="Compound interest result history">
-
-      <div class="compound-history-top">
-        <h3>History</h3>
-
-        <button class="clear-btn" type="button" id="clearCompoundHistoryBtn">
-          Clear
-        </button>
-      </div>
-
-      <ul id="compoundHistoryList"></ul>
-
-    </aside>
-
+  <main class="compound-calculator-container compound-interest-container has-instructions no-history-layout">
     <!-- Calculator -->
     <section class="calculator" aria-label="Compound Interest Calculator">
 
@@ -163,11 +147,6 @@
       <p class="compound-tip">
         Tip: choose monthly if the interest is added every month.
       </p>
-
-      <button class="main-btn" type="button" id="calculateCompoundBtn">
-        calculate compound interest
-      </button>
-
       <h2 id="compoundResult" aria-live="polite"></h2>
 
     </section>
@@ -187,7 +166,7 @@
       <div class="instruction-section instruction-how-box">
         <h3>How to use it</h3>
         <p>
-          Enter the principal amount, annual interest rate, time in years, and compounding frequency. Then press calculate compound interest.
+          Enter the principal amount, annual interest rate, time in years, and compounding frequency. The result updates automatically after you enter all values.
         </p>
       </div>
 
@@ -287,6 +266,8 @@
       }
 
       function saveHistory(text) {
+        if (!historyList) return;
+
         const history = getHistory();
 
         history.push(text);

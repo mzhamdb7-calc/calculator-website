@@ -56,8 +56,7 @@
 
     return !!(
       main.querySelector(":scope > .calculator") &&
-      main.querySelector(":scope > .instruction-box") &&
-      getLeftBox(main)
+      main.querySelector(":scope > .instruction-box")
     );
   }
 
@@ -100,10 +99,13 @@
 
     const instructionBox = main.querySelector(":scope > .instruction-box");
     const leftBox = getLeftBox(main);
+    const calculatorBox = main.querySelector(":scope > .calculator");
+    const slotTarget = leftBox || calculatorBox;
 
-    if (!instructionBox || !leftBox) return;
+    if (!instructionBox || !slotTarget) return;
 
     main.classList.add("pc-calculator-layout");
+    main.classList.toggle("pc-no-history-layout", !leftBox);
 
     let whatBox =
       main.querySelector(":scope > .pc-what-slot .instruction-what-box") ||
@@ -117,7 +119,7 @@
       slot = document.createElement("aside");
       slot.className = "pc-what-slot";
       slot.setAttribute("aria-label", "What this calculator does");
-      main.insertBefore(slot, leftBox);
+      main.insertBefore(slot, slotTarget);
     }
 
     if (!slot.contains(whatBox)) {

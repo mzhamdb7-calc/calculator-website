@@ -85,22 +85,7 @@
   </nav>
 
   <!-- Main Content -->
-  <main class="percentage-calculator-container">
-
-    <section class="percentage-history-box">
-
-      <div class="percentage-history-top">
-        <h3>History</h3>
-
-        <button type="button" onclick="clearPercentageHistory()" class="clear-btn">
-          Clear
-        </button>
-      </div>
-
-      <ul id="percentageHistoryList"></ul>
-
-    </section>
-
+  <main class="percentage-calculator-container no-history-layout">
     <section class="calculator">
 
       <h1>Percentage Calculator</h1>
@@ -114,11 +99,6 @@
 
       <label for="number">Of number:</label>
       <input type="number" id="number" placeholder="Example: 150">
-
-      <button type="button" onclick="calculatePercentage()" class="main-btn">
-        calculate percentage
-      </button>
-
       <h2 id="percentageResult"></h2>
 
     </section>
@@ -169,6 +149,9 @@
     }
 
     function savePercentageHistory(answer) {
+      const list = document.getElementById("percentageHistoryList");
+      if (!list) return;
+
       const item = answer.replace(/\n/g, " | ");
 
       percentageHistory.push(item);

@@ -85,22 +85,7 @@
   </nav>
 
   <!-- Main Content -->
-  <main class="bmi-calculator-container">
-
-    <section class="bmi-history-box">
-
-      <div class="bmi-history-top">
-        <h3>History</h3>
-
-        <button type="button" onclick="clearBMIHistory()" class="clear-btn">
-          Clear
-        </button>
-      </div>
-
-      <ul id="bmiHistoryList"></ul>
-
-    </section>
-
+  <main class="bmi-calculator-container no-history-layout">
     <section class="calculator bmi-calculator-box">
 
       <div class="bmi-title-row">
@@ -127,11 +112,6 @@
 
       <label for="waist" id="waistLabel">Waist circumference in cm:</label>
       <input type="number" id="waist" placeholder="Optional, Example: 80">
-
-      <button type="button" onclick="calculateBMI()" class="main-btn">
-        calculate bmi
-      </button>
-
       <h2 id="bmiResult"></h2>
 
     </section>

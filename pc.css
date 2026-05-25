@@ -4276,3 +4276,43 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     box-sizing: border-box !important;
   }
 }
+
+/* =====================================================
+   PC OPTIMIZED NON-BASIC LAYOUT
+   Keeps the instruction ? overlay working after history boxes are removed.
+===================================================== */
+@media (min-width: 851px) {
+  body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout,
+  body:not(.basic-page) main.pc-calculator-layout.no-history-layout {
+    grid-template-columns: minmax(560px, var(--pc-center-width)) !important;
+    grid-template-rows: auto auto auto !important;
+    max-width: min(900px, calc(100vw - 32px)) !important;
+  }
+
+  body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout > .pc-what-slot,
+  body:not(.basic-page) main.pc-calculator-layout.no-history-layout > .pc-what-slot {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+
+  body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout > .calculator,
+  body:not(.basic-page) main.pc-calculator-layout.no-history-layout > .calculator {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+  }
+
+  body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout > #universalLoanStyleOutput,
+  body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout > #loanExternalOutput,
+  body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout > .universal-output-panel,
+  body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout > .stable-result-output,
+  body:not(.basic-page) main.pc-calculator-layout.no-history-layout > #universalLoanStyleOutput,
+  body:not(.basic-page) main.pc-calculator-layout.no-history-layout > #loanExternalOutput,
+  body:not(.basic-page) main.pc-calculator-layout.no-history-layout > .universal-output-panel,
+  body:not(.basic-page) main.pc-calculator-layout.no-history-layout > .stable-result-output {
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+}
