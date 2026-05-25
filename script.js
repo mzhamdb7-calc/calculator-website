@@ -10128,3 +10128,160 @@
     start();
   }
 })();
+/* =====================================================
+   MORTGAGE RESULT SUMMARY: Total interest + Total payment
+   - Changes "Monthly interest" to "Total interest"
+   - Changes "Yearly payment" to "Total payment"
+   - Reads final values from the result table
+===================================================== */
+(function () {
+  "use strict";
+
+  function isLoanPage() {
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      window.location.pathname.includes("loan-calculator") ||
+      !!document.getElementById("loanResult")
+    );
+  }
+
+  function updateMortgageSummaryCards() {
+    if (!isLoanPage()) return;
+
+    const panel = document.getElementById("loanExternalOutput");
+    if (!panel) return;
+
+    const cards = panel.querySelectorAll(".mortgage-summary-card");
+    const table = panel.querySelector(".mortgage-important-table");
+    if (cards.length < 3 || !table) return;
+
+    const bodyRows = table.querySelectorAll("tbody tr");
+    if (!bodyRows.length) return;
+
+    const lastRow = bodyRows[bodyRows.length - 1];
+    const cells = lastRow.querySelectorAll("td");
+
+    /*
+      Current table columns:
+      0 = Year / Month
+      1 = Principal paid
+      2 = Interest paid
+      3 = Total payment
+      4 = Total interest
+      5 = Remaining balance
+    */
+    const totalPayment = cells[3] ? cells[3].textContent.trim() : "";
+    const totalInterest = cells[4] ? cells[4].textContent.trim() : "";
+
+    const secondLabel = cards[1].querySelector("span");
+    const secondValue = cards[1].querySelector("strong");
+
+    const thirdLabel = cards[2].querySelector("span");
+    const thirdValue = cards[2].querySelector("strong");
+
+    if (secondLabel) secondLabel.textContent = "Total interest";
+    if (secondValue && totalInterest) secondValue.textContent = totalInterest;
+
+    if (thirdLabel) thirdLabel.textContent = "Total payment";
+    if (thirdValue && totalPayment) thirdValue.textContent = totalPayment;
+
+    const copyBtn = panel.querySelector(".loan-copy-btn");
+
+    if (copyBtn) {
+      copyBtn.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const summaryText =
+          "Monthly payment: " + (cards[0].querySelector("strong")?.textContent.trim() || "") + "\n" +
+          "Total interest: " + totalInterest + "\n" +
+          "Total payment: " + totalPayment + "\n\n";
+
+        const tableText = Array.from(table.querySelectorAll("tr"))
+          .map(function (row) {
+            return Array.from(row.querySelectorAll("th, td"))
+              .map(function (cell) {
+                return cell.textContent.trim();
+              })
+              .join("\t");
+          })
+          .join("\n");
+
+        const copyValue = summaryText + tableText;
+
+        function copied() {
+          const old = copyBtn.textContent;
+          copyBtn.textContent = "Copied!";
+
+          setTimeout(function () {
+            copyBtn.textContent = old;
+          }, 1000);
+        }
+
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(copyValue).then(copied);
+        } else {
+          const textarea = document.createElement("textarea");
+          textarea.value = copyValue;
+          textarea.style.position = "fixed";
+          textarea.style.left = "-9999px";
+          textarea.style.top = "-9999px";
+
+          document.body.appendChild(textarea);
+          textarea.focus();
+          textarea.select();
+          document.execCommand("copy");
+          textarea.remove();
+
+          copied();
+        }
+      };
+    }
+  }
+
+  function runAfterCalculate() {
+    setTimeout(updateMortgageSummaryCards, 0);
+    setTimeout(updateMortgageSummaryCards, 250);
+    setTimeout(updateMortgageSummaryCards, 700);
+    setTimeout(updateMortgageSummaryCards, 1200);
+  }
+
+  function start() {
+    if (!isLoanPage()) return;
+
+    runAfterCalculate();
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (text.includes("calculate") || onclick.includes("calculateLoan")) {
+          runAfterCalculate();
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key === "Enter") {
+          runAfterCalculate();
+        }
+      },
+      true
+    );
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
