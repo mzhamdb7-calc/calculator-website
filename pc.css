@@ -5028,3 +5028,186 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     max-width: none !important;
   }
 }
+/* =====================================================
+   PC: Force all result + copy boxes to match Age Calculator
+   Strong ID selectors so this overrides old page-specific CSS
+===================================================== */
+@media (min-width: 851px) {
+  body:not(.basic-page) main.no-history-layout > #stableBmiOutput,
+  body:not(.basic-page) main.no-history-layout > #stableDiscountOutput,
+  body:not(.basic-page) main.no-history-layout > #loanExternalOutput,
+  body:not(.basic-page) main.no-history-layout > #compoundYearMatrixOutput,
+  body:not(.basic-page) main.no-history-layout > #universalLoanStyleOutput,
+  body:not(.basic-page) main.no-history-layout > .stable-result-output,
+  body:not(.basic-page) main.no-history-layout > .loan-style-output-panel,
+  body:not(.basic-page) main.no-history-layout > .loan-external-output,
+  body:not(.basic-page) main.no-history-layout > .universal-output-panel {
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+
+    margin: 22px 0 0 !important;
+    padding: 0 !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 18px !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  body:not(.basic-page) #stableBmiOutput .stable-result-top,
+  body:not(.basic-page) #stableDiscountOutput .stable-result-top,
+  body:not(.basic-page) #loanExternalOutput .loan-output-top,
+  body:not(.basic-page) #compoundYearMatrixOutput .loan-output-top,
+  body:not(.basic-page) #universalLoanStyleOutput .loan-output-top,
+  body:not(.basic-page) .stable-result-output .stable-result-top,
+  body:not(.basic-page) .loan-style-output-panel .loan-output-top,
+  body:not(.basic-page) .loan-external-output .loan-output-top,
+  body:not(.basic-page) .universal-output-panel .loan-output-top {
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 16px !important;
+
+    align-items: start !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  body:not(.basic-page) #stableBmiOutput .stable-result-panel,
+  body:not(.basic-page) #stableDiscountOutput .stable-result-panel,
+  body:not(.basic-page) #loanExternalOutput .loan-result-panel,
+  body:not(.basic-page) #compoundYearMatrixOutput .loan-result-panel,
+  body:not(.basic-page) #universalLoanStyleOutput .loan-result-panel,
+  body:not(.basic-page) .stable-result-output .stable-result-panel,
+  body:not(.basic-page) .loan-style-output-panel .loan-result-panel,
+  body:not(.basic-page) .loan-external-output .loan-result-panel,
+  body:not(.basic-page) .universal-output-panel .loan-result-panel {
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+    padding: 18px !important;
+
+    background: #d3fff9 !important;
+    color: var(--black) !important;
+
+    border: 5px solid var(--black) !important;
+    box-shadow: 8px 8px 0 var(--black) !important;
+
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  body:not(.basic-page) #stableBmiOutput .stable-result-title,
+  body:not(.basic-page) #stableDiscountOutput .stable-result-title,
+  body:not(.basic-page) #loanExternalOutput .loan-panel-title,
+  body:not(.basic-page) #compoundYearMatrixOutput .loan-panel-title,
+  body:not(.basic-page) #universalLoanStyleOutput .loan-panel-title,
+  body:not(.basic-page) .stable-result-output .stable-result-title,
+  body:not(.basic-page) .loan-style-output-panel .loan-panel-title,
+  body:not(.basic-page) .loan-external-output .loan-panel-title,
+  body:not(.basic-page) .universal-output-panel .loan-panel-title {
+    margin: 0 0 14px !important;
+
+    color: var(--black) !important;
+
+    font-size: 30px !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+  }
+
+  body:not(.basic-page) #stableBmiOutput .stable-result-body,
+  body:not(.basic-page) #stableDiscountOutput .stable-result-body,
+  body:not(.basic-page) #loanExternalOutput .loan-result-body,
+  body:not(.basic-page) #compoundYearMatrixOutput .loan-result-body,
+  body:not(.basic-page) #universalLoanStyleOutput .loan-result-body,
+  body:not(.basic-page) .stable-result-output .stable-result-body,
+  body:not(.basic-page) .loan-style-output-panel .loan-result-body,
+  body:not(.basic-page) .loan-external-output .loan-result-body,
+  body:not(.basic-page) .universal-output-panel .loan-result-body {
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  body:not(.basic-page) #stableBmiOutput .stable-copy-side,
+  body:not(.basic-page) #stableDiscountOutput .stable-copy-side,
+  body:not(.basic-page) #loanExternalOutput .loan-copy-side,
+  body:not(.basic-page) #compoundYearMatrixOutput .loan-copy-side,
+  body:not(.basic-page) #universalLoanStyleOutput .loan-copy-side,
+  body:not(.basic-page) .stable-result-output .stable-copy-side,
+  body:not(.basic-page) .loan-style-output-panel .loan-copy-side,
+  body:not(.basic-page) .loan-external-output .loan-copy-side,
+  body:not(.basic-page) .universal-output-panel .loan-copy-side {
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0 !important;
+
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+  }
+
+  body:not(.basic-page) #stableBmiOutput .stable-copy-btn,
+  body:not(.basic-page) #stableDiscountOutput .stable-copy-btn,
+  body:not(.basic-page) #loanExternalOutput .loan-copy-btn,
+  body:not(.basic-page) #compoundYearMatrixOutput .loan-copy-btn,
+  body:not(.basic-page) #universalLoanStyleOutput .loan-copy-btn,
+  body:not(.basic-page) .stable-result-output .stable-copy-btn,
+  body:not(.basic-page) .loan-style-output-panel .loan-copy-btn,
+  body:not(.basic-page) .loan-external-output .loan-copy-btn,
+  body:not(.basic-page) .universal-output-panel .loan-copy-btn {
+    width: auto !important;
+    max-width: none !important;
+    min-width: 90px !important;
+    height: auto !important;
+
+    margin: 0 !important;
+    padding: 10px 14px !important;
+
+    background: #ffb3c7 !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    font-family: inherit !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+  }
+
+  body:not(.basic-page) #loanExternalOutput .loan-result-table-scroll,
+  body:not(.basic-page) #compoundYearMatrixOutput .loan-result-table-scroll,
+  body:not(.basic-page) #compoundYearMatrixOutput .compound-year-table-scroll,
+  body:not(.basic-page) #universalLoanStyleOutput .loan-result-table-scroll {
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    box-sizing: border-box !important;
+  }
+}
