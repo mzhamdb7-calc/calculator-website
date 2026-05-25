@@ -634,3 +634,29 @@
     padding-bottom: 8px !important;
   }
 }
+/* =====================================================
+   MORTGAGE: Add arrow to Optional early settlement dropdown
+===================================================== */
+body.loan-page .early-settlement-toggle {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding-right: 44px !important;
+  text-align: center !important;
+}
+
+body.loan-page .early-settlement-toggle::after {
+  content: "▼" !important;
+  position: absolute !important;
+  right: 16px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+}
+
+body.loan-page .early-settlement-toggle[aria-expanded="true"]::after {
+  content: "▲" !important;
+}
