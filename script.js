@@ -8743,3 +8743,26 @@
     start();
   }
 })();
+/* =====================================================
+   SAFE GLOBAL NAV TEXT FIX
+   No MutationObserver, no loading loop
+===================================================== */
+(function () {
+  "use strict";
+
+  function fixLoanNavText() {
+    document.querySelectorAll('a[href="loan-calculator.html"]').forEach(function (link) {
+      if (link.textContent.trim().toLowerCase() !== "mortgage / personal loan") {
+        link.textContent = "mortgage / personal loan";
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", fixLoanNavText);
+  } else {
+    fixLoanNavText();
+  }
+
+  window.addEventListener("pageshow", fixLoanNavText);
+})();
