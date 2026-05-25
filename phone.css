@@ -549,3 +549,88 @@
     line-height: 1.35 !important;
   }
 }
+/* =====================================================
+   PHONE ONLY: Cleaner global text size for all pages
+   - All normal text uses same smaller size
+   - Main page title h1 is slightly bigger
+   - Uses high specificity to beat old page-specific font sizes
+===================================================== */
+@media (max-width: 850px) {
+  body:not(#clean-text):not(#clean-size),
+  body:not(#clean-text):not(#clean-size) * {
+    font-size: 16px !important;
+    line-height: 1.35 !important;
+  }
+
+  body:not(#clean-text):not(#clean-size) h1,
+  body:not(#clean-text):not(#clean-size) main h1,
+  body:not(#clean-text):not(#clean-size) .calculator h1,
+  body:not(#clean-text):not(#clean-size) .calculator-box h1,
+  body:not(#clean-text):not(#clean-size) .bmi-title-row h1 {
+    font-size: 24px !important;
+    line-height: 1.2 !important;
+    margin-bottom: 12px !important;
+  }
+
+  body:not(#clean-text):not(#clean-size) h2,
+  body:not(#clean-text):not(#clean-size) h3,
+  body:not(#clean-text):not(#clean-size) h4,
+  body:not(#clean-text):not(#clean-size) h5,
+  body:not(#clean-text):not(#clean-size) h6 {
+    font-size: 16px !important;
+    line-height: 1.35 !important;
+  }
+
+  body:not(#clean-text):not(#clean-size) p,
+  body:not(#clean-text):not(#clean-size) label,
+  body:not(#clean-text):not(#clean-size) span,
+  body:not(#clean-text):not(#clean-size) li,
+  body:not(#clean-text):not(#clean-size) a,
+  body:not(#clean-text):not(#clean-size) summary {
+    font-size: 16px !important;
+    line-height: 1.35 !important;
+  }
+
+  body:not(#clean-text):not(#clean-size) input,
+  body:not(#clean-text):not(#clean-size) select,
+  body:not(#clean-text):not(#clean-size) textarea {
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+  }
+
+  body:not(#clean-text):not(#clean-size) button,
+  body:not(#clean-text):not(#clean-size) .main-btn,
+  body:not(#clean-text):not(#clean-size) .card,
+  body:not(#clean-text):not(#clean-size) .dropbtn {
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+  }
+
+  body:not(#clean-text):not(#clean-size) .subtitle,
+  body:not(#clean-text):not(#clean-size) .result,
+  body:not(#clean-text):not(#clean-size) #result,
+  body:not(#clean-text):not(#clean-size) #loanResult,
+  body:not(#clean-text):not(#clean-size) #bmiResult,
+  body:not(#clean-text):not(#clean-size) #ageResult,
+  body:not(#clean-text):not(#clean-size) #discountResult,
+  body:not(#clean-text):not(#clean-size) #percentageResult,
+  body:not(#clean-text):not(#clean-size) #compoundResult {
+    font-size: 16px !important;
+    line-height: 1.35 !important;
+  }
+
+  body:not(#clean-text):not(#clean-size) .calculator input,
+  body:not(#clean-text):not(#clean-size) .calculator select,
+  body:not(#clean-text):not(#clean-size) .calculator textarea {
+    min-height: 50px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+
+  body:not(#clean-text):not(#clean-size) .calculator button,
+  body:not(#clean-text):not(#clean-size) .main-btn {
+    min-height: 50px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+}
