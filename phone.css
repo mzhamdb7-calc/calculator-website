@@ -464,3 +464,88 @@
     word-break: break-word !important;
   }
 }
+
+/* =====================================================
+   PHONE ONLY: Mortgage page smaller same text size
+   - All mortgage page text = same smaller size
+   - Main title only slightly bigger
+===================================================== */
+@media (max-width: 850px) {
+  body.loan-page,
+  body.loan-page nav,
+  body.loan-page nav a,
+  body.loan-page nav button,
+  body.loan-page .calculator,
+  body.loan-page .calculator p,
+  body.loan-page .calculator label,
+  body.loan-page .calculator input,
+  body.loan-page .calculator select,
+  body.loan-page .calculator button,
+  body.loan-page .main-btn,
+  body.loan-page .subtitle,
+  body.loan-page .loan-history-box,
+  body.loan-page .loan-history-box *,
+  body.loan-page .optional-mortgage-costs,
+  body.loan-page .optional-mortgage-costs *,
+  body.loan-page #loanExternalOutput,
+  body.loan-page #loanExternalOutput *,
+  body.loan-page .loan-point-result,
+  body.loan-page .loan-point-result *,
+  body.loan-page #loanResult {
+    font-size: 16px !important;
+    line-height: 1.35 !important;
+  }
+
+  body.loan-page .calculator h1 {
+    font-size: 24px !important;
+    line-height: 1.2 !important;
+    margin-bottom: 10px !important;
+  }
+
+  body.loan-page .subtitle {
+    margin-bottom: 18px !important;
+  }
+
+  body.loan-page .calculator label,
+  body.loan-page .optional-mortgage-costs label {
+    font-size: 16px !important;
+    line-height: 1.35 !important;
+    margin-bottom: 8px !important;
+  }
+
+  body.loan-page .calculator input[type="number"],
+  body.loan-page .calculator input[type="text"],
+  body.loan-page .calculator select,
+  body.loan-page .optional-mortgage-costs input[type="number"],
+  body.loan-page .optional-mortgage-costs input[type="text"],
+  body.loan-page .optional-mortgage-costs select {
+    height: 52px !important;
+    min-height: 52px !important;
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+    margin-bottom: 14px !important;
+    padding: 8px 12px !important;
+  }
+
+  body.loan-page .main-btn,
+  body.loan-page .calculator > button,
+  body.loan-page .optional-mortgage-toggle {
+    min-height: 52px !important;
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+    padding: 8px 12px !important;
+  }
+
+  body.loan-page .optional-mortgage-arrow {
+    font-size: 16px !important;
+  }
+
+  body.loan-page .loan-history-top h3,
+  body.loan-page .optional-mortgage-title,
+  body.loan-page .loan-panel-title,
+  body.loan-page .universal-panel-title,
+  body.loan-page .stable-result-title {
+    font-size: 16px !important;
+    line-height: 1.35 !important;
+  }
+}

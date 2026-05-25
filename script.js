@@ -9010,3 +9010,108 @@
     startBmiInputGrouping();
   }
 })();
+/* =====================================================
+   MORTGAGE: Remove duplicate Other monthly fees input
+   - Keeps #otherMonthlyFees
+   - Removes old duplicate #hoaMonthly
+===================================================== */
+(function () {
+  "use strict";
+
+  function isLoanPage() {
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      window.location.pathname.includes("loan-calculator") ||
+      !!document.getElementById("loanResult")
+    );
+  }
+
+  function removeInputAndLabel(input) {
+    if (!input) return;
+
+    const id = input.id;
+
+    if (id) {
+      document.querySelectorAll('label[for="' + id + '"]').forEach(function (label) {
+        label.remove();
+      });
+    }
+
+    input.remove();
+  }
+
+  function removeDuplicateIds(id) {
+    const items = Array.from(document.querySelectorAll('[id="' + id + '"]'));
+
+    items.slice(1).forEach(function (input) {
+      removeInputAndLabel(input);
+    });
+  }
+
+  function fixDuplicateOtherMonthlyCost() {
+    if (!isLoanPage()) return;
+
+    removeDuplicateIds("otherMonthlyFees");
+    removeDuplicateIds("hoaMonthly");
+
+    const newInput = document.getElementById("otherMonthlyFees");
+    const oldInput = document.getElementById("hoaMonthly");
+
+    /*
+      Your file has two versions:
+      - old: #hoaMonthly
+      - new: #otherMonthlyFees
+
+      Keep the new one and remove the old one.
+    */
+    if (newInput && oldInput) {
+      if (
+        String(newInput.value || "").trim() === "" &&
+        String(oldInput.value || "").trim() !== ""
+      ) {
+        newInput.value = oldInput.value;
+      }
+
+      removeInputAndLabel(oldInput);
+    }
+
+    const finalInput =
+      document.getElementById("otherMonthlyFees") ||
+      document.getElementById("hoaMonthly");
+
+    if (finalInput) {
+      const label = document.querySelector('label[for="' + finalInput.id + '"]');
+
+      if (label) {
+        label.textContent = "Other monthly fees:";
+      }
+
+      finalInput.placeholder = "Optional";
+    }
+  }
+
+  function start() {
+    fixDuplicateOtherMonthlyCost();
+
+    setTimeout(fixDuplicateOtherMonthlyCost, 100);
+    setTimeout(fixDuplicateOtherMonthlyCost, 500);
+    setTimeout(fixDuplicateOtherMonthlyCost, 1000);
+    setTimeout(fixDuplicateOtherMonthlyCost, 2000);
+
+    document.addEventListener(
+      "click",
+      function () {
+        setTimeout(fixDuplicateOtherMonthlyCost, 0);
+        setTimeout(fixDuplicateOtherMonthlyCost, 250);
+      },
+      true
+    );
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
