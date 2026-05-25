@@ -3102,3 +3102,127 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     margin: 8px 0 !important;
   }
 }
+/* =====================================================
+   PC ONLY: Discount result box same style as other pages
+===================================================== */
+@media (min-width: 851px) {
+  body.discount-page #stableDiscountOutput,
+  main.discount-calculator-container #stableDiscountOutput,
+  .discount-result-output {
+    grid-column: 1 / -1 !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    display: block !important;
+    visibility: visible !important;
+
+    margin: 24px auto 0 !important;
+    padding: 28px !important;
+
+    background: #d2fff7 !important;
+    border: 5px solid var(--black) !important;
+    box-shadow: 8px 8px 0 var(--black) !important;
+
+    box-sizing: border-box !important;
+  }
+
+  body.discount-page #stableDiscountOutput .stable-result-top,
+  body.discount-page #stableDiscountOutput .loan-output-top {
+    width: 100% !important;
+
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 18px !important;
+    align-items: start !important;
+
+    box-sizing: border-box !important;
+  }
+
+  body.discount-page #stableDiscountOutput .stable-result-panel,
+  body.discount-page #stableDiscountOutput .loan-result-panel {
+    width: 100% !important;
+
+    background: #ffffff !important;
+    border: 4px solid var(--black) !important;
+    box-shadow: 6px 6px 0 var(--black) !important;
+
+    padding: 28px !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+  }
+
+  body.discount-page #stableDiscountOutput .stable-result-title,
+  body.discount-page #stableDiscountOutput .loan-panel-title {
+    margin: 0 0 22px !important;
+
+    font-size: 32px !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+  }
+
+  body.discount-page #stableDiscountOutput .stable-result-body,
+  body.discount-page #stableDiscountOutput .loan-result-body {
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  body.discount-page #stableDiscountOutput .discount-point-result {
+    display: inline-block !important;
+
+    margin: 0 auto !important;
+    padding: 0 !important;
+
+    list-style-position: inside !important;
+    text-align: left !important;
+
+    font-size: 20px !important;
+    font-weight: bold !important;
+    line-height: 1.7 !important;
+  }
+
+  body.discount-page #stableDiscountOutput .discount-point-result li {
+    margin: 8px 0 !important;
+  }
+
+  body.discount-page #stableDiscountOutput .stable-copy-side,
+  body.discount-page #stableDiscountOutput .loan-copy-side {
+    width: auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
+  }
+
+  body.discount-page #stableDiscountOutput .stable-copy-btn,
+  body.discount-page #stableDiscountOutput .loan-copy-btn {
+    min-width: 90px !important;
+    min-height: 54px !important;
+
+    padding: 10px 18px !important;
+
+    background: #ffb6d0 !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+
+    font-family: inherit !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+  }
+
+  body.discount-page #stableDiscountOutput .stable-copy-btn:hover,
+  body.discount-page #stableDiscountOutput .loan-copy-btn:hover {
+    transform: translate(2px, 2px) !important;
+    box-shadow: 3px 3px 0 var(--black) !important;
+  }
+
+  body.discount-page #universalLoanStyleOutput {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}
