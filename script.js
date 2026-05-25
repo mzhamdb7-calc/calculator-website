@@ -8743,3 +8743,47 @@
     start();
   }
 })();
+/* =====================================================
+   GLOBAL NAV FIX: Always show Mortgage / Personal Loan
+   - Fixes finance menu changing back to "loan"
+   - Runs on every page
+===================================================== */
+(function () {
+  "use strict";
+
+  function fixLoanNavText() {
+    document.querySelectorAll('a[href="loan-calculator.html"]').forEach(function (link) {
+      link.textContent = "mortgage / personal loan";
+    });
+  }
+
+  function start() {
+    fixLoanNavText();
+
+    setTimeout(fixLoanNavText, 100);
+    setTimeout(fixLoanNavText, 400);
+    setTimeout(fixLoanNavText, 1000);
+
+    const navbar = document.getElementById("navbar");
+
+    if (navbar && navbar.dataset.loanNavTextObserverReady !== "true") {
+      navbar.dataset.loanNavTextObserverReady = "true";
+
+      const observer = new MutationObserver(function () {
+        fixLoanNavText();
+      });
+
+      observer.observe(navbar, {
+        childList: true,
+        subtree: true,
+        characterData: true
+      });
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
