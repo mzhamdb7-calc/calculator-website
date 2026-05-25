@@ -8907,3 +8907,106 @@
     startAutoCalculate();
   }
 })();
+/* =====================================================
+   BMI: Put measurements beside profile box
+   - Groups Weight / Height / Waist in one box
+   - Places it beside Age group / Sex / BMI cut-off on PC
+===================================================== */
+(function () {
+  "use strict";
+
+  function isBmiPage() {
+    return (
+      document.body.classList.contains("bmi-page") ||
+      document.body.dataset.page === "bmi" ||
+      !!document.getElementById("bmiResult") ||
+      !!document.getElementById("bmiHistoryList")
+    );
+  }
+
+  function get(id) {
+    return document.getElementById(id);
+  }
+
+  function addBoxTitle(box, text) {
+    if (!box || box.querySelector(":scope > .bmi-extra-title")) return;
+
+    const title = document.createElement("div");
+    title.className = "bmi-extra-title";
+    title.textContent = text;
+    box.insertAdjacentElement("afterbegin", title);
+  }
+
+  function moveToBox(box, ids) {
+    ids.forEach(function (id) {
+      const el = get(id);
+      if (el && el.parentElement !== box) {
+        box.appendChild(el);
+      }
+    });
+  }
+
+  function groupBmiInputBoxes() {
+    if (!isBmiPage()) return;
+
+    const calculator = document.querySelector("body.bmi-page .calculator");
+    const profileBox = document.querySelector("body.bmi-page .bmi-extra-profile-box");
+    const weightInput = get("weight");
+
+    if (!calculator || !profileBox || !weightInput) return;
+
+    let layout = calculator.querySelector(".bmi-input-two-box-layout");
+
+    if (!layout) {
+      layout = document.createElement("div");
+      layout.className = "bmi-input-two-box-layout";
+
+      const titleRow = calculator.querySelector(":scope > .bmi-title-row");
+      if (titleRow) {
+        titleRow.insertAdjacentElement("afterend", layout);
+      } else {
+        calculator.insertAdjacentElement("afterbegin", layout);
+      }
+    }
+
+    let measurementBox = layout.querySelector(".bmi-measurement-box");
+
+    if (!measurementBox) {
+      measurementBox = document.createElement("div");
+      measurementBox.className = "bmi-measurement-box";
+    }
+
+    addBoxTitle(profileBox, "Profile");
+    addBoxTitle(measurementBox, "Measurements");
+
+    if (profileBox.parentElement !== layout) {
+      layout.appendChild(profileBox);
+    }
+
+    if (measurementBox.parentElement !== layout) {
+      layout.appendChild(measurementBox);
+    }
+
+    moveToBox(measurementBox, [
+      "weightLabel",
+      "weight",
+      "heightLabel",
+      "height",
+      "waistLabel",
+      "waist"
+    ]);
+  }
+
+  function startBmiInputGrouping() {
+    groupBmiInputBoxes();
+    setTimeout(groupBmiInputBoxes, 100);
+    setTimeout(groupBmiInputBoxes, 500);
+    setTimeout(groupBmiInputBoxes, 1000);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startBmiInputGrouping);
+  } else {
+    startBmiInputGrouping();
+  }
+})();
