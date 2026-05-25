@@ -90,8 +90,23 @@
   </nav>
 
   <!-- Main Content -->
-  <main class="loan-calculator-container no-history-layout">
-<section class="calculator">
+  <main class="loan-calculator-container">
+
+    <section class="loan-history-box">
+
+      <div class="loan-history-top">
+        <h3>Input</h3>
+
+        <button type="button" onclick="clearLoanHistory()" class="clear-btn">
+          Clear
+        </button>
+      </div>
+
+      <ul id="loanHistoryList"></ul>
+
+    </section>
+
+    <section class="calculator">
 
       <h1>Mortgage / Personal Loan Calculator</h1>
 
@@ -124,7 +139,12 @@
         aria-label="Loan term in months"
         data-term-unit="months"
       >
-<h2 id="loanResult"></h2>
+
+      <button type="button" onclick="calculateLoan()" class="main-btn">
+        calculate loan
+      </button>
+
+      <h2 id="loanResult"></h2>
 
     </section>
 
