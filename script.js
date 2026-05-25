@@ -1513,7 +1513,7 @@
 
     const type = getPageType();
 
-    if (type === "loan" || type === "age" || type === "basic" || type === "bmi") return;
+    if (type === "loan" || type === "age" || type === "basic") return;
 
     const result = getResultElement();
     const panel = getUniversalOutputPanel();
@@ -1633,16 +1633,16 @@
             result system for Age, because that is what brought back the
             old "Birthdate / Date to calculate" result.
           */
-          if (type !== "basic" && type !== "age" && type !== "loan" && type !== "bmi") {
+          if (type !== "basic" && type !== "age") {
             addInputHistory(type);
           }
 
-          if (type !== "age" && type !== "loan" && type !== "bmi") {
+          if (type !== "age") {
             renderUniversalLoanStyleResult();
           }
         }, 150);
 
-        if (type !== "age" && type !== "loan" && type !== "bmi") {
+        if (type !== "age") {
           setTimeout(renderUniversalLoanStyleResult, 400);
         }
       }
@@ -1654,11 +1654,11 @@
       setTimeout(function () {
         const type = getPageType();
 
-        if (type !== "basic" && type !== "age" && type !== "loan" && type !== "bmi") {
+        if (type !== "basic" && type !== "age") {
           addInputHistory(type);
         }
 
-        if (type !== "age" && type !== "loan" && type !== "bmi") {
+        if (type !== "age") {
           renderUniversalLoanStyleResult();
         }
       }, 150);
@@ -2033,7 +2033,776 @@
     }
   };
 })();
+/* =====================================================
+   BMI CALCULATOR: FINAL CLEAN UNIT + HISTORY + RESULT FIX
+   - Uses the SI/US toggle button state
+   - Stops guessing US from height > 3
+   - History box shows input only with correct units
+   - Result box shows point form:
+     BMI / BMI status / W/H ratio / Condition
+===================================================== */
+(function () {
+  "use strict";
 
+  const HISTORY_KEY = "bmiInputHistoryFinalCleanV2";
+  const UNIT_KEY = "bmiCurrentUnitFinalCleanV2";
+  const MAX_ITEMS = 50;
+  const PANEL_ID = "stableBmiOutput";
+
+  function isBmiPage() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    return (
+      document.body.classList.contains("bmi-page") ||
+      document.body.dataset.page === "bmi" ||
+      title.includes("bmi") ||
+      !!document.getElementById("bmiHistoryList") ||
+      !!document.getElementById("bmiResult")
+    );
+  }
+
+  function getValue(id) {
+    const el = document.getElementById(id);
+    return el ? String(el.value || "").trim() : "";
+  }
+
+  function getNumber(ids) {
+    for (const id of ids) {
+      const raw = getValue(id).replace(/,/g, "");
+      const num = Number(raw);
+
+      if (Number.isFinite(num)) return num;
+    }
+
+    return NaN;
+  }
+
+  function cleanUnit(value) {
+    const text = String(value || "").trim().toUpperCase();
+
+    if (text === "US" || text === "IMPERIAL") return "US";
+    if (text === "SI" || text === "METRIC") return "SI";
+
+    return "";
+  }
+
+  function getSavedUnit() {
+    try {
+      return localStorage.getItem(UNIT_KEY) === "US" ? "US" : "SI";
+    } catch {
+      return "SI";
+    }
+  }
+
+  function saveUnit(unit) {
+    const clean = unit === "US" ? "US" : "SI";
+
+    try {
+      localStorage.setItem(UNIT_KEY, clean);
+    } catch {
+      /* ignore */
+    }
+
+    document.body.dataset.bmiUnit = clean.toLowerCase();
+
+    const btn = document.getElementById("unitToggleBtn");
+    if (btn) {
+      btn.dataset.currentUnit = clean;
+    }
+
+    return clean;
+  }
+
+  function getLabelTextForInput(id) {
+    const input = document.getElementById(id);
+    if (!input) return "";
+
+    const label =
+      document.querySelector('label[for="' + id + '"]') ||
+      input.closest("label");
+
+    const placeholder = input.getAttribute("placeholder") || "";
+
+    return (
+      (label ? label.textContent : "") + " " +
+      placeholder + " " +
+      input.name + " " +
+      input.id
+    ).toLowerCase();
+  }
+
+  function readUnitFromLabels() {
+    const text = (
+      getLabelTextForInput("weight") + " " +
+      getLabelTextForInput("bmiWeight") + " " +
+      getLabelTextForInput("height") + " " +
+      getLabelTextForInput("bmiHeight") + " " +
+      getLabelTextForInput("waist") + " " +
+      getLabelTextForInput("waistSize") + " " +
+      getLabelTextForInput("bmiWaist")
+    ).toLowerCase();
+
+    if (
+      text.includes("lb") ||
+      text.includes("lbs") ||
+      text.includes("inch") ||
+      text.includes("(in") ||
+      text.includes(" in)")
+    ) {
+      return "US";
+    }
+
+    if (
+      text.includes("kg") ||
+      text.includes("cm") ||
+      text.includes("meter") ||
+      text.includes("metre") ||
+      text.includes("(m") ||
+      text.includes(" m)")
+    ) {
+      return "SI";
+    }
+
+    return "";
+  }
+
+  function readUnitFromControls() {
+    const selectors = [
+      "#unit",
+      "#bmiUnit",
+      "#bmiUnits",
+      "#unitSelect",
+      "select[name='unit']",
+      "select[name='bmiUnit']",
+      "input[name='unit']:checked",
+      "input[name='bmiUnit']:checked"
+    ];
+
+    for (const selector of selectors) {
+      const el = document.querySelector(selector);
+      if (!el) continue;
+
+      let text = "";
+
+      if (el.tagName && el.tagName.toLowerCase() === "select") {
+        const option = el.options[el.selectedIndex];
+        text = (
+          el.value + " " +
+          (option ? option.textContent : "")
+        ).toLowerCase();
+      } else {
+        text = (
+          el.value + " " +
+          (el.dataset.unit || "") + " " +
+          (el.dataset.currentUnit || "")
+        ).toLowerCase();
+      }
+
+      if (
+        text.includes("us") ||
+        text.includes("imperial") ||
+        text.includes("lb") ||
+        text.includes("inch")
+      ) {
+        return "US";
+      }
+
+      if (
+        text.includes("si") ||
+        text.includes("metric") ||
+        text.includes("kg") ||
+        text.includes("cm") ||
+        text.includes("meter") ||
+        text.includes("metre")
+      ) {
+        return "SI";
+      }
+    }
+
+    return "";
+  }
+
+  function readUnitFromBody() {
+    const data = cleanUnit(document.body.dataset.bmiUnit);
+    if (data) return data;
+
+    if (
+      document.body.classList.contains("us-unit") ||
+      document.body.classList.contains("us-mode") ||
+      document.body.classList.contains("imperial-unit")
+    ) {
+      return "US";
+    }
+
+    if (
+      document.body.classList.contains("si-unit") ||
+      document.body.classList.contains("si-mode") ||
+      document.body.classList.contains("metric-unit")
+    ) {
+      return "SI";
+    }
+
+    return "";
+  }
+
+  function readUnitFromButtonAsCurrent() {
+    const btn = document.getElementById("unitToggleBtn");
+    if (!btn) return "";
+
+    const fromData =
+      cleanUnit(btn.dataset.currentUnit) ||
+      cleanUnit(btn.dataset.unit) ||
+      cleanUnit(btn.value);
+
+    if (fromData) return fromData;
+
+    const text = String(btn.textContent || "").trim().toLowerCase();
+
+    if (text === "si" || text === "metric" || text === "si unit") return "SI";
+    if (text === "us" || text === "imperial" || text === "us unit") return "US";
+
+    if (text.includes("current si") || text.includes("si mode")) return "SI";
+    if (text.includes("current us") || text.includes("us mode")) return "US";
+
+    /*
+      If the button says "switch to US", it means the CURRENT mode is SI.
+      If the button says "switch to SI", it means the CURRENT mode is US.
+    */
+    if (text.includes("switch to us") || text.includes("change to us")) return "SI";
+    if (text.includes("switch to si") || text.includes("change to si")) return "US";
+
+    return "";
+  }
+
+  function detectCurrentUnit() {
+    /*
+      Priority:
+      1. Labels/inputs after the page updates
+      2. Real controls/selects/radios
+      3. Body dataset/class
+      4. SI/US button
+      5. Saved state
+      6. Default SI
+    */
+    return (
+      readUnitFromLabels() ||
+      readUnitFromControls() ||
+      readUnitFromBody() ||
+      readUnitFromButtonAsCurrent() ||
+      getSavedUnit() ||
+      "SI"
+    );
+  }
+
+  function syncUnitFromPage() {
+    return saveUnit(detectCurrentUnit());
+  }
+
+  function flipSavedUnit() {
+    return saveUnit(getSavedUnit() === "US" ? "SI" : "US");
+  }
+
+  function syncAfterUnitButtonClick() {
+    const before = getSavedUnit();
+
+    setTimeout(function () {
+      const detected = detectCurrentUnit();
+
+      /*
+        If the page gives a clear unit after the click, use it.
+        If not, toggle the saved state once.
+      */
+      if (detected && detected !== before) {
+        saveUnit(detected);
+      } else if (!readUnitFromLabels() && !readUnitFromControls() && !readUnitFromBody()) {
+        flipSavedUnit();
+      } else {
+        saveUnit(detected || before);
+      }
+
+      renderBmiHistory();
+    }, 120);
+  }
+
+  function getUnitsForCurrentMode(weight, height, waist) {
+    const unit = getSavedUnit();
+
+    if (unit === "US") {
+      return {
+        unit: "US",
+        weightUnit: "lb",
+        heightUnit: "in",
+        waistUnit: "in",
+        weightForBmi: weight,
+        heightForBmi: height,
+        waistForRatio: waist,
+        heightForRatio: height
+      };
+    }
+
+    const heightUnit = height > 3 ? "cm" : "m";
+    const waistUnit = Number.isFinite(waist) && waist > 3 ? "cm" : "m";
+
+    const heightMeters = heightUnit === "cm" ? height / 100 : height;
+    const waistMeters =
+      Number.isFinite(waist) && waist > 0
+        ? (waistUnit === "cm" ? waist / 100 : waist)
+        : NaN;
+
+    return {
+      unit: "SI",
+      weightUnit: "kg",
+      heightUnit: heightUnit,
+      waistUnit: waistUnit,
+      weightForBmi: weight,
+      heightForBmi: heightMeters,
+      waistForRatio: waistMeters,
+      heightForRatio: heightMeters
+    };
+  }
+
+  function bmiStatus(bmi) {
+    if (bmi < 18.5) return "Underweight";
+    if (bmi < 25) return "Normal";
+    if (bmi < 30) return "Overweight";
+    return "Obese";
+  }
+
+  function whCondition(ratio) {
+    if (!Number.isFinite(ratio)) return "-";
+    if (ratio < 0.4) return "Very low";
+    if (ratio < 0.5) return "Healthy";
+    if (ratio < 0.6) return "Moderate risk";
+    return "High risk";
+  }
+
+  function getBmiData() {
+    syncUnitFromPage();
+
+    const weight = getNumber(["weight", "bmiWeight"]);
+    const height = getNumber(["height", "bmiHeight"]);
+    const waist = getNumber(["waist", "waistSize", "bmiWaist"]);
+
+    if (
+      !Number.isFinite(weight) ||
+      !Number.isFinite(height) ||
+      weight <= 0 ||
+      height <= 0
+    ) {
+      return null;
+    }
+
+    const units = getUnitsForCurrentMode(weight, height, waist);
+
+    let bmi;
+
+    if (units.unit === "US") {
+      bmi = 703 * weight / (height * height);
+    } else {
+      bmi = weight / (units.heightForBmi * units.heightForBmi);
+    }
+
+    const ratio =
+      Number.isFinite(waist) && waist > 0
+        ? units.waistForRatio / units.heightForRatio
+        : NaN;
+
+    return {
+      weight: weight,
+      height: height,
+      waist: waist,
+      unit: units.unit,
+      weightUnit: units.weightUnit,
+      heightUnit: units.heightUnit,
+      waistUnit: units.waistUnit,
+      bmi: bmi,
+      bmiStatus: bmiStatus(bmi),
+      whRatio: ratio,
+      condition: whCondition(ratio)
+    };
+  }
+
+  function loadHistory() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+      return Array.isArray(saved) ? saved : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveHistory(history) {
+    try {
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-MAX_ITEMS)));
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function copyTextFinal(text, button) {
+    if (!text) return;
+
+    function copied() {
+      const old = button.textContent;
+      button.textContent = "copied";
+
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(copied).catch(function () {
+        fallbackCopyFinal(text);
+        copied();
+      });
+    } else {
+      fallbackCopyFinal(text);
+      copied();
+    }
+  }
+
+  function fallbackCopyFinal(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function renameBmiHistoryTitle() {
+    const title =
+      document.querySelector(".bmi-history-box .bmi-history-top h3") ||
+      document.querySelector(".bmi-history-box h3");
+
+    if (title) {
+      title.textContent = "Input";
+    }
+  }
+
+  function renderBmiHistory() {
+    if (!isBmiPage()) return;
+
+    const list = document.getElementById("bmiHistoryList");
+    if (!list) return;
+
+    renameBmiHistoryTitle();
+
+    const history = loadHistory();
+
+    list.innerHTML = "";
+
+    history.slice().reverse().forEach(function (item) {
+      const waistLine =
+        item.waist && item.waist !== "-"
+          ? "<br><strong>Waist:</strong> " + item.waist + " " + item.waistUnit
+          : "";
+
+      const copyValue =
+        "Weight: " + item.weight + " " + item.weightUnit + "\n" +
+        "Height: " + item.height + " " + item.heightUnit + "\n" +
+        (item.waist && item.waist !== "-"
+          ? "Waist: " + item.waist + " " + item.waistUnit + "\n"
+          : "") +
+        "Unit: " + item.unit;
+
+      const li = document.createElement("li");
+      li.className = "history-item bmi-input-unit-history-item";
+
+      const text = document.createElement("span");
+      text.className = "history-text";
+      text.innerHTML =
+        "<strong>Weight:</strong> " + item.weight + " " + item.weightUnit + "<br>" +
+        "<strong>Height:</strong> " + item.height + " " + item.heightUnit +
+        waistLine + "<br>" +
+        "<strong>Unit:</strong> " + item.unit;
+
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "history-copy-btn";
+      copyBtn.textContent = "copy";
+
+      copyBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        copyTextFinal(copyValue, copyBtn);
+      });
+
+      li.appendChild(text);
+      li.appendChild(copyBtn);
+      list.appendChild(li);
+    });
+  }
+
+  function addBmiHistory(data) {
+    if (!data) return;
+
+    const item = {
+      weight: String(data.weight),
+      height: String(data.height),
+      waist: Number.isFinite(data.waist) && data.waist > 0 ? String(data.waist) : "-",
+      unit: data.unit,
+      weightUnit: data.weightUnit,
+      heightUnit: data.heightUnit,
+      waistUnit: data.waistUnit
+    };
+
+    const history = loadHistory();
+    const last = history[history.length - 1];
+
+    if (
+      !last ||
+      last.weight !== item.weight ||
+      last.height !== item.height ||
+      last.waist !== item.waist ||
+      last.unit !== item.unit
+    ) {
+      history.push(item);
+    }
+
+    saveHistory(history);
+    renderBmiHistory();
+  }
+
+  function getMain() {
+    return document.querySelector("main.pc-calculator-layout") || document.querySelector("main");
+  }
+
+  function getCalculator() {
+    const main = getMain();
+    return main ? main.querySelector(".calculator") : null;
+  }
+
+  function getOrCreateResultPanel() {
+    const calculator = getCalculator();
+    if (!calculator) return null;
+
+    let panel = document.getElementById(PANEL_ID);
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = PANEL_ID;
+      panel.className = "stable-result-output bmi-point-output";
+      panel.setAttribute("aria-label", "BMI calculator result");
+
+      panel.innerHTML =
+        '<div class="stable-result-top">' +
+          '<div class="stable-result-panel">' +
+            '<h2 class="stable-result-title">Result</h2>' +
+            '<div class="stable-result-body"></div>' +
+          '</div>' +
+          '<div class="stable-copy-side">' +
+            '<button type="button" class="stable-copy-btn">Copy</button>' +
+          '</div>' +
+        '</div>';
+
+      calculator.insertAdjacentElement("afterend", panel);
+    }
+
+    return panel;
+  }
+
+  function hideOldResultPanels() {
+    const oldResult = document.getElementById("bmiResult") || document.getElementById("result");
+
+    if (oldResult) {
+      oldResult.style.display = "none";
+    }
+
+    const oldPanel = document.getElementById("universalLoanStyleOutput");
+
+    if (oldPanel) {
+      oldPanel.hidden = true;
+      oldPanel.style.setProperty("display", "none", "important");
+    }
+  }
+
+  function renderBmiResult(data) {
+    const panel = getOrCreateResultPanel();
+    if (!panel || !data) return;
+
+    const body = panel.querySelector(".stable-result-body");
+    if (!body) return;
+
+    const ratioText = Number.isFinite(data.whRatio) ? data.whRatio.toFixed(2) : "-";
+
+    body.innerHTML =
+      '<ul class="bmi-point-result">' +
+        '<li><strong>BMI:</strong> ' + data.bmi.toFixed(2) + '</li>' +
+        '<li><strong>BMI status:</strong> ' + data.bmiStatus + '</li>' +
+        '<li><strong>W/H ratio:</strong> ' + ratioText + '</li>' +
+        '<li><strong>Condition:</strong> ' + data.condition + '</li>' +
+      '</ul>';
+
+    panel.hidden = false;
+    hideOldResultPanels();
+
+    const copyBtn = panel.querySelector(".stable-copy-btn");
+
+    if (copyBtn) {
+      copyBtn.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        copyTextFinal(
+          "• BMI: " + data.bmi.toFixed(2) + "\n" +
+          "• BMI status: " + data.bmiStatus + "\n" +
+          "• W/H ratio: " + ratioText + "\n" +
+          "• Condition: " + data.condition,
+          copyBtn
+        );
+      };
+    }
+  }
+
+  function calculateBmiFinal() {
+    if (!isBmiPage()) return;
+
+    document.body.classList.add("bmi-page");
+    document.body.dataset.page = "bmi";
+
+    const data = getBmiData();
+    const oldResult = document.getElementById("bmiResult") || document.getElementById("result");
+
+    if (!data) {
+      const panel = document.getElementById(PANEL_ID);
+      if (panel) panel.hidden = true;
+
+      if (oldResult) {
+        oldResult.style.display = "block";
+        oldResult.innerText = "Please enter valid weight and height.";
+      }
+
+      return;
+    }
+
+    if (oldResult) {
+      oldResult.innerText =
+        "BMI: " + data.bmi.toFixed(2) + "\n" +
+        "BMI status: " + data.bmiStatus + "\n" +
+        "W/H ratio: " + (Number.isFinite(data.whRatio) ? data.whRatio.toFixed(2) : "-") + "\n" +
+        "Condition: " + data.condition;
+      oldResult.style.display = "none";
+    }
+
+    addBmiHistory(data);
+    renderBmiResult(data);
+  }
+
+  function clearBmiFinal() {
+    try {
+      localStorage.removeItem(HISTORY_KEY);
+      localStorage.removeItem("bmiHistory");
+      localStorage.removeItem("inputHistory_bmi");
+      localStorage.removeItem("bmiInputHistoryOnlyFinal");
+    } catch {
+      /* ignore */
+    }
+
+    renderBmiHistory();
+
+    const panel = document.getElementById(PANEL_ID);
+    if (panel) panel.hidden = true;
+
+    const oldPanel = document.getElementById("universalLoanStyleOutput");
+    if (oldPanel) {
+      oldPanel.hidden = true;
+      oldPanel.style.setProperty("display", "none", "important");
+    }
+
+    const oldResult = document.getElementById("bmiResult") || document.getElementById("result");
+    if (oldResult) oldResult.innerText = "";
+  }
+
+  function startBmiFinalRepair() {
+    if (!isBmiPage()) return;
+
+    document.body.classList.add("bmi-page");
+    document.body.dataset.page = "bmi";
+
+    syncUnitFromPage();
+    renameBmiHistoryTitle();
+    renderBmiHistory();
+
+    window.calculateBMI = calculateBmiFinal;
+    window.calculateBmi = calculateBmiFinal;
+    window.clearBMIHistory = clearBmiFinal;
+    window.clearBmiHistory = clearBmiFinal;
+
+    const btn = document.getElementById("unitToggleBtn");
+    if (btn && btn.dataset.bmiFinalRepairReady !== "true") {
+      btn.dataset.bmiFinalRepairReady = "true";
+
+      btn.addEventListener("click", function () {
+        syncAfterUnitButtonClick();
+      }, true);
+    }
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (button.id === "unitToggleBtn") {
+          syncAfterUnitButtonClick();
+          return;
+        }
+
+        if (
+          text.includes("calculate") ||
+          onclick.includes("calculateBMI") ||
+          onclick.includes("calculateBmi")
+        ) {
+          setTimeout(calculateBmiFinal, 0);
+          setTimeout(calculateBmiFinal, 250);
+          setTimeout(calculateBmiFinal, 650);
+          setTimeout(hideOldResultPanels, 900);
+        }
+
+        if (text.includes("clear")) {
+          setTimeout(clearBmiFinal, 0);
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key === "Enter") {
+          setTimeout(calculateBmiFinal, 0);
+          setTimeout(calculateBmiFinal, 250);
+          setTimeout(calculateBmiFinal, 650);
+        }
+      },
+      true
+    );
+
+    setTimeout(function () {
+      syncUnitFromPage();
+      renderBmiHistory();
+      hideOldResultPanels();
+    }, 500);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startBmiFinalRepair);
+  } else {
+    startBmiFinalRepair();
+  }
+})();
 /* =====================================================
    BMI CALCULATOR: FINAL CLEAN UNIT + HISTORY + RESULT FIX
    - Uses #unitToggleBtn data-current-unit as the true unit
@@ -3006,339 +3775,6 @@
   }
 })();
 /* =====================================================
-   LOAN / MORTGAGE: Rename "Total monthly payment"
-   to "Monthly payment"
-===================================================== */
-(function () {
-  "use strict";
-
-  function isLoanPage() {
-    return (
-      document.body.classList.contains("loan-page") ||
-      document.body.dataset.page === "loan" ||
-      !!document.getElementById("loanResult")
-    );
-  }
-
-  function renameLoanMonthlyLabels() {
-    if (!isLoanPage()) return;
-
-    const panel = document.getElementById("loanExternalOutput");
-    if (!panel) return;
-
-    panel.querySelectorAll("th, td").forEach(function (cell) {
-      const text = cell.textContent.trim().toLowerCase();
-
-      if (
-        text === "total monthly payment" ||
-        text === "total monthly" ||
-        text === "total monthly payment by years"
-      ) {
-        cell.textContent = "Monthly payment";
-      }
-    });
-  }
-
-  function startRenameLoanMonthlyLabels() {
-    if (!isLoanPage()) return;
-
-    document.addEventListener(
-      "click",
-      function (event) {
-        const button = event.target.closest("button");
-        if (!button) return;
-
-        const text = button.textContent.trim().toLowerCase();
-        const onclick = button.getAttribute("onclick") || "";
-
-        if (text.includes("calculate") || onclick.includes("calculateLoan")) {
-          setTimeout(renameLoanMonthlyLabels, 0);
-          setTimeout(renameLoanMonthlyLabels, 200);
-          setTimeout(renameLoanMonthlyLabels, 600);
-        }
-      },
-      true
-    );
-
-    const panel = document.getElementById("loanExternalOutput");
-
-    if (panel && panel.dataset.monthlyLabelObserverReady !== "true") {
-      panel.dataset.monthlyLabelObserverReady = "true";
-
-      const observer = new MutationObserver(function () {
-        setTimeout(renameLoanMonthlyLabels, 0);
-      });
-
-      observer.observe(panel, {
-        childList: true,
-        subtree: true,
-        characterData: true
-      });
-    }
-
-    setTimeout(renameLoanMonthlyLabels, 300);
-    setTimeout(renameLoanMonthlyLabels, 900);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startRenameLoanMonthlyLabels);
-  } else {
-    startRenameLoanMonthlyLabels();
-  }
-})();
-/* =====================================================
-   LOAN CALCULATOR: POINT FORM RESULT ONLY
-   - Removes result table
-   - Removes graph
-   - Shows result in point/bullet form
-   - Keeps optional mortgage costs ignored for these loan-only values
-===================================================== */
-(function () {
-  "use strict";
-
-  function isLoanPage() {
-    const h1 = document.querySelector("h1");
-    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
-
-    return (
-      document.body.classList.contains("loan-page") ||
-      document.body.dataset.page === "loan" ||
-      title.includes("loan") ||
-      !!document.getElementById("loanResult")
-    );
-  }
-
-  function getNumber(ids) {
-    for (const id of ids) {
-      const input = document.getElementById(id);
-      if (!input) continue;
-
-      const value = Number(String(input.value || "").replace(/,/g, "").trim());
-      if (Number.isFinite(value)) return value;
-    }
-
-    return NaN;
-  }
-
-  function money(value) {
-    return Number(value).toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-  }
-
-  function calculateLoanPaymentFinal(principal, annualRate, years) {
-    const months = years * 12;
-    const monthlyRate = annualRate / 100 / 12;
-
-    if (monthlyRate === 0) {
-      return principal / months;
-    }
-
-    return (
-      principal *
-      monthlyRate *
-      Math.pow(1 + monthlyRate, months)
-    ) / (
-      Math.pow(1 + monthlyRate, months) - 1
-    );
-  }
-
-  function getLoanPointPanel() {
-    const main =
-      document.querySelector("main.pc-calculator-layout") ||
-      document.querySelector("main");
-
-    const calculator = main ? main.querySelector(".calculator") : null;
-    if (!calculator) return null;
-
-    let panel = document.getElementById("loanExternalOutput");
-
-    if (!panel) {
-      panel = document.createElement("section");
-      panel.id = "loanExternalOutput";
-      panel.className = "loan-external-output loan-point-output";
-      panel.setAttribute("aria-label", "Loan result");
-      calculator.insertAdjacentElement("afterend", panel);
-    }
-
-    panel.classList.add("loan-point-output");
-
-    return panel;
-  }
-
-  function copyText(text, button) {
-    if (!text) return;
-
-    function copied() {
-      const old = button.textContent;
-      button.textContent = "Copied!";
-
-      setTimeout(function () {
-        button.textContent = old;
-      }, 1000);
-    }
-
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(copied).catch(function () {
-        fallbackCopy(text);
-        copied();
-      });
-    } else {
-      fallbackCopy(text);
-      copied();
-    }
-  }
-
-  function fallbackCopy(text) {
-    const textarea = document.createElement("textarea");
-
-    textarea.value = text;
-    textarea.style.position = "fixed";
-    textarea.style.left = "-9999px";
-    textarea.style.top = "-9999px";
-
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-
-    document.execCommand("copy");
-    textarea.remove();
-  }
-
-  function renderLoanPointResult(amount, annualRate, years) {
-    const panel = getLoanPointPanel();
-    if (!panel) return;
-
-    const monthlyPI = calculateLoanPaymentFinal(amount, annualRate, years);
-    const fullPaymentValue = monthlyPI * years * 12;
-    const fullLoanInterest = fullPaymentValue - amount;
-    const yearlyInterest = fullLoanInterest / years;
-    const yearlyPayment = monthlyPI * 12;
-
-    panel.hidden = false;
-
-    panel.innerHTML =
-      '<div class="loan-output-top loan-point-top">' +
-        '<div class="loan-result-panel loan-point-panel">' +
-          '<h2 class="loan-panel-title">Result</h2>' +
-          '<div class="loan-result-body">' +
-            '<ul class="loan-point-result">' +
-              '<li><strong>Principal + interest monthly:</strong> ' + money(monthlyPI) + '</li>' +
-              '<li><strong>Yearly interest:</strong> ' + money(yearlyInterest) + '</li>' +
-              '<li><strong>Yearly payment:</strong> ' + money(yearlyPayment) + '</li>' +
-              '<li><strong>Full loan interest:</strong> ' + money(fullLoanInterest) + '</li>' +
-              '<li><strong>Full payment value:</strong> ' + money(fullPaymentValue) + '</li>' +
-            '</ul>' +
-          '</div>' +
-        '</div>' +
-        '<div class="loan-copy-side">' +
-          '<button type="button" class="loan-copy-btn">Copy</button>' +
-        '</div>' +
-      '</div>';
-
-    const copyBtn = panel.querySelector(".loan-copy-btn");
-
-    if (copyBtn) {
-      copyBtn.onclick = function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        copyText(
-          "• Principal + interest monthly: " + money(monthlyPI) + "\n" +
-          "• Yearly interest: " + money(yearlyInterest) + "\n" +
-          "• Yearly payment: " + money(yearlyPayment) + "\n" +
-          "• Full loan interest: " + money(fullLoanInterest) + "\n" +
-          "• Full payment value: " + money(fullPaymentValue),
-          copyBtn
-        );
-      };
-    }
-
-    const result = document.getElementById("loanResult") || document.getElementById("result");
-
-    if (result) {
-      result.innerText =
-        "Principal + interest monthly: " + money(monthlyPI) + "\n" +
-        "Yearly interest: " + money(yearlyInterest) + "\n" +
-        "Yearly payment: " + money(yearlyPayment) + "\n" +
-        "Full loan interest: " + money(fullLoanInterest) + "\n" +
-        "Full payment value: " + money(fullPaymentValue);
-
-      result.style.display = "none";
-    }
-  }
-
-  function calculateLoanPointOnly() {
-    if (!isLoanPage()) return;
-
-    const amount = getNumber(["amount", "loanAmount", "principal", "loanPrincipal"]);
-    const annualRate = getNumber(["interest", "loanRate", "interestRate", "annualRate", "rate"]);
-    const years = getNumber(["years", "loanYears", "loanTerm", "term"]);
-
-    const result = document.getElementById("loanResult") || document.getElementById("result");
-
-    if (
-      !Number.isFinite(amount) ||
-      !Number.isFinite(annualRate) ||
-      !Number.isFinite(years) ||
-      amount <= 0 ||
-      annualRate < 0 ||
-      years <= 0
-    ) {
-      if (result) {
-        result.style.display = "block";
-        result.innerText = "Please enter valid loan details.";
-      }
-
-      const panel = document.getElementById("loanExternalOutput");
-      if (panel) panel.hidden = true;
-
-      return;
-    }
-
-    renderLoanPointResult(amount, annualRate, years);
-  }
-
-  function startLoanPointOnlyResult() {
-    if (!isLoanPage()) return;
-
-    document.body.classList.add("loan-page");
-    document.body.dataset.page = "loan";
-
-    window.calculateLoan = calculateLoanPointOnly;
-
-    document.addEventListener(
-      "click",
-      function (event) {
-        const button = event.target.closest("button");
-        if (!button) return;
-
-        const text = button.textContent.trim().toLowerCase();
-        const onclick = button.getAttribute("onclick") || "";
-
-        if (text.includes("calculate") || onclick.includes("calculateLoan")) {
-          setTimeout(calculateLoanPointOnly, 0);
-          setTimeout(calculateLoanPointOnly, 150);
-          setTimeout(calculateLoanPointOnly, 400);
-        }
-
-        if (text.includes("clear")) {
-          const panel = document.getElementById("loanExternalOutput");
-          if (panel) panel.hidden = true;
-        }
-      },
-      true
-    );
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startLoanPointOnlyResult);
-  } else {
-    startLoanPointOnlyResult();
-  }
-})();
-/* =====================================================
    LOAN: OPTIONAL MORTGAGE COSTS EXPAND / CLOSE BOX
    - Closed by default
    - Click title to open
@@ -4217,7 +4653,334 @@
     startInclusiveBmiCalculator();
   }
 })();
+/* =====================================================
+   BMI CALCULATOR: INCLUDE USER PROFILE IN INPUT HISTORY
+   Adds age group, sex, and Asian/non-Asian cut-off to BMI input box
+===================================================== */
+(function () {
+  "use strict";
 
+  const HISTORY_KEY = "bmiCleanInputHistoryFinal";
+  const MAX_ITEMS = 50;
+
+  function isBmiPage() {
+    return (
+      document.body.classList.contains("bmi-page") ||
+      document.body.dataset.page === "bmi" ||
+      !!document.getElementById("bmiHistoryList") ||
+      !!document.getElementById("bmiResult")
+    );
+  }
+
+  function getNumber(id) {
+    const input = document.getElementById(id);
+    if (!input) return NaN;
+
+    const value = Number(String(input.value || "").replace(/,/g, "").trim());
+    return Number.isFinite(value) ? value : NaN;
+  }
+
+  function getSelectedText(id, fallback) {
+    const select = document.getElementById(id);
+    if (!select) return fallback;
+
+    const option = select.options[select.selectedIndex];
+    return option ? option.textContent.trim() : fallback;
+  }
+
+  function getCurrentUnit() {
+    const button = document.getElementById("unitToggleBtn");
+
+    if (button && button.dataset.currentUnit) {
+      return button.dataset.currentUnit.toLowerCase() === "us" ? "us" : "si";
+    }
+
+    const saved = localStorage.getItem("bmiUnit") || document.body.dataset.bmiUnit || "si";
+    return String(saved).toLowerCase() === "us" ? "us" : "si";
+  }
+
+  function getUnits() {
+    const unit = getCurrentUnit();
+
+    if (unit === "us") {
+      return {
+        unit: "US",
+        weightUnit: "lb",
+        heightUnit: "in",
+        waistUnit: "in"
+      };
+    }
+
+    return {
+      unit: "SI",
+      weightUnit: "kg",
+      heightUnit: "cm",
+      waistUnit: "cm"
+    };
+  }
+
+  function getProfile() {
+    return {
+      ageGroup: getSelectedText("bmiAgeGroup", "Adult, 20 - 64"),
+      sex: getSelectedText("bmiSex", "Male"),
+      cutoff: getSelectedText("bmiEthnicity", "Non-Asian / standard adult cut-off")
+    };
+  }
+
+  function loadHistory() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+      return Array.isArray(saved) ? saved : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveHistory(history) {
+    try {
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-MAX_ITEMS)));
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function copyText(text, button) {
+    if (!text) return;
+
+    function copied() {
+      const old = button.textContent;
+      button.textContent = "copied";
+
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(copied).catch(function () {
+        fallbackCopy(text);
+        copied();
+      });
+    } else {
+      fallbackCopy(text);
+      copied();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function addBmiHistoryWithProfile() {
+    if (!isBmiPage()) return;
+
+    const weight = getNumber("weight");
+    const height = getNumber("height");
+    const waist = getNumber("waist");
+
+    if (
+      !Number.isFinite(weight) ||
+      !Number.isFinite(height) ||
+      weight <= 0 ||
+      height <= 0
+    ) {
+      return;
+    }
+
+    const units = getUnits();
+    const profile = getProfile();
+
+    const item = {
+      ageGroup: profile.ageGroup,
+      sex: profile.sex,
+      cutoff: profile.cutoff,
+
+      weight: String(weight),
+      height: String(height),
+      waist: Number.isFinite(waist) && waist > 0 ? String(waist) : "-",
+
+      unit: units.unit,
+      weightUnit: units.weightUnit,
+      heightUnit: units.heightUnit,
+      waistUnit: units.waistUnit
+    };
+
+    const history = loadHistory();
+    const last = history[history.length - 1];
+
+    if (
+      !last ||
+      last.ageGroup !== item.ageGroup ||
+      last.sex !== item.sex ||
+      last.cutoff !== item.cutoff ||
+      last.weight !== item.weight ||
+      last.height !== item.height ||
+      last.waist !== item.waist ||
+      last.unit !== item.unit
+    ) {
+      history.push(item);
+    }
+
+    saveHistory(history);
+    renderBmiHistoryWithProfile();
+  }
+
+  function normalizeItem(item) {
+    const units = getUnits();
+
+    return {
+      ageGroup: item.ageGroup || "Adult, 20 - 64",
+      sex: item.sex || "Male",
+      cutoff: item.cutoff || "Non-Asian / standard adult cut-off",
+
+      weight: item.weight || "-",
+      height: item.height || "-",
+      waist: item.waist || "-",
+
+      unit: item.unit || units.unit,
+      weightUnit: item.weightUnit || units.weightUnit,
+      heightUnit: item.heightUnit || units.heightUnit,
+      waistUnit: item.waistUnit || units.waistUnit
+    };
+  }
+
+  function renderBmiHistoryWithProfile() {
+    if (!isBmiPage()) return;
+
+    const list = document.getElementById("bmiHistoryList");
+    if (!list) return;
+
+    const title =
+      document.querySelector(".bmi-history-box .bmi-history-top h3") ||
+      document.querySelector(".bmi-history-box h3");
+
+    if (title) {
+      title.textContent = "Input";
+    }
+
+    const history = loadHistory().map(normalizeItem);
+    saveHistory(history);
+
+    list.innerHTML = "";
+
+    history.slice().reverse().forEach(function (item) {
+      const waistLine =
+        item.waist && item.waist !== "-"
+          ? "<br><strong>Waist:</strong> " + item.waist + " " + item.waistUnit
+          : "";
+
+      const copyValue =
+        "Age group: " + item.ageGroup + "\n" +
+        "Sex: " + item.sex + "\n" +
+        "BMI cut-off: " + item.cutoff + "\n" +
+        "Weight: " + item.weight + " " + item.weightUnit + "\n" +
+        "Height: " + item.height + " " + item.heightUnit + "\n" +
+        (item.waist && item.waist !== "-"
+          ? "Waist: " + item.waist + " " + item.waistUnit + "\n"
+          : "") +
+        "Unit: " + item.unit;
+
+      const li = document.createElement("li");
+      li.className = "history-item bmi-profile-history-item";
+
+      const text = document.createElement("span");
+      text.className = "history-text";
+      text.innerHTML =
+        "<strong>Age group:</strong> " + item.ageGroup + "<br>" +
+        "<strong>Sex:</strong> " + item.sex + "<br>" +
+        "<strong>BMI cut-off:</strong> " + item.cutoff + "<br>" +
+        "<strong>Weight:</strong> " + item.weight + " " + item.weightUnit + "<br>" +
+        "<strong>Height:</strong> " + item.height + " " + item.heightUnit +
+        waistLine + "<br>" +
+        "<strong>Unit:</strong> " + item.unit;
+
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "history-copy-btn";
+      copyBtn.textContent = "copy";
+
+      copyBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        copyText(copyValue, copyBtn);
+      });
+
+      li.appendChild(text);
+      li.appendChild(copyBtn);
+      list.appendChild(li);
+    });
+  }
+
+  function clearBmiHistoryWithProfile() {
+    localStorage.removeItem(HISTORY_KEY);
+    localStorage.removeItem("bmiHistory");
+    localStorage.removeItem("inputHistory_bmi");
+    localStorage.removeItem("bmiInputHistoryOnlyFinal");
+
+    renderBmiHistoryWithProfile();
+  }
+
+  function startBmiProfileHistory() {
+    if (!isBmiPage()) return;
+
+    window.clearBMIHistory = clearBmiHistoryWithProfile;
+    window.clearBmiHistory = clearBmiHistoryWithProfile;
+
+    renderBmiHistoryWithProfile();
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (text.includes("calculate bmi") || onclick.includes("calculateBMI")) {
+          setTimeout(addBmiHistoryWithProfile, 0);
+          setTimeout(addBmiHistoryWithProfile, 250);
+          setTimeout(renderBmiHistoryWithProfile, 600);
+        }
+
+        if (text.includes("clear")) {
+          setTimeout(clearBmiHistoryWithProfile, 0);
+        }
+      },
+      true
+    );
+
+    ["bmiAgeGroup", "bmiSex", "bmiEthnicity"].forEach(function (id) {
+      const select = document.getElementById(id);
+
+      if (select) {
+        select.addEventListener("change", function () {
+          setTimeout(renderBmiHistoryWithProfile, 0);
+        });
+      }
+    });
+
+    setTimeout(renderBmiHistoryWithProfile, 500);
+    setTimeout(renderBmiHistoryWithProfile, 1200);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startBmiProfileHistory);
+  } else {
+    startBmiProfileHistory();
+  }
+})();
 /* =====================================================
    BASIC CALCULATOR: REMOVE BOTTOM RESULT BOX
    - Removes bottom result panel
@@ -5559,360 +6322,6 @@
   }
 })();
 /* =====================================================
-   LOAN CALCULATOR: Add Down Payment under Optional Costs
-   - Down payment goes inside Optional costs box
-   - Amount borrowed = Loan amount - Down payment
-   - Result uses amount borrowed for loan payment
-===================================================== */
-(function () {
-  "use strict";
-
-  function isLoanPage() {
-    const h1 = document.querySelector("h1");
-    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
-
-    return (
-      document.body.classList.contains("loan-page") ||
-      document.body.dataset.page === "loan" ||
-      title.includes("loan") ||
-      !!document.getElementById("loanResult")
-    );
-  }
-
-  function getNumber(ids) {
-    for (const id of ids) {
-      const input = document.getElementById(id);
-      if (!input) continue;
-
-      const value = Number(String(input.value || "").replace(/,/g, "").trim());
-      if (Number.isFinite(value)) return value;
-    }
-
-    return NaN;
-  }
-
-  function money(value) {
-    return Number(value).toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-  }
-
-  function calculateLoanPayment(principal, annualRate, years) {
-    const months = years * 12;
-    const monthlyRate = annualRate / 100 / 12;
-
-    if (monthlyRate === 0) {
-      return principal / months;
-    }
-
-    return (
-      principal *
-      monthlyRate *
-      Math.pow(1 + monthlyRate, months)
-    ) / (
-      Math.pow(1 + monthlyRate, months) - 1
-    );
-  }
-
-  function ensureOptionalCostBox() {
-    const calculator = document.querySelector(".calculator");
-    if (!calculator) return null;
-
-    let box = document.querySelector(".optional-mortgage-costs");
-
-    if (!box) {
-      box = document.createElement("div");
-      box.className = "optional-mortgage-costs";
-      box.innerHTML =
-        '<h3 class="optional-mortgage-title">Optional costs</h3>' +
-        '<div class="optional-mortgage-content"></div>';
-
-      const calculateBtn =
-        calculator.querySelector("button.main-btn") ||
-        Array.from(calculator.querySelectorAll("button")).find(function (btn) {
-          return btn.textContent.toLowerCase().includes("calculate");
-        });
-
-      if (calculateBtn) {
-        calculateBtn.insertAdjacentElement("beforebegin", box);
-      } else {
-        calculator.appendChild(box);
-      }
-    }
-
-    return box;
-  }
-
-  function getOptionalContent(box) {
-    return (
-      box.querySelector(".optional-mortgage-content") ||
-      box
-    );
-  }
-
-  function addDownPaymentInput() {
-    if (!isLoanPage()) return;
-
-    const box = ensureOptionalCostBox();
-    if (!box) return;
-
-    if (document.getElementById("downPayment")) return;
-
-    const content = getOptionalContent(box);
-
-    const label = document.createElement("label");
-    label.setAttribute("for", "downPayment");
-    label.textContent = "Down payment:";
-
-    const input = document.createElement("input");
-    input.type = "number";
-    input.id = "downPayment";
-    input.placeholder = "Optional, example: 8000";
-    input.setAttribute("inputmode", "decimal");
-
-    content.insertBefore(input, content.firstChild);
-    content.insertBefore(label, input);
-  }
-
-  function getLoanPanel() {
-    const main =
-      document.querySelector("main.pc-calculator-layout") ||
-      document.querySelector("main");
-
-    const calculator = main ? main.querySelector(".calculator") : null;
-    if (!calculator) return null;
-
-    let panel = document.getElementById("loanExternalOutput");
-
-    if (!panel) {
-      panel = document.createElement("section");
-      panel.id = "loanExternalOutput";
-      panel.className = "loan-external-output";
-      panel.setAttribute("aria-label", "Loan result");
-
-      calculator.insertAdjacentElement("afterend", panel);
-    }
-
-    return panel;
-  }
-
-  function copyText(text, button) {
-    if (!text) return;
-
-    function copied() {
-      const old = button.textContent;
-      button.textContent = "Copied!";
-
-      setTimeout(function () {
-        button.textContent = old;
-      }, 1000);
-    }
-
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(copied).catch(function () {
-        fallbackCopy(text);
-        copied();
-      });
-    } else {
-      fallbackCopy(text);
-      copied();
-    }
-  }
-
-  function fallbackCopy(text) {
-    const textarea = document.createElement("textarea");
-
-    textarea.value = text;
-    textarea.style.position = "fixed";
-    textarea.style.left = "-9999px";
-    textarea.style.top = "-9999px";
-
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-
-    document.execCommand("copy");
-    textarea.remove();
-  }
-
-  function renderLoanWithDownPayment() {
-    if (!isLoanPage()) return;
-
-    addDownPaymentInput();
-
-    const purchasePrice = getNumber(["amount", "loanAmount", "principal", "loanPrincipal"]);
-    const downPaymentRaw = getNumber(["downPayment", "loanDownPayment"]);
-    const annualRate = getNumber(["interest", "loanRate", "interestRate", "annualRate", "rate"]);
-    const years = getNumber(["years", "loanYears", "loanTerm", "term"]);
-
-    const result = document.getElementById("loanResult") || document.getElementById("result");
-    const panel = getLoanPanel();
-
-    if (!panel) return;
-
-    if (
-      !Number.isFinite(purchasePrice) ||
-      !Number.isFinite(annualRate) ||
-      !Number.isFinite(years) ||
-      purchasePrice <= 0 ||
-      annualRate < 0 ||
-      years <= 0
-    ) {
-      if (result) {
-        result.style.display = "block";
-        result.innerText = "Please enter valid loan details.";
-      }
-
-      panel.hidden = true;
-      return;
-    }
-
-    const downPayment =
-      Number.isFinite(downPaymentRaw) && downPaymentRaw > 0
-        ? downPaymentRaw
-        : 0;
-
-    if (downPayment >= purchasePrice) {
-      if (result) {
-        result.style.display = "block";
-        result.innerText = "Down payment must be less than the loan amount / purchase price.";
-      }
-
-      panel.hidden = true;
-      return;
-    }
-
-    const amountBorrowed = purchasePrice - downPayment;
-
-    const propertyTaxYearly = getNumber(["propertyTaxYearly"]);
-    const insuranceYearly = getNumber(["homeInsuranceYearly"]);
-    const otherMonthly = getNumber(["hoaMonthly", "otherMonthlyFees"]);
-
-    const propertyTaxMonthly =
-      Number.isFinite(propertyTaxYearly) && propertyTaxYearly > 0
-        ? propertyTaxYearly / 12
-        : 0;
-
-    const insuranceMonthly =
-      Number.isFinite(insuranceYearly) && insuranceYearly > 0
-        ? insuranceYearly / 12
-        : 0;
-
-    const extraMonthly =
-      Number.isFinite(otherMonthly) && otherMonthly > 0
-        ? otherMonthly
-        : 0;
-
-    const optionalMonthlyCost =
-      propertyTaxMonthly + insuranceMonthly + extraMonthly;
-
-    const months = years * 12;
-    const principalInterestMonthly =
-      calculateLoanPayment(amountBorrowed, annualRate, years);
-
-    const monthlyPayment = principalInterestMonthly + optionalMonthlyCost;
-    const yearlyInterest = principalInterestMonthly * 12 - amountBorrowed / years;
-    const yearlyPayment = monthlyPayment * 12;
-
-    const totalLoanPayment = principalInterestMonthly * months;
-    const fullLoanInterest = totalLoanPayment - amountBorrowed;
-    const totalOptionalCosts = optionalMonthlyCost * months;
-    const fullPaymentValue = downPayment + totalLoanPayment + totalOptionalCosts;
-
-    const resultText =
-      "• Purchase price: " + money(purchasePrice) + "\n" +
-      "• Down payment: " + money(downPayment) + "\n" +
-      "• Amount borrowed: " + money(amountBorrowed) + "\n" +
-      "• Principal + interest monthly: " + money(principalInterestMonthly) + "\n" +
-      "• Optional monthly costs: " + money(optionalMonthlyCost) + "\n" +
-      "• Monthly payment: " + money(monthlyPayment) + "\n" +
-      "• Yearly interest: " + money(yearlyInterest) + "\n" +
-      "• Yearly payment: " + money(yearlyPayment) + "\n" +
-      "• Full loan interest: " + money(fullLoanInterest) + "\n" +
-      "• Full payment value: " + money(fullPaymentValue);
-
-    panel.hidden = false;
-    panel.innerHTML =
-      '<div class="loan-output-top">' +
-        '<div class="loan-result-panel">' +
-          '<h2 class="loan-panel-title">Result</h2>' +
-          '<div class="loan-result-body">' +
-            '<ul class="loan-point-result">' +
-              '<li><strong>Purchase price:</strong> ' + money(purchasePrice) + '</li>' +
-              '<li><strong>Down payment:</strong> ' + money(downPayment) + '</li>' +
-              '<li><strong>Amount borrowed:</strong> ' + money(amountBorrowed) + '</li>' +
-              '<li><strong>Principal + interest monthly:</strong> ' + money(principalInterestMonthly) + '</li>' +
-              '<li><strong>Optional monthly costs:</strong> ' + money(optionalMonthlyCost) + '</li>' +
-              '<li><strong>Monthly payment:</strong> ' + money(monthlyPayment) + '</li>' +
-              '<li><strong>Yearly interest:</strong> ' + money(yearlyInterest) + '</li>' +
-              '<li><strong>Yearly payment:</strong> ' + money(yearlyPayment) + '</li>' +
-              '<li><strong>Full loan interest:</strong> ' + money(fullLoanInterest) + '</li>' +
-              '<li><strong>Full payment value:</strong> ' + money(fullPaymentValue) + '</li>' +
-            '</ul>' +
-          '</div>' +
-        '</div>' +
-        '<div class="loan-copy-side">' +
-          '<button type="button" class="loan-copy-btn">Copy</button>' +
-        '</div>' +
-      '</div>';
-
-    if (result) {
-      result.style.display = "none";
-    }
-
-    const copyBtn = panel.querySelector(".loan-copy-btn");
-    if (copyBtn) {
-      copyBtn.onclick = function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        copyText(resultText, copyBtn);
-      };
-    }
-  }
-
-  function startLoanDownPayment() {
-    if (!isLoanPage()) return;
-
-    document.body.classList.add("loan-page");
-    document.body.dataset.page = "loan";
-
-    addDownPaymentInput();
-
-    window.calculateLoan = renderLoanWithDownPayment;
-
-    document.addEventListener(
-      "click",
-      function (event) {
-        const button = event.target.closest("button");
-        if (!button) return;
-
-        const text = button.textContent.trim().toLowerCase();
-        const onclick = button.getAttribute("onclick") || "";
-
-        if (text.includes("calculate") || onclick.includes("calculateLoan")) {
-          setTimeout(renderLoanWithDownPayment, 0);
-          setTimeout(renderLoanWithDownPayment, 200);
-          setTimeout(renderLoanWithDownPayment, 700);
-          setTimeout(renderLoanWithDownPayment, 1200);
-        }
-      },
-      true
-    );
-
-    setTimeout(addDownPaymentInput, 300);
-    setTimeout(addDownPaymentInput, 900);
-    setTimeout(addDownPaymentInput, 1500);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startLoanDownPayment);
-  } else {
-    startLoanDownPayment();
-  }
-})();
-
-/* =====================================================
    LOAN PAGE: Rename to Mortgage / Personal Loan Calculator
 ===================================================== */
 (function () {
@@ -5989,197 +6398,6 @@
     start();
   }
 })();
-/* =====================================================
-   LOAN CALCULATOR: Simplify result box
-   Keep only:
-   - Monthly payment
-   - Full loan interest
-   - Full payment value
-===================================================== */
-(function () {
-  "use strict";
-
-  const KEEP_LABELS = [
-    "monthly payment",
-    "full loan interest",
-    "full payment value"
-  ];
-
-  function isLoanPage() {
-    const h1 = document.querySelector("h1");
-    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
-
-    return (
-      document.body.classList.contains("loan-page") ||
-      document.body.dataset.page === "loan" ||
-      title.includes("loan") ||
-      title.includes("mortgage") ||
-      !!document.getElementById("loanResult") ||
-      !!document.getElementById("loanExternalOutput")
-    );
-  }
-
-  function getLabelFromText(text) {
-    return String(text || "")
-      .replace(/^•\s*/g, "")
-      .split(":")[0]
-      .trim()
-      .toLowerCase();
-  }
-
-  function shouldKeep(text) {
-    const label = getLabelFromText(text);
-    return KEEP_LABELS.includes(label);
-  }
-
-  function copyText(text, button) {
-    if (!text) return;
-
-    function copied() {
-      const old = button.textContent;
-      button.textContent = "Copied!";
-
-      setTimeout(function () {
-        button.textContent = old;
-      }, 1000);
-    }
-
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(copied).catch(function () {
-        fallbackCopy(text);
-        copied();
-      });
-    } else {
-      fallbackCopy(text);
-      copied();
-    }
-  }
-
-  function fallbackCopy(text) {
-    const textarea = document.createElement("textarea");
-
-    textarea.value = text;
-    textarea.style.position = "fixed";
-    textarea.style.left = "-9999px";
-    textarea.style.top = "-9999px";
-
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-
-    document.execCommand("copy");
-    textarea.remove();
-  }
-
-  function simplifyLoanResult() {
-    if (!isLoanPage()) return;
-
-    const panel = document.getElementById("loanExternalOutput");
-    if (!panel) return;
-
-    const list = panel.querySelector(".loan-point-result");
-
-    if (list) {
-      Array.from(list.querySelectorAll("li")).forEach(function (li) {
-        if (!shouldKeep(li.textContent)) {
-          li.remove();
-        }
-      });
-    }
-
-    const table = panel.querySelector(".loan-result-table");
-
-    if (table) {
-      Array.from(table.querySelectorAll("tbody tr")).forEach(function (row) {
-        const firstCell = row.querySelector("td");
-        if (firstCell && !shouldKeep(firstCell.textContent)) {
-          row.remove();
-        }
-      });
-    }
-
-    const copyBtn = panel.querySelector(".loan-copy-btn");
-
-    if (copyBtn) {
-      copyBtn.onclick = function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        let copyValue = "";
-
-        const finalList = panel.querySelector(".loan-point-result");
-
-        if (finalList) {
-          copyValue = Array.from(finalList.querySelectorAll("li"))
-            .map(function (li) {
-              return "• " + li.textContent.trim();
-            })
-            .join("\n");
-        } else {
-          copyValue = Array.from(panel.querySelectorAll("tbody tr"))
-            .map(function (row) {
-              return Array.from(row.querySelectorAll("td"))
-                .map(function (cell) {
-                  return cell.textContent.trim();
-                })
-                .join(": ");
-            })
-            .filter(Boolean)
-            .join("\n");
-        }
-
-        copyText(copyValue, copyBtn);
-      };
-    }
-  }
-
-  function start() {
-    if (!isLoanPage()) return;
-
-    simplifyLoanResult();
-
-    document.addEventListener(
-      "click",
-      function (event) {
-        const button = event.target.closest("button");
-        if (!button) return;
-
-        const text = button.textContent.trim().toLowerCase();
-        const onclick = button.getAttribute("onclick") || "";
-
-        if (text.includes("calculate") || onclick.includes("calculateLoan")) {
-          setTimeout(simplifyLoanResult, 0);
-          setTimeout(simplifyLoanResult, 200);
-          setTimeout(simplifyLoanResult, 700);
-          setTimeout(simplifyLoanResult, 1200);
-        }
-      },
-      true
-    );
-
-    const main = document.querySelector("main");
-
-    if (main && main.dataset.loanSimpleResultObserverReady !== "true") {
-      main.dataset.loanSimpleResultObserverReady = "true";
-
-      const observer = new MutationObserver(function () {
-        setTimeout(simplifyLoanResult, 0);
-      });
-
-      observer.observe(main, {
-        childList: true,
-        subtree: true
-      });
-    }
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
-})();
-
 /* =====================================================
    SAFE LOAN MONTHS MODE
    Mortgage / Personal Loan Calculator
@@ -7161,27 +7379,21 @@
 })();
 
 /* =====================================================
-   DISCOUNT CALCULATOR: Stable result box like other pages
-   - Creates bottom result box
-   - Uses point form
-   - Hides old universal table output
+   FINAL HARD FIX: Mortgage term is MONTHS, not YEARS
+   - This final assignment guarantees onclick="calculateLoan()"
+     uses months directly.
+   - No background click listeners.
 ===================================================== */
 (function () {
   "use strict";
 
-  const PANEL_ID = "stableDiscountOutput";
-
-  function isDiscountPage() {
-    const h1 = document.querySelector("h1");
-    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
-
+  function isLoanPage() {
     return (
-      document.body.classList.contains("discount-page") ||
-      document.body.dataset.page === "discount" ||
-      title.includes("discount") ||
-      window.location.pathname.includes("discount-calculator") ||
-      !!document.getElementById("discountResult") ||
-      !!document.getElementById("discountHistoryList")
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      window.location.pathname.includes("loan-calculator") ||
+      !!document.getElementById("loanResult") ||
+      !!document.getElementById("loanHistoryList")
     );
   }
 
@@ -7204,73 +7416,48 @@
     });
   }
 
-  function getOrCreatePanel() {
-    const main =
-      document.querySelector("main.pc-calculator-layout") ||
-      document.querySelector("main");
+  function monthlyPayment(principal, annualRate, months) {
+    const monthlyRate = annualRate / 100 / 12;
 
+    if (monthlyRate === 0) {
+      return principal / months;
+    }
+
+    return (
+      principal * monthlyRate * Math.pow(1 + monthlyRate, months)
+    ) / (
+      Math.pow(1 + monthlyRate, months) - 1
+    );
+  }
+
+  function optionalMonthlyCost() {
+    const propertyTaxYearly = getNumber(["propertyTaxYearly"]);
+    const insuranceYearly = getNumber(["homeInsuranceYearly"]);
+    const otherMonthly = getNumber(["otherMonthlyFees", "hoaMonthly"]);
+
+    return (
+      (Number.isFinite(propertyTaxYearly) && propertyTaxYearly > 0 ? propertyTaxYearly / 12 : 0) +
+      (Number.isFinite(insuranceYearly) && insuranceYearly > 0 ? insuranceYearly / 12 : 0) +
+      (Number.isFinite(otherMonthly) && otherMonthly > 0 ? otherMonthly : 0)
+    );
+  }
+
+  function getLoanPanel() {
+    const main = document.querySelector("main.pc-calculator-layout") || document.querySelector("main");
     const calculator = main ? main.querySelector(".calculator") : null;
     if (!calculator) return null;
 
-    let panel = document.getElementById(PANEL_ID);
+    let panel = document.getElementById("loanExternalOutput");
 
     if (!panel) {
       panel = document.createElement("section");
-      panel.id = PANEL_ID;
-      panel.className = "stable-result-output discount-result-output";
-      panel.setAttribute("aria-label", "Discount calculator result");
-
-      panel.innerHTML =
-        '<div class="stable-result-top">' +
-          '<div class="stable-result-panel">' +
-            '<h2 class="stable-result-title">Result</h2>' +
-            '<div class="stable-result-body"></div>' +
-          '</div>' +
-          '<div class="stable-copy-side">' +
-            '<button type="button" class="stable-copy-btn">Copy</button>' +
-          '</div>' +
-        '</div>';
-
+      panel.id = "loanExternalOutput";
+      panel.className = "loan-external-output";
+      panel.setAttribute("aria-label", "Loan result");
       calculator.insertAdjacentElement("afterend", panel);
     }
 
     return panel;
-  }
-
-  function hideOldDiscountOutput() {
-    const universal = document.getElementById("universalLoanStyleOutput");
-
-    if (universal) {
-      universal.hidden = true;
-      universal.style.setProperty("display", "none", "important");
-      universal.style.setProperty("visibility", "hidden", "important");
-      universal.style.setProperty("pointer-events", "none", "important");
-    }
-
-    const oldResult =
-      document.getElementById("discountResult") ||
-      document.getElementById("result");
-
-    if (oldResult) {
-      oldResult.style.display = "none";
-    }
-  }
-
-  function fallbackCopy(text) {
-    const textarea = document.createElement("textarea");
-
-    textarea.value = text;
-    textarea.style.position = "fixed";
-    textarea.style.left = "-9999px";
-    textarea.style.top = "-9999px";
-    textarea.setAttribute("readonly", "");
-
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-
-    document.execCommand("copy");
-    textarea.remove();
   }
 
   function copyText(text, button) {
@@ -7280,81 +7467,77 @@
     function copied() {
       const old = button.textContent;
       button.textContent = "Copied!";
-
-      setTimeout(function () {
-        button.textContent = old;
-      }, 1000);
+      setTimeout(function () { button.textContent = old; }, 1000);
     }
 
     if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(value).then(copied).catch(function () {
-        fallbackCopy(value);
-        copied();
-      });
-    } else {
-      fallbackCopy(value);
-      copied();
+      navigator.clipboard.writeText(value).then(copied).catch(function () { copied(); });
     }
   }
 
-  function renderDiscountResultBox() {
-    if (!isDiscountPage()) return;
+  function finalCalculateLoanMonths() {
+    if (!isLoanPage()) return;
 
-    document.body.classList.add("discount-page");
-    document.body.dataset.page = "discount";
+    const purchasePrice = getNumber(["amount", "loanAmount", "principal", "loanPrincipal"]);
+    const annualRate = getNumber(["interest", "loanRate", "interestRate", "annualRate", "rate"]);
+    const months = getNumber(["years", "loanYears", "loanTerm", "term"]);
+    const downPaymentRaw = getNumber(["downPayment", "loanDownPayment"]);
 
-    const price = getNumber(["price", "originalPrice", "amount"]);
-    const discount = getNumber(["discount", "discountRate", "percent"]);
-
-    const panel = getOrCreatePanel();
-    const result =
-      document.getElementById("discountResult") ||
-      document.getElementById("result");
-
+    const result = document.getElementById("loanResult") || document.getElementById("result");
+    const panel = getLoanPanel();
     if (!panel) return;
 
-    if (
-      !Number.isFinite(price) ||
-      !Number.isFinite(discount) ||
-      price <= 0 ||
-      discount < 0 ||
-      discount > 100
-    ) {
+    if (!Number.isFinite(purchasePrice) || !Number.isFinite(annualRate) || !Number.isFinite(months) || purchasePrice <= 0 || annualRate < 0 || months <= 0) {
       if (result) {
         result.style.display = "block";
-        result.innerText = "Please enter valid discount details.";
+        result.innerText = "Please enter valid loan details.";
       }
-
       panel.hidden = true;
       return;
     }
 
-    const savings = price * discount / 100;
-    const finalPrice = price - savings;
+    const downPayment = Number.isFinite(downPaymentRaw) && downPaymentRaw > 0 ? downPaymentRaw : 0;
 
-    const resultText =
-      "• Original price: " + money(price) + "\n" +
-      "• Discount: " + discount + "%\n" +
-      "• Savings: " + money(savings) + "\n" +
-      "• Final price: " + money(finalPrice);
-
-    const body = panel.querySelector(".stable-result-body");
-
-    if (body) {
-      body.innerHTML =
-        '<ul class="discount-point-result">' +
-          '<li><strong>Original price:</strong> ' + money(price) + '</li>' +
-          '<li><strong>Discount:</strong> ' + discount + '%</li>' +
-          '<li><strong>Savings:</strong> ' + money(savings) + '</li>' +
-          '<li><strong>Final price:</strong> ' + money(finalPrice) + '</li>' +
-        '</ul>';
+    if (downPayment >= purchasePrice) {
+      if (result) {
+        result.style.display = "block";
+        result.innerText = "Down payment must be less than the loan amount / purchase price.";
+      }
+      panel.hidden = true;
+      return;
     }
 
+    const amountBorrowed = purchasePrice - downPayment;
+    const extraMonthly = optionalMonthlyCost();
+    const principalInterestMonthly = monthlyPayment(amountBorrowed, annualRate, months);
+    const finalMonthlyPayment = principalInterestMonthly + extraMonthly;
+    const fullLoanInterest = principalInterestMonthly * months - amountBorrowed;
+    const fullPaymentValue = downPayment + principalInterestMonthly * months + extraMonthly * months;
+
+    const resultText =
+      "• Monthly payment: " + money(finalMonthlyPayment) + "\n" +
+      "• Full loan interest: " + money(fullLoanInterest) + "\n" +
+      "• Full payment value: " + money(fullPaymentValue);
+
     panel.hidden = false;
-    panel.style.removeProperty("display");
+    panel.innerHTML =
+      '<div class="loan-output-top">' +
+        '<div class="loan-result-panel">' +
+          '<h2 class="loan-panel-title">Result</h2>' +
+          '<div class="loan-result-body">' +
+            '<ul class="loan-point-result loan-months-result">' +
+              '<li><strong>Monthly payment:</strong> ' + money(finalMonthlyPayment) + '</li>' +
+              '<li><strong>Full loan interest:</strong> ' + money(fullLoanInterest) + '</li>' +
+              '<li><strong>Full payment value:</strong> ' + money(fullPaymentValue) + '</li>' +
+            '</ul>' +
+          '</div>' +
+        '</div>' +
+        '<div class="loan-copy-side"><button type="button" class="loan-copy-btn">Copy</button></div>' +
+      '</div>';
 
-    const copyBtn = panel.querySelector(".stable-copy-btn");
+    if (result) result.style.display = "none";
 
+    const copyBtn = panel.querySelector(".loan-copy-btn");
     if (copyBtn) {
       copyBtn.onclick = function (event) {
         event.preventDefault();
@@ -7362,45 +7545,22 @@
         copyText(resultText, copyBtn);
       };
     }
+  }
 
-    hideOldDiscountOutput();
+  function labelMonths() {
+    const termInput = document.getElementById("years") || document.getElementById("loanYears") || document.getElementById("loanTerm") || document.getElementById("term");
+    if (!termInput) return;
+
+    const label = termInput.id ? document.querySelector('label[for="' + termInput.id + '"]') : null;
+    if (label) label.textContent = "Loan term in months:";
+    termInput.placeholder = "Example: 360";
+    termInput.dataset.termUnit = "months";
   }
 
   function start() {
-    if (!isDiscountPage()) return;
-
-    window.calculateDiscount = renderDiscountResultBox;
-
-    document.addEventListener(
-      "click",
-      function (event) {
-        const button = event.target.closest("button");
-        if (!button) return;
-
-        const text = button.textContent.trim().toLowerCase();
-        const onclick = button.getAttribute("onclick") || "";
-
-        if (text.includes("calculate") || onclick.includes("calculateDiscount")) {
-          setTimeout(renderDiscountResultBox, 0);
-          setTimeout(renderDiscountResultBox, 250);
-          setTimeout(renderDiscountResultBox, 700);
-        }
-      },
-      true
-    );
-
-    document.addEventListener(
-      "keydown",
-      function (event) {
-        if (event.key === "Enter") {
-          setTimeout(renderDiscountResultBox, 250);
-          setTimeout(renderDiscountResultBox, 700);
-        }
-      },
-      true
-    );
-
-    setTimeout(hideOldDiscountOutput, 400);
+    if (!isLoanPage()) return;
+    labelMonths();
+    window.calculateLoan = finalCalculateLoanMonths;
   }
 
   if (document.readyState === "loading") {
@@ -7409,3 +7569,4 @@
     start();
   }
 })();
+
