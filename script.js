@@ -9115,3 +9115,174 @@
     start();
   }
 })();
+/* =====================================================
+   MORTGAGE: Remove calculate button + auto calculate
+   - Deletes calculate loan button
+   - Calculates automatically after user input
+   - Waits until loan amount, interest, and term are filled
+===================================================== */
+(function () {
+  "use strict";
+
+  let autoTimer = null;
+  let isCalculating = false;
+
+  function isLoanPage() {
+    const title = document.querySelector("h1")
+      ? document.querySelector("h1").textContent.trim().toLowerCase()
+      : "";
+
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      window.location.pathname.includes("loan-calculator") ||
+      title.includes("mortgage") ||
+      title.includes("loan") ||
+      !!document.getElementById("loanResult")
+    );
+  }
+
+  function getValue(ids) {
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (!el) continue;
+
+      const value = String(el.value || "").trim();
+      if (value !== "") return value;
+    }
+
+    return "";
+  }
+
+  function isReadyToCalculate() {
+    return (
+      getValue(["amount", "loanAmount", "principal", "loanPrincipal"]) !== "" &&
+      getValue(["interest", "loanRate", "interestRate", "annualRate", "rate"]) !== "" &&
+      getValue(["years", "loanYears", "loanTerm", "term"]) !== ""
+    );
+  }
+
+  function findCalculateButtons() {
+    return Array.from(document.querySelectorAll("button")).filter(function (button) {
+      const text = button.textContent.trim().toLowerCase();
+      const onclick = button.getAttribute("onclick") || "";
+
+      return (
+        button.classList.contains("main-btn") ||
+        text.includes("calculate loan") ||
+        onclick.includes("calculateLoan")
+      );
+    });
+  }
+
+  function removeCalculateButton() {
+    if (!isLoanPage()) return;
+
+    findCalculateButtons().forEach(function (button) {
+      button.remove();
+    });
+  }
+
+  function updateInstructionText() {
+    const howText = document.querySelector(".instruction-how-box p");
+
+    if (howText) {
+      howText.textContent =
+        "Enter the loan amount or purchase price, annual interest rate, loan term in months, and optional costs. The result updates automatically.";
+    }
+
+    const subtitle = document.querySelector(".calculator .subtitle");
+
+    if (subtitle) {
+      subtitle.textContent =
+        "Estimate your monthly payment, full loan interest, and full payment value automatically.";
+    }
+  }
+
+  function runMortgageAutoCalculate() {
+    if (!isLoanPage()) return;
+    if (!isReadyToCalculate()) return;
+    if (typeof window.calculateLoan !== "function") return;
+    if (isCalculating) return;
+
+    isCalculating = true;
+
+    try {
+      window.calculateLoan();
+    } catch (error) {
+      console.error("Mortgage auto calculate error:", error);
+    }
+
+    setTimeout(function () {
+      isCalculating = false;
+    }, 150);
+  }
+
+  function scheduleMortgageAutoCalculate() {
+    clearTimeout(autoTimer);
+
+    autoTimer = setTimeout(function () {
+      removeCalculateButton();
+      runMortgageAutoCalculate();
+    }, 300);
+  }
+
+  function watchMortgageInputs() {
+    document.addEventListener(
+      "input",
+      function (event) {
+        if (!isLoanPage()) return;
+
+        const input = event.target;
+
+        if (
+          input.matches("input") ||
+          input.matches("select") ||
+          input.matches("textarea")
+        ) {
+          scheduleMortgageAutoCalculate();
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "change",
+      function (event) {
+        if (!isLoanPage()) return;
+
+        const input = event.target;
+
+        if (
+          input.matches("input") ||
+          input.matches("select") ||
+          input.matches("textarea")
+        ) {
+          scheduleMortgageAutoCalculate();
+        }
+      },
+      true
+    );
+  }
+
+  function startMortgageAutoCalculate() {
+    if (!isLoanPage()) return;
+
+    removeCalculateButton();
+    updateInstructionText();
+    watchMortgageInputs();
+
+    setTimeout(removeCalculateButton, 100);
+    setTimeout(removeCalculateButton, 500);
+    setTimeout(removeCalculateButton, 1000);
+    setTimeout(removeCalculateButton, 2000);
+
+    setTimeout(runMortgageAutoCalculate, 800);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startMortgageAutoCalculate);
+  } else {
+    startMortgageAutoCalculate();
+  }
+})();
