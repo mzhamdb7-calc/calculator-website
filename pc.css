@@ -4316,3 +4316,104 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     max-width: 100% !important;
   }
 }
+/* =====================================================
+   FIX: Keep boxes stable when result box appears - PC
+===================================================== */
+@media (min-width: 851px) {
+  body:not(.basic-page) main.no-history-layout,
+  body:not(.basic-page) main.pc-calculator-layout.no-history-layout,
+  body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout {
+    width: min(900px, calc(100vw - 32px)) !important;
+    max-width: min(900px, calc(100vw - 32px)) !important;
+    grid-template-columns: minmax(0, 760px) !important;
+    grid-template-rows: auto auto auto !important;
+    justify-content: center !important;
+    align-content: start !important;
+    align-items: start !important;
+    overflow-anchor: none !important;
+  }
+
+  body:not(.basic-page) main.no-history-layout > .pc-what-slot,
+  body:not(.basic-page) main.no-history-layout > .calculator {
+    grid-column: 1 !important;
+    width: 100% !important;
+    max-width: 760px !important;
+    min-width: 0 !important;
+    justify-self: center !important;
+    align-self: start !important;
+    flex: 0 0 auto !important;
+  }
+
+  body:not(.basic-page) main.no-history-layout::after {
+    content: "";
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+    width: 100% !important;
+    max-width: 760px !important;
+    min-height: 260px !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  body:not(.basic-page) main.no-history-layout:has(> #stableBasicAgeOutput:not([hidden]))::after,
+  body:not(.basic-page) main.no-history-layout:has(> #stableBmiOutput:not([hidden]))::after,
+  body:not(.basic-page) main.no-history-layout:has(> #stableDiscountOutput:not([hidden]))::after,
+  body:not(.basic-page) main.no-history-layout:has(> #loanExternalOutput:not([hidden]))::after,
+  body:not(.basic-page) main.no-history-layout:has(> #compoundYearMatrixOutput:not([hidden]))::after,
+  body:not(.basic-page) main.no-history-layout:has(> .stable-result-output:not([hidden]))::after,
+  body:not(.basic-page) main.no-history-layout:has(> .universal-output-panel:not([hidden]))::after {
+    display: none !important;
+  }
+
+  body:not(.basic-page) main.no-history-layout > #stableBasicAgeOutput,
+  body:not(.basic-page) main.no-history-layout > #stableBmiOutput,
+  body:not(.basic-page) main.no-history-layout > #stableDiscountOutput,
+  body:not(.basic-page) main.no-history-layout > #loanExternalOutput,
+  body:not(.basic-page) main.no-history-layout > #compoundYearMatrixOutput,
+  body:not(.basic-page) main.no-history-layout > #universalLoanStyleOutput,
+  body:not(.basic-page) main.no-history-layout > .stable-result-output,
+  body:not(.basic-page) main.no-history-layout > .universal-output-panel,
+  body:not(.basic-page) main.no-history-layout > .loan-external-output {
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+    width: 100% !important;
+    max-width: 760px !important;
+    min-width: 0 !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    justify-self: center !important;
+    align-self: start !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  body:not(.basic-page) .loan-output-top,
+  body:not(.basic-page) .stable-result-top,
+  body:not(.basic-page) .universal-output-top {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    box-sizing: border-box !important;
+  }
+
+  body:not(.basic-page) .loan-result-panel,
+  body:not(.basic-page) .stable-result-panel,
+  body:not(.basic-page) .universal-result-panel,
+  body:not(.basic-page) .compound-year-result-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body:not(.basic-page) .loan-result-table-scroll,
+  body:not(.basic-page) .bottom-result-table-scroll,
+  body:not(.basic-page) .compound-year-table-scroll {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    box-sizing: border-box !important;
+  }
+}
