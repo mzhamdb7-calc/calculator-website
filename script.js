@@ -8644,3 +8644,266 @@
   }
 })();
 
+/* =====================================================
+   AUTO CALCULATE: All calculators except Basic
+   - Runs when user types/selects input
+   - Excludes Basic calculator display
+   - Debounced so it does not calculate every keystroke instantly
+   - No MutationObserver, no loading loop
+===================================================== */
+(function () {
+  "use strict";
+
+  const AUTO_DELAY = 650;
+
+  if (window.__nonBasicAutoCalcController) {
+    window.__nonBasicAutoCalcController.abort();
+  }
+
+  const controller = new AbortController();
+  window.__nonBasicAutoCalcController = controller;
+
+  let autoTimer = null;
+  let isAutoCalculating = false;
+
+  function getPageTitle() {
+    const h1 = document.querySelector("h1");
+    return h1 ? h1.textContent.trim().toLowerCase() : "";
+  }
+
+  function getPageType() {
+    const title = getPageTitle();
+
+    if (
+      document.body.classList.contains("basic-page") ||
+      document.body.dataset.page === "basic" ||
+      document.getElementById("display") ||
+      title.includes("basic")
+    ) {
+      return "basic";
+    }
+
+    if (
+      document.body.classList.contains("age-page") ||
+      document.body.dataset.page === "age" ||
+      document.getElementById("birthdate") ||
+      title.includes("age")
+    ) {
+      return "age";
+    }
+
+    if (
+      document.body.classList.contains("bmi-page") ||
+      document.body.dataset.page === "bmi" ||
+      document.getElementById("bmiResult") ||
+      title.includes("bmi")
+    ) {
+      return "bmi";
+    }
+
+    if (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      document.getElementById("loanResult") ||
+      title.includes("loan") ||
+      title.includes("mortgage")
+    ) {
+      return "loan";
+    }
+
+    if (
+      document.body.classList.contains("discount-page") ||
+      document.body.dataset.page === "discount" ||
+      document.getElementById("discountResult") ||
+      title.includes("discount")
+    ) {
+      return "discount";
+    }
+
+    if (
+      document.body.classList.contains("percentage-page") ||
+      document.body.dataset.page === "percentage" ||
+      document.getElementById("percentageResult") ||
+      title.includes("percentage")
+    ) {
+      return "percentage";
+    }
+
+    if (
+      document.body.classList.contains("compound-page") ||
+      document.body.dataset.page === "compound" ||
+      document.getElementById("compoundResult") ||
+      title.includes("compound")
+    ) {
+      return "compound";
+    }
+
+    return "";
+  }
+
+  function getValue(ids) {
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (!el) continue;
+
+      const value = String(el.value || "").trim();
+      if (value) return value;
+    }
+
+    return "";
+  }
+
+  function hasValue(ids) {
+    return getValue(ids) !== "";
+  }
+
+  function isReadyToCalculate(type) {
+    if (type === "basic" || !type) return false;
+
+    if (type === "age") {
+      return hasValue(["birthdate", "birthDate", "dob"]);
+    }
+
+    if (type === "bmi") {
+      return (
+        hasValue(["weight", "bmiWeight"]) &&
+        hasValue(["height", "bmiHeight"])
+      );
+    }
+
+    if (type === "loan") {
+      return (
+        hasValue(["amount", "loanAmount", "principal", "loanPrincipal"]) &&
+        hasValue(["interest", "loanRate", "interestRate", "annualRate", "rate"]) &&
+        hasValue(["years", "loanYears", "loanTerm", "term"])
+      );
+    }
+
+    if (type === "discount") {
+      return (
+        hasValue(["price", "originalPrice", "amount"]) &&
+        hasValue(["discount", "discountRate", "percent"])
+      );
+    }
+
+    if (type === "percentage") {
+      return (
+        hasValue(["percentage", "percent"]) &&
+        hasValue(["number", "amount", "value"])
+      );
+    }
+
+    if (type === "compound") {
+      return (
+        hasValue(["principal", "compoundPrincipal", "amount"]) &&
+        hasValue(["rate", "compoundRate", "interest", "interestRate"]) &&
+        hasValue(["years", "compoundYears", "time"])
+      );
+    }
+
+    return false;
+  }
+
+  function getCalculateFunction(type) {
+    if (type === "age") return window.calculateAge;
+    if (type === "bmi") return window.calculateBMI || window.calculateBmi;
+    if (type === "loan") return window.calculateLoan;
+    if (type === "discount") return window.calculateDiscount;
+    if (type === "percentage") return window.calculatePercentage;
+    if (type === "compound") return window.calculateCompoundInterest || window.calculateCompound;
+
+    return null;
+  }
+
+  function shouldWatchInput(input) {
+    if (!input) return false;
+
+    const type = getPageType();
+    if (type === "basic") return false;
+
+    if (!input.closest(".calculator")) return false;
+
+    if (input.id === "display") return false;
+    if (input.type === "hidden") return false;
+    if (input.type === "button") return false;
+    if (input.type === "submit") return false;
+    if (input.type === "reset") return false;
+
+    return (
+      input.matches("input") ||
+      input.matches("select") ||
+      input.matches("textarea")
+    );
+  }
+
+  function runAutoCalculate() {
+    const type = getPageType();
+    if (type === "basic" || !type) return;
+
+    if (!isReadyToCalculate(type)) return;
+
+    const calculateFn = getCalculateFunction(type);
+    if (typeof calculateFn !== "function") return;
+
+    if (isAutoCalculating) return;
+
+    isAutoCalculating = true;
+
+    try {
+      calculateFn();
+    } catch (error) {
+      console.error("Auto calculate error:", error);
+    }
+
+    setTimeout(function () {
+      isAutoCalculating = false;
+    }, 100);
+  }
+
+  function scheduleAutoCalculate() {
+    clearTimeout(autoTimer);
+
+    autoTimer = setTimeout(function () {
+      runAutoCalculate();
+    }, AUTO_DELAY);
+  }
+
+  function handleInputEvent(event) {
+    const input = event.target;
+
+    if (!shouldWatchInput(input)) return;
+
+    scheduleAutoCalculate();
+  }
+
+  function startAutoCalculate() {
+    const type = getPageType();
+    if (type === "basic" || !type) return;
+
+    document.body.dataset.autoCalculateReady = "true";
+
+    document.addEventListener("input", handleInputEvent, {
+      signal: controller.signal,
+      capture: true
+    });
+
+    document.addEventListener("change", handleInputEvent, {
+      signal: controller.signal,
+      capture: true
+    });
+
+    setTimeout(function () {
+      if (isReadyToCalculate(getPageType())) {
+        runAutoCalculate();
+      }
+    }, 800);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startAutoCalculate, {
+      signal: controller.signal
+    });
+  } else {
+    startAutoCalculate();
+  }
+})();
