@@ -9048,3 +9048,95 @@
     }
   });
 })();
+/* =====================================================
+   SAME WIDTH FIX:
+   Non-basic calculators only.
+   Result box + Copy box follow the calculator box width.
+===================================================== */
+(function () {
+  "use strict";
+
+  function isBasicPage() {
+    return document.body.classList.contains("basic-page");
+  }
+
+  function getMain() {
+    return (
+      document.querySelector("main.no-history-layout") ||
+      document.querySelector("main.pc-calculator-layout") ||
+      document.querySelector("main")
+    );
+  }
+
+  function getCalculatorBox(main) {
+    if (!main) return null;
+
+    return (
+      main.querySelector(":scope > .calculator") ||
+      main.querySelector(".calculator") ||
+      document.querySelector(".calculator")
+    );
+  }
+
+  function syncResultCopyWidth() {
+    if (isBasicPage()) return;
+
+    const main = getMain();
+    const calculator = getCalculatorBox(main);
+
+    if (!main || !calculator) return;
+
+    const rect = calculator.getBoundingClientRect();
+
+    if (!rect.width || rect.width < 50) return;
+
+    main.classList.add("same-result-copy-width");
+    main.style.setProperty("--same-box-width", Math.round(rect.width) + "px");
+  }
+
+  function runSync() {
+    syncResultCopyWidth();
+
+    requestAnimationFrame(syncResultCopyWidth);
+    setTimeout(syncResultCopyWidth, 80);
+    setTimeout(syncResultCopyWidth, 250);
+    setTimeout(syncResultCopyWidth, 700);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", runSync);
+  } else {
+    runSync();
+  }
+
+  window.addEventListener("load", runSync);
+  window.addEventListener("resize", runSync);
+  window.addEventListener("orientationchange", runSync);
+
+  document.addEventListener("input", runSync, true);
+  document.addEventListener("change", runSync, true);
+  document.addEventListener("click", runSync, true);
+
+  if ("ResizeObserver" in window) {
+    const observer = new ResizeObserver(runSync);
+
+    function observeCalculator() {
+      const main = getMain();
+      const calculator = getCalculatorBox(main);
+
+      if (calculator) observer.observe(calculator);
+    }
+
+    observeCalculator();
+    setTimeout(observeCalculator, 500);
+  }
+
+  const mutationObserver = new MutationObserver(runSync);
+
+  mutationObserver.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["hidden", "class", "style"]
+  });
+})();

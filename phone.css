@@ -565,3 +565,133 @@
     margin: 0 auto !important;
   }
 }
+/* =====================================================
+   Phone: Result box + Copy box same width as calculator box
+   Applies to every calculator except Basic
+===================================================== */
+@media (max-width: 850px) {
+  body:not(.basic-page) main.same-result-copy-width {
+    --same-box-width: 100%;
+  }
+
+  body:not(.basic-page) main.same-result-copy-width > #stableBasicAgeOutput,
+  body:not(.basic-page) main.same-result-copy-width > #stableBmiOutput,
+  body:not(.basic-page) main.same-result-copy-width > #stableDiscountOutput,
+  body:not(.basic-page) main.same-result-copy-width > #loanExternalOutput,
+  body:not(.basic-page) main.same-result-copy-width > #universalLoanStyleOutput,
+  body:not(.basic-page) main.same-result-copy-width > #compoundYearMatrixOutput,
+  body:not(.basic-page) main.same-result-copy-width > .stable-result-output,
+  body:not(.basic-page) main.same-result-copy-width > .universal-output-panel,
+  body:not(.basic-page) main.same-result-copy-width > .loan-style-output-panel,
+  body:not(.basic-page) main.same-result-copy-width > .loan-external-output {
+    width: min(100%, var(--same-box-width)) !important;
+    max-width: min(100%, var(--same-box-width)) !important;
+    min-width: 0 !important;
+
+    margin: 18px auto 0 !important;
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  body:not(.basic-page) main.same-result-copy-width .stable-result-top,
+  body:not(.basic-page) main.same-result-copy-width .loan-output-top,
+  body:not(.basic-page) main.same-result-copy-width .universal-output-top {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+  }
+
+  body:not(.basic-page) main.same-result-copy-width .stable-result-panel,
+  body:not(.basic-page) main.same-result-copy-width .loan-result-panel,
+  body:not(.basic-page) main.same-result-copy-width .loan-graph-panel,
+  body:not(.basic-page) main.same-result-copy-width .universal-result-panel,
+  body:not(.basic-page) main.same-result-copy-width .compound-year-result-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  body:not(.basic-page) main.same-result-copy-width .stable-copy-side,
+  body:not(.basic-page) main.same-result-copy-width .loan-copy-side,
+  body:not(.basic-page) main.same-result-copy-width .loan-graph-copy-side,
+  body:not(.basic-page) main.same-result-copy-width .universal-copy-side {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+  }
+
+  body:not(.basic-page) main.same-result-copy-width .stable-copy-btn,
+  body:not(.basic-page) main.same-result-copy-width .loan-copy-btn,
+  body:not(.basic-page) main.same-result-copy-width .loan-graph-copy-btn,
+  body:not(.basic-page) main.same-result-copy-width .universal-copy-btn {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: 58px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 10px 16px !important;
+
+    box-sizing: border-box !important;
+  }
+
+  body:not(.basic-page) main.same-result-copy-width .stable-result-body,
+  body:not(.basic-page) main.same-result-copy-width .loan-result-body,
+  body:not(.basic-page) main.same-result-copy-width .loan-graph-body,
+  body:not(.basic-page) main.same-result-copy-width .universal-result-body,
+  body:not(.basic-page) main.same-result-copy-width .compound-year-table-body {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    box-sizing: border-box !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  body:not(.basic-page) main.same-result-copy-width .loan-result-table-scroll,
+  body:not(.basic-page) main.same-result-copy-width .bottom-result-table-scroll,
+  body:not(.basic-page) main.same-result-copy-width .compound-year-table-scroll,
+  body:not(.basic-page) main.same-result-copy-width .compound-year-table-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+
+    box-sizing: border-box !important;
+  }
+
+  body:not(.basic-page) main.same-result-copy-width .loan-result-table,
+  body:not(.basic-page) main.same-result-copy-width .bottom-result-table,
+  body:not(.basic-page) main.same-result-copy-width .compound-year-matrix-table {
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+  }
+}
