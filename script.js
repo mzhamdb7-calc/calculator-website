@@ -8645,62 +8645,55 @@
 })();
 
 /* =====================================================
-   FINAL AUTO COUNT + REMOVE CALCULATE BUTTONS
-   - All calculators auto-count when input is changed
-   - Basic calculator is excluded
-   - Calculate buttons are hidden/removed except Basic
-   - No MutationObserver and no loading loop
+   FINAL AUTO COUNT + REAL BUTTON REMOVAL
+   - Basic calculator keeps its buttons and manual =
+   - Other calculator pages calculate automatically
+   - Calculate buttons are REMOVED from the DOM, not hidden with CSS
+   - No MutationObserver, no loading loop
 ===================================================== */
 (function () {
   "use strict";
 
-  const AUTO_DELAY = 650;
-  const REMOVE_BUTTON_DELAY = 2200;
+  const AUTO_DELAY = 550;
 
-  if (window.__finalAutoCountNoButtonController) {
-    window.__finalAutoCountNoButtonController.abort();
+  if (window.__finalAutoCountNoHiddenButtonsController) {
+    window.__finalAutoCountNoHiddenButtonsController.abort();
   }
 
   const controller = new AbortController();
-  window.__finalAutoCountNoButtonController = controller;
+  window.__finalAutoCountNoHiddenButtonsController = controller;
 
   let autoTimer = null;
-  let isRunning = false;
+  let isCalculating = false;
 
-  function getPageTitle() {
+  function pageTitle() {
     const h1 = document.querySelector("h1");
     return h1 ? h1.textContent.trim().toLowerCase() : "";
   }
 
-  function getPageType() {
-    const title = getPageTitle();
+  function pageType() {
+    const title = pageTitle();
 
     if (
       document.body.classList.contains("basic-page") ||
       document.body.dataset.page === "basic" ||
       document.getElementById("display") ||
       title.includes("basic")
-    ) {
-      return "basic";
-    }
+    ) return "basic";
 
     if (
       document.body.classList.contains("age-page") ||
       document.body.dataset.page === "age" ||
       document.getElementById("birthdate") ||
       title.includes("age")
-    ) {
-      return "age";
-    }
+    ) return "age";
 
     if (
       document.body.classList.contains("bmi-page") ||
       document.body.dataset.page === "bmi" ||
       document.getElementById("bmiResult") ||
       title.includes("bmi")
-    ) {
-      return "bmi";
-    }
+    ) return "bmi";
 
     if (
       document.body.classList.contains("loan-page") ||
@@ -8708,46 +8701,38 @@
       document.getElementById("loanResult") ||
       title.includes("loan") ||
       title.includes("mortgage")
-    ) {
-      return "loan";
-    }
+    ) return "loan";
 
     if (
       document.body.classList.contains("discount-page") ||
       document.body.dataset.page === "discount" ||
       document.getElementById("discountResult") ||
       title.includes("discount")
-    ) {
-      return "discount";
-    }
+    ) return "discount";
 
     if (
       document.body.classList.contains("percentage-page") ||
       document.body.dataset.page === "percentage" ||
       document.getElementById("percentageResult") ||
       title.includes("percentage")
-    ) {
-      return "percentage";
-    }
+    ) return "percentage";
 
     if (
       document.body.classList.contains("compound-page") ||
       document.body.dataset.page === "compound" ||
       document.getElementById("compoundResult") ||
       title.includes("compound")
-    ) {
-      return "compound";
-    }
+    ) return "compound";
 
     return "";
   }
 
-  function getValue(ids) {
+  function valueOf(ids) {
     for (const id of ids) {
-      const element = document.getElementById(id);
-      if (!element) continue;
+      const el = document.getElementById(id);
+      if (!el) continue;
 
-      const value = String(element.value || "").trim();
+      const value = String(el.value || "").trim();
       if (value) return value;
     }
 
@@ -8755,10 +8740,10 @@
   }
 
   function hasValue(ids) {
-    return getValue(ids) !== "";
+    return valueOf(ids) !== "";
   }
 
-  function isReadyToCalculate(type) {
+  function readyToCalculate(type) {
     if (!type || type === "basic") return false;
 
     if (type === "age") {
@@ -8766,10 +8751,7 @@
     }
 
     if (type === "bmi") {
-      return (
-        hasValue(["weight", "bmiWeight"]) &&
-        hasValue(["height", "bmiHeight"])
-      );
+      return hasValue(["weight", "bmiWeight"]) && hasValue(["height", "bmiHeight"]);
     }
 
     if (type === "loan") {
@@ -8781,17 +8763,11 @@
     }
 
     if (type === "discount") {
-      return (
-        hasValue(["price", "originalPrice", "amount"]) &&
-        hasValue(["discount", "discountRate", "percent"])
-      );
+      return hasValue(["price", "originalPrice", "amount"]) && hasValue(["discount", "discountRate", "percent"]);
     }
 
     if (type === "percentage") {
-      return (
-        hasValue(["percentage", "percent"]) &&
-        hasValue(["number", "amount", "value"])
-      );
+      return hasValue(["percentage", "percent"]) && hasValue(["number", "amount", "value"]);
     }
 
     if (type === "compound") {
@@ -8805,24 +8781,18 @@
     return false;
   }
 
-  function getCalculateFunction(type) {
+  function calculateFunction(type) {
     if (type === "age") return window.calculateAge;
     if (type === "bmi") return window.calculateBMI || window.calculateBmi;
     if (type === "loan") return window.calculateLoan;
     if (type === "discount") return window.calculateDiscount;
     if (type === "percentage") return window.calculatePercentage;
     if (type === "compound") return window.calculateCompoundInterest || window.calculateCompound;
-
     return null;
   }
 
   function isCalculateButton(button) {
-    if (!button || button.tagName.toLowerCase() !== "button") return false;
-
-    const type = getPageType();
-    if (type === "basic") return false;
-
-    if (!button.closest(".calculator")) return false;
+    if (!button) return false;
 
     const text = button.textContent.trim().toLowerCase();
     const onclick = String(button.getAttribute("onclick") || "").toLowerCase();
@@ -8839,156 +8809,103 @@
     );
   }
 
-  function hideCalculateButtons() {
-    const type = getPageType();
-    if (!type || type === "basic") return;
-
-    document.querySelectorAll(".calculator button").forEach(function (button) {
-      if (!isCalculateButton(button)) return;
-
-      button.classList.add("auto-count-hidden-calculate-button");
-      button.setAttribute("aria-hidden", "true");
-      button.tabIndex = -1;
-      button.style.setProperty("display", "none", "important");
-      button.style.setProperty("visibility", "hidden", "important");
-      button.style.setProperty("pointer-events", "none", "important");
-    });
-  }
-
   function removeCalculateButtons() {
-    const type = getPageType();
+    const type = pageType();
     if (!type || type === "basic") return;
 
-    document.querySelectorAll(".calculator button").forEach(function (button) {
+    const calculator = document.querySelector(".calculator");
+    if (!calculator) return;
+
+    Array.from(calculator.querySelectorAll("button")).forEach(function (button) {
       if (!isCalculateButton(button)) return;
       button.remove();
     });
   }
 
-  function shouldWatchTarget(target) {
-    const type = getPageType();
-
+  function shouldAutoWatch(target) {
+    const type = pageType();
     if (!type || type === "basic") return false;
-    if (!target) return false;
-    if (!target.closest(".calculator")) return false;
 
+    if (!target || !target.closest || !target.closest(".calculator")) return false;
     if (!target.matches("input, select, textarea")) return false;
     if (target.id === "display") return false;
-    if (target.type === "hidden") return false;
-    if (target.type === "button") return false;
-    if (target.type === "submit") return false;
-    if (target.type === "reset") return false;
+    if (["hidden", "button", "submit", "reset"].includes(String(target.type || "").toLowerCase())) return false;
 
     return true;
   }
 
-  function runAutoCalculate() {
-    const type = getPageType();
+  function runAutoCount() {
+    const type = pageType();
+    if (!readyToCalculate(type)) return;
 
-    if (!type || type === "basic") return;
-    if (!isReadyToCalculate(type)) return;
+    const fn = calculateFunction(type);
+    if (typeof fn !== "function") return;
+    if (isCalculating) return;
 
-    const calculateFn = getCalculateFunction(type);
-    if (typeof calculateFn !== "function") return;
-
-    if (isRunning) return;
-    isRunning = true;
+    isCalculating = true;
 
     try {
-      calculateFn();
+      fn();
     } catch (error) {
       console.error("Auto count error:", error);
     }
 
-    hideCalculateButtons();
-
     setTimeout(function () {
-      isRunning = false;
+      isCalculating = false;
+      removeCalculateButtons();
     }, 120);
   }
 
-  function scheduleAutoCalculate(delay) {
+  function scheduleAutoCount() {
     clearTimeout(autoTimer);
-
-    autoTimer = setTimeout(function () {
-      runAutoCalculate();
-    }, Number.isFinite(delay) ? delay : AUTO_DELAY);
+    autoTimer = setTimeout(runAutoCount, AUTO_DELAY);
   }
 
-  function handleInputChange(event) {
-    if (!shouldWatchTarget(event.target)) return;
-    scheduleAutoCalculate(AUTO_DELAY);
+  function onInput(event) {
+    if (!shouldAutoWatch(event.target)) return;
+    scheduleAutoCount();
   }
 
-  function handleUnitOrOptionClick(event) {
-    const button = event.target.closest("button");
-    if (!button) return;
-
-    const type = getPageType();
-    if (!type || type === "basic") return;
-
-    const text = button.textContent.trim().toLowerCase();
-    const id = String(button.id || "").toLowerCase();
-    const onclick = String(button.getAttribute("onclick") || "").toLowerCase();
-
-    if (
-      id.includes("unit") ||
-      text.includes("si") ||
-      text.includes("us") ||
-      text.includes("optional") ||
-      onclick.includes("toggle")
-    ) {
-      setTimeout(hideCalculateButtons, 0);
-      scheduleAutoCalculate(300);
-    }
-  }
-
-  function startAutoCountNoButtons() {
-    const type = getPageType();
+  function start() {
+    const type = pageType();
     if (!type || type === "basic") return;
 
     document.body.dataset.autoCountReady = "true";
 
-    hideCalculateButtons();
-
-    document.addEventListener("input", handleInputChange, {
-      signal: controller.signal,
-      capture: true
+    document.addEventListener("input", onInput, {
+      capture: true,
+      signal: controller.signal
     });
 
-    document.addEventListener("change", handleInputChange, {
-      signal: controller.signal,
-      capture: true
-    });
-
-    document.addEventListener("click", handleUnitOrOptionClick, {
-      signal: controller.signal,
-      capture: true
+    document.addEventListener("change", onInput, {
+      capture: true,
+      signal: controller.signal
     });
 
     /*
-      Some older optional boxes used the calculate button as an insert anchor.
-      Hide it immediately, then remove it after all older setup blocks have had
-      time to create their optional fields.
+      Some older optional-input blocks create their fields after page load.
+      These timeouts remove the calculate buttons after those fields finish loading.
+      The buttons are removed from the DOM, not hidden with CSS.
     */
-    setTimeout(hideCalculateButtons, 0);
-    setTimeout(hideCalculateButtons, 400);
-    setTimeout(hideCalculateButtons, 1200);
-    setTimeout(removeCalculateButtons, REMOVE_BUTTON_DELAY);
-    setTimeout(removeCalculateButtons, REMOVE_BUTTON_DELAY + 1600);
+    removeCalculateButtons();
+    setTimeout(removeCalculateButtons, 300);
+    setTimeout(removeCalculateButtons, 900);
+    setTimeout(removeCalculateButtons, 1800);
+    setTimeout(removeCalculateButtons, 2600);
 
     setTimeout(function () {
-      if (isReadyToCalculate(getPageType())) {
-        runAutoCalculate();
+      if (readyToCalculate(pageType())) {
+        runAutoCount();
       }
-    }, 900);
+    }, 850);
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startAutoCountNoButtons, {
+    document.addEventListener("DOMContentLoaded", start, {
       signal: controller.signal
     });
   } else {
-    startAutoCountNoButtons();
+    start();
   }
 })();
+

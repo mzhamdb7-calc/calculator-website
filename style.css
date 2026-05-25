@@ -1818,27 +1818,3 @@ body.menu-scrolled #navbar.open .dropdown-content .nav-group > summary::after, #
   width: 100% !important;
   box-sizing: border-box !important;
 }
-
-/* =====================================================
-   AUTO COUNT: Hide calculate buttons except Basic
-   - Basic calculator keeps its = button and calculator controls
-===================================================== */
-body:not(.basic-page):not([data-page="basic"]) .calculator > button.main-btn,
-body:not(.basic-page):not([data-page="basic"]) .calculator > button[onclick*="calculate"],
-body.age-page .calculator > button.main-btn,
-body.bmi-page .calculator > button.main-btn,
-body.loan-page .calculator > button.main-btn,
-body.discount-page .calculator > button.main-btn,
-body.percentage-page .calculator > button.main-btn,
-body.compound-page .calculator > button.main-btn,
-body.age-page .calculator > button[onclick*="calculate"],
-body.bmi-page .calculator > button[onclick*="calculate"],
-body.loan-page .calculator > button[onclick*="calculate"],
-body.discount-page .calculator > button[onclick*="calculate"],
-body.percentage-page .calculator > button[onclick*="calculate"],
-body.compound-page .calculator > button[onclick*="calculate"],
-body:not(.basic-page):not([data-page="basic"]) .auto-count-hidden-calculate-button {
-  display: none !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-}
