@@ -9049,12 +9049,16 @@
   });
 })();
 /* =====================================================
-   SAME WIDTH FIX:
+   SAFE SAME WIDTH FIX:
    Non-basic calculators only.
-   Result box + Copy box follow the calculator box width.
+   Result box + Copy box follow calculator box width.
+   No MutationObserver to prevent endless loading.
 ===================================================== */
 (function () {
   "use strict";
+
+  let resizeObserverStarted = false;
+  let syncPending = false;
 
   function isBasicPage() {
     return document.body.classList.contains("basic-page");
@@ -9078,7 +9082,7 @@
     );
   }
 
-  function syncResultCopyWidth() {
+  function syncResultCopyWidthNow() {
     if (isBasicPage()) return;
 
     const main = getMain();
@@ -9086,57 +9090,69 @@
 
     if (!main || !calculator) return;
 
-    const rect = calculator.getBoundingClientRect();
+    const width = Math.round(calculator.getBoundingClientRect().width);
 
-    if (!rect.width || rect.width < 50) return;
+    if (!width || width < 50) return;
 
-    main.classList.add("same-result-copy-width");
-    main.style.setProperty("--same-box-width", Math.round(rect.width) + "px");
+    if (!main.classList.contains("same-result-copy-width")) {
+      main.classList.add("same-result-copy-width");
+    }
+
+    const currentWidth = main.style.getPropertyValue("--same-box-width");
+
+    if (currentWidth !== width + "px") {
+      main.style.setProperty("--same-box-width", width + "px");
+    }
   }
 
-  function runSync() {
-    syncResultCopyWidth();
+  function syncResultCopyWidth() {
+    if (syncPending) return;
 
-    requestAnimationFrame(syncResultCopyWidth);
-    setTimeout(syncResultCopyWidth, 80);
-    setTimeout(syncResultCopyWidth, 250);
-    setTimeout(syncResultCopyWidth, 700);
+    syncPending = true;
+
+    requestAnimationFrame(function () {
+      syncPending = false;
+      syncResultCopyWidthNow();
+    });
+  }
+
+  function startResizeObserver() {
+    if (resizeObserverStarted) return;
+    if (!("ResizeObserver" in window)) return;
+
+    const main = getMain();
+    const calculator = getCalculatorBox(main);
+
+    if (!calculator) return;
+
+    resizeObserverStarted = true;
+
+    const observer = new ResizeObserver(function () {
+      syncResultCopyWidth();
+    });
+
+    observer.observe(calculator);
+  }
+
+  function runSafeWidthFix() {
+    syncResultCopyWidth();
+    startResizeObserver();
+
+    setTimeout(syncResultCopyWidth, 100);
+    setTimeout(syncResultCopyWidth, 400);
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", runSync);
+    document.addEventListener("DOMContentLoaded", runSafeWidthFix);
   } else {
-    runSync();
+    runSafeWidthFix();
   }
 
-  window.addEventListener("load", runSync);
-  window.addEventListener("resize", runSync);
-  window.addEventListener("orientationchange", runSync);
+  window.addEventListener("load", runSafeWidthFix);
+  window.addEventListener("resize", syncResultCopyWidth);
+  window.addEventListener("orientationchange", syncResultCopyWidth);
 
-  document.addEventListener("input", runSync, true);
-  document.addEventListener("change", runSync, true);
-  document.addEventListener("click", runSync, true);
-
-  if ("ResizeObserver" in window) {
-    const observer = new ResizeObserver(runSync);
-
-    function observeCalculator() {
-      const main = getMain();
-      const calculator = getCalculatorBox(main);
-
-      if (calculator) observer.observe(calculator);
-    }
-
-    observeCalculator();
-    setTimeout(observeCalculator, 500);
-  }
-
-  const mutationObserver = new MutationObserver(runSync);
-
-  mutationObserver.observe(document.documentElement, {
-    childList: true,
-    subtree: true,
-    attributes: true,
-    attributeFilter: ["hidden", "class", "style"]
-  });
+  document.addEventListener("input", syncResultCopyWidth, true);
+  document.addEventListener("change", syncResultCopyWidth, true);
+  document.addEventListener("click", syncResultCopyWidth, true);
 })();
