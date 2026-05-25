@@ -3253,3 +3253,60 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     pointer-events: none !important;
   }
 }
+/* =====================================================
+   PC ONLY: Mortgage result point box + yearly table
+===================================================== */
+@media (min-width: 851px) {
+  body.loan-page .mortgage-result-with-table {
+    display: grid !important;
+    grid-template-columns: minmax(260px, 0.9fr) minmax(360px, 1.3fr) !important;
+    gap: 22px !important;
+    align-items: stretch !important;
+  }
+
+  body.loan-page .mortgage-point-box,
+  body.loan-page .mortgage-year-table-box {
+    background: #ffffff !important;
+    border: 4px solid var(--black) !important;
+    box-shadow: 6px 6px 0 var(--black) !important;
+
+    padding: 22px !important;
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .mortgage-point-box {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  body.loan-page .mortgage-year-table-box h3 {
+    margin: 0 0 14px !important;
+    text-align: center !important;
+    font-size: 24px !important;
+  }
+
+  body.loan-page .mortgage-year-table-scroll {
+    max-height: 360px !important;
+    overflow: auto !important;
+  }
+
+  body.loan-page .mortgage-year-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+  }
+
+  body.loan-page .mortgage-year-table th,
+  body.loan-page .mortgage-year-table td {
+    border: 3px solid var(--black) !important;
+    padding: 10px !important;
+    background: #fffbe7 !important;
+  }
+
+  body.loan-page .mortgage-year-table th {
+    background: #ffef9f !important;
+  }
+}
