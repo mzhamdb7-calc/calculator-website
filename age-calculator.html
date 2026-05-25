@@ -84,23 +84,8 @@
   </nav>
 
   <!-- Main Content -->
-  <main class="age-calculator-container">
-
-    <section class="age-history-box">
-
-      <div class="age-history-top">
-        <h3>History</h3>
-
-        <button type="button" onclick="clearAgeHistory()" class="clear-btn">
-          Clear
-        </button>
-      </div>
-
-      <ul id="ageHistoryList"></ul>
-
-    </section>
-
-    <section class="calculator">
+  <main class="age-calculator-container no-history-layout">
+<section class="calculator">
 
       <h1>Age Calculator</h1>
 
@@ -111,12 +96,7 @@
       <label for="birthdate">Enter your birth date:</label>
 
       <input type="date" id="birthdate">
-
-      <button type="button" onclick="calculateAge()" class="main-btn">
-        calculate age
-      </button>
-
-      <h2 id="result"></h2>
+<h2 id="result"></h2>
 
     </section>
 

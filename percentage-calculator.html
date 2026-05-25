@@ -85,23 +85,8 @@
   </nav>
 
   <!-- Main Content -->
-  <main class="percentage-calculator-container">
-
-    <section class="percentage-history-box">
-
-      <div class="percentage-history-top">
-        <h3>History</h3>
-
-        <button type="button" onclick="clearPercentageHistory()" class="clear-btn">
-          Clear
-        </button>
-      </div>
-
-      <ul id="percentageHistoryList"></ul>
-
-    </section>
-
-    <section class="calculator">
+  <main class="percentage-calculator-container no-history-layout">
+<section class="calculator">
 
       <h1>Percentage Calculator</h1>
 
@@ -114,12 +99,7 @@
 
       <label for="number">Of number:</label>
       <input type="number" id="number" placeholder="Example: 150">
-
-      <button type="button" onclick="calculatePercentage()" class="main-btn">
-        calculate percentage
-      </button>
-
-      <h2 id="percentageResult"></h2>
+<h2 id="percentageResult"></h2>
 
     </section>
 
@@ -128,151 +108,5 @@
   <script src="script.js"></script>
 <script src="pc.js"></script>
 <script src="phone.js"></script>
-
-  <script>
-    let percentageHistory = [];
-
-    try {
-      percentageHistory = JSON.parse(localStorage.getItem("percentageHistory")) || [];
-    } catch {
-      percentageHistory = [];
-    }
-
-    function calculatePercentage() {
-      const percentInput = document.getElementById("percent").value;
-      const numberInput = document.getElementById("number").value;
-      const resultBox = document.getElementById("percentageResult");
-
-      if (percentInput === "" || numberInput === "") {
-        resultBox.innerText = "Please enter both numbers.";
-        return;
-      }
-
-      const percent = Number(percentInput);
-      const number = Number(numberInput);
-
-      if (isNaN(percent) || isNaN(number)) {
-        resultBox.innerText = "Please enter valid numbers.";
-        return;
-      }
-
-      const result = (percent / 100) * number;
-
-      const answer =
-        "Percentage: " + percent + "%\n" +
-        "Number: " + number + "\n" +
-        "Result: " + result.toFixed(2);
-
-      resultBox.innerText = answer;
-
-      savePercentageHistory(answer);
-    }
-
-    function savePercentageHistory(answer) {
-      const item = answer.replace(/\n/g, " | ");
-
-      percentageHistory.push(item);
-
-      if (percentageHistory.length > 50) {
-        percentageHistory.shift();
-      }
-
-      localStorage.setItem("percentageHistory", JSON.stringify(percentageHistory));
-
-      showPercentageHistory();
-    }
-
-    function showPercentageHistory() {
-      const list = document.getElementById("percentageHistoryList");
-
-      if (!list) return;
-
-      list.innerHTML = "";
-
-      percentageHistory.slice().reverse().forEach(function (item) {
-        const li = document.createElement("li");
-        li.className = "history-item";
-
-        const text = document.createElement("span");
-        text.className = "history-text";
-        text.textContent = item;
-
-        const copyBtn = document.createElement("button");
-        copyBtn.type = "button";
-        copyBtn.className = "history-copy-btn";
-        copyBtn.textContent = "copy";
-
-        copyBtn.onclick = function () {
-          copyPercentageText(item, copyBtn);
-        };
-
-        li.appendChild(text);
-        li.appendChild(copyBtn);
-
-        list.appendChild(li);
-      });
-    }
-
-    function copyPercentageText(text, button) {
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text)
-          .then(function () {
-            showPercentageCopied(button);
-          })
-          .catch(function () {
-            fallbackPercentageCopy(text, button);
-          });
-      } else {
-        fallbackPercentageCopy(text, button);
-      }
-    }
-
-    function fallbackPercentageCopy(text, button) {
-      const tempInput = document.createElement("textarea");
-
-      tempInput.value = text;
-      tempInput.style.position = "fixed";
-      tempInput.style.left = "-9999px";
-      tempInput.style.top = "-9999px";
-
-      document.body.appendChild(tempInput);
-      tempInput.focus();
-      tempInput.select();
-
-      try {
-        document.execCommand("copy");
-        showPercentageCopied(button);
-      } catch {
-        button.textContent = "failed";
-
-        setTimeout(function () {
-          button.textContent = "copy";
-        }, 1000);
-      }
-
-      document.body.removeChild(tempInput);
-    }
-
-    function showPercentageCopied(button) {
-      button.textContent = "copied";
-
-      setTimeout(function () {
-        button.textContent = "copy";
-      }, 1000);
-    }
-
-    function clearPercentageHistory() {
-      percentageHistory = [];
-      localStorage.removeItem("percentageHistory");
-
-      showPercentageHistory();
-
-      const result = document.getElementById("percentageResult");
-      if (result) result.innerText = "";
-    }
-
-    document.addEventListener("DOMContentLoaded", showPercentageHistory);
-  </script>
-
 </body>
 </html>
