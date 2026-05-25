@@ -2,20 +2,26 @@
   Copyright © 2026 Hamdi. All rights reserved.
   Do not copy, modify, redistribute, or reuse this project without permission.
 -->
-<!DOCTYPE html>
 
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<title>Compound Interest Calculator</title>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta content="Free compound interest calculator to calculate future value, compound interest earned, and principal amount." name="description"/>
-<link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&amp;display=swap" rel="stylesheet"/>
-<link href="style.css" rel="stylesheet"/>
-<link href="pc.css" media="screen and (min-width: 851px)" rel="stylesheet"/>
-<link href="phone.css" media="screen and (max-width: 850px)" rel="stylesheet"/>
-<link href="favicon.ico" rel="icon"/>
-<script>
+  <meta charset="UTF-8">
+
+  <title>Compound Interest Calculator</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Free compound interest calculator to calculate future value, compound interest earned, and principal amount.">
+
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="pc.css" media="screen and (min-width: 851px)">
+  <link rel="stylesheet" href="phone.css" media="screen and (max-width: 850px)">
+
+  <link rel="icon" href="favicon.ico">
+
+  <script>
     if (window.location.pathname.endsWith("/calculator/")) {
       window.location.replace(
         window.location.pathname + "index.html" + window.location.search + window.location.hash
@@ -23,147 +29,437 @@
     }
   </script>
 </head>
+
 <body class="compound-page">
-<!-- Go Up Button -->
-<button aria-label="Go to top" id="scrollTopBtn" onclick="scrollToTop()" type="button">
+
+  <!-- Go Up Button -->
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
     ↑
   </button>
-<!-- MENU Button shown after scroll on PC only -->
-<button aria-label="Open menu" id="menuIcon" onclick="toggleMenu()" type="button">
+
+  <!-- MENU Button shown after scroll on PC only -->
+<button id="menuIcon" type="button" onclick="toggleMenu()" aria-label="Open menu">
   MENU
 </button>
-<!-- Navbar -->
-<nav id="navbar">
-<a href="index.html">home</a>
-<div class="dropdown">
-<button aria-expanded="false" class="dropbtn" type="button">
+
+  <!-- Navbar -->
+  <nav id="navbar">
+
+    <a href="index.html">home</a>
+
+    <div class="dropdown">
+      <button type="button" class="dropbtn" aria-expanded="false">
         calculator
       </button>
-<div class="dropdown-content">
-<a href="basic-calculator.html">basic</a>
-<details class="nav-group">
-<summary>health</summary>
-<div class="nav-group-links">
-<a href="age-calculator.html">age</a>
-<a href="bmi-calculator.html">bmi</a>
-</div>
-</details>
-<details class="nav-group">
-<summary>finance</summary>
-<div class="nav-group-links">
-<a href="loan-calculator.html">mortgage / personal loan</a>
-<a href="discount-calculator.html">discount</a>
-<a href="compound-interest-calculator.html">compound interest</a>
-</div>
-</details>
-<a href="percentage-calculator.html">percentage</a>
-</div>
-</div>
-<div class="dropdown about-dropdown">
-<button aria-expanded="false" class="dropbtn" type="button">
+
+      <div class="dropdown-content">
+
+        <a href="basic-calculator.html">basic</a>
+
+        <details class="nav-group">
+          <summary>health</summary>
+
+          <div class="nav-group-links">
+            <a href="age-calculator.html">age</a>
+            <a href="bmi-calculator.html">bmi</a>
+          </div>
+        </details>
+
+        <details class="nav-group">
+          <summary>finance</summary>
+
+          <div class="nav-group-links">
+            <a href="loan-calculator.html">mortgage / personal loan</a>
+            <a href="discount-calculator.html">discount</a>
+            <a href="compound-interest-calculator.html">compound interest</a>
+          </div>
+        </details>
+
+        <a href="percentage-calculator.html">percentage</a>
+
+      </div>
+    </div>
+
+    <div class="dropdown about-dropdown">
+      <button type="button" class="dropbtn" aria-expanded="false">
         info
       </button>
-<div class="dropdown-content about-dropdown-content">
-<a href="about.html">about</a>
-<a href="privacy-policy.html">privacy policy</a>
-<a href="contact.html">contact</a>
-</div>
-</div>
-</nav>
-<!-- Main Content -->
-<main class="compound-calculator-container compound-interest-container has-instructions">
-<!-- Result / History -->
-<aside aria-label="Compound interest result history" class="compound-history-box">
-<div class="compound-history-top">
-<h3>History</h3>
-<button class="clear-btn" id="clearCompoundHistoryBtn" type="button">
+
+      <div class="dropdown-content about-dropdown-content">
+        <a href="about.html">about</a>
+        <a href="privacy-policy.html">privacy policy</a>
+        <a href="contact.html">contact</a>
+      </div>
+    </div>
+
+  </nav>
+
+  <!-- Main Content -->
+  <main class="compound-calculator-container compound-interest-container has-instructions">
+
+    <!-- Result / History -->
+    <aside class="compound-history-box" aria-label="Compound interest result history">
+
+      <div class="compound-history-top">
+        <h3>History</h3>
+
+        <button class="clear-btn" type="button" id="clearCompoundHistoryBtn">
           Clear
         </button>
-</div>
-<ul id="compoundHistoryList"></ul>
-</aside>
-<!-- Calculator -->
-<section aria-label="Compound Interest Calculator" class="calculator">
-<h1>Compound Interest Calculator</h1>
-<p class="subtitle">
+      </div>
+
+      <ul id="compoundHistoryList"></ul>
+
+    </aside>
+
+    <!-- Calculator -->
+    <section class="calculator" aria-label="Compound Interest Calculator">
+
+      <h1>Compound Interest Calculator</h1>
+
+      <p class="subtitle">
         Calculate future value, compound interest, and principal amount.
       </p>
-<label for="principal">Principal Amount</label>
-<input id="principal" inputmode="decimal" min="0" placeholder="Example: 1000" step="0.01" type="number"/>
-<label for="rate">Annual Interest Rate (%)</label>
-<input id="rate" inputmode="decimal" min="0" placeholder="Example: 5" step="0.01" type="number"/>
-<label for="years">Time in Years</label>
-<input id="years" inputmode="decimal" min="0" placeholder="Example: 10" step="0.01" type="number"/>
-<label for="frequency">Compounding Frequency</label>
-<select id="frequency">
-<option value="1">annually</option>
-<option value="2">semi-annually</option>
-<option value="4">quarterly</option>
-<option selected="" value="12">monthly</option>
-<option value="365">daily</option>
-</select>
-<p class="compound-tip">
+
+      <label for="principal">Principal Amount</label>
+      <input
+        type="number"
+        id="principal"
+        inputmode="decimal"
+        min="0"
+        step="0.01"
+        placeholder="Example: 1000"
+      >
+
+      <label for="rate">Annual Interest Rate (%)</label>
+      <input
+        type="number"
+        id="rate"
+        inputmode="decimal"
+        min="0"
+        step="0.01"
+        placeholder="Example: 5"
+      >
+
+      <label for="years">Time in Years</label>
+      <input
+        type="number"
+        id="years"
+        inputmode="decimal"
+        min="0"
+        step="0.01"
+        placeholder="Example: 10"
+      >
+
+      <label for="frequency">Compounding Frequency</label>
+      <select id="frequency">
+        <option value="1">annually</option>
+        <option value="2">semi-annually</option>
+        <option value="4">quarterly</option>
+        <option value="12" selected>monthly</option>
+        <option value="365">daily</option>
+      </select>
+
+      <p class="compound-tip">
         Tip: choose monthly if the interest is added every month.
       </p>
 
-<h2 aria-live="polite" id="compoundResult"></h2>
-</section>
-<!-- Instructions + References -->
-<aside aria-label="Instructions" class="instruction-box">
-<div class="instruction-section instruction-what-box">
-<h3>What does this calculator do?</h3>
-<p>
+      <button class="main-btn" type="button" id="calculateCompoundBtn">
+        calculate compound interest
+      </button>
+
+      <h2 id="compoundResult" aria-live="polite"></h2>
+
+    </section>
+
+    <!-- Instructions + References -->
+    <aside class="instruction-box" aria-label="Instructions">
+
+      <div class="instruction-section instruction-what-box">
+        <h3>What does this calculator do?</h3>
+        <p>
           This calculator helps you estimate how much your money can grow over time when interest is added repeatedly.
         </p>
-</div>
-<h2 class="instruction-main-title">Instructions</h2>
-<div class="instruction-section instruction-how-box">
-<h3>How to use it</h3>
-<p>
+      </div>
+
+      <h2 class="instruction-main-title">Instructions</h2>
+
+      <div class="instruction-section instruction-how-box">
+        <h3>How to use it</h3>
+        <p>
           Enter the principal amount, annual interest rate, time in years, and compounding frequency. Then press calculate compound interest.
         </p>
-</div>
-<div class="instruction-section instruction-formula-box">
-<h3>Formula used</h3>
-<p>
-          A = P(1 + r/n)<sup>nt</sup><br/>
+      </div>
+
+      <div class="instruction-section instruction-formula-box">
+        <h3>Formula used</h3>
+        <p>
+          A = P(1 + r/n)<sup>nt</sup><br>
           Compound Interest = A − P
         </p>
-</div>
-<div class="instruction-section instruction-example-box">
-<h3>Example calculation</h3>
-<p>
+      </div>
+
+      <div class="instruction-section instruction-example-box">
+        <h3>Example calculation</h3>
+        <p>
           If P = 1000, r = 5%, t = 10 years, and n = monthly, the future value is about 1,647.01 and the compound interest is about 647.01.
         </p>
-</div>
-<section aria-label="References" class="reference-box">
-<h2 class="reference-main-title">References</h2>
-<div class="reference-scroll">
-<div class="reference-card">
-<h3>Compound interest formula</h3>
-<p>
+      </div>
+
+      <section class="reference-box" aria-label="References">
+        <h2 class="reference-main-title">References</h2>
+
+        <div class="reference-scroll">
+
+          <div class="reference-card">
+            <h3>Compound interest formula</h3>
+            <p>
               The standard compound interest formula is A = P(1 + r/n)<sup>nt</sup>.
             </p>
-<a href="https://www.investopedia.com/terms/c/compoundinterest.asp" rel="noopener noreferrer" target="_blank">
+            <a href="https://www.investopedia.com/terms/c/compoundinterest.asp" target="_blank" rel="noopener noreferrer">
               Open source
             </a>
-</div>
-<div class="reference-card">
-<h3>Interest meaning</h3>
-<p>
+          </div>
+
+          <div class="reference-card">
+            <h3>Interest meaning</h3>
+            <p>
               Compound interest means interest is calculated on the principal and also on previous interest.
             </p>
-<a href="https://www.investopedia.com/articles/investing/020614/learn-simple-and-compound-interest.asp" rel="noopener noreferrer" target="_blank">
+            <a href="https://www.investopedia.com/articles/investing/020614/learn-simple-and-compound-interest.asp" target="_blank" rel="noopener noreferrer">
               Open source
             </a>
-</div>
-</div>
-</section>
-</aside>
-</main>
-<script src="script.js"></script>
-<script src="pc.js"></script>
-<script src="phone.js"></script>
+          </div>
+
+        </div>
+      </section>
+
+    </aside>
+
+  </main>
+
+  <script src="script.js"></script>
+  <script src="pc.js"></script>
+  <script src="phone.js"></script>
+
+  <script>
+    /* COMPOUND INTEREST CALCULATOR */
+    (function () {
+      "use strict";
+
+      const historyKey = "compoundInterestHistory";
+
+      const principalInput = document.getElementById("principal");
+      const rateInput = document.getElementById("rate");
+      const yearsInput = document.getElementById("years");
+      const frequencyInput = document.getElementById("frequency");
+
+      const resultElement = document.getElementById("compoundResult");
+      const historyList = document.getElementById("compoundHistoryList");
+
+      const calculateButton = document.getElementById("calculateCompoundBtn");
+      const clearButton = document.getElementById("clearCompoundHistoryBtn");
+
+      function money(value) {
+        return Number(value).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      }
+
+      function readNumber(input) {
+        if (!input) return NaN;
+
+        const value = String(input.value || "").replace(/,/g, "").trim();
+
+        if (value === "") return NaN;
+
+        return Number(value);
+      }
+
+      function getHistory() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(historyKey) || "[]");
+          return Array.isArray(saved) ? saved : [];
+        } catch {
+          return [];
+        }
+      }
+
+      function saveHistory(text) {
+        const history = getHistory();
+
+        history.push(text);
+
+        try {
+          localStorage.setItem(historyKey, JSON.stringify(history.slice(-50)));
+        } catch {
+          /* ignore storage errors */
+        }
+
+        showCompoundHistory();
+      }
+
+      function setButtonStatus(button, status) {
+        if (!button) return;
+
+        const original = button.dataset.originalText || button.textContent;
+        button.dataset.originalText = original;
+
+        button.textContent = status;
+
+        setTimeout(function () {
+          button.textContent = original;
+        }, 1000);
+      }
+
+      function fallbackCopy(text, button) {
+        const temp = document.createElement("textarea");
+
+        temp.value = text;
+        temp.setAttribute("readonly", "");
+        temp.style.position = "fixed";
+        temp.style.left = "-9999px";
+        temp.style.top = "-9999px";
+
+        document.body.appendChild(temp);
+        temp.focus();
+        temp.select();
+
+        try {
+          document.execCommand("copy");
+          setButtonStatus(button, "Copied");
+        } catch {
+          setButtonStatus(button, "Failed");
+        }
+
+        document.body.removeChild(temp);
+      }
+
+      function copyText(text, button) {
+        const value = String(text || "").trim();
+
+        if (!value) return;
+
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(value)
+            .then(function () {
+              setButtonStatus(button, "Copied");
+            })
+            .catch(function () {
+              fallbackCopy(value, button);
+            });
+
+          return;
+        }
+
+        fallbackCopy(value, button);
+      }
+
+      function showCompoundHistory() {
+        if (!historyList) return;
+
+        historyList.innerHTML = "";
+
+        getHistory().slice().reverse().forEach(function (item) {
+          const li = document.createElement("li");
+          li.className = "history-item";
+
+          const text = document.createElement("span");
+          text.className = "history-text";
+          text.textContent = item;
+
+          const copyButton = document.createElement("button");
+          copyButton.type = "button";
+          copyButton.className = "history-copy-btn";
+          copyButton.textContent = "Copy";
+
+          copyButton.addEventListener("click", function (event) {
+            event.stopPropagation();
+            copyText(item, copyButton);
+          });
+
+          li.appendChild(text);
+          li.appendChild(copyButton);
+
+          historyList.appendChild(li);
+        });
+      }
+
+      function calculateCompoundInterest() {
+        const principal = readNumber(principalInput);
+        const annualRate = readNumber(rateInput);
+        const years = readNumber(yearsInput);
+        const frequency = readNumber(frequencyInput);
+
+        if (
+          !Number.isFinite(principal) ||
+          !Number.isFinite(annualRate) ||
+          !Number.isFinite(years) ||
+          !Number.isFinite(frequency) ||
+          principal <= 0 ||
+          annualRate < 0 ||
+          years < 0 ||
+          frequency <= 0
+        ) {
+          resultElement.textContent = "Please enter valid values.";
+          return;
+        }
+
+        const r = annualRate / 100;
+        const futureValue = principal * Math.pow(1 + r / frequency, frequency * years);
+        const compoundInterest = futureValue - principal;
+
+        const resultText =
+          "Future Value: " + money(futureValue) + "\n" +
+          "Compound Interest: " + money(compoundInterest) + "\n" +
+          "Principal: " + money(principal);
+
+        resultElement.textContent = resultText;
+
+        saveHistory(
+          "Future Value: " + money(futureValue) +
+          " | Compound Interest: " + money(compoundInterest) +
+          " | Principal: " + money(principal)
+        );
+      }
+
+      if (calculateButton) {
+        calculateButton.addEventListener("click", calculateCompoundInterest);
+      }
+
+      if (clearButton) {
+        clearButton.addEventListener("click", function () {
+          try {
+            localStorage.removeItem(historyKey);
+          } catch {
+            /* ignore storage errors */
+          }
+
+          showCompoundHistory();
+
+          if (resultElement) {
+            resultElement.textContent = "";
+          }
+        });
+      }
+
+      [principalInput, rateInput, yearsInput, frequencyInput].forEach(function (input) {
+        if (!input) return;
+
+        input.addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            calculateCompoundInterest();
+          }
+        });
+      });
+
+      showCompoundHistory();
+
+      window.calculateCompoundInterest = calculateCompoundInterest;
+    })();
+  </script>
 
 </body>
 </html>

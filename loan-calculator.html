@@ -2,95 +2,157 @@
   Copyright © 2026 Hamdi. All rights reserved.
   Do not copy, modify, redistribute, or reuse this project without permission.
 -->
-<!DOCTYPE html>
 
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<title>Mortgage / Personal Loan Calculator</title>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta content="Free mortgage and personal loan calculator to estimate monthly payment, full loan interest, and full payment value." name="description"/>
-<link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&amp;display=swap" rel="stylesheet"/>
-<link href="style.css" rel="stylesheet"/>
-<link href="pc.css" media="screen and (min-width: 851px)" rel="stylesheet"/>
-<link href="phone.css" media="screen and (max-width: 850px)" rel="stylesheet"/>
-<link href="favicon.ico" rel="icon"/>
+  <meta charset="UTF-8">
+
+  <title>Mortgage / Personal Loan Calculator</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="description"
+    content="Free mortgage and personal loan calculator to estimate monthly payment, full loan interest, and full payment value."
+  >
+
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="pc.css" media="screen and (min-width: 851px)">
+  <link rel="stylesheet" href="phone.css" media="screen and (max-width: 850px)">
+
+  <link rel="icon" href="favicon.ico">
 </head>
+
 <body class="loan-page" data-page="loan">
-<!-- Go Up Button -->
-<button aria-label="Go to top" id="scrollTopBtn" onclick="scrollToTop()" type="button">
+
+  <!-- Go Up Button -->
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
     ↑
   </button>
-<!-- MENU Button shown after scroll -->
-<button aria-label="Open menu" id="menuIcon" onclick="toggleMenu()" type="button">
+
+  <!-- MENU Button shown after scroll -->
+  <button id="menuIcon" type="button" onclick="toggleMenu()" aria-label="Open menu">
     MENU
   </button>
-<!-- Navbar -->
-<nav id="navbar">
-<a href="index.html">home</a>
-<div class="dropdown">
-<button aria-expanded="false" class="dropbtn" type="button">
+
+  <!-- Navbar -->
+  <nav id="navbar">
+
+    <a href="index.html">home</a>
+
+    <div class="dropdown">
+      <button type="button" class="dropbtn" aria-expanded="false">
         calculator
       </button>
-<div class="dropdown-content">
-<a href="basic-calculator.html">basic</a>
-<details class="nav-group">
-<summary>health</summary>
-<div class="nav-group-links">
-<a href="age-calculator.html">age</a>
-<a href="bmi-calculator.html">bmi</a>
-</div>
-</details>
-<details class="nav-group">
-<summary>finance</summary>
-<div class="nav-group-links">
-<a href="loan-calculator.html">mortgage / personal loan</a>
-<a href="discount-calculator.html">discount</a>
-<a href="compound-interest-calculator.html">compound interest</a>
-</div>
-</details>
-<a href="percentage-calculator.html">percentage</a>
-</div>
-</div>
-<div class="dropdown about-dropdown">
-<button aria-expanded="false" class="dropbtn" type="button">
+
+      <div class="dropdown-content">
+
+        <a href="basic-calculator.html">basic</a>
+
+        <details class="nav-group">
+          <summary>health</summary>
+
+          <div class="nav-group-links">
+            <a href="age-calculator.html">age</a>
+            <a href="bmi-calculator.html">bmi</a>
+          </div>
+        </details>
+
+        <details class="nav-group">
+          <summary>finance</summary>
+
+          <div class="nav-group-links">
+            <a href="loan-calculator.html">mortgage / personal loan</a>
+            <a href="discount-calculator.html">discount</a>
+            <a href="compound-interest-calculator.html">compound interest</a>
+          </div>
+        </details>
+
+        <a href="percentage-calculator.html">percentage</a>
+
+      </div>
+    </div>
+
+    <div class="dropdown about-dropdown">
+      <button type="button" class="dropbtn" aria-expanded="false">
         info
       </button>
-<div class="dropdown-content about-dropdown-content">
-<a href="about.html">about</a>
-<a href="privacy-policy.html">privacy policy</a>
-<a href="contact.html">contact</a>
-</div>
-</div>
-</nav>
-<!-- Main Content -->
-<main class="loan-calculator-container">
-<section class="loan-history-box">
-<div class="loan-history-top">
-<h3>Input</h3>
-<button class="clear-btn" onclick="clearLoanHistory()" type="button">
+
+      <div class="dropdown-content about-dropdown-content">
+        <a href="about.html">about</a>
+        <a href="privacy-policy.html">privacy policy</a>
+        <a href="contact.html">contact</a>
+      </div>
+    </div>
+
+  </nav>
+
+  <!-- Main Content -->
+  <main class="loan-calculator-container">
+
+    <section class="loan-history-box">
+
+      <div class="loan-history-top">
+        <h3>Input</h3>
+
+        <button type="button" onclick="clearLoanHistory()" class="clear-btn">
           Clear
         </button>
-</div>
-<ul id="loanHistoryList"></ul>
-</section>
-<section class="calculator">
-<h1>Mortgage / Personal Loan Calculator</h1>
-<p class="subtitle">
+      </div>
+
+      <ul id="loanHistoryList"></ul>
+
+    </section>
+
+    <section class="calculator">
+
+      <h1>Mortgage / Personal Loan Calculator</h1>
+
+      <p class="subtitle">
         Estimate your monthly payment, full loan interest, and full payment value.
       </p>
-<label for="amount">Loan amount / purchase price:</label>
-<input id="amount" inputmode="decimal" placeholder="Example: 10000" type="number"/>
-<label for="interest">Annual interest rate (%):</label>
-<input id="interest" inputmode="decimal" placeholder="Example: 5" type="number"/>
-<label for="years">Loan term in months:</label>
-<input aria-label="Loan term in months" data-term-unit="months" id="years" inputmode="decimal" placeholder="Example: 360" type="number"/>
 
-<h2 id="loanResult"></h2>
-</section>
-</main>
-<script src="script.js"></script>
-<script src="pc.js"></script>
-<script src="phone.js"></script>
+      <label for="amount">Loan amount / purchase price:</label>
+      <input
+        type="number"
+        id="amount"
+        placeholder="Example: 10000"
+        inputmode="decimal"
+      >
+
+      <label for="interest">Annual interest rate (%):</label>
+      <input
+        type="number"
+        id="interest"
+        placeholder="Example: 5"
+        inputmode="decimal"
+      >
+
+      <label for="years">Loan term in months:</label>
+      <input
+        type="number"
+        id="years"
+        placeholder="Example: 360"
+        inputmode="decimal"
+        aria-label="Loan term in months"
+        data-term-unit="months"
+      >
+
+      <button type="button" onclick="calculateLoan()" class="main-btn">
+        calculate loan
+      </button>
+
+      <h2 id="loanResult"></h2>
+
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+  <script src="pc.js"></script>
+  <script src="phone.js"></script>
+
 </body>
 </html>

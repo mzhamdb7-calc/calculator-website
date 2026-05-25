@@ -464,15 +464,3 @@
     word-break: break-word !important;
   }
 }
-
-
-/* =====================================================
-   PHONE ONLY: Hide calculate buttons on auto-count pages
-   Basic calculator is not affected
-===================================================== */
-@media (max-width: 850px) {
-  body:not(.basic-page) .calculator > button.main-btn,
-  body:not(.basic-page) .calculator button[id^="calculate"] {
-    display: none !important;
-  }
-}

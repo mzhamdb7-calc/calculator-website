@@ -2,93 +2,134 @@
   Copyright © 2026 Hamdi. All rights reserved.
   Do not copy, modify, redistribute, or reuse this project without permission.
 -->
-<!DOCTYPE html>
 
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<title>Discount Calculator</title>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta content="Free discount calculator to calculate sale price and savings online." name="description"/>
-<link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&amp;display=swap" rel="stylesheet"/>
-<link href="style.css" rel="stylesheet"/>
-<link href="pc.css" media="screen and (min-width: 851px)" rel="stylesheet"/>
-<link href="phone.css" media="screen and (max-width: 850px)" rel="stylesheet"/>
-<link href="favicon.ico" rel="icon"/>
+  <meta charset="UTF-8">
+
+  <title>Discount Calculator</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Free discount calculator to calculate sale price and savings online.">
+
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="pc.css" media="screen and (min-width: 851px)">
+  <link rel="stylesheet" href="phone.css" media="screen and (max-width: 850px)">
+
+  <link rel="icon" href="favicon.ico">
 </head>
+
 <body class="discount-page" data-page="discount">
-<!-- Go Up Button -->
-<button aria-label="Go to top" id="scrollTopBtn" onclick="scrollToTop()" type="button">
+
+  <!-- Go Up Button -->
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
     ↑
   </button>
-<!-- MENU Button shown after scroll -->
-<button aria-label="Open menu" id="menuIcon" onclick="toggleMenu()" type="button">
+
+  <!-- MENU Button shown after scroll -->
+  <button id="menuIcon" type="button" onclick="toggleMenu()" aria-label="Open menu">
     MENU
   </button>
-<!-- Navbar -->
-<nav id="navbar">
-<a href="index.html">home</a>
-<div class="dropdown">
-<button aria-expanded="false" class="dropbtn" type="button">
+
+  <!-- Navbar -->
+  <nav id="navbar">
+
+    <a href="index.html">home</a>
+
+    <div class="dropdown">
+      <button type="button" class="dropbtn" aria-expanded="false">
         calculator
       </button>
-<div class="dropdown-content">
-<a href="basic-calculator.html">basic</a>
-<details class="nav-group">
-<summary>health</summary>
-<div class="nav-group-links">
-<a href="age-calculator.html">age</a>
-<a href="bmi-calculator.html">bmi</a>
-</div>
-</details>
-<details class="nav-group">
-<summary>finance</summary>
-<div class="nav-group-links">
-<a href="loan-calculator.html">mortgage / personal loan</a>
-<a href="discount-calculator.html">discount</a>
-<a href="compound-interest-calculator.html">compound interest</a>
-</div>
-</details>
-<a href="percentage-calculator.html">percentage</a>
-</div>
-</div>
-<div class="dropdown about-dropdown">
-<button aria-expanded="false" class="dropbtn" type="button">
+
+      <div class="dropdown-content">
+
+        <a href="basic-calculator.html">basic</a>
+
+        <details class="nav-group">
+          <summary>health</summary>
+
+          <div class="nav-group-links">
+            <a href="age-calculator.html">age</a>
+            <a href="bmi-calculator.html">bmi</a>
+          </div>
+        </details>
+
+        <details class="nav-group">
+          <summary>finance</summary>
+
+          <div class="nav-group-links">
+            <a href="loan-calculator.html">mortgage / personal loan</a>
+            <a href="discount-calculator.html">discount</a>
+            <a href="compound-interest-calculator.html">compound interest</a>
+          </div>
+        </details>
+
+        <a href="percentage-calculator.html">percentage</a>
+
+      </div>
+    </div>
+
+    <div class="dropdown about-dropdown">
+      <button type="button" class="dropbtn" aria-expanded="false">
         info
       </button>
-<div class="dropdown-content about-dropdown-content">
-<a href="about.html">about</a>
-<a href="privacy-policy.html">privacy policy</a>
-<a href="contact.html">contact</a>
-</div>
-</div>
-</nav>
-<!-- Main Content -->
-<main class="discount-calculator-container">
-<section class="discount-history-box">
-<div class="discount-history-top">
-<h3>Input</h3>
-<button class="clear-btn" onclick="clearInputHistory('discount')" type="button">
+
+      <div class="dropdown-content about-dropdown-content">
+        <a href="about.html">about</a>
+        <a href="privacy-policy.html">privacy policy</a>
+        <a href="contact.html">contact</a>
+      </div>
+    </div>
+
+  </nav>
+
+  <!-- Main Content -->
+  <main class="discount-calculator-container">
+
+    <section class="discount-history-box">
+
+      <div class="discount-history-top">
+        <h3>Input</h3>
+
+        <button type="button" onclick="clearInputHistory('discount')" class="clear-btn">
           Clear
         </button>
-</div>
-<ul id="discountHistoryList"></ul>
-</section>
-<section class="calculator">
-<h1>Discount Calculator</h1>
-<p class="subtitle">
+      </div>
+
+      <ul id="discountHistoryList"></ul>
+
+    </section>
+
+    <section class="calculator">
+
+      <h1>Discount Calculator</h1>
+
+      <p class="subtitle">
         Calculate final price after discount.
       </p>
-<label for="price">Original price:</label>
-<input id="price" inputmode="decimal" placeholder="Example: 100" type="number"/>
-<label for="discount">Discount percentage:</label>
-<input id="discount" inputmode="decimal" placeholder="Example: 20" type="number"/>
 
-<h2 id="discountResult"></h2>
-</section>
-</main>
-<script src="script.js"></script>
-<script src="pc.js"></script>
-<script src="phone.js"></script>
+      <label for="price">Original price:</label>
+      <input type="number" id="price" placeholder="Example: 100" inputmode="decimal">
+
+      <label for="discount">Discount percentage:</label>
+      <input type="number" id="discount" placeholder="Example: 20" inputmode="decimal">
+
+      <button type="button" onclick="calculateDiscount()" class="main-btn">
+        calculate discount
+      </button>
+
+      <h2 id="discountResult"></h2>
+
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+  <script src="pc.js"></script>
+  <script src="phone.js"></script>
+
 </body>
 </html>
