@@ -5315,3 +5315,204 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     text-align: center !important;
   }
 }
+/* =====================================================
+   PC: Non-basic pages
+   Input box + result box same width as "What does this calculator do?"
+   Copy box always beside result box
+===================================================== */
+@media (min-width: 851px) {
+  body:not(.basic-page) {
+    --same-what-width: min(1220px, calc(100vw - 32px));
+  }
+
+  body:not(.basic-page) main.no-history-layout,
+  body:not(.basic-page) main.pc-calculator-layout,
+  body:not(.basic-page) main.pc-no-history-layout,
+  body:not(.basic-page) main.pc-calculator-layout.pc-no-history-layout {
+    width: 100% !important;
+    max-width: var(--same-what-width) !important;
+    grid-template-columns: minmax(0, var(--same-what-width)) !important;
+    justify-content: center !important;
+    align-items: start !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  /* WHAT DOES THIS CALCULATOR DO BOX */
+  body:not(.basic-page) main > .pc-what-slot,
+  body:not(.basic-page) .pc-what-slot,
+  body:not(.basic-page) .instruction-box,
+  body:not(.basic-page) .instruction-what-box {
+    width: 100% !important;
+    max-width: var(--same-what-width) !important;
+    min-width: 0 !important;
+    justify-self: center !important;
+    box-sizing: border-box !important;
+  }
+
+  /* CALCULATOR INPUT BOX */
+  body:not(.basic-page) main > .calculator,
+  body:not(.basic-page) .calculator {
+    width: 100% !important;
+    max-width: var(--same-what-width) !important;
+    min-width: 0 !important;
+    justify-self: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  /* BMI two input boxes row must also follow same width */
+  body:not(.basic-page) .bmi-input-two-box-row,
+  body:not(.basic-page) .bmi-input-two-column {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* MAIN RESULT WRAPPERS */
+  body:not(.basic-page) main > #stableBasicAgeOutput,
+  body:not(.basic-page) main > #stableBmiOutput,
+  body:not(.basic-page) main > #stableDiscountOutput,
+  body:not(.basic-page) main > #loanExternalOutput,
+  body:not(.basic-page) main > #compoundYearMatrixOutput,
+  body:not(.basic-page) main > #universalLoanStyleOutput,
+  body:not(.basic-page) main > .stable-result-output,
+  body:not(.basic-page) main > .universal-output-panel,
+  body:not(.basic-page) main > .loan-style-output-panel,
+  body:not(.basic-page) main > .loan-external-output {
+    width: 100% !important;
+    max-width: var(--same-what-width) !important;
+    min-width: 0 !important;
+
+    margin: 22px auto 0 !important;
+    padding: 0 !important;
+
+    justify-self: center !important;
+    align-self: start !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  /* RESULT + COPY SIDE-BY-SIDE */
+  body:not(.basic-page) #stableBasicAgeOutput .stable-result-top,
+  body:not(.basic-page) #stableBmiOutput .stable-result-top,
+  body:not(.basic-page) #stableDiscountOutput .stable-result-top,
+  body:not(.basic-page) #loanExternalOutput .loan-output-top,
+  body:not(.basic-page) #compoundYearMatrixOutput .loan-output-top,
+  body:not(.basic-page) #universalLoanStyleOutput .loan-output-top,
+  body:not(.basic-page) .stable-result-output .stable-result-top,
+  body:not(.basic-page) .loan-style-output-panel .loan-output-top,
+  body:not(.basic-page) .loan-external-output .loan-output-top,
+  body:not(.basic-page) .universal-output-panel .loan-output-top,
+  body:not(.basic-page) .universal-output-panel .universal-output-top {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 18px !important;
+
+    align-items: stretch !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  /* RESULT PANEL FILLS LEFT SIDE */
+  body:not(.basic-page) #stableBasicAgeOutput .stable-result-panel,
+  body:not(.basic-page) #stableBmiOutput .stable-result-panel,
+  body:not(.basic-page) #stableDiscountOutput .stable-result-panel,
+  body:not(.basic-page) #loanExternalOutput .loan-result-panel,
+  body:not(.basic-page) #compoundYearMatrixOutput .loan-result-panel,
+  body:not(.basic-page) #universalLoanStyleOutput .loan-result-panel,
+  body:not(.basic-page) .stable-result-output .stable-result-panel,
+  body:not(.basic-page) .loan-style-output-panel .loan-result-panel,
+  body:not(.basic-page) .loan-external-output .loan-result-panel,
+  body:not(.basic-page) .universal-output-panel .loan-result-panel,
+  body:not(.basic-page) .universal-output-panel .universal-result-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  /* COPY BOX ALWAYS BESIDE RESULT BOX */
+  body:not(.basic-page) #stableBasicAgeOutput .stable-copy-side,
+  body:not(.basic-page) #stableBmiOutput .stable-copy-side,
+  body:not(.basic-page) #stableDiscountOutput .stable-copy-side,
+  body:not(.basic-page) #loanExternalOutput .loan-copy-side,
+  body:not(.basic-page) #compoundYearMatrixOutput .loan-copy-side,
+  body:not(.basic-page) #universalLoanStyleOutput .loan-copy-side,
+  body:not(.basic-page) .stable-result-output .stable-copy-side,
+  body:not(.basic-page) .loan-style-output-panel .loan-copy-side,
+  body:not(.basic-page) .loan-external-output .loan-copy-side,
+  body:not(.basic-page) .universal-output-panel .loan-copy-side,
+  body:not(.basic-page) .universal-output-panel .universal-copy-side {
+    width: 120px !important;
+    max-width: 120px !important;
+    min-width: 120px !important;
+
+    display: flex !important;
+    align-items: stretch !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+  }
+
+  body:not(.basic-page) #stableBasicAgeOutput .stable-copy-btn,
+  body:not(.basic-page) #stableBmiOutput .stable-copy-btn,
+  body:not(.basic-page) #stableDiscountOutput .stable-copy-btn,
+  body:not(.basic-page) #loanExternalOutput .loan-copy-btn,
+  body:not(.basic-page) #compoundYearMatrixOutput .loan-copy-btn,
+  body:not(.basic-page) #universalLoanStyleOutput .loan-copy-btn,
+  body:not(.basic-page) .stable-result-output .stable-copy-btn,
+  body:not(.basic-page) .loan-style-output-panel .loan-copy-btn,
+  body:not(.basic-page) .loan-external-output .loan-copy-btn,
+  body:not(.basic-page) .universal-output-panel .loan-copy-btn,
+  body:not(.basic-page) .universal-output-panel .universal-copy-btn {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: 100% !important;
+    min-height: 62px !important;
+
+    margin: 0 !important;
+    padding: 10px 14px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    box-sizing: border-box !important;
+    white-space: normal !important;
+  }
+
+  /* Table result pages stay inside result panel */
+  body:not(.basic-page) .loan-result-table-scroll,
+  body:not(.basic-page) .bottom-result-table-scroll,
+  body:not(.basic-page) .compound-year-table-scroll,
+  body:not(.basic-page) .compound-year-table-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    box-sizing: border-box !important;
+  }
+}
