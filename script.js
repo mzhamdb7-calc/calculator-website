@@ -7926,3 +7926,406 @@
     startMortgageYearTable();
   }
 })();
+/* =====================================================
+   MORTGAGE / PERSONAL LOAN: Table-only result
+   - Removes point form result box
+   - Uses loan term as months
+   - Shows important mortgage values against year
+===================================================== */
+(function () {
+  "use strict";
+
+  function isLoanPage() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      title.includes("loan") ||
+      title.includes("mortgage") ||
+      window.location.pathname.includes("loan-calculator") ||
+      !!document.getElementById("loanResult")
+    );
+  }
+
+  function getNumber(ids) {
+    for (const id of ids) {
+      const input = document.getElementById(id);
+      if (!input) continue;
+
+      const value = Number(String(input.value || "").replace(/,/g, "").trim());
+      if (Number.isFinite(value)) return value;
+    }
+
+    return NaN;
+  }
+
+  function money(value) {
+    return Number(value).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function calculateMonthlyPayment(principal, annualRate, months) {
+    const monthlyRate = annualRate / 100 / 12;
+
+    if (monthlyRate === 0) {
+      return principal / months;
+    }
+
+    return (
+      principal *
+      monthlyRate *
+      Math.pow(1 + monthlyRate, months)
+    ) / (
+      Math.pow(1 + monthlyRate, months) - 1
+    );
+  }
+
+  function getOptionalMonthlyCost() {
+    const propertyTaxYearly = getNumber(["propertyTaxYearly"]);
+    const insuranceYearly = getNumber(["homeInsuranceYearly"]);
+    const otherMonthly = getNumber(["otherMonthlyFees", "hoaMonthly"]);
+
+    return (
+      (Number.isFinite(propertyTaxYearly) && propertyTaxYearly > 0 ? propertyTaxYearly / 12 : 0) +
+      (Number.isFinite(insuranceYearly) && insuranceYearly > 0 ? insuranceYearly / 12 : 0) +
+      (Number.isFinite(otherMonthly) && otherMonthly > 0 ? otherMonthly : 0)
+    );
+  }
+
+  function getLoanPanel() {
+    const main =
+      document.querySelector("main.pc-calculator-layout") ||
+      document.querySelector("main");
+
+    const calculator = main ? main.querySelector(".calculator") : null;
+    if (!calculator) return null;
+
+    let panel = document.getElementById("loanExternalOutput");
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = "loanExternalOutput";
+      panel.className = "loan-external-output";
+      calculator.insertAdjacentElement("afterend", panel);
+    }
+
+    return panel;
+  }
+
+  function hideOldLoanOutputs() {
+    const result = document.getElementById("loanResult") || document.getElementById("result");
+
+    if (result) {
+      result.style.display = "none";
+    }
+
+    const universal = document.getElementById("universalLoanStyleOutput");
+
+    if (universal) {
+      universal.hidden = true;
+      universal.style.setProperty("display", "none", "important");
+      universal.style.setProperty("visibility", "hidden", "important");
+      universal.style.setProperty("pointer-events", "none", "important");
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+    textarea.setAttribute("readonly", "");
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function copyText(text, button) {
+    const value = String(text || "").trim();
+    if (!value) return;
+
+    function copied() {
+      const old = button.textContent;
+      button.textContent = "Copied!";
+
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(value).then(copied).catch(function () {
+        fallbackCopy(value);
+        copied();
+      });
+    } else {
+      fallbackCopy(value);
+      copied();
+    }
+  }
+
+  function buildYearlyMortgageRows(amountBorrowed, annualRate, months, principalInterestMonthly, optionalMonthlyCost) {
+    const monthlyRate = annualRate / 100 / 12;
+    const monthlyPayment = principalInterestMonthly + optionalMonthlyCost;
+
+    let balance = amountBorrowed;
+    let totalPrincipalPaid = 0;
+    let totalInterestPaid = 0;
+    let totalPaid = 0;
+
+    const rows = [];
+    const fullYears = Math.ceil(months / 12);
+
+    for (let year = 1; year <= fullYears; year += 1) {
+      let yearlyPrincipal = 0;
+      let yearlyInterest = 0;
+      let yearlyOptional = 0;
+      let yearlyPayment = 0;
+
+      const startMonth = (year - 1) * 12 + 1;
+      const endMonth = Math.min(year * 12, months);
+
+      for (let month = startMonth; month <= endMonth; month += 1) {
+        const interestThisMonth = balance * monthlyRate;
+        let principalThisMonth = principalInterestMonthly - interestThisMonth;
+
+        if (principalThisMonth > balance) {
+          principalThisMonth = balance;
+        }
+
+        balance -= principalThisMonth;
+
+        if (balance < 0.01) {
+          balance = 0;
+        }
+
+        yearlyPrincipal += principalThisMonth;
+        yearlyInterest += interestThisMonth;
+        yearlyOptional += optionalMonthlyCost;
+        yearlyPayment += monthlyPayment;
+      }
+
+      totalPrincipalPaid += yearlyPrincipal;
+      totalInterestPaid += yearlyInterest;
+      totalPaid += yearlyPayment;
+
+      rows.push({
+        year: year,
+        monthlyPayment: monthlyPayment,
+        monthlyInterestRate: annualRate / 12,
+        yearlyPayment: yearlyPayment,
+        principalPaid: yearlyPrincipal,
+        interestPaid: yearlyInterest,
+        optionalCost: yearlyOptional,
+        totalPayment: totalPaid,
+        totalInterestPaid: totalInterestPaid,
+        remainingBalance: balance
+      });
+    }
+
+    return rows;
+  }
+
+  function renderMortgageTableOnlyResult() {
+    if (!isLoanPage()) return;
+
+    document.body.classList.add("loan-page");
+    document.body.dataset.page = "loan";
+
+    const purchasePrice = getNumber(["amount", "loanAmount", "principal", "loanPrincipal"]);
+    const annualRate = getNumber(["interest", "loanRate", "interestRate", "annualRate", "rate"]);
+    const months = getNumber(["years", "loanYears", "loanTerm", "term"]);
+    const downPaymentRaw = getNumber(["downPayment", "loanDownPayment"]);
+
+    const result = document.getElementById("loanResult") || document.getElementById("result");
+    const panel = getLoanPanel();
+
+    if (!panel) return;
+
+    if (
+      !Number.isFinite(purchasePrice) ||
+      !Number.isFinite(annualRate) ||
+      !Number.isFinite(months) ||
+      purchasePrice <= 0 ||
+      annualRate < 0 ||
+      months <= 0
+    ) {
+      if (result) {
+        result.style.display = "block";
+        result.innerText = "Please enter valid loan details.";
+      }
+
+      panel.hidden = true;
+      return;
+    }
+
+    const downPayment =
+      Number.isFinite(downPaymentRaw) && downPaymentRaw > 0
+        ? downPaymentRaw
+        : 0;
+
+    if (downPayment >= purchasePrice) {
+      if (result) {
+        result.style.display = "block";
+        result.innerText = "Down payment must be less than the loan amount / purchase price.";
+      }
+
+      panel.hidden = true;
+      return;
+    }
+
+    const amountBorrowed = purchasePrice - downPayment;
+    const optionalMonthlyCost = getOptionalMonthlyCost();
+
+    const principalInterestMonthly = calculateMonthlyPayment(
+      amountBorrowed,
+      annualRate,
+      months
+    );
+
+    const rows = buildYearlyMortgageRows(
+      amountBorrowed,
+      annualRate,
+      months,
+      principalInterestMonthly,
+      optionalMonthlyCost
+    );
+
+    const tableRows = rows.map(function (row) {
+      return (
+        "<tr>" +
+          "<td>" + row.year + "</td>" +
+          "<td>" + money(row.monthlyPayment) + "</td>" +
+          "<td>" + row.monthlyInterestRate.toFixed(4) + "%</td>" +
+          "<td>" + money(row.yearlyPayment) + "</td>" +
+          "<td>" + money(row.principalPaid) + "</td>" +
+          "<td>" + money(row.interestPaid) + "</td>" +
+          "<td>" + money(row.optionalCost) + "</td>" +
+          "<td>" + money(row.totalPayment) + "</td>" +
+          "<td>" + money(row.totalInterestPaid) + "</td>" +
+          "<td>" + money(row.remainingBalance) + "</td>" +
+        "</tr>"
+      );
+    }).join("");
+
+    const copyValue =
+      "Year\tMonthly payment\tMonthly interest rate\tYearly payment\tPrincipal paid\tInterest paid\tOptional costs\tTotal payment\tTotal interest\tRemaining balance\n" +
+      rows.map(function (row) {
+        return (
+          row.year + "\t" +
+          money(row.monthlyPayment) + "\t" +
+          row.monthlyInterestRate.toFixed(4) + "%\t" +
+          money(row.yearlyPayment) + "\t" +
+          money(row.principalPaid) + "\t" +
+          money(row.interestPaid) + "\t" +
+          money(row.optionalCost) + "\t" +
+          money(row.totalPayment) + "\t" +
+          money(row.totalInterestPaid) + "\t" +
+          money(row.remainingBalance)
+        );
+      }).join("\n");
+
+    panel.hidden = false;
+
+    panel.innerHTML =
+      '<div class="loan-output-top">' +
+        '<div class="loan-result-panel mortgage-table-only-panel">' +
+          '<h2 class="loan-panel-title">Result</h2>' +
+
+          '<div class="loan-result-body mortgage-result-table-only">' +
+            '<div class="mortgage-year-table-box mortgage-single-table-box">' +
+              '<h3>Mortgage yearly table</h3>' +
+
+              '<div class="mortgage-year-table-scroll">' +
+                '<table class="mortgage-year-table mortgage-important-table">' +
+                  '<thead>' +
+                    '<tr>' +
+                      '<th>Year</th>' +
+                      '<th>Monthly payment</th>' +
+                      '<th>Monthly interest rate</th>' +
+                      '<th>Yearly payment</th>' +
+                      '<th>Principal paid</th>' +
+                      '<th>Interest paid</th>' +
+                      '<th>Optional costs</th>' +
+                      '<th>Total payment</th>' +
+                      '<th>Total interest</th>' +
+                      '<th>Remaining balance</th>' +
+                    '</tr>' +
+                  '</thead>' +
+                  '<tbody>' + tableRows + '</tbody>' +
+                '</table>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="loan-copy-side">' +
+          '<button type="button" class="loan-copy-btn">Copy</button>' +
+        '</div>' +
+      '</div>';
+
+    hideOldLoanOutputs();
+
+    const copyBtn = panel.querySelector(".loan-copy-btn");
+
+    if (copyBtn) {
+      copyBtn.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        copyText(copyValue, copyBtn);
+      };
+    }
+  }
+
+  function startMortgageTableOnly() {
+    if (!isLoanPage()) return;
+
+    window.calculateLoan = renderMortgageTableOnlyResult;
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (text.includes("calculate") || onclick.includes("calculateLoan")) {
+          setTimeout(renderMortgageTableOnlyResult, 0);
+          setTimeout(renderMortgageTableOnlyResult, 250);
+          setTimeout(renderMortgageTableOnlyResult, 700);
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key === "Enter") {
+          setTimeout(renderMortgageTableOnlyResult, 250);
+          setTimeout(renderMortgageTableOnlyResult, 700);
+        }
+      },
+      true
+    );
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startMortgageTableOnly);
+  } else {
+    startMortgageTableOnly();
+  }
+})();
