@@ -695,3 +695,96 @@
     max-width: none !important;
   }
 }
+/* =====================================================
+   Phone: CSS-only stable same-width result/copy boxes
+   No JavaScript, no loading loop
+===================================================== */
+@media (max-width: 850px) {
+  body:not(.basic-page) main.no-history-layout,
+  body:not(.basic-page) main.pc-calculator-layout,
+  body:not(.basic-page) main.pc-no-history-layout {
+    width: 100% !important;
+    max-width: 100% !important;
+    align-items: center !important;
+    overflow-anchor: none !important;
+  }
+
+  body:not(.basic-page) main > .calculator {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body:not(.basic-page) main > #stableBasicAgeOutput,
+  body:not(.basic-page) main > #stableBmiOutput,
+  body:not(.basic-page) main > #stableDiscountOutput,
+  body:not(.basic-page) main > #loanExternalOutput,
+  body:not(.basic-page) main > #universalLoanStyleOutput,
+  body:not(.basic-page) main > #compoundYearMatrixOutput,
+  body:not(.basic-page) main > .stable-result-output,
+  body:not(.basic-page) main > .universal-output-panel,
+  body:not(.basic-page) main > .loan-style-output-panel,
+  body:not(.basic-page) main > .loan-external-output {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 18px auto 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  body:not(.basic-page) .stable-result-top,
+  body:not(.basic-page) .loan-output-top,
+  body:not(.basic-page) .universal-output-top {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body:not(.basic-page) .stable-result-panel,
+  body:not(.basic-page) .loan-result-panel,
+  body:not(.basic-page) .loan-graph-panel,
+  body:not(.basic-page) .universal-result-panel,
+  body:not(.basic-page) .compound-year-result-panel,
+  body:not(.basic-page) .stable-copy-side,
+  body:not(.basic-page) .loan-copy-side,
+  body:not(.basic-page) .loan-graph-copy-side,
+  body:not(.basic-page) .universal-copy-side {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body:not(.basic-page) .stable-copy-btn,
+  body:not(.basic-page) .loan-copy-btn,
+  body:not(.basic-page) .loan-graph-copy-btn,
+  body:not(.basic-page) .universal-copy-btn {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: 58px !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body:not(.basic-page) .loan-result-table-scroll,
+  body:not(.basic-page) .bottom-result-table-scroll,
+  body:not(.basic-page) .compound-year-table-scroll,
+  body:not(.basic-page) .compound-year-table-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    box-sizing: border-box !important;
+  }
+}
