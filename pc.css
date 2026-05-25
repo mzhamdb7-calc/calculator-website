@@ -4255,3 +4255,24 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     box-sizing: border-box !important;
   }
 }
+/* =====================================================
+   PC ONLY: Mortgage settlement note
+===================================================== */
+@media (min-width: 851px) {
+  body.loan-page #loanExternalOutput .mortgage-settlement-note {
+    width: 100% !important;
+
+    margin: 0 0 22px !important;
+    padding: 18px 22px !important;
+
+    background: #ffffff !important;
+    border: 4px solid var(--black) !important;
+    box-shadow: 6px 6px 0 var(--black) !important;
+
+    font-size: 22px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+
+    box-sizing: border-box !important;
+  }
+}

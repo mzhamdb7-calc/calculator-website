@@ -10454,3 +10454,508 @@
     start();
   }
 })();
+/* =====================================================
+   MORTGAGE EARLY SETTLEMENT:
+   - Change "One-time payment after month" to "Yearly lump sum"
+   - Include early settlement values in calculation
+   - Extra monthly payment = paid every month
+   - One-time extra payment = paid once in month 1
+   - Yearly lump sum = paid every 12th month
+   - Stops table when loan is fully settled
+===================================================== */
+(function () {
+  "use strict";
+
+  function isLoanPage() {
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      window.location.pathname.includes("loan-calculator") ||
+      !!document.getElementById("loanResult")
+    );
+  }
+
+  function getNumber(ids) {
+    for (const id of ids) {
+      const input = document.getElementById(id);
+      if (!input) continue;
+
+      const value = Number(String(input.value || "").replace(/,/g, "").trim());
+      if (Number.isFinite(value)) return value;
+    }
+
+    return NaN;
+  }
+
+  function money(value) {
+    return Number(value).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function positive(value) {
+    return Number.isFinite(value) && value > 0 ? value : 0;
+  }
+
+  function calculateNormalMonthlyPayment(principal, annualRate, months) {
+    const monthlyRate = annualRate / 100 / 12;
+
+    if (monthlyRate === 0) {
+      return principal / months;
+    }
+
+    return (
+      principal *
+      monthlyRate *
+      Math.pow(1 + monthlyRate, months)
+    ) / (
+      Math.pow(1 + monthlyRate, months) - 1
+    );
+  }
+
+  function getOptionalMonthlyCost() {
+    const propertyTaxYearly = getNumber(["propertyTaxYearly"]);
+    const insuranceYearly = getNumber(["homeInsuranceYearly"]);
+    const otherMonthly = getNumber(["otherMonthlyFees", "hoaMonthly"]);
+
+    return (
+      positive(propertyTaxYearly) / 12 +
+      positive(insuranceYearly) / 12 +
+      positive(otherMonthly)
+    );
+  }
+
+  function getLoanPanel() {
+    const main =
+      document.querySelector("main.pc-calculator-layout") ||
+      document.querySelector("main");
+
+    const calculator = main ? main.querySelector(".calculator") : null;
+    if (!calculator) return null;
+
+    let panel = document.getElementById("loanExternalOutput");
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = "loanExternalOutput";
+      panel.className = "loan-external-output";
+      calculator.insertAdjacentElement("afterend", panel);
+    }
+
+    return panel;
+  }
+
+  function relabelYearlyLumpSumInput() {
+    if (!isLoanPage()) return;
+
+    const oldInput = document.getElementById("oneTimePaymentMonth");
+    const newInput = document.getElementById("yearlyLumpSumPayment");
+
+    if (oldInput && !newInput) {
+      oldInput.id = "yearlyLumpSumPayment";
+      oldInput.placeholder = "Optional, example: 5000";
+
+      const oldLabel =
+        document.querySelector('label[for="oneTimePaymentMonth"]') ||
+        oldInput.previousElementSibling;
+
+      if (oldLabel && oldLabel.tagName && oldLabel.tagName.toLowerCase() === "label") {
+        oldLabel.setAttribute("for", "yearlyLumpSumPayment");
+        oldLabel.textContent = "Yearly lump sum:";
+      }
+    }
+
+    const finalInput = document.getElementById("yearlyLumpSumPayment");
+    const finalLabel = document.querySelector('label[for="yearlyLumpSumPayment"]');
+
+    if (finalInput) {
+      finalInput.placeholder = "Optional, example: 5000";
+      finalInput.setAttribute("inputmode", "decimal");
+    }
+
+    if (finalLabel) {
+      finalLabel.textContent = "Yearly lump sum:";
+    }
+  }
+
+  function hideOldLoanOutputs() {
+    const result = document.getElementById("loanResult") || document.getElementById("result");
+
+    if (result) {
+      result.style.display = "none";
+    }
+
+    const universal = document.getElementById("universalLoanStyleOutput");
+
+    if (universal) {
+      universal.hidden = true;
+      universal.style.setProperty("display", "none", "important");
+      universal.style.setProperty("visibility", "hidden", "important");
+      universal.style.setProperty("pointer-events", "none", "important");
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+    textarea.setAttribute("readonly", "");
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function copyText(text, button) {
+    const value = String(text || "").trim();
+    if (!value) return;
+
+    function copied() {
+      const old = button.textContent;
+      button.textContent = "Copied!";
+
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(value).then(copied).catch(function () {
+        fallbackCopy(value);
+        copied();
+      });
+    } else {
+      fallbackCopy(value);
+      copied();
+    }
+  }
+
+  function buildEarlySettlementMonthlyRows(amountBorrowed, annualRate, months, normalMonthlyPayment, optionalMonthlyCost, extraMonthlyPayment, oneTimeExtraPayment, yearlyLumpSum) {
+    const monthlyRate = annualRate / 100 / 12;
+
+    let balance = amountBorrowed;
+    let totalInterestPaid = 0;
+    let totalPaid = 0;
+
+    const rows = [];
+
+    for (let month = 1; month <= months && balance > 0; month += 1) {
+      const interestThisMonth = balance * monthlyRate;
+
+      let normalPrincipal = normalMonthlyPayment - interestThisMonth;
+      if (normalPrincipal < 0) normalPrincipal = 0;
+
+      let extraThisMonth = extraMonthlyPayment;
+
+      if (month === 1) {
+        extraThisMonth += oneTimeExtraPayment;
+      }
+
+      if (month % 12 === 0) {
+        extraThisMonth += yearlyLumpSum;
+      }
+
+      let principalThisMonth = normalPrincipal + extraThisMonth;
+
+      if (principalThisMonth > balance) {
+        principalThisMonth = balance;
+      }
+
+      balance -= principalThisMonth;
+
+      if (balance < 0.01) {
+        balance = 0;
+      }
+
+      const actualPaymentThisMonth =
+        principalThisMonth + interestThisMonth + optionalMonthlyCost;
+
+      totalInterestPaid += interestThisMonth;
+      totalPaid += actualPaymentThisMonth;
+
+      rows.push({
+        month: month,
+        principalPaid: principalThisMonth,
+        interestPaid: interestThisMonth,
+        totalPayment: totalPaid,
+        totalInterestPaid: totalInterestPaid,
+        remainingBalance: balance
+      });
+    }
+
+    return rows;
+  }
+
+  function groupRowsByYear(monthRows) {
+    const yearRows = [];
+
+    for (let i = 0; i < monthRows.length; i += 12) {
+      const group = monthRows.slice(i, i + 12);
+      const last = group[group.length - 1];
+
+      yearRows.push({
+        label: yearRows.length + 1,
+        principalPaid: group.reduce(function (sum, row) {
+          return sum + row.principalPaid;
+        }, 0),
+        interestPaid: group.reduce(function (sum, row) {
+          return sum + row.interestPaid;
+        }, 0),
+        totalPayment: last.totalPayment,
+        totalInterestPaid: last.totalInterestPaid,
+        remainingBalance: last.remainingBalance
+      });
+    }
+
+    return yearRows;
+  }
+
+  function renderMortgageWithYearlyLumpSum() {
+    if (!isLoanPage()) return;
+
+    relabelYearlyLumpSumInput();
+
+    const purchasePrice = getNumber(["amount", "loanAmount", "principal", "loanPrincipal"]);
+    const annualRate = getNumber(["interest", "loanRate", "interestRate", "annualRate", "rate"]);
+    const months = getNumber(["years", "loanYears", "loanTerm", "term"]);
+    const downPayment = positive(getNumber(["downPayment", "loanDownPayment"]));
+
+    const extraMonthlyPayment = positive(getNumber(["extraMonthlyPayment"]));
+    const oneTimeExtraPayment = positive(getNumber(["oneTimeExtraPayment"]));
+    const yearlyLumpSum = positive(getNumber(["yearlyLumpSumPayment", "oneTimePaymentMonth"]));
+
+    const result = document.getElementById("loanResult") || document.getElementById("result");
+    const panel = getLoanPanel();
+
+    if (!panel) return;
+
+    if (
+      !Number.isFinite(purchasePrice) ||
+      !Number.isFinite(annualRate) ||
+      !Number.isFinite(months) ||
+      purchasePrice <= 0 ||
+      annualRate < 0 ||
+      months <= 0
+    ) {
+      if (result) {
+        result.style.display = "block";
+        result.innerText = "Please enter valid loan details.";
+      }
+
+      panel.hidden = true;
+      return;
+    }
+
+    if (downPayment >= purchasePrice) {
+      if (result) {
+        result.style.display = "block";
+        result.innerText = "Down payment must be less than the loan amount / purchase price.";
+      }
+
+      panel.hidden = true;
+      return;
+    }
+
+    const amountBorrowed = purchasePrice - downPayment;
+    const optionalMonthlyCost = getOptionalMonthlyCost();
+
+    const normalMonthlyPayment = calculateNormalMonthlyPayment(
+      amountBorrowed,
+      annualRate,
+      months
+    );
+
+    const monthlyRows = buildEarlySettlementMonthlyRows(
+      amountBorrowed,
+      annualRate,
+      months,
+      normalMonthlyPayment,
+      optionalMonthlyCost,
+      extraMonthlyPayment,
+      oneTimeExtraPayment,
+      yearlyLumpSum
+    );
+
+    const useMonthlyTable = months < 13;
+    const rows = useMonthlyTable ? monthlyRows.map(function (row) {
+      return {
+        label: row.month,
+        principalPaid: row.principalPaid,
+        interestPaid: row.interestPaid,
+        totalPayment: row.totalPayment,
+        totalInterestPaid: row.totalInterestPaid,
+        remainingBalance: row.remainingBalance
+      };
+    }) : groupRowsByYear(monthlyRows);
+
+    const finalRow = monthlyRows[monthlyRows.length - 1];
+    const totalInterest = finalRow ? finalRow.totalInterestPaid : 0;
+    const totalPayment = finalRow ? finalRow.totalPayment : 0;
+    const settlementMonths = monthlyRows.length;
+
+    const firstColumnTitle = useMonthlyTable ? "Month" : "Year";
+    const tableTitle = useMonthlyTable ? "Mortgage monthly table" : "Mortgage yearly table";
+
+    const tableRows = rows.map(function (row) {
+      return (
+        "<tr>" +
+          "<td>" + row.label + "</td>" +
+          "<td>" + money(row.principalPaid) + "</td>" +
+          "<td>" + money(row.interestPaid) + "</td>" +
+          "<td>" + money(row.totalPayment) + "</td>" +
+          "<td>" + money(row.totalInterestPaid) + "</td>" +
+          "<td>" + money(row.remainingBalance) + "</td>" +
+        "</tr>"
+      );
+    }).join("");
+
+    const settlementText =
+      settlementMonths < months
+        ? '<p class="mortgage-settlement-note"><strong>Settled after:</strong> ' + settlementMonths + ' months</p>'
+        : "";
+
+    const copyValue =
+      "Monthly payment: " + money(normalMonthlyPayment + optionalMonthlyCost) + "\n" +
+      "Total interest: " + money(totalInterest) + "\n" +
+      "Total payment: " + money(totalPayment) + "\n" +
+      "Extra monthly payment: " + money(extraMonthlyPayment) + "\n" +
+      "One-time extra payment: " + money(oneTimeExtraPayment) + "\n" +
+      "Yearly lump sum: " + money(yearlyLumpSum) + "\n" +
+      "Settled after: " + settlementMonths + " months\n\n" +
+      firstColumnTitle + "\tPrincipal paid\tInterest paid\tTotal payment\tTotal interest\tRemaining balance\n" +
+      rows.map(function (row) {
+        return (
+          row.label + "\t" +
+          money(row.principalPaid) + "\t" +
+          money(row.interestPaid) + "\t" +
+          money(row.totalPayment) + "\t" +
+          money(row.totalInterestPaid) + "\t" +
+          money(row.remainingBalance)
+        );
+      }).join("\n");
+
+    panel.hidden = false;
+
+    panel.innerHTML =
+      '<div class="loan-output-top">' +
+        '<div class="loan-result-panel mortgage-table-only-panel">' +
+          '<h2 class="loan-panel-title">Result</h2>' +
+
+          '<div class="mortgage-summary-row">' +
+            '<div class="mortgage-summary-card">' +
+              '<span>Monthly payment</span>' +
+              '<strong>' + money(normalMonthlyPayment + optionalMonthlyCost) + '</strong>' +
+            '</div>' +
+
+            '<div class="mortgage-summary-card">' +
+              '<span>Total interest</span>' +
+              '<strong>' + money(totalInterest) + '</strong>' +
+            '</div>' +
+
+            '<div class="mortgage-summary-card">' +
+              '<span>Total payment</span>' +
+              '<strong>' + money(totalPayment) + '</strong>' +
+            '</div>' +
+          '</div>' +
+
+          settlementText +
+
+          '<div class="loan-result-body mortgage-result-table-only">' +
+            '<div class="mortgage-year-table-box mortgage-single-table-box">' +
+              '<h3>' + tableTitle + '</h3>' +
+
+              '<div class="mortgage-year-table-scroll">' +
+                '<table class="mortgage-year-table mortgage-important-table">' +
+                  '<thead>' +
+                    '<tr>' +
+                      '<th>' + firstColumnTitle + '</th>' +
+                      '<th>Principal paid</th>' +
+                      '<th>Interest paid</th>' +
+                      '<th>Total payment</th>' +
+                      '<th>Total interest</th>' +
+                      '<th>Remaining balance</th>' +
+                    '</tr>' +
+                  '</thead>' +
+                  '<tbody>' + tableRows + '</tbody>' +
+                '</table>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="loan-copy-side">' +
+          '<button type="button" class="loan-copy-btn">Copy</button>' +
+        '</div>' +
+      '</div>';
+
+    hideOldLoanOutputs();
+
+    const copyBtn = panel.querySelector(".loan-copy-btn");
+
+    if (copyBtn) {
+      copyBtn.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        copyText(copyValue, copyBtn);
+      };
+    }
+  }
+
+  function start() {
+    if (!isLoanPage()) return;
+
+    relabelYearlyLumpSumInput();
+
+    window.calculateLoan = renderMortgageWithYearlyLumpSum;
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const text = button.textContent.trim().toLowerCase();
+        const onclick = button.getAttribute("onclick") || "";
+
+        if (
+          text.includes("optional") ||
+          text.includes("calculate") ||
+          onclick.includes("calculateLoan")
+        ) {
+          setTimeout(relabelYearlyLumpSumInput, 0);
+          setTimeout(renderMortgageWithYearlyLumpSum, 250);
+          setTimeout(renderMortgageWithYearlyLumpSum, 700);
+          setTimeout(renderMortgageWithYearlyLumpSum, 1200);
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key === "Enter") {
+          setTimeout(renderMortgageWithYearlyLumpSum, 250);
+          setTimeout(renderMortgageWithYearlyLumpSum, 700);
+        }
+      },
+      true
+    );
+
+    setTimeout(relabelYearlyLumpSumInput, 300);
+    setTimeout(relabelYearlyLumpSumInput, 900);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
