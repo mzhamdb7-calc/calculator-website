@@ -10285,3 +10285,172 @@
     start();
   }
 })();
+/* =====================================================
+   MORTGAGE: Optional early settlement box beside Optional costs
+   - Adds:
+     Extra monthly payment
+     One-time extra payment
+     One-time payment after month
+   - Creates a separate expandable box
+   - No MutationObserver, no loading loop
+===================================================== */
+(function () {
+  "use strict";
+
+  function isLoanPage() {
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      window.location.pathname.includes("loan-calculator") ||
+      !!document.getElementById("loanResult")
+    );
+  }
+
+  function findCalculateButton() {
+    const calculator = document.querySelector(".calculator");
+    if (!calculator) return null;
+
+    return (
+      calculator.querySelector("button.main-btn") ||
+      Array.from(calculator.querySelectorAll("button")).find(function (button) {
+        return button.textContent.trim().toLowerCase().includes("calculate");
+      }) ||
+      null
+    );
+  }
+
+  function ensureOptionalRow() {
+    const calculator = document.querySelector(".calculator");
+    const calculateBtn = findCalculateButton();
+
+    if (!calculator || !calculateBtn) return null;
+
+    let row = document.querySelector(".loan-optional-row");
+
+    if (!row) {
+      row = document.createElement("div");
+      row.className = "loan-optional-row";
+      calculateBtn.insertAdjacentElement("beforebegin", row);
+    }
+
+    return row;
+  }
+
+  function ensureOptionalCostInsideRow(row) {
+    let optionalCostBox = document.querySelector(".optional-mortgage-costs");
+
+    if (!optionalCostBox) {
+      optionalCostBox = document.createElement("div");
+      optionalCostBox.className = "optional-mortgage-costs";
+      optionalCostBox.innerHTML =
+        '<button type="button" class="optional-mortgage-toggle" aria-expanded="false">Optional costs</button>' +
+        '<div class="optional-mortgage-content" hidden></div>';
+    }
+
+    if (optionalCostBox.parentElement !== row) {
+      row.appendChild(optionalCostBox);
+    }
+
+    return optionalCostBox;
+  }
+
+  function ensureEarlySettlementBox(row) {
+    let box = document.querySelector(".early-settlement-box");
+
+    if (!box) {
+      box = document.createElement("div");
+      box.className = "early-settlement-box";
+
+      box.innerHTML =
+        '<button type="button" class="early-settlement-toggle" aria-expanded="false">Optional early settlement</button>' +
+        '<div class="early-settlement-content" hidden>' +
+
+          '<label for="extraMonthlyPayment">Extra monthly payment:</label>' +
+          '<input type="number" id="extraMonthlyPayment" placeholder="Optional, example: 200" inputmode="decimal">' +
+
+          '<label for="oneTimeExtraPayment">One-time extra payment:</label>' +
+          '<input type="number" id="oneTimeExtraPayment" placeholder="Optional, example: 5000" inputmode="decimal">' +
+
+          '<label for="oneTimePaymentMonth">One-time payment after month:</label>' +
+          '<input type="number" id="oneTimePaymentMonth" placeholder="Optional, example: 24" inputmode="decimal">' +
+
+        '</div>';
+    }
+
+    if (box.parentElement !== row) {
+      row.appendChild(box);
+    }
+
+    return box;
+  }
+
+  function setupToggle(buttonSelector, contentSelector) {
+    const button = document.querySelector(buttonSelector);
+    const content = document.querySelector(contentSelector);
+
+    if (!button || !content) return;
+    if (button.dataset.toggleReady === "true") return;
+
+    button.dataset.toggleReady = "true";
+
+    button.addEventListener("click", function (event) {
+      event.preventDefault();
+
+      const isHidden = content.hidden || content.style.display === "none";
+
+      content.hidden = !isHidden;
+      content.style.display = isHidden ? "block" : "none";
+      button.setAttribute("aria-expanded", isHidden ? "true" : "false");
+    });
+  }
+
+  function fixDuplicateEarlySettlementInputs() {
+    const ids = [
+      "extraMonthlyPayment",
+      "oneTimeExtraPayment",
+      "oneTimePaymentMonth"
+    ];
+
+    ids.forEach(function (id) {
+      const items = Array.from(document.querySelectorAll("#" + id));
+
+      items.slice(1).forEach(function (input) {
+        const label = document.querySelector('label[for="' + id + '"]');
+        if (label && label.parentElement === input.parentElement) {
+          label.remove();
+        }
+
+        input.remove();
+      });
+    });
+  }
+
+  function addEarlySettlementBox() {
+    if (!isLoanPage()) return;
+
+    const row = ensureOptionalRow();
+    if (!row) return;
+
+    ensureOptionalCostInsideRow(row);
+    ensureEarlySettlementBox(row);
+
+    setupToggle(".optional-mortgage-toggle", ".optional-mortgage-content");
+    setupToggle(".early-settlement-toggle", ".early-settlement-content");
+
+    fixDuplicateEarlySettlementInputs();
+  }
+
+  function start() {
+    addEarlySettlementBox();
+
+    setTimeout(addEarlySettlementBox, 200);
+    setTimeout(addEarlySettlementBox, 700);
+    setTimeout(addEarlySettlementBox, 1400);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();

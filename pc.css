@@ -4158,3 +4158,100 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     min-width: 900px !important;
   }
 }
+/* =====================================================
+   PC ONLY: Mortgage optional costs + early settlement side by side
+===================================================== */
+@media (min-width: 851px) {
+  body.loan-page .loan-optional-row {
+    width: 100% !important;
+
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 18px !important;
+    align-items: start !important;
+
+    margin: 0 auto 22px !important;
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .loan-optional-row .optional-mortgage-costs,
+  body.loan-page .loan-optional-row .early-settlement-box {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 !important;
+    padding: 18px !important;
+
+    background: #d2fff7 !important;
+    border: 5px solid var(--black) !important;
+    box-shadow: 6px 6px 0 var(--black) !important;
+
+    text-align: center !important;
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .optional-mortgage-toggle,
+  body.loan-page .early-settlement-toggle {
+    width: 100% !important;
+
+    margin: 0 !important;
+    padding: 14px 16px !important;
+
+    background: #ffef9f !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+
+    font-family: inherit !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .optional-mortgage-content,
+  body.loan-page .early-settlement-content {
+    width: 100% !important;
+
+    margin-top: 18px !important;
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .early-settlement-content label,
+  body.loan-page .optional-mortgage-content label {
+    display: block !important;
+
+    margin: 14px auto 8px !important;
+
+    text-align: center !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+  }
+
+  body.loan-page .early-settlement-content input,
+  body.loan-page .optional-mortgage-content input {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    height: 58px !important;
+    min-height: 58px !important;
+
+    margin: 0 auto 14px !important;
+    padding: 10px 14px !important;
+
+    background: #f8f8f8 !important;
+    color: var(--black) !important;
+
+    border: 4px solid var(--black) !important;
+    box-shadow: inset 3px 3px 0 #ddd !important;
+
+    font-family: inherit !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+
+    box-sizing: border-box !important;
+  }
+}
