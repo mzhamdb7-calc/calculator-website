@@ -4747,3 +4747,92 @@ body.pc-help-overlay-open main.pc-calculator-layout > .instruction-box {
     box-sizing: border-box !important;
   }
 }
+/* =====================================================
+   PC: BMI body details box beside profile box
+===================================================== */
+@media (min-width: 851px) {
+  body.bmi-page .bmi-calculator-box {
+    max-width: 980px !important;
+  }
+
+  body.bmi-page .bmi-input-two-box-row {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    gap: 24px !important;
+    align-items: stretch !important;
+    margin: 22px 0 18px !important;
+    box-sizing: border-box !important;
+  }
+
+  body.bmi-page .bmi-body-input-box,
+  body.bmi-page .bmi-extra-profile-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 18px !important;
+    background: #fff4b8 !important;
+    color: var(--black) !important;
+    border: 5px solid var(--black) !important;
+    box-shadow: 7px 7px 0 var(--black) !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+  }
+
+  body.bmi-page .bmi-box-title {
+    margin: 0 0 16px !important;
+    padding: 0 !important;
+    font-size: 28px !important;
+    line-height: 1.15 !important;
+    font-weight: bold !important;
+    text-align: center !important;
+  }
+
+  body.bmi-page .bmi-body-input-box label,
+  body.bmi-page .bmi-extra-profile-box label {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 0 8px !important;
+    font-size: 22px !important;
+    line-height: 1.2 !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+  }
+
+  body.bmi-page .bmi-body-input-box input,
+  body.bmi-page .bmi-extra-profile-box select,
+  body.bmi-page .bmi-extra-profile-box input {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 62px !important;
+    margin: 0 0 18px !important;
+    padding: 10px 14px !important;
+    background: #f8f8f8 !important;
+    color: var(--black) !important;
+    border: 5px solid var(--black) !important;
+    box-shadow: inset 4px 4px 0 #ddd !important;
+    font-family: inherit !important;
+    font-size: 22px !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+    text-align-last: center !important;
+    box-sizing: border-box !important;
+  }
+
+  body.bmi-page .bmi-body-input-box input:last-child,
+  body.bmi-page .bmi-extra-profile-box select:last-child,
+  body.bmi-page .bmi-extra-profile-box input:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  body.bmi-page #bmiResult {
+    margin-top: 12px !important;
+  }
+}
