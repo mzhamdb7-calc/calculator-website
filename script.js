@@ -3737,7 +3737,31 @@
     return box;
   }
 
+  function removeDuplicateOtherMonthlyFees() {
+    const legacyInput = document.getElementById("hoaMonthly");
+    const newerInput = document.getElementById("otherMonthlyFees");
+
+    if (!legacyInput) return;
+
+    const legacyLabel = document.querySelector('label[for="hoaMonthly"]');
+    if (legacyLabel) legacyLabel.textContent = "Other monthly fees:";
+
+    legacyInput.placeholder = "Optional";
+    legacyInput.setAttribute("inputmode", "decimal");
+
+    if (newerInput) {
+      const newerLabel = document.querySelector('label[for="otherMonthlyFees"]');
+      if (newerLabel) newerLabel.remove();
+      newerInput.remove();
+    }
+  }
+
   function appendOptionalInput(content, id, labelText, placeholder) {
+    if (id === "otherMonthlyFees" && document.getElementById("hoaMonthly")) {
+      removeDuplicateOtherMonthlyFees();
+      return;
+    }
+
     if (document.getElementById(id)) return;
 
     const label = document.createElement("label");
@@ -3780,6 +3804,7 @@
     appendOptionalInput(content, "propertyTaxYearly", "Property tax yearly:", "Optional");
     appendOptionalInput(content, "homeInsuranceYearly", "Home insurance yearly:", "Optional");
     appendOptionalInput(content, "otherMonthlyFees", "Other monthly fees:", "Optional");
+    removeDuplicateOtherMonthlyFees();
   }
 
   function calculateMonthlyPaymentFromMonths(principal, annualRate, months) {
