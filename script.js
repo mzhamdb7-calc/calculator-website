@@ -876,9 +876,22 @@
       );
     }
 
+    function makeHighlightValueOnly(pattern, className) {
+      const row = findRow(pattern);
+      if (!row) return "";
+
+      return (
+        '<section class="bmi-highlight-card bmi-highlight-value-only ' + className + '">' +
+          '<div class="bmi-highlight-value">' + escapeHtml(rowValue(row)) + '</div>' +
+        '</section>'
+      );
+    }
+
     const highlightHtml =
-      '<div class="bmi-highlight-grid bmi-highlight-grid-single">' +
+      '<div class="bmi-highlight-grid">' +
         makeHighlight(/^BMI$/i, "BMI", "bmi-highlight-bmi") +
+        makeHighlightValueOnly(/^BMI category$/i, "bmi-highlight-category") +
+        makeHighlightValueOnly(/^Difference to healthy range$/i, "bmi-highlight-difference") +
       '</div>';
 
     const highlightPatterns = [/^BMI$/i, /^BMI category$/i, /^Difference to healthy range$/i];
@@ -4605,6 +4618,10 @@
         overflow-wrap: break-word !important;
       }
 
+      body.bmi-page #bmiReportOutput .bmi-highlight-value-only .bmi-highlight-value {
+        margin-top: 0 !important;
+      }
+
       body.bmi-page #bmiReportOutput .bmi-result-group-health {
         background: #e7f0ff !important;
       }
@@ -4691,15 +4708,22 @@
 
       body.bmi-page #bmiReportOutput .bmi-highlight-grid,
       body.bmi-page #bmiReportOutput .bmi-highlight-grid-single {
-        grid-template-columns: minmax(0, 1fr) !important;
-        max-width: 360px !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        max-width: none !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+
+      body.bmi-page #bmiReportOutput .bmi-highlight-value-only .bmi-highlight-label {
+        display: none !important;
       }
 
       body.bmi-page #bmiReportOutput .bmi-highlight-category,
       body.bmi-page #bmiReportOutput .bmi-highlight-difference {
-        display: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
       }
 
       @media (max-width: 850px) {
