@@ -10120,3 +10120,851 @@
     start();
   }
 })();
+/* =====================================================
+   MORTGAGE: FINAL working history report system
+   - Saves report after mortgage auto-calculates
+   - History box shows only Loan amount
+   - Adds "open report" link
+   - Report contains all filled inputs + full result table
+   - Does not depend on old mortgageHistoryReports_v1
+===================================================== */
+(function () {
+  "use strict";
+
+  const REPORT_KEY = "mortgageFinalReportHistory_v3";
+  const MAX_REPORTS = 50;
+
+  let timer = null;
+  let isRenderingHistory = false;
+  let isRunningCalculate = false;
+
+  function isLoanPage() {
+    const h1 = document.querySelector("h1");
+    const title = h1 ? h1.textContent.trim().toLowerCase() : "";
+
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      title.includes("loan") ||
+      title.includes("mortgage") ||
+      window.location.pathname.includes("loan-calculator") ||
+      !!document.getElementById("loanHistoryList") ||
+      !!document.getElementById("loanExternalOutput")
+    );
+  }
+
+  function escapeHtml(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function cleanText(value) {
+    return String(value || "").replace(/\s+/g, " ").trim();
+  }
+
+  function getInputValue(input) {
+    if (!input) return "";
+
+    if (input.tagName.toLowerCase() === "select") {
+      const option = input.options[input.selectedIndex];
+      return option ? cleanText(option.textContent) : cleanText(input.value);
+    }
+
+    return cleanText(input.value);
+  }
+
+  function getInputLabel(input) {
+    if (!input) return "Input";
+
+    if (input.id) {
+      const label = document.querySelector('label[for="' + input.id + '"]');
+
+      if (label) {
+        return cleanText(label.textContent.replace(/[:：]/g, ""));
+      }
+    }
+
+    const previous = input.previousElementSibling;
+
+    if (
+      previous &&
+      previous.tagName &&
+      previous.tagName.toLowerCase() === "label"
+    ) {
+      return cleanText(previous.textContent.replace(/[:：]/g, ""));
+    }
+
+    return cleanText(
+      input.getAttribute("aria-label") ||
+      input.placeholder ||
+      input.name ||
+      input.id ||
+      "Input"
+    );
+  }
+
+  function getByIds(ids) {
+    for (const id of ids) {
+      const input = document.getElementById(id);
+      if (input) return input;
+    }
+
+    return null;
+  }
+
+  function getMainAmountInput() {
+    return getByIds(["amount", "loanAmount", "principal", "loanPrincipal"]);
+  }
+
+  function getInterestInput() {
+    return getByIds(["interest", "loanRate", "interestRate", "annualRate", "rate"]);
+  }
+
+  function getTermInput() {
+    return getByIds(["years", "loanYears", "loanTerm", "term"]);
+  }
+
+  function hasMainInputs() {
+    return (
+      getInputValue(getMainAmountInput()) !== "" &&
+      getInputValue(getInterestInput()) !== "" &&
+      getInputValue(getTermInput()) !== ""
+    );
+  }
+
+  function formatMoney(value) {
+    const number = Number(String(value || "").replace(/[^\d.-]/g, ""));
+
+    if (!Number.isFinite(number) || number <= 0) {
+      return value || "-";
+    }
+
+    return "RM " + number.toLocaleString("en-MY", {
+      maximumFractionDigits: 2
+    });
+  }
+
+  function getAllFilledInputs() {
+    const lines = [];
+    const used = new Set();
+
+    const mainInputs = [
+      getMainAmountInput(),
+      getInterestInput(),
+      getTermInput()
+    ];
+
+    mainInputs.forEach(function (input) {
+      if (!input) return;
+
+      const value = getInputValue(input);
+      if (!value) return;
+
+      used.add(input.id || input.name || getInputLabel(input));
+
+      lines.push({
+        label: getInputLabel(input),
+        value: value
+      });
+    });
+
+    document
+      .querySelectorAll(
+        ".calculator input, " +
+        ".calculator select, " +
+        ".calculator textarea, " +
+        ".optional-mortgage-costs input, " +
+        ".optional-mortgage-costs select, " +
+        ".optional-mortgage-costs textarea, " +
+        ".early-settlement-box input, " +
+        ".early-settlement-box select, " +
+        ".early-settlement-box textarea"
+      )
+      .forEach(function (input) {
+        if (!input) return;
+        if (input.type === "hidden") return;
+        if (input.type === "button") return;
+        if (input.type === "submit") return;
+        if (input.id === "display") return;
+
+        const key = input.id || input.name || getInputLabel(input);
+
+        if (used.has(key)) return;
+        used.add(key);
+
+        const value = getInputValue(input);
+        if (!value) return;
+
+        lines.push({
+          label: getInputLabel(input),
+          value: value
+        });
+      });
+
+    return lines;
+  }
+
+  function getLoanAmountFromLines(lines) {
+    const found = lines.find(function (line) {
+      return /loan amount|purchase price|amount/i.test(line.label || "");
+    });
+
+    return found ? found.value : "";
+  }
+
+  function getResultElement() {
+    const external = document.getElementById("loanExternalOutput");
+
+    if (
+      external &&
+      external.textContent.trim() &&
+      external.hidden !== true &&
+      external.style.display !== "none"
+    ) {
+      return external;
+    }
+
+    const result = document.getElementById("loanResult");
+
+    if (
+      result &&
+      result.textContent.trim() &&
+      !/please enter valid/i.test(result.textContent)
+    ) {
+      return result;
+    }
+
+    return null;
+  }
+
+  function cleanResultHtml(html) {
+    const template = document.createElement("template");
+    template.innerHTML = html;
+
+    template.content
+      .querySelectorAll("script, iframe, object, embed, link, meta, button, .loan-copy-side")
+      .forEach(function (el) {
+        el.remove();
+      });
+
+    template.content.querySelectorAll("*").forEach(function (el) {
+      Array.from(el.attributes).forEach(function (attr) {
+        const name = attr.name.toLowerCase();
+        const value = String(attr.value || "").trim().toLowerCase();
+
+        if (name.startsWith("on") || value.startsWith("javascript:")) {
+          el.removeAttribute(attr.name);
+        }
+      });
+    });
+
+    return template.innerHTML;
+  }
+
+  function getResultHtml() {
+    const result = getResultElement();
+    if (!result) return "";
+
+    const clone = result.cloneNode(true);
+
+    clone
+      .querySelectorAll("script, iframe, object, embed, link, meta, button, .loan-copy-side")
+      .forEach(function (el) {
+        el.remove();
+      });
+
+    return cleanResultHtml(clone.innerHTML || clone.outerHTML || "");
+  }
+
+  function getResultText() {
+    const result = getResultElement();
+    return result ? cleanText(result.textContent) : "";
+  }
+
+  function loadReports() {
+    try {
+      const reports = JSON.parse(localStorage.getItem(REPORT_KEY) || "[]");
+      return Array.isArray(reports) ? reports : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveReports(reports) {
+    try {
+      localStorage.setItem(REPORT_KEY, JSON.stringify(reports.slice(-MAX_REPORTS)));
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function reportSignature(report) {
+    return JSON.stringify({
+      inputs: report.inputLines || [],
+      result: report.resultText || ""
+    });
+  }
+
+  function saveCurrentReport() {
+    if (!isLoanPage()) return null;
+    if (!hasMainInputs()) return null;
+
+    const inputLines = getAllFilledInputs();
+    const resultHtml = getResultHtml();
+    const resultText = getResultText();
+
+    if (!inputLines.length || !resultHtml || !resultText) return null;
+
+    const loanAmount = getLoanAmountFromLines(inputLines);
+
+    const report = {
+      id: "mortgage_report_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8),
+      createdAt: new Date().toLocaleString(),
+      loanAmount: loanAmount,
+      inputLines: inputLines,
+      resultHtml: resultHtml,
+      resultText: resultText
+    };
+
+    const reports = loadReports();
+    const currentSig = reportSignature(report);
+    const last = reports[reports.length - 1];
+
+    if (last && reportSignature(last) === currentSig) {
+      return last;
+    }
+
+    reports.push(report);
+    saveReports(reports);
+
+    return report;
+  }
+
+  function encodeBase64Url(text) {
+    const bytes = new TextEncoder().encode(text);
+    let binary = "";
+
+    bytes.forEach(function (byte) {
+      binary += String.fromCharCode(byte);
+    });
+
+    return btoa(binary)
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/g, "");
+  }
+
+  function decodeBase64Url(text) {
+    const normal = text.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normal + "===".slice((normal.length + 3) % 4);
+    const binary = atob(padded);
+    const bytes = new Uint8Array(binary.length);
+
+    for (let i = 0; i < binary.length; i += 1) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+
+    return new TextDecoder().decode(bytes);
+  }
+
+  function makeReportLink(report) {
+    const cleanUrl = window.location.href.split("#")[0];
+    const data = encodeBase64Url(JSON.stringify(report));
+
+    return cleanUrl + "#mortgage-final-report=" + data;
+  }
+
+  function copyText(text, button) {
+    if (!text) return;
+
+    function done() {
+      if (!button) return;
+
+      const oldText = button.textContent;
+      button.textContent = "copied";
+
+      setTimeout(function () {
+        button.textContent = oldText;
+      }, 1000);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done).catch(function () {
+        fallbackCopy(text);
+        done();
+      });
+    } else {
+      fallbackCopy(text);
+      done();
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function renderHistoryBox() {
+    if (!isLoanPage()) return;
+
+    const list = document.getElementById("loanHistoryList");
+    if (!list) return;
+
+    if (isRenderingHistory) return;
+    isRenderingHistory = true;
+
+    const title =
+      document.querySelector(".loan-history-box .loan-history-top h3") ||
+      document.querySelector(".loan-history-box h3");
+
+    if (title) {
+      title.textContent = "Report";
+    }
+
+    const reports = loadReports().slice().reverse();
+
+    list.dataset.loanHistoryCount = "mortgage-final-" + reports.length;
+    list.innerHTML = "";
+
+    reports.forEach(function (report) {
+      const li = document.createElement("li");
+      li.className = "history-item mortgage-final-history-item";
+
+      const text = document.createElement("span");
+      text.className = "history-text";
+      text.textContent =
+        "Loan amount: " + formatMoney(report.loanAmount || getLoanAmountFromLines(report.inputLines || []));
+
+      const link = document.createElement("a");
+      link.className = "mortgage-final-open-link";
+      link.textContent = "open report";
+      link.href = makeReportLink(report);
+      link.target = "_blank";
+      link.rel = "noopener";
+
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "history-copy-btn mortgage-final-copy-btn";
+      copyBtn.textContent = "copy";
+
+      copyBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        copyText(text.textContent, copyBtn);
+      });
+
+      li.appendChild(text);
+      li.appendChild(link);
+      li.appendChild(copyBtn);
+      list.appendChild(li);
+    });
+
+    isRenderingHistory = false;
+  }
+
+  function runCalculateThenSave() {
+    if (!isLoanPage()) return;
+    if (!hasMainInputs()) return;
+
+    if (
+      typeof window.calculateLoan === "function" &&
+      !isRunningCalculate
+    ) {
+      isRunningCalculate = true;
+
+      try {
+        window.calculateLoan();
+      } catch (error) {
+        console.error("Mortgage report calculate error:", error);
+      }
+
+      setTimeout(function () {
+        isRunningCalculate = false;
+      }, 200);
+    }
+
+    setTimeout(function () {
+      saveCurrentReport();
+      renderHistoryBox();
+    }, 250);
+
+    setTimeout(function () {
+      saveCurrentReport();
+      renderHistoryBox();
+    }, 800);
+
+    setTimeout(function () {
+      saveCurrentReport();
+      renderHistoryBox();
+    }, 1400);
+  }
+
+  function scheduleUpdate() {
+    clearTimeout(timer);
+
+    timer = setTimeout(function () {
+      runCalculateThenSave();
+    }, 400);
+  }
+
+  function hookCalculateLoan() {
+    if (typeof window.calculateLoan !== "function") return;
+    if (window.calculateLoan.mortgageFinalReportHooked === true) return;
+
+    const original = window.calculateLoan;
+
+    function wrappedCalculateLoan() {
+      const result = original.apply(this, arguments);
+
+      setTimeout(function () {
+        saveCurrentReport();
+        renderHistoryBox();
+      }, 250);
+
+      setTimeout(function () {
+        saveCurrentReport();
+        renderHistoryBox();
+      }, 900);
+
+      return result;
+    }
+
+    wrappedCalculateLoan.mortgageFinalReportHooked = true;
+    window.calculateLoan = wrappedCalculateLoan;
+  }
+
+  function clearMortgageReports() {
+    try {
+      localStorage.removeItem(REPORT_KEY);
+
+      /*
+        Also clear old loan history stores so old long text does not come back.
+      */
+      localStorage.removeItem("inputHistory_loan");
+      localStorage.removeItem("loanHistory");
+      localStorage.removeItem("loanInputHistory");
+      localStorage.removeItem("mortgageHistoryReports_v1");
+    } catch {
+      /* ignore */
+    }
+
+    const list = document.getElementById("loanHistoryList");
+
+    if (list) {
+      list.dataset.loanHistoryCount = "";
+      list.innerHTML = "";
+    }
+  }
+
+  function renderReportPage(report) {
+    if (!report || !Array.isArray(report.inputLines)) return;
+
+    document.body.classList.add("mortgage-final-report-view");
+
+    document
+      .querySelectorAll(
+        ".calculator, " +
+        ".loan-history-box, " +
+        ".instruction-box, " +
+        ".pc-what-slot, " +
+        "#loanExternalOutput, " +
+        "#loanResult, " +
+        "#universalLoanStyleOutput"
+      )
+      .forEach(function (el) {
+        el.style.display = "none";
+      });
+
+    const old = document.getElementById("mortgageFinalReportPage");
+    if (old) old.remove();
+
+    const rows = report.inputLines
+      .map(function (line) {
+        return (
+          "<tr>" +
+            "<td>" + escapeHtml(line.label) + "</td>" +
+            "<td>" + escapeHtml(line.value) + "</td>" +
+          "</tr>"
+        );
+      })
+      .join("");
+
+    const section = document.createElement("section");
+    section.id = "mortgageFinalReportPage";
+    section.className = "mortgage-final-report-page";
+
+    section.innerHTML =
+      '<h1>Mortgage Report</h1>' +
+      '<p class="mortgage-final-report-date">Generated: ' + escapeHtml(report.createdAt || "") + '</p>' +
+
+      '<div class="mortgage-final-report-card">' +
+        '<h2>Inputs</h2>' +
+        '<div class="mortgage-final-table-scroll">' +
+          '<table class="mortgage-final-input-table">' +
+            '<tbody>' + rows + '</tbody>' +
+          '</table>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="mortgage-final-report-card">' +
+        '<h2>Result</h2>' +
+        '<div class="mortgage-final-result-table">' +
+          cleanResultHtml(report.resultHtml || "") +
+        '</div>' +
+      '</div>' +
+
+      '<p class="mortgage-final-back">' +
+        '<a href="' + escapeHtml(window.location.href.split("#")[0]) + '">Back to calculator</a>' +
+      '</p>';
+
+    const main = document.querySelector("main") || document.body;
+    main.insertAdjacentElement("afterbegin", section);
+  }
+
+  function openReportFromHash() {
+    if (!window.location.hash.startsWith("#mortgage-final-report=")) return false;
+
+    try {
+      const encoded = window.location.hash.replace("#mortgage-final-report=", "");
+      const report = JSON.parse(decodeBase64Url(encoded));
+
+      renderReportPage(report);
+      return true;
+    } catch (error) {
+      console.error("Could not open mortgage report:", error);
+      return false;
+    }
+  }
+
+  function installStyle() {
+    if (document.getElementById("mortgageFinalReportStyle")) return;
+
+    const style = document.createElement("style");
+    style.id = "mortgageFinalReportStyle";
+
+    style.textContent = `
+      body.loan-page .mortgage-final-history-item {
+        grid-template-columns: 1fr auto auto !important;
+        align-items: center !important;
+      }
+
+      body.loan-page .mortgage-final-open-link {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 6px 10px !important;
+        background: #d3fff9 !important;
+        color: var(--black) !important;
+        border: 3px solid var(--black) !important;
+        box-shadow: 3px 3px 0 var(--black) !important;
+        text-decoration: none !important;
+        font-weight: bold !important;
+        line-height: 1 !important;
+        white-space: nowrap !important;
+      }
+
+      body.loan-page .mortgage-final-open-link:hover {
+        transform: translate(1px, 1px) !important;
+        box-shadow: 2px 2px 0 var(--black) !important;
+      }
+
+      body.loan-page .mortgage-final-copy-btn {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+      }
+
+      body.loan-page .mortgage-final-report-page {
+        width: min(1100px, 96vw) !important;
+        margin: 30px auto !important;
+        padding: 18px !important;
+        background: #fff !important;
+        color: var(--black) !important;
+        border: 5px solid var(--black) !important;
+        box-shadow: 8px 8px 0 var(--black) !important;
+        box-sizing: border-box !important;
+      }
+
+      body.loan-page .mortgage-final-report-page h1 {
+        text-align: center !important;
+        margin: 0 0 10px !important;
+      }
+
+      body.loan-page .mortgage-final-report-date {
+        text-align: center !important;
+        margin: 0 0 18px !important;
+        font-weight: bold !important;
+      }
+
+      body.loan-page .mortgage-final-report-card {
+        margin: 18px 0 !important;
+        padding: 14px !important;
+        background: #f8f8f8 !important;
+        border: 4px solid var(--black) !important;
+        box-shadow: 5px 5px 0 var(--black) !important;
+      }
+
+      body.loan-page .mortgage-final-report-card h2,
+      body.loan-page .mortgage-final-report-card h3 {
+        margin: 0 0 12px !important;
+        text-align: center !important;
+      }
+
+      body.loan-page .mortgage-final-table-scroll,
+      body.loan-page .mortgage-final-result-table {
+        width: 100% !important;
+        overflow-x: auto !important;
+      }
+
+      body.loan-page .mortgage-final-report-page table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+      }
+
+      body.loan-page .mortgage-final-report-page th,
+      body.loan-page .mortgage-final-report-page td {
+        padding: 10px !important;
+        border: 3px solid var(--black) !important;
+        text-align: left !important;
+      }
+
+      body.loan-page .mortgage-final-back {
+        text-align: center !important;
+        margin: 20px 0 0 !important;
+      }
+
+      body.loan-page .mortgage-final-back a {
+        display: inline-block !important;
+        padding: 10px 16px !important;
+        background: #fff4b8 !important;
+        color: var(--black) !important;
+        border: 4px solid var(--black) !important;
+        box-shadow: 4px 4px 0 var(--black) !important;
+        font-weight: bold !important;
+        text-decoration: none !important;
+      }
+
+      @media (max-width: 850px) {
+        body.loan-page .mortgage-final-history-item {
+          grid-template-columns: 1fr !important;
+          gap: 8px !important;
+        }
+
+        body.loan-page .mortgage-final-open-link,
+        body.loan-page .mortgage-final-copy-btn {
+          width: 100% !important;
+        }
+      }
+    `;
+
+    document.head.appendChild(style);
+  }
+
+  function setupEvents() {
+    document.addEventListener(
+      "input",
+      function (event) {
+        if (!isLoanPage()) return;
+
+        if (
+          event.target.matches("input") ||
+          event.target.matches("select") ||
+          event.target.matches("textarea")
+        ) {
+          scheduleUpdate();
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "change",
+      function (event) {
+        if (!isLoanPage()) return;
+
+        if (
+          event.target.matches("input") ||
+          event.target.matches("select") ||
+          event.target.matches("textarea")
+        ) {
+          scheduleUpdate();
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "click",
+      function (event) {
+        if (!isLoanPage()) return;
+
+        const button = event.target.closest("button");
+        const link = event.target.closest("a");
+
+        if (link && link.classList.contains("mortgage-final-open-link")) {
+          return;
+        }
+
+        if (button) {
+          const text = button.textContent.trim().toLowerCase();
+
+          if (text.includes("clear")) {
+            setTimeout(clearMortgageReports, 0);
+            setTimeout(renderHistoryBox, 200);
+            return;
+          }
+
+          setTimeout(scheduleUpdate, 250);
+        }
+      },
+      true
+    );
+  }
+
+  function start() {
+    if (!isLoanPage()) return;
+
+    installStyle();
+
+    if (openReportFromHash()) return;
+
+    hookCalculateLoan();
+    setupEvents();
+    renderHistoryBox();
+
+    setTimeout(hookCalculateLoan, 300);
+    setTimeout(hookCalculateLoan, 1000);
+    setTimeout(hookCalculateLoan, 2000);
+
+    setTimeout(renderHistoryBox, 300);
+    setTimeout(renderHistoryBox, 1000);
+
+    /*
+      Capture current visible result if the user already calculated before this code loaded.
+    */
+    setTimeout(function () {
+      saveCurrentReport();
+      renderHistoryBox();
+    }, 1200);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
