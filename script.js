@@ -1,4 +1,4 @@
-/* CHATGPT_UPDATE_2026_05_26_ACTUAL_FOLDER_FIXED */
+/* CHATGPT_CACHE_BUST_20260526 */
 /*
   Copyright © 2026 Hamdi. All rights reserved.
   Shared calculator script

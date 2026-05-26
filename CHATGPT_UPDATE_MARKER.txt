@@ -1,0 +1,3 @@
+CHATGPT_CACHE_BUST_20260526
+If you can see this file in GitHub, the upload used the new ZIP.
+HTML files now load CSS/JS with ?v=20260526_1245_cache_bust to force refresh.
