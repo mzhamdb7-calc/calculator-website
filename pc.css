@@ -4563,3 +4563,97 @@ body.loan-page .early-settlement-toggle::after {
 body.loan-page .early-settlement-toggle[aria-expanded="true"]::after {
   content: "▲" !important;
 }
+/* =====================================================
+   MORTGAGE: History report link style
+===================================================== */
+body.loan-page .mortgage-report-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-left: 8px !important;
+  padding: 6px 10px !important;
+  background: #d3fff9 !important;
+  color: var(--black) !important;
+  border: 3px solid var(--black) !important;
+  box-shadow: 3px 3px 0 var(--black) !important;
+  text-decoration: none !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+body.loan-page .mortgage-report-link:hover {
+  transform: translate(1px, 1px) !important;
+  box-shadow: 2px 2px 0 var(--black) !important;
+}
+
+body.loan-page .mortgage-shared-report {
+  width: min(1100px, 96vw) !important;
+  margin: 30px auto !important;
+  padding: 18px !important;
+  background: #fff !important;
+  color: var(--black) !important;
+  border: 5px solid var(--black) !important;
+  box-shadow: 8px 8px 0 var(--black) !important;
+  box-sizing: border-box !important;
+}
+
+body.loan-page .mortgage-shared-report h1 {
+  margin: 0 0 10px !important;
+  text-align: center !important;
+}
+
+body.loan-page .mortgage-report-date {
+  margin: 0 0 18px !important;
+  text-align: center !important;
+  font-weight: bold !important;
+}
+
+body.loan-page .mortgage-report-card {
+  margin: 18px 0 !important;
+  padding: 14px !important;
+  background: #f8f8f8 !important;
+  border: 4px solid var(--black) !important;
+  box-shadow: 5px 5px 0 var(--black) !important;
+}
+
+body.loan-page .mortgage-report-card h2 {
+  margin: 0 0 12px !important;
+  text-align: center !important;
+}
+
+body.loan-page .mortgage-report-table-scroll,
+body.loan-page .mortgage-report-result {
+  width: 100% !important;
+  overflow-x: auto !important;
+}
+
+body.loan-page .mortgage-report-input-table,
+body.loan-page .mortgage-shared-report table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+}
+
+body.loan-page .mortgage-report-input-table td,
+body.loan-page .mortgage-shared-report table th,
+body.loan-page .mortgage-shared-report table td {
+  padding: 10px !important;
+  border: 3px solid var(--black) !important;
+  text-align: left !important;
+}
+
+body.loan-page .mortgage-report-back {
+  text-align: center !important;
+  margin: 20px 0 0 !important;
+}
+
+body.loan-page .mortgage-report-back a {
+  display: inline-block !important;
+  padding: 10px 16px !important;
+  background: #fff4b8 !important;
+  color: var(--black) !important;
+  border: 4px solid var(--black) !important;
+  box-shadow: 4px 4px 0 var(--black) !important;
+  font-weight: bold !important;
+  text-decoration: none !important;
+}

@@ -9286,3 +9286,613 @@
     startMortgageAutoCalculate();
   }
 })();
+/* =====================================================
+   MORTGAGE: History report links
+   - Adds "open report" link to each mortgage history item
+   - Report includes all filled inputs + full result table
+   - Link opens a clean report page in a new tab
+===================================================== */
+(function () {
+  "use strict";
+
+  const REPORT_KEY = "mortgageHistoryReports_v1";
+  const MAX_REPORTS = 50;
+
+  let captureTimer = null;
+
+  function isLoanPage() {
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      window.location.pathname.includes("loan-calculator") ||
+      !!document.getElementById("loanResult") ||
+      !!document.getElementById("loanHistoryList")
+    );
+  }
+
+  function escapeHtml(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function cleanLabelText(text) {
+    return String(text || "")
+      .replace(/[:：]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function getLabel(input) {
+    if (!input) return "Input";
+
+    if (input.id) {
+      const label = document.querySelector('label[for="' + input.id + '"]');
+      if (label) return cleanLabelText(label.textContent);
+    }
+
+    const previous = input.previousElementSibling;
+    if (previous && previous.tagName && previous.tagName.toLowerCase() === "label") {
+      return cleanLabelText(previous.textContent);
+    }
+
+    return cleanLabelText(
+      input.getAttribute("aria-label") ||
+      input.placeholder ||
+      input.name ||
+      input.id ||
+      "Input"
+    );
+  }
+
+  function getValue(input) {
+    if (!input) return "";
+
+    if (input.tagName.toLowerCase() === "select") {
+      const option = input.options[input.selectedIndex];
+      return option ? option.textContent.trim() : input.value;
+    }
+
+    return String(input.value || "").trim();
+  }
+
+  function getMainInputLines() {
+    const lines = [];
+
+    const amount = document.getElementById("amount");
+    const interest = document.getElementById("interest");
+    const years = document.getElementById("years");
+
+    if (amount && getValue(amount)) {
+      lines.push({
+        label: "Loan amount / purchase price",
+        value: getValue(amount)
+      });
+    }
+
+    if (interest && getValue(interest)) {
+      lines.push({
+        label: "Annual interest rate",
+        value: getValue(interest) + "%"
+      });
+    }
+
+    if (years && getValue(years)) {
+      lines.push({
+        label: "Loan term in months",
+        value: getValue(years)
+      });
+    }
+
+    return lines;
+  }
+
+  function getExtraInputLines() {
+    const lines = [];
+    const used = new Set();
+
+    document
+      .querySelectorAll(
+        ".optional-mortgage-costs input, " +
+        ".optional-mortgage-costs select, " +
+        ".optional-mortgage-costs textarea, " +
+        ".early-settlement-box input, " +
+        ".early-settlement-box select, " +
+        ".early-settlement-box textarea"
+      )
+      .forEach(function (input) {
+        if (!input || input.type === "hidden") return;
+
+        const key = input.id || input.name || getLabel(input);
+        if (used.has(key)) return;
+        used.add(key);
+
+        const value = getValue(input);
+        if (!value) return;
+
+        lines.push({
+          label: getLabel(input),
+          value: value
+        });
+      });
+
+    return lines;
+  }
+
+  function getInputLines() {
+    return getMainInputLines().concat(getExtraInputLines());
+  }
+
+  function buildInputText(lines) {
+    return lines
+      .map(function (line) {
+        return line.label + ": " + line.value;
+      })
+      .join(" | ");
+  }
+
+  function getResultElement() {
+    const external = document.getElementById("loanExternalOutput");
+
+    if (
+      external &&
+      !external.hidden &&
+      external.textContent.trim() !== ""
+    ) {
+      return external;
+    }
+
+    const result = document.getElementById("loanResult");
+
+    if (
+      result &&
+      result.textContent.trim() !== "" &&
+      !/please enter valid/i.test(result.textContent)
+    ) {
+      return result;
+    }
+
+    return null;
+  }
+
+  function sanitizeResultHtml(html) {
+    const template = document.createElement("template");
+    template.innerHTML = html;
+
+    template.content
+      .querySelectorAll("script, iframe, object, embed, link, meta")
+      .forEach(function (el) {
+        el.remove();
+      });
+
+    template.content.querySelectorAll("*").forEach(function (el) {
+      Array.from(el.attributes).forEach(function (attr) {
+        const name = attr.name.toLowerCase();
+        const value = String(attr.value || "").trim().toLowerCase();
+
+        if (name.startsWith("on") || value.startsWith("javascript:")) {
+          el.removeAttribute(attr.name);
+        }
+      });
+    });
+
+    return template.innerHTML;
+  }
+
+  function getResultHtml() {
+    const result = getResultElement();
+    if (!result) return "";
+
+    const clone = result.cloneNode(true);
+
+    clone
+      .querySelectorAll(
+        "button, script, iframe, object, embed, .loan-copy-side, .history-copy-btn, .mortgage-report-link"
+      )
+      .forEach(function (el) {
+        el.remove();
+      });
+
+    return sanitizeResultHtml(clone.innerHTML || clone.outerHTML || "");
+  }
+
+  function getResultText() {
+    const result = getResultElement();
+    return result ? result.textContent.replace(/\s+/g, " ").trim() : "";
+  }
+
+  function loadReports() {
+    try {
+      const value = JSON.parse(localStorage.getItem(REPORT_KEY) || "[]");
+      return Array.isArray(value) ? value : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveReports(reports) {
+    try {
+      localStorage.setItem(REPORT_KEY, JSON.stringify(reports.slice(-MAX_REPORTS)));
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function encodeBase64Url(text) {
+    const bytes = new TextEncoder().encode(text);
+    let binary = "";
+
+    bytes.forEach(function (byte) {
+      binary += String.fromCharCode(byte);
+    });
+
+    return btoa(binary)
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/g, "");
+  }
+
+  function decodeBase64Url(text) {
+    const padded = text.replace(/-/g, "+").replace(/_/g, "/");
+    const fixed = padded + "===".slice((padded.length + 3) % 4);
+    const binary = atob(fixed);
+
+    const bytes = new Uint8Array(binary.length);
+
+    for (let i = 0; i < binary.length; i += 1) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+
+    return new TextDecoder().decode(bytes);
+  }
+
+  function makeReportLink(report) {
+    const cleanUrl = window.location.href.split("#")[0];
+    const data = encodeBase64Url(JSON.stringify(report));
+
+    return cleanUrl + "#mortgage-report=" + data;
+  }
+
+  function saveCurrentMortgageReport() {
+    if (!isLoanPage()) return null;
+
+    const inputLines = getInputLines();
+    const resultHtml = getResultHtml();
+    const resultText = getResultText();
+
+    if (!inputLines.length || !resultHtml || !resultText) return null;
+
+    const inputText = buildInputText(inputLines);
+
+    const report = {
+      id: "mortgage_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8),
+      createdAt: new Date().toLocaleString(),
+      inputText: inputText,
+      inputLines: inputLines,
+      resultHtml: resultHtml,
+      resultText: resultText
+    };
+
+    const reports = loadReports();
+    const last = reports[reports.length - 1];
+
+    if (
+      last &&
+      last.inputText === report.inputText &&
+      last.resultText === report.resultText
+    ) {
+      return last;
+    }
+
+    reports.push(report);
+    saveReports(reports);
+
+    return report;
+  }
+
+  function findReportForHistoryText(historyText) {
+    const cleanHistory = String(historyText || "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    const reports = loadReports().slice().reverse();
+
+    return reports.find(function (report) {
+      const cleanReport = String(report.inputText || "")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      return cleanReport === cleanHistory;
+    });
+  }
+
+  function decorateHistoryLinks() {
+    if (!isLoanPage()) return;
+
+    const list = document.getElementById("loanHistoryList");
+    if (!list) return;
+
+    list.querySelectorAll(".history-item").forEach(function (item) {
+      const textEl = item.querySelector(".history-text");
+      if (!textEl) return;
+
+      const report = findReportForHistoryText(textEl.textContent);
+      if (!report) return;
+
+      let link = item.querySelector(".mortgage-report-link");
+
+      if (!link) {
+        link = document.createElement("a");
+        link.className = "mortgage-report-link";
+        link.textContent = "open report";
+        link.target = "_blank";
+        link.rel = "noopener";
+        item.appendChild(link);
+      }
+
+      link.href = makeReportLink(report);
+    });
+  }
+
+  function renderMortgageReportPage(report) {
+    if (!report || !report.inputLines || !report.resultHtml) return;
+
+    const main = document.querySelector("main") || document.body;
+
+    document.body.classList.add("mortgage-report-view");
+
+    const oldReport = document.getElementById("mortgageSharedReport");
+    if (oldReport) oldReport.remove();
+
+    document
+      .querySelectorAll(".loan-history-box, .calculator, #loanExternalOutput, #loanResult")
+      .forEach(function (el) {
+        el.style.display = "none";
+      });
+
+    const inputRows = report.inputLines
+      .map(function (line) {
+        return (
+          "<tr>" +
+            "<td>" + escapeHtml(line.label) + "</td>" +
+            "<td>" + escapeHtml(line.value) + "</td>" +
+          "</tr>"
+        );
+      })
+      .join("");
+
+    const section = document.createElement("section");
+    section.id = "mortgageSharedReport";
+    section.className = "mortgage-shared-report";
+
+    section.innerHTML =
+      '<h1>Mortgage Report</h1>' +
+      '<p class="mortgage-report-date">Generated: ' + escapeHtml(report.createdAt || "") + '</p>' +
+
+      '<div class="mortgage-report-card">' +
+        '<h2>Inputs</h2>' +
+        '<div class="mortgage-report-table-scroll">' +
+          '<table class="mortgage-report-input-table">' +
+            '<tbody>' + inputRows + '</tbody>' +
+          '</table>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="mortgage-report-card">' +
+        '<h2>Result table</h2>' +
+        '<div class="mortgage-report-result">' + sanitizeResultHtml(report.resultHtml) + '</div>' +
+      '</div>' +
+
+      '<p class="mortgage-report-back">' +
+        '<a href="' + escapeHtml(window.location.href.split("#")[0]) + '">Back to calculator</a>' +
+      '</p>';
+
+    main.insertAdjacentElement("afterbegin", section);
+  }
+
+  function openReportFromHash() {
+    if (!window.location.hash.startsWith("#mortgage-report=")) return;
+
+    try {
+      const encoded = window.location.hash.replace("#mortgage-report=", "");
+      const report = JSON.parse(decodeBase64Url(encoded));
+
+      renderMortgageReportPage(report);
+    } catch (error) {
+      console.error("Could not open mortgage report link:", error);
+    }
+  }
+
+  function scheduleCapture() {
+    clearTimeout(captureTimer);
+
+    captureTimer = setTimeout(function () {
+      saveCurrentMortgageReport();
+      decorateHistoryLinks();
+    }, 700);
+  }
+
+  function hookCalculateLoan() {
+    if (typeof window.calculateLoan !== "function") return;
+    if (window.calculateLoan.mortgageReportHooked) return;
+
+    const originalCalculateLoan = window.calculateLoan;
+
+    function hookedCalculateLoan() {
+      const result = originalCalculateLoan.apply(this, arguments);
+
+      setTimeout(scheduleCapture, 200);
+      setTimeout(scheduleCapture, 900);
+
+      return result;
+    }
+
+    hookedCalculateLoan.mortgageReportHooked = true;
+    window.calculateLoan = hookedCalculateLoan;
+  }
+
+  function startMortgageHistoryReportLinks() {
+    if (!isLoanPage()) return;
+
+    openReportFromHash();
+    hookCalculateLoan();
+
+    document.addEventListener("input", scheduleCapture, true);
+    document.addEventListener("change", scheduleCapture, true);
+    document.addEventListener("click", scheduleCapture, true);
+
+    const list = document.getElementById("loanHistoryList");
+    if (list) {
+      const observer = new MutationObserver(function () {
+        decorateHistoryLinks();
+      });
+
+      observer.observe(list, {
+        childList: true,
+        subtree: true
+      });
+    }
+
+    setTimeout(scheduleCapture, 800);
+    setTimeout(decorateHistoryLinks, 1200);
+    setTimeout(decorateHistoryLinks, 2500);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startMortgageHistoryReportLinks);
+  } else {
+    startMortgageHistoryReportLinks();
+  }
+})();
+/* =====================================================
+   MORTGAGE: Show only loan amount in history box
+   - Keeps the open report link
+   - Hides the long input text from the history list
+===================================================== */
+(function () {
+  "use strict";
+
+  const REPORT_KEY = "mortgageHistoryReports_v1";
+
+  function isLoanPage() {
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      window.location.pathname.includes("loan-calculator") ||
+      !!document.getElementById("loanHistoryList")
+    );
+  }
+
+  function loadReports() {
+    try {
+      const reports = JSON.parse(localStorage.getItem(REPORT_KEY) || "[]");
+      return Array.isArray(reports) ? reports : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function cleanText(value) {
+    return String(value || "").replace(/\s+/g, " ").trim();
+  }
+
+  function findLoanAmountFromReport(report) {
+    if (!report || !Array.isArray(report.inputLines)) return "";
+
+    const line = report.inputLines.find(function (item) {
+      return /loan amount|purchase price|amount/i.test(item.label || "");
+    });
+
+    return line ? String(line.value || "").trim() : "";
+  }
+
+  function findReportForHistoryText(historyText) {
+    const cleanHistory = cleanText(historyText);
+    const reports = loadReports().slice().reverse();
+
+    return reports.find(function (report) {
+      return cleanText(report.inputText) === cleanHistory;
+    });
+  }
+
+  function formatLoanAmount(value) {
+    const raw = String(value || "").replace(/[^\d.]/g, "");
+    const number = Number(raw);
+
+    if (!Number.isFinite(number) || number <= 0) {
+      return value;
+    }
+
+    return "RM " + number.toLocaleString("en-MY", {
+      maximumFractionDigits: 2
+    });
+  }
+
+  function shortenMortgageHistory() {
+    if (!isLoanPage()) return;
+
+    const list = document.getElementById("loanHistoryList");
+    if (!list) return;
+
+    list.querySelectorAll(".history-item").forEach(function (item) {
+      const textEl = item.querySelector(".history-text");
+      if (!textEl) return;
+
+      if (item.dataset.loanAmountShortened === "yes") return;
+
+      const report = findReportForHistoryText(textEl.textContent);
+      if (!report) return;
+
+      const loanAmount = findLoanAmountFromReport(report);
+      if (!loanAmount) return;
+
+      textEl.textContent = "Loan amount: " + formatLoanAmount(loanAmount);
+      item.dataset.loanAmountShortened = "yes";
+    });
+  }
+
+  function start() {
+    shortenMortgageHistory();
+
+    setTimeout(shortenMortgageHistory, 300);
+    setTimeout(shortenMortgageHistory, 800);
+    setTimeout(shortenMortgageHistory, 1500);
+    setTimeout(shortenMortgageHistory, 3000);
+
+    document.addEventListener("input", function () {
+      setTimeout(shortenMortgageHistory, 900);
+    }, true);
+
+    document.addEventListener("change", function () {
+      setTimeout(shortenMortgageHistory, 900);
+    }, true);
+
+    document.addEventListener("click", function () {
+      setTimeout(shortenMortgageHistory, 300);
+      setTimeout(shortenMortgageHistory, 1000);
+    }, true);
+
+    const list = document.getElementById("loanHistoryList");
+
+    if (list) {
+      const observer = new MutationObserver(function () {
+        setTimeout(shortenMortgageHistory, 100);
+        setTimeout(shortenMortgageHistory, 800);
+      });
+
+      observer.observe(list, {
+        childList: true,
+        subtree: true
+      });
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
