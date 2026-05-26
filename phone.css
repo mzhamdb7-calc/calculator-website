@@ -793,3 +793,34 @@
     min-width: 28px !important;
   }
 }
+
+
+/* =====================================================
+   PHONE INDEX FINAL: 5% narrower homepage box/cards
+===================================================== */
+@media (max-width: 850px) {
+  body.index-page .calculator-box {
+    width: 90.25% !important;
+    max-width: 90.25% !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  body.index-page .calculator-grid > .card,
+  body.index-page .calculator-grid > .group-card,
+  body.index-page .calculator-grid > .group-card > summary {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body.index-page .group-card > .group-links {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  body.index-page .group-card > .group-links a {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}

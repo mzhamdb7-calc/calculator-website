@@ -5069,3 +5069,117 @@ body.loan-page .mortgage-report-back a {
     height: 286px !important;
   }
 }
+
+
+/* =====================================================
+   INDEX FINAL: 5% narrower box/cards + clean dropdown flow
+   - Health/Finance dropdown goes down first
+   - Wraps to the side only when screen height is reached
+   - No empty dropdown boxes
+===================================================== */
+@media (min-width: 851px) {
+  body.index-page .calculator-box {
+    width: min(1254px, 91.2vw) !important;
+    max-width: 1254px !important;
+  }
+
+  body.index-page .calculator-grid {
+    grid-template-columns: repeat(4, minmax(209px, 1fr)) !important;
+  }
+
+  body.index-page .live-abacus-section,
+  body.index-page .live-abacus-card {
+    width: min(1254px, 91.2vw) !important;
+    max-width: 1254px !important;
+  }
+
+  body.index-page .calculator-box .group-card > .group-links.index-card-dropdown-enhanced {
+    display: none !important;
+    position: absolute !important;
+    top: 100% !important;
+    left: -5px !important;
+    right: auto !important;
+    width: max-content !important;
+    min-width: 0 !important;
+    max-width: calc(100vw - 28px) !important;
+    height: auto !important;
+    max-height: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-top: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    grid-template-rows: none !important;
+    grid-auto-flow: row !important;
+    grid-auto-columns: auto !important;
+    gap: 8px !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    box-sizing: border-box !important;
+    z-index: 99999 !important;
+  }
+
+  body.index-page .calculator-box .group-card:hover > .group-links.index-card-dropdown-enhanced,
+  body.index-page .calculator-box .group-card:focus-within > .group-links.index-card-dropdown-enhanced,
+  body.index-page .calculator-box .group-card[open] > .group-links.index-card-dropdown-enhanced,
+  body.index-page .calculator-box .group-card.pc-card-open > .group-links.index-card-dropdown-enhanced {
+    display: flex !important;
+  }
+
+  body.index-page .calculator-box .group-card > .group-links.index-card-dropdown-enhanced.dropdown-opens-left {
+    left: auto !important;
+    right: -5px !important;
+    flex-direction: row-reverse !important;
+  }
+
+  body.index-page .calculator-box .group-links.index-card-dropdown-enhanced .index-card-dropdown-column {
+    width: var(--index-card-dropdown-column-width, 220px) !important;
+    min-width: var(--index-card-dropdown-column-width, 220px) !important;
+    max-width: var(--index-card-dropdown-column-width, 220px) !important;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: var(--white) !important;
+    border: 5px solid var(--black) !important;
+    border-top: none !important;
+    box-shadow: 7px 7px 0 var(--black) !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  body.index-page .calculator-box .group-links.index-card-dropdown-enhanced a,
+  body.index-page .calculator-box .group-links.index-card-dropdown-enhanced a:nth-child(3n),
+  body.index-page .calculator-box .group-links.index-card-dropdown-enhanced a:last-child {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 54px !important;
+    min-height: 54px !important;
+    padding: 0 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border-right: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
+    font-size: 18px !important;
+    line-height: 1.05 !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    box-sizing: border-box !important;
+  }
+
+  body.index-page .calculator-box .group-links.index-card-dropdown-enhanced .index-card-dropdown-column a:last-child {
+    border-bottom: none !important;
+  }
+
+  body.index-page .calculator-box .group-links.index-card-dropdown-enhanced a:hover,
+  body.index-page .calculator-box .group-links.index-card-dropdown-enhanced a:focus-visible {
+    background: var(--yellow) !important;
+  }
+}
