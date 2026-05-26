@@ -850,16 +850,45 @@
   function makeBmiResultGroups(rows) {
     rows = Array.isArray(rows) ? rows : [];
 
+    function rowLabel(row) {
+      return String((Array.isArray(row) ? row[0] : row.label) || "");
+    }
+
+    function rowValue(row) {
+      return String((Array.isArray(row) ? row[1] : row.value) || "");
+    }
+
+    function findRow(pattern) {
+      return rows.find(function (row) {
+        return pattern.test(rowLabel(row));
+      });
+    }
+
+    function makeHighlight(pattern, title, className) {
+      const row = findRow(pattern);
+      if (!row) return "";
+
+      return (
+        '<section class="bmi-highlight-card ' + className + '">' +
+          '<div class="bmi-highlight-label">' + escapeHtml(title) + '</div>' +
+          '<div class="bmi-highlight-value">' + escapeHtml(rowValue(row)) + '</div>' +
+        '</section>'
+      );
+    }
+
+    const highlightHtml =
+      '<div class="bmi-highlight-grid">' +
+        makeHighlight(/^BMI$/i, "BMI", "bmi-highlight-bmi") +
+        makeHighlight(/^BMI category$/i, "BMI category", "bmi-highlight-category") +
+        makeHighlight(/^Difference to healthy range$/i, "Difference to healthy range", "bmi-highlight-difference") +
+      '</div>';
+
+    const highlightPatterns = [/^BMI$/i, /^BMI category$/i, /^Difference to healthy range$/i];
     const groups = [
       {
-        key: "summary",
-        title: "BMI summary",
-        match: /BMI$|BMI category|Health risk/i
-      },
-      {
-        key: "range",
-        title: "Healthy range",
-        match: /Healthy weight range|Difference to healthy range/i
+        key: "health",
+        title: "Health overview",
+        match: /Healthy weight range|Health risk|Waist-to-height ratio|Waist-to-height status/i
       },
       {
         key: "calorie",
@@ -872,11 +901,6 @@
         match: /Goal timeline|Target weight|Time goal/i
       },
       {
-        key: "waist",
-        title: "Waist check",
-        match: /Waist-to-height ratio|Waist-to-height status/i
-      },
-      {
         key: "profile",
         title: "Profile used",
         match: /Unit|Age range|Gender|Activity level/i
@@ -884,14 +908,6 @@
     ];
 
     const used = new Set();
-
-    function rowLabel(row) {
-      return String((Array.isArray(row) ? row[0] : row.label) || "");
-    }
-
-    function rowValue(row) {
-      return String((Array.isArray(row) ? row[1] : row.value) || "");
-    }
 
     function makeGroup(group, groupRows) {
       if (!groupRows.length) return "";
@@ -913,9 +929,10 @@
       );
     }
 
-    let html = groups.map(function (group) {
+    const groupHtml = groups.map(function (group) {
       const groupRows = rows.filter(function (row, index) {
         if (!row || used.has(index)) return false;
+        if (highlightPatterns.some(function (pattern) { return pattern.test(rowLabel(row)); })) return false;
         if (!group.match.test(rowLabel(row))) return false;
         used.add(index);
         return true;
@@ -925,14 +942,13 @@
     }).join("");
 
     const otherRows = rows.filter(function (row, index) {
-      return row && !used.has(index);
+      if (!row || used.has(index)) return false;
+      return !highlightPatterns.some(function (pattern) { return pattern.test(rowLabel(row)); });
     });
 
-    if (otherRows.length) {
-      html += makeGroup({ key: "other", title: "Other details" }, otherRows);
-    }
+    const otherHtml = otherRows.length ? makeGroup({ key: "other", title: "Other details" }, otherRows) : "";
 
-    return '<div class="bmi-result-box"><div class="bmi-result-group-grid">' + html + '</div></div>';
+    return '<div class="bmi-result-box">' + highlightHtml + '<div class="bmi-result-group-grid">' + groupHtml + otherHtml + '</div></div>';
   }
 
     function renderBasicAnswer() {
@@ -1882,11 +1898,20 @@
 
     function makeSelect(id, html) {
       let select = byId(id);
+
+      if (select && select.tagName && select.tagName.toLowerCase() !== "select") {
+        const old = select;
+        select = document.createElement("select");
+        select.id = id;
+        old.replaceWith(select);
+      }
+
       if (!select) {
         select = document.createElement("select");
         select.id = id;
-        select.innerHTML = html;
       }
+
+      select.innerHTML = html;
       return select;
     }
 
@@ -1894,13 +1919,13 @@
     const age = makeNumberInput("bmiAge", "Optional, example: 30");
 
     const genderLabel = makeLabel("bmiGenderLabel", "bmiGender", "Gender:");
-    const gender = makeSelect("bmiGender", '<option value="">Optional</option><option value="female">Female</option><option value="male">Male</option><option value="other">Other</option>');
+    const gender = makeSelect("bmiGender", '<option value="">Optional</option><option value="male">Male</option><option value="female">Female</option>');
 
     const activityLabel = makeLabel("bmiActivityLabel", "bmiActivityLevel", "Activity level:");
     const activity = makeSelect("bmiActivityLevel", '<option value="sedentary">Sedentary</option><option value="light">Light activity</option><option value="moderate" selected>Moderate activity</option><option value="active">Active</option><option value="veryActive">Very active</option>');
 
-    const timeGoalLabel = makeLabel("bmiTimeGoalLabel", "bmiTimeGoal", "Time goal in weeks:");
-    const timeGoal = makeNumberInput("bmiTimeGoal", "Optional, example: 12");
+    const timeGoalLabel = makeLabel("bmiTimeGoalLabel", "bmiTimeGoal", "Time goal:");
+    const timeGoal = makeSelect("bmiTimeGoal", '<option value="daily">Daily</option><option value="weekly" selected>Weekly</option><option value="monthly">Monthly</option>');
 
     const targetWeightLabel = makeLabel("bmiTargetWeightLabel", "bmiTargetWeight", "Target weight:");
     const targetWeight = makeNumberInput("bmiTargetWeight", "Optional");
@@ -2031,7 +2056,7 @@
     const age = firstNumber(["bmiAge"]);
     const gender = firstValue(["bmiGender"]);
     const activity = firstValue(["bmiActivityLevel"]) || "moderate";
-    const timeGoal = firstNumber(["bmiTimeGoal"]);
+    const timeGoal = firstValue(["bmiTimeGoal"]) || "weekly";
     const targetWeight = firstNumber(["bmiTargetWeight"]);
 
     if (!Number.isFinite(weight) || !Number.isFinite(height) || weight <= 0 || height <= 0) return;
@@ -2114,6 +2139,12 @@
       bodyFatText = Math.max(0, bodyFat).toFixed(1) + "% estimated body fat";
     }
 
+    const timeGoalLabels = {
+      daily: "Daily",
+      weekly: "Weekly",
+      monthly: "Monthly"
+    };
+
     let goalTimeline = "Enter target weight to estimate goal timeline";
     if (Number.isFinite(targetWeight) && targetWeight > 0) {
       const targetKg = unit === "us" ? targetWeight * 0.45359237 : targetWeight;
@@ -2123,12 +2154,17 @@
 
       if (diffAbsKg < 0.05) {
         goalTimeline = "Already at target weight";
-      } else if (Number.isFinite(timeGoal) && timeGoal > 0) {
-        const perWeekKg = diffAbsKg / timeGoal;
-        goalTimeline = timeGoal + " weeks to " + direction + " " + displayWeightFromKg(diffAbsKg) + " (about " + displayWeightFromKg(perWeekKg) + "/week)";
       } else {
-        const weeks = Math.ceil(diffAbsKg / 0.5);
-        goalTimeline = "About " + weeks + " weeks at ~" + displayWeightFromKg(0.5) + "/week to " + direction + " " + displayWeightFromKg(diffAbsKg);
+        const recommendedWeeks = Math.max(1, Math.ceil(diffAbsKg / 0.5));
+        const perWeekText = displayWeightFromKg(0.5);
+
+        if (timeGoal === "daily") {
+          goalTimeline = "About " + (recommendedWeeks * 7) + " days to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week";
+        } else if (timeGoal === "monthly") {
+          goalTimeline = "About " + Math.max(1, Math.ceil(recommendedWeeks / 4.345)) + " months to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week";
+        } else {
+          goalTimeline = "About " + recommendedWeeks + " weeks to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week";
+        }
       }
     }
 
@@ -2160,7 +2196,7 @@
       ["Gender", genderLabel(gender)],
       ["Activity level", activityLabels[activity] || "Moderate activity"],
       ["Target weight", Number.isFinite(targetWeight) && targetWeight > 0 ? targetWeight + " " + displayUnit : "Not provided"],
-      ["Time goal", Number.isFinite(timeGoal) && timeGoal > 0 ? timeGoal + " weeks" : "Not provided"]
+      ["Time goal", timeGoalLabels[timeGoal] || "Weekly"]
     ];
 
     const metrics = {
@@ -4377,5 +4413,116 @@
     document.addEventListener("DOMContentLoaded", installFinalAgeBmiStyle);
   } else {
     installFinalAgeBmiStyle();
+  }
+})();
+
+/* =====================================================
+   BMI FINAL REQUEST POLISH
+   - Male/Female only select handled in JS above
+   - Daily/Weekly/Monthly time goal
+   - Colorful cartoon BMI result cards
+===================================================== */
+(function () {
+  "use strict";
+
+  function installBmiCartoonResultStyle() {
+    if (document.getElementById("bmiCartoonResultFinalStyle")) return;
+
+    const style = document.createElement("style");
+    style.id = "bmiCartoonResultFinalStyle";
+    style.textContent = `
+      body.bmi-page #bmiReportOutput .bmi-result-main-box {
+        background: #fff7df !important;
+        border: 5px solid var(--black, #000) !important;
+        box-shadow: 9px 9px 0 var(--black, #000) !important;
+      }
+
+      body.bmi-page #bmiReportOutput .bmi-highlight-grid {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 14px !important;
+        margin: 0 0 18px !important;
+        box-sizing: border-box !important;
+      }
+
+      body.bmi-page #bmiReportOutput .bmi-highlight-card {
+        min-width: 0 !important;
+        padding: 16px 12px !important;
+        color: var(--black, #000) !important;
+        border: 5px solid var(--black, #000) !important;
+        box-shadow: 6px 6px 0 var(--black, #000) !important;
+        text-align: center !important;
+        box-sizing: border-box !important;
+      }
+
+      body.bmi-page #bmiReportOutput .bmi-highlight-bmi {
+        background: #d3fff9 !important;
+      }
+
+      body.bmi-page #bmiReportOutput .bmi-highlight-category {
+        background: #fff4b8 !important;
+      }
+
+      body.bmi-page #bmiReportOutput .bmi-highlight-difference {
+        background: #ffd3d3 !important;
+      }
+
+      body.bmi-page #bmiReportOutput .bmi-highlight-label {
+        margin-bottom: 8px !important;
+        font-weight: bold !important;
+        line-height: 1.2 !important;
+      }
+
+      body.bmi-page #bmiReportOutput .bmi-highlight-value {
+        font-size: 24px !important;
+        line-height: 1.15 !important;
+        font-weight: bold !important;
+        overflow-wrap: break-word !important;
+      }
+
+      body.bmi-page #bmiReportOutput .bmi-result-group-health {
+        background: #e7f0ff !important;
+      }
+
+      body.bmi-page #bmiReportOutput .bmi-result-group-calorie {
+        background: #ffe4f2 !important;
+      }
+
+      body.bmi-page #bmiReportOutput .bmi-result-group-goal {
+        background: #e6ffd8 !important;
+      }
+
+      body.bmi-page #bmiReportOutput .bmi-result-group-profile {
+        background: #f0e6ff !important;
+      }
+
+      body.bmi-page #bmiReportOutput .bmi-result-group-other {
+        background: #f8f8f8 !important;
+      }
+
+      body.bmi-page #bmiReportOutput .bmi-result-group-box {
+        border-radius: 0 !important;
+      }
+
+      body.bmi-page #bmiReportOutput .bmi-result-actions {
+        background: #fff !important;
+        border-top: 5px solid var(--black, #000) !important;
+      }
+
+      @media (max-width: 850px) {
+        body.bmi-page #bmiReportOutput .bmi-highlight-grid {
+          grid-template-columns: 1fr !important;
+        }
+      }
+    `;
+
+    document.head.appendChild(style);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", installBmiCartoonResultStyle);
+  } else {
+    installBmiCartoonResultStyle();
   }
 })();
