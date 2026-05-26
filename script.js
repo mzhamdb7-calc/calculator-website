@@ -683,6 +683,29 @@
     });
   }
 
+  function downloadTextFile(filename, text) {
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+
+    setTimeout(function () {
+      URL.revokeObjectURL(url);
+      link.remove();
+    }, 500);
+  }
+
+  function dateFileStamp() {
+    const now = new Date();
+    return now.getFullYear() + "-" +
+      String(now.getMonth() + 1).padStart(2, "0") + "-" +
+      String(now.getDate()).padStart(2, "0");
+  }
+
   function renderResultPanel(type, rows, extraTopHtml) {
     const panel = getOrCreateOutputPanel(type);
     if (!panel) return null;
@@ -691,31 +714,79 @@
     const resultHtml = isAgeResult ? makePointList(rows) : makeTable(rows);
 
     panel.className = "loan-style-output-panel calculator-clean-result " + type + "-clean-result" + (isAgeResult ? " age-point-output" : "");
-    panel.innerHTML =
-      (isAgeResult ? "" : (extraTopHtml || "")) +
-      '<div class="loan-output-top">' +
-        '<div class="loan-result-panel">' +
-          '<h2 class="loan-panel-title">Result</h2>' +
-          (isAgeResult ? (extraTopHtml || "") : "") +
-          '<div class="loan-result-body">' + resultHtml + '</div>' +
-        '</div>' +
-        '<div class="loan-copy-side"><button type="button" class="loan-copy-btn">Copy</button></div>' +
-      '</div>';
+
+    if (isAgeResult) {
+      panel.innerHTML =
+        '<div class="loan-output-top age-result-shell">' +
+          '<div class="loan-result-panel age-result-main-box">' +
+            '<h2 class="loan-panel-title age-result-title">Result</h2>' +
+            (extraTopHtml || "") +
+            '<div class="loan-result-body age-result-body">' + resultHtml + '</div>' +
+            '<div class="age-result-actions">' +
+              '<button type="button" class="age-result-action-btn age-copy-btn">Copy</button>' +
+              '<button type="button" class="age-result-action-btn age-save-btn">Save</button>' +
+              '<button type="button" class="age-result-action-btn age-share-btn">Share</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    } else {
+      panel.innerHTML =
+        (extraTopHtml || "") +
+        '<div class="loan-output-top">' +
+          '<div class="loan-result-panel">' +
+            '<h2 class="loan-panel-title">Result</h2>' +
+            '<div class="loan-result-body">' + resultHtml + '</div>' +
+          '</div>' +
+          '<div class="loan-copy-side"><button type="button" class="loan-copy-btn">Copy</button></div>' +
+        '</div>';
+    }
 
     panel.hidden = false;
     panel.style.setProperty("display", "block", "important");
     panel.style.setProperty("visibility", "visible", "important");
 
-    const copyBtn = panel.querySelector(".loan-copy-btn");
-    if (copyBtn) {
-      copyBtn.onclick = function () {
-        if (isAgeResult) {
-          copyText(rowsToPlainText(rows), copyBtn);
-          return;
-        }
+    if (isAgeResult) {
+      const ageText = rowsToPlainText(rows);
+      const copyBtn = panel.querySelector(".age-copy-btn");
+      const saveBtn = panel.querySelector(".age-save-btn");
+      const shareBtn = panel.querySelector(".age-share-btn");
 
-        copyTable(panel.querySelector("table"), copyBtn);
-      };
+      if (copyBtn) {
+        copyBtn.onclick = function () {
+          copyText(ageText, copyBtn);
+        };
+      }
+
+      if (saveBtn) {
+        saveBtn.onclick = function () {
+          downloadTextFile("age-result-" + dateFileStamp() + ".txt", "Age Calculator Result\n\n" + ageText);
+          setButtonState(saveBtn, "Saved!");
+        };
+      }
+
+      if (shareBtn) {
+        shareBtn.onclick = function () {
+          const shareData = {
+            title: "Age Calculator Result",
+            text: ageText
+          };
+
+          if (navigator.share) {
+            navigator.share(shareData).catch(function () {
+              copyText(ageText, shareBtn);
+            });
+          } else {
+            copyText(ageText, shareBtn);
+          }
+        };
+      }
+    } else {
+      const copyBtn = panel.querySelector(".loan-copy-btn");
+      if (copyBtn) {
+        copyBtn.onclick = function () {
+          copyTable(panel.querySelector("table"), copyBtn);
+        };
+      }
     }
 
     hideNativeResultElements(type);

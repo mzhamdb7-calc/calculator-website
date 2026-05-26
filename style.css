@@ -2281,3 +2281,99 @@ body.index-page .calculator-box .index-dropdown-card .group-links a:focus-visibl
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* =====================================================
+   AGE RESULT: full-width box with countdown + actions inside
+===================================================== */
+body.age-page #ageReportOutput {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+}
+
+body.age-page #ageReportOutput .age-result-shell {
+  width: 100% !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body.age-page #ageReportOutput .age-result-main-box {
+  width: 100% !important;
+  max-width: none !important;
+  padding: 18px !important;
+  background: #d3fff9 !important;
+  color: var(--black) !important;
+  border: 5px solid var(--black) !important;
+  box-shadow: 8px 8px 0 var(--black) !important;
+  box-sizing: border-box !important;
+}
+
+body.age-page #ageReportOutput .age-result-title {
+  margin: 0 0 12px !important;
+  text-align: center !important;
+}
+
+body.age-page #ageReportOutput .age-live-countdown {
+  width: 100% !important;
+  margin: 0 0 16px !important;
+  padding: 12px !important;
+  background: #fff4b8 !important;
+  border: 4px solid var(--black) !important;
+  box-shadow: 4px 4px 0 var(--black) !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+}
+
+body.age-page #ageReportOutput .age-result-body {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+body.age-page #ageReportOutput .age-point-result-box {
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+body.age-page #ageReportOutput .age-result-actions {
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  margin-top: 18px !important;
+  padding-top: 16px !important;
+  border-top: 4px solid var(--black) !important;
+  box-sizing: border-box !important;
+}
+
+body.age-page #ageReportOutput .age-result-action-btn {
+  min-height: 52px !important;
+  padding: 10px 14px !important;
+  color: var(--black) !important;
+  border: 4px solid var(--black) !important;
+  box-shadow: 4px 4px 0 var(--black) !important;
+  font-family: inherit !important;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  line-height: 1.1 !important;
+  text-align: center !important;
+  cursor: pointer !important;
+}
+
+body.age-page #ageReportOutput .age-copy-btn { background: #ffd3d3 !important; }
+body.age-page #ageReportOutput .age-save-btn { background: #b8ffb8 !important; }
+body.age-page #ageReportOutput .age-share-btn { background: #d9f7ff !important; }
+
+body.age-page #ageReportOutput .age-result-action-btn:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 6px 6px 0 var(--black) !important;
+}

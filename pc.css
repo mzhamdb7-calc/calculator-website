@@ -5338,3 +5338,32 @@ body.index-page .calculator-box .index-dropdown-card .group-links a:focus-visibl
     box-shadow: none !important;
   }
 }
+
+
+/* =====================================================
+   PC: Age result spans from history box corner to calculator box corner
+===================================================== */
+@media (min-width: 851px) {
+  body.age-page main.age-calculator-container > #ageReportOutput,
+  body.age-page main.pc-calculator-layout > #ageReportOutput {
+    grid-column: 1 / 3 !important;
+    grid-row: 3 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  body.age-page main.age-calculator-container > #ageReportOutput[hidden],
+  body.age-page main.pc-calculator-layout > #ageReportOutput[hidden] {
+    display: none !important;
+  }
+
+  body.age-page #ageReportOutput .age-result-group-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}

@@ -979,3 +979,30 @@ body.index-page .calculator-box .index-dropdown-card .group-links a:focus-visibl
     box-shadow: none !important;
   }
 }
+
+
+/* =====================================================
+   PHONE: Age result actions stack inside result box
+===================================================== */
+@media (max-width: 850px) {
+  body.age-page #ageReportOutput {
+    width: 100% !important;
+    margin: 16px 0 0 !important;
+  }
+
+  body.age-page #ageReportOutput .age-result-main-box {
+    padding: 14px !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+  }
+
+  body.age-page #ageReportOutput .age-result-actions {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  body.age-page #ageReportOutput .age-result-action-btn {
+    width: 100% !important;
+    min-height: 50px !important;
+    font-size: 16px !important;
+  }
+}
