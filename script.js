@@ -3311,116 +3311,7 @@
 })();
 
 
-/* =====================================================
-   INDEX FINAL: Clean Health/Finance card dropdown flow
-   - Goes down first
-   - Moves to the side only after screen-height limit
-   - Removes empty boxes by building real columns
-===================================================== */
-(function () {
-  "use strict";
 
-  const ROW_HEIGHT = 54;
-  const SCREEN_GAP = 18;
-
-  function isIndexPage() {
-    return (
-      document.body.classList.contains("index-page") ||
-      document.body.dataset.page === "index" ||
-      /(^|\/)index\.html?$/i.test(window.location.pathname) ||
-      !!document.querySelector(".calculator-box .calculator-grid")
-    );
-  }
-
-  function getLinks(box) {
-    return Array.from(box.querySelectorAll("a"));
-  }
-
-  function unwrapLinks(box) {
-    const links = getLinks(box);
-    box.innerHTML = "";
-    links.forEach(function (link) {
-      link.classList.remove("is-last-in-dropdown-column");
-      box.appendChild(link);
-    });
-    return links;
-  }
-
-  function buildColumns(box, links, rowsPerColumn) {
-    box.innerHTML = "";
-
-    for (let i = 0; i < links.length; i += rowsPerColumn) {
-      const column = document.createElement("div");
-      column.className = "index-card-dropdown-column";
-
-      links.slice(i, i + rowsPerColumn).forEach(function (link) {
-        column.appendChild(link);
-      });
-
-      box.appendChild(column);
-    }
-  }
-
-  function enhanceOneDropdown(card) {
-    const box = card.querySelector(":scope > .group-links");
-    if (!box) return;
-
-    const links = unwrapLinks(box);
-    if (!links.length) return;
-
-    const rect = card.getBoundingClientRect();
-    const availableDown = Math.max(ROW_HEIGHT, window.innerHeight - rect.bottom - SCREEN_GAP);
-    const rowsPerColumn = Math.max(1, Math.min(links.length, Math.floor(availableDown / ROW_HEIGHT)));
-    const columnCount = Math.ceil(links.length / rowsPerColumn);
-    const cardWidth = Math.max(180, Math.round(rect.width + 10));
-    const totalWidth = columnCount * cardWidth + Math.max(0, columnCount - 1) * 8;
-    const shouldOpenLeft = rect.left + totalWidth > window.innerWidth - SCREEN_GAP;
-
-    box.classList.add("index-card-dropdown-enhanced");
-    box.classList.toggle("dropdown-opens-left", shouldOpenLeft);
-    box.style.setProperty("--index-card-dropdown-column-width", cardWidth + "px");
-
-    buildColumns(box, links, rowsPerColumn);
-  }
-
-  function enhanceIndexDropdowns() {
-    if (!isIndexPage()) return;
-
-    document
-      .querySelectorAll(".calculator-box .group-card.health-card, .calculator-box .group-card.finance-card")
-      .forEach(enhanceOneDropdown);
-  }
-
-  function start() {
-    enhanceIndexDropdowns();
-
-    window.addEventListener("resize", function () {
-      setTimeout(enhanceIndexDropdowns, 80);
-    });
-
-    window.addEventListener("scroll", function () {
-      setTimeout(enhanceIndexDropdowns, 80);
-    }, { passive: true });
-
-    document.addEventListener("mouseenter", function (event) {
-      const card = event.target.closest && event.target.closest(".calculator-box .group-card");
-      if (card) setTimeout(enhanceIndexDropdowns, 0);
-    }, true);
-
-    document.addEventListener("focusin", function (event) {
-      const card = event.target.closest && event.target.closest(".calculator-box .group-card");
-      if (card) setTimeout(enhanceIndexDropdowns, 0);
-    }, true);
-
-    setTimeout(enhanceIndexDropdowns, 300);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
-})();
 
 /* =====================================================
    SEARCH BAR: Stop calculator keyboard shortcuts while searching
@@ -3472,38 +3363,44 @@
 })();
 
 
+
+
+
 /* =====================================================
-   INDEX: Fix Health/Finance card dropdown links
-   - Forces dropdown items to navigate when clicked
-   - Keeps ctrl/cmd/middle-click behavior for new tabs
+   INDEX: Robust card dropdown links + search keyboard safety
+   - Health/Finance dropdown links navigate normally
+   - Search inputs never trigger calculator keyboard shortcuts
 ===================================================== */
 (function () {
   "use strict";
 
-  function isIndexDropdownLink(target) {
-    return target && target.closest && target.closest("body.index-page .calculator-box .group-card .group-links a");
+  function isSearchTarget(target) {
+    return !!(
+      target &&
+      target.closest &&
+      target.closest(".site-search, .site-search-input, .site-search-box, .navbar-search, .search-bar, input[type='search']")
+    );
   }
 
-  document.addEventListener(
-    "click",
-    function (event) {
-      const link = isIndexDropdownLink(event.target);
-      if (!link) return;
-
-      const href = link.getAttribute("href");
-      if (!href || href === "#") return;
-
-      /* Allow normal browser new-tab shortcuts. */
-      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button === 1) {
-        return;
-      }
-
-      event.preventDefault();
+  ["keydown", "keypress", "keyup"].forEach(function (eventName) {
+    document.addEventListener(eventName, function (event) {
+      if (!isSearchTarget(event.target)) return;
       event.stopPropagation();
-      event.stopImmediatePropagation();
+    }, true);
+  });
 
-      window.location.href = href;
-    },
-    true
-  );
+  document.addEventListener("click", function (event) {
+    var link = event.target && event.target.closest && event.target.closest("body.index-page .index-dropdown-card .group-links a");
+    if (!link) return;
+
+    var href = link.getAttribute("href");
+    if (!href || href === "#") return;
+
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button === 1) {
+      return;
+    }
+
+    event.preventDefault();
+    window.location.assign(href);
+  }, true);
 })();

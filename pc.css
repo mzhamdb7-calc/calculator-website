@@ -5206,3 +5206,135 @@ body.index-page .calculator-box .group-links.index-card-dropdown-enhanced a {
   position: relative !important;
   z-index: 1000000 !important;
 }
+
+
+/* =====================================================
+   INDEX: Robust clickable Health/Finance dropdown cards
+   - No empty boxes
+   - No 3-item limit
+   - Clean vertical dropdown
+===================================================== */
+body.index-page .calculator-grid {
+  overflow: visible !important;
+}
+
+body.index-page .calculator-box {
+  overflow: visible !important;
+}
+
+body.index-page .calculator-box .index-dropdown-card {
+  position: relative !important;
+  display: block !important;
+  overflow: visible !important;
+  cursor: default !important;
+  z-index: 20 !important;
+}
+
+body.index-page .calculator-box .index-dropdown-card:hover,
+body.index-page .calculator-box .index-dropdown-card:focus-within {
+  z-index: 999999 !important;
+}
+
+body.index-page .calculator-box .index-dropdown-title {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: inherit !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  color: var(--black) !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  font-weight: bold !important;
+  line-height: 1.05 !important;
+  text-align: center !important;
+  user-select: none !important;
+  box-sizing: border-box !important;
+}
+
+body.index-page .calculator-box .index-dropdown-card > .group-links,
+body.index-page .calculator-box .index-dropdown-card > .group-links.index-card-dropdown-enhanced {
+  display: none !important;
+  position: absolute !important;
+  top: calc(100% - 5px) !important;
+  left: -5px !important;
+  right: auto !important;
+  width: calc(100% + 10px) !important;
+  min-width: calc(100% + 10px) !important;
+  max-width: none !important;
+  height: auto !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: var(--white) !important;
+  border: 5px solid var(--black) !important;
+  border-top: none !important;
+  box-shadow: 7px 7px 0 var(--black) !important;
+  overflow: visible !important;
+  z-index: 1000000 !important;
+  box-sizing: border-box !important;
+}
+
+body.index-page .calculator-box .index-dropdown-card:hover > .group-links,
+body.index-page .calculator-box .index-dropdown-card:focus-within > .group-links {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+body.index-page .calculator-box .index-dropdown-card .group-links .index-card-dropdown-column {
+  display: contents !important;
+}
+
+body.index-page .calculator-box .index-dropdown-card .group-links a,
+body.index-page .calculator-box .index-dropdown-card .group-links.index-card-dropdown-enhanced a,
+body.index-page .calculator-box .index-dropdown-card .group-links.index-card-dropdown-enhanced a:nth-child(3n),
+body.index-page .calculator-box .index-dropdown-card .group-links.index-card-dropdown-enhanced a:last-child {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 52px !important;
+  min-height: 52px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 10px !important;
+  background: var(--white) !important;
+  color: var(--black) !important;
+  border: none !important;
+  border-bottom: 3px solid var(--black) !important;
+  box-shadow: none !important;
+  font-family: inherit !important;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  line-height: 1.05 !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 1000001 !important;
+  box-sizing: border-box !important;
+}
+
+body.index-page .calculator-box .index-dropdown-card .group-links a:last-child {
+  border-bottom: none !important;
+}
+
+body.index-page .calculator-box .index-dropdown-card .group-links a:hover,
+body.index-page .calculator-box .index-dropdown-card .group-links a:focus-visible {
+  background: var(--yellow) !important;
+}
+
+@media (max-width: 850px) {
+  body.index-page .calculator-box .index-dropdown-card > .group-links,
+  body.index-page .calculator-box .index-dropdown-card > .group-links.index-card-dropdown-enhanced {
+    position: static !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    box-shadow: none !important;
+  }
+}
