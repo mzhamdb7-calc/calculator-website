@@ -1326,6 +1326,13 @@
   function renderInputHistory(type) {
     if (!type || type === "basic") return;
 
+    if (["age", "bmi", "loan", "discount", "percentage", "compound"].includes(type)) {
+      if (typeof window.renderCalculatorReportHistory === "function") {
+        window.renderCalculatorReportHistory(type);
+      }
+      return;
+    }
+
     const list = getHistoryList(type);
     if (!list) return;
 
@@ -1702,12 +1709,15 @@
     const pageType = getPageType();
 
     if (pageType === "basic") {
-      showHistory();
-    } else if (pageType !== "loan" && pageType !== "bmi") {
-      renderInputHistory(pageType);
+      /* Basic history is rendered by the final square-root display block only, to avoid double render. */
     }
 
-    setTimeout(renderUniversalLoanStyleResult, 250);
+    /*
+      Non-basic history is now rendered by the report-history system below.
+      This prevents the old input-only history from flashing before report links load.
+    */
+
+    /* Do not render result panels on page load; results render only after calculation/input. */
   }
 
   if (document.readyState === "loading") {
@@ -2910,9 +2920,8 @@
       oldCalculate();
     }
 
-    setTimeout(renderPrettyBasicHistory, 0);
-    setTimeout(renderPrettyBasicHistory, 200);
-    setTimeout(normalizeDisplaySqrtSymbol, 300);
+    renderPrettyBasicHistory();
+    setTimeout(normalizeDisplaySqrtSymbol, 80);
   };
 
   /* Keyboard R should also use √ instead of Math.sqrt */
@@ -2942,15 +2951,9 @@
       "click",
       function () {
         setTimeout(normalizeDisplaySqrtSymbol, 0);
-        setTimeout(renderPrettyBasicHistory, 150);
-        setTimeout(renderPrettyBasicHistory, 500);
       },
       true
     );
-
-    setTimeout(normalizeDisplaySqrtSymbol, 300);
-    setTimeout(renderPrettyBasicHistory, 300);
-    setTimeout(renderPrettyBasicHistory, 1000);
   }
 
   if (document.readyState === "loading") {
@@ -8328,6 +8331,11 @@
   function renderBmiHistory() {
     if (!isBmiPage()) return;
 
+    if (typeof window.renderCalculatorReportHistory === "function") {
+      window.renderCalculatorReportHistory("bmi");
+      return;
+    }
+
     const list = getInput("bmiHistoryList");
     if (!list) return;
 
@@ -10193,14 +10201,7 @@
       setTimeout(hideReportExtraBoxes, 400);
     });
 
-    const observer = new MutationObserver(function () {
-      hideReportExtraBoxes();
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
+    /* MutationObserver removed to avoid continuous page re-rendering. */
   }
 
   if (document.readyState === "loading") {
@@ -10322,14 +10323,7 @@
     setTimeout(fixReportLinks, 700);
     setTimeout(fixReportLinks, 1500);
 
-    const observer = new MutationObserver(function () {
-      fixReportLinks();
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
+    /* MutationObserver removed to avoid continuous page re-rendering. */
   }
 
   if (document.readyState === "loading") {
@@ -10342,88 +10336,58 @@
    MORTGAGE: Put Optional costs beside Early settlement
    - PC: side by side
    - Phone: stacked
-   - Safe if boxes are created later
+   - One-time setup only, no click loop
 ===================================================== */
 (function () {
   "use strict";
 
-  function isMortgagePage() {
-    const title = document.querySelector("h1")
-      ? document.querySelector("h1").textContent.trim().toLowerCase()
-      : "";
-
-    return (
-      document.body.classList.contains("loan-page") ||
-      document.body.dataset.page === "loan" ||
-      title.includes("mortgage") ||
-      title.includes("loan") ||
-      window.location.pathname.includes("loan") ||
-      window.location.pathname.includes("mortgage") ||
-      !!document.getElementById("loanResult") ||
-      !!document.getElementById("loanHistoryList")
-    );
+  function clean(value) {
+    return String(value || "").replace(/\s+/g, " ").trim().toLowerCase();
   }
 
-  function findInsertPoint(calculator) {
+  function isMortgagePage() {
+    const title = clean(document.querySelector("h1") ? document.querySelector("h1").textContent : "");
+    const path = clean(window.location.pathname);
+
     return (
-      document.querySelector(".optional-mortgage-costs") ||
-      document.querySelector(".early-settlement-box") ||
-      calculator.querySelector(".main-btn") ||
-      Array.from(calculator.querySelectorAll("button")).find(function (button) {
-        return button.textContent.trim().toLowerCase().includes("calculate");
-      }) ||
-      null
+      title.includes("mortgage") ||
+      title.includes("loan calculator") ||
+      path.includes("loan-calculator") ||
+      path.includes("mortgage") ||
+      !!document.getElementById("loanResult") ||
+      !!document.getElementById("loanHistoryList") ||
+      !!document.getElementById("loanExternalOutput")
     );
   }
 
   function groupMortgageOptionalBoxes() {
     if (!isMortgagePage()) return;
 
-    const calculator = document.querySelector(".calculator");
-    if (!calculator) return;
-
     const optionalCostBox = document.querySelector(".optional-mortgage-costs");
     const earlySettlementBox = document.querySelector(".early-settlement-box");
 
-    if (!optionalCostBox && !earlySettlementBox) return;
+    if (!optionalCostBox || !earlySettlementBox) return;
 
     let row = document.querySelector(".loan-optional-row");
 
     if (!row) {
       row = document.createElement("div");
       row.className = "loan-optional-row";
-
-      const insertPoint = findInsertPoint(calculator);
-
-      if (insertPoint && insertPoint.parentElement) {
-        insertPoint.parentElement.insertBefore(row, insertPoint);
-      } else {
-        calculator.appendChild(row);
-      }
+      optionalCostBox.insertAdjacentElement("beforebegin", row);
     }
 
-    if (optionalCostBox && optionalCostBox.parentElement !== row) {
+    if (optionalCostBox.parentElement !== row) {
       row.appendChild(optionalCostBox);
     }
 
-    if (earlySettlementBox && earlySettlementBox.parentElement !== row) {
+    if (earlySettlementBox.parentElement !== row) {
       row.appendChild(earlySettlementBox);
     }
   }
 
   function start() {
     groupMortgageOptionalBoxes();
-
-    setTimeout(groupMortgageOptionalBoxes, 100);
-    setTimeout(groupMortgageOptionalBoxes, 400);
-    setTimeout(groupMortgageOptionalBoxes, 900);
-    setTimeout(groupMortgageOptionalBoxes, 1500);
-    setTimeout(groupMortgageOptionalBoxes, 2500);
-
-    document.addEventListener("click", function () {
-      setTimeout(groupMortgageOptionalBoxes, 100);
-      setTimeout(groupMortgageOptionalBoxes, 500);
-    }, true);
+    setTimeout(groupMortgageOptionalBoxes, 300);
   }
 
   if (document.readyState === "loading") {
@@ -10517,6 +10481,831 @@
   function start() {
     applyPageClass();
     hideCalculateButtons();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+
+
+/* =====================================================
+   UNIVERSAL REPORT HISTORY: All calculator pages except Basic
+   - Age / BMI / Discount / Percentage / Compound get mortgage-style history
+   - History shows a short label + open report link
+   - Report contains filled inputs + full result table/panel
+   - Basic calculator stays unchanged
+===================================================== */
+(function () {
+  "use strict";
+
+  const REPORT_VERSION = "v1";
+  const MAX_REPORTS = 50;
+  let saveTimer = null;
+  let rendering = false;
+
+  function cleanText(value) {
+    return String(value || "").replace(/\s+/g, " ").trim();
+  }
+
+  function escapeHtml(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function getTitleText() {
+    const h1 = document.querySelector("h1");
+    return h1 ? cleanText(h1.textContent).toLowerCase() : "";
+  }
+
+  function getPageType() {
+    const title = getTitleText();
+    const path = window.location.pathname.toLowerCase();
+
+    if (
+      document.body.classList.contains("basic-page") ||
+      document.body.dataset.page === "basic" ||
+      document.getElementById("display") ||
+      title.includes("basic")
+    ) {
+      return "basic";
+    }
+
+    if (document.getElementById("birthdate") || title.includes("age")) return "age";
+    if (document.getElementById("bmiHistoryList") || document.getElementById("bmiResult") || title.includes("bmi")) return "bmi";
+    if (document.getElementById("loanHistoryList") || document.getElementById("loanResult") || path.includes("loan") || path.includes("mortgage") || title.includes("loan") || title.includes("mortgage")) return "loan";
+    if (document.getElementById("discountHistoryList") || document.getElementById("discountResult") || title.includes("discount")) return "discount";
+    if (document.getElementById("percentageHistoryList") || document.getElementById("percentageResult") || title.includes("percentage")) return "percentage";
+    if (document.getElementById("compoundHistoryList") || document.getElementById("compoundResult") || title.includes("compound")) return "compound";
+
+    return "";
+  }
+
+  function isReportType(type) {
+    return ["age", "bmi", "discount", "percentage", "compound"].includes(type);
+  }
+
+  function reportKey(type) {
+    return "calculatorReportHistory_" + type + "_" + REPORT_VERSION;
+  }
+
+  function loadReports(type) {
+    try {
+      const value = JSON.parse(localStorage.getItem(reportKey(type)) || "[]");
+      return Array.isArray(value) ? value : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveReports(type, reports) {
+    try {
+      localStorage.setItem(reportKey(type), JSON.stringify(reports.slice(-MAX_REPORTS)));
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function getHistoryList(type) {
+    const ids = {
+      age: "ageHistoryList",
+      bmi: "bmiHistoryList",
+      discount: "discountHistoryList",
+      percentage: "percentageHistoryList",
+      compound: "compoundHistoryList"
+    };
+
+    return document.getElementById(ids[type] || "");
+  }
+
+  function getInputLabel(input) {
+    if (!input) return "Input";
+
+    if (input.id) {
+      const label = document.querySelector('label[for="' + input.id + '"]');
+      if (label) return cleanText(label.textContent.replace(/[:：]/g, ""));
+    }
+
+    const previous = input.previousElementSibling;
+    if (previous && previous.tagName && previous.tagName.toLowerCase() === "label") {
+      return cleanText(previous.textContent.replace(/[:：]/g, ""));
+    }
+
+    return cleanText(input.getAttribute("aria-label") || input.placeholder || input.name || input.id || "Input");
+  }
+
+  function getInputValue(input) {
+    if (!input) return "";
+
+    if (input.tagName.toLowerCase() === "select") {
+      const option = input.options[input.selectedIndex];
+      return option ? cleanText(option.textContent) : cleanText(input.value);
+    }
+
+    return cleanText(input.value);
+  }
+
+  function getAllFilledInputs() {
+    const calculator = document.querySelector(".calculator");
+    if (!calculator) return [];
+
+    const lines = [];
+    const used = new Set();
+
+    calculator.querySelectorAll("input, select, textarea").forEach(function (input) {
+      if (!input) return;
+      if (input.type === "hidden" || input.type === "button" || input.type === "submit" || input.type === "reset") return;
+      if (input.id === "display") return;
+
+      const value = getInputValue(input);
+      if (!value) return;
+
+      const key = input.id || input.name || getInputLabel(input);
+      if (used.has(key)) return;
+      used.add(key);
+
+      lines.push({
+        label: getInputLabel(input),
+        value: value
+      });
+    });
+
+    return lines;
+  }
+
+  function visibleAndFilled(element) {
+    if (!element) return false;
+    if (element.hidden) return false;
+    if (element.style && element.style.display === "none") return false;
+    return cleanText(element.textContent) !== "";
+  }
+
+  function resultCandidates(type) {
+    const common = [
+      "universalLoanStyleOutput",
+      "result"
+    ];
+
+    const byType = {
+      age: ["stableBasicAgeOutput", "ageResult"],
+      bmi: ["stableBmiOutput", "bmiResult"],
+      discount: ["stableDiscountOutput", "discountResult"],
+      percentage: ["percentageResult"],
+      compound: ["compoundYearMatrixOutput", "compoundResult"]
+    };
+
+    return (byType[type] || []).concat(common);
+  }
+
+  function getResultElement(type) {
+    const ids = resultCandidates(type);
+
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (visibleAndFilled(el)) return el;
+    }
+
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (el && cleanText(el.textContent)) return el;
+    }
+
+    return null;
+  }
+
+  function cleanResultHtml(html) {
+    const template = document.createElement("template");
+    template.innerHTML = html;
+
+    template.content
+      .querySelectorAll("script, iframe, object, embed, link, meta, button")
+      .forEach(function (el) {
+        el.remove();
+      });
+
+    template.content.querySelectorAll("*").forEach(function (el) {
+      Array.from(el.attributes).forEach(function (attr) {
+        const name = attr.name.toLowerCase();
+        const value = String(attr.value || "").trim().toLowerCase();
+
+        if (name.startsWith("on") || value.startsWith("javascript:")) {
+          el.removeAttribute(attr.name);
+        }
+      });
+    });
+
+    return template.innerHTML;
+  }
+
+  function getResultHtml(type) {
+    const result = getResultElement(type);
+    if (!result) return "";
+
+    return cleanResultHtml(result.innerHTML || result.outerHTML || "");
+  }
+
+  function getResultText(type) {
+    const result = getResultElement(type);
+    return result ? cleanText(result.textContent) : "";
+  }
+
+  function tableRowsFromResult(type) {
+    const result = getResultElement(type);
+    if (!result) return [];
+
+    return Array.from(result.querySelectorAll("tr")).map(function (row) {
+      const cells = Array.from(row.querySelectorAll("th, td")).map(function (cell) {
+        return cleanText(cell.textContent);
+      });
+      return cells;
+    }).filter(function (cells) {
+      return cells.length >= 2;
+    });
+  }
+
+  function findValueInRows(type, pattern) {
+    const rows = tableRowsFromResult(type);
+
+    for (const cells of rows) {
+      const label = cells[0] || "";
+      const value = cells[cells.length - 1] || "";
+
+      if (pattern.test(label) && value) return value;
+    }
+
+    return "";
+  }
+
+  function findValueInText(type, pattern) {
+    const text = getResultText(type);
+    if (!text) return "";
+
+    const escaped = pattern.source.replace(/^\^|\$$/g, "");
+    const generic = new RegExp("(" + escaped + ")\\s*[:：]?\\s*([^|•\\n]+)", "i");
+    const match = text.match(generic);
+    return match ? cleanText(match[2]) : "";
+  }
+
+  function firstInputLineValue(pattern) {
+    const lines = getAllFilledInputs();
+    const found = lines.find(function (line) {
+      return pattern.test(line.label || "");
+    });
+    return found ? found.value : "";
+  }
+
+  function makeSummary(type) {
+    if (type === "age") {
+      const value = findValueInRows(type, /normal\s*age/i) || findValueInText(type, /normal\s*age/i);
+      return value ? "Normal age: " + value : "Age report";
+    }
+
+    if (type === "bmi") {
+      const value = findValueInRows(type, /^bmi$/i) || findValueInText(type, /bmi/i);
+      return value ? "BMI: " + value : "BMI report";
+    }
+
+    if (type === "discount") {
+      const value = findValueInRows(type, /final\s*price/i) || findValueInText(type, /final\s*price/i);
+      return value ? "Final price: " + value : "Discount report";
+    }
+
+    if (type === "percentage") {
+      const value = findValueInRows(type, /^result$/i) || findValueInText(type, /result/i);
+      return value ? "Result: " + value : "Percentage report";
+    }
+
+    if (type === "compound") {
+      const value =
+        findValueInRows(type, /future\s*value|final\s*amount|total\s*value/i) ||
+        findValueInText(type, /future\s*value|final\s*amount|total\s*value/i) ||
+        firstInputLineValue(/principal|amount/i);
+
+      return value ? "Future value: " + value : "Compound report";
+    }
+
+    return "Report";
+  }
+
+  function reportTitle(type) {
+    const titles = {
+      age: "Age Report",
+      bmi: "BMI Report",
+      discount: "Discount Report",
+      percentage: "Percentage Report",
+      compound: "Compound Interest Report"
+    };
+
+    return titles[type] || "Calculator Report";
+  }
+
+  function reportSignature(report) {
+    return JSON.stringify({
+      type: report.type,
+      inputs: report.inputLines || [],
+      result: report.resultText || ""
+    });
+  }
+
+  function saveCurrentReport(type) {
+    if (!isReportType(type)) return null;
+
+    const inputLines = getAllFilledInputs();
+    const resultHtml = getResultHtml(type);
+    const resultText = getResultText(type);
+
+    if (!inputLines.length || !resultHtml || !resultText) return null;
+    if (/please\s+enter\s+valid|select\s+your|must\s+be\s+after/i.test(resultText)) return null;
+
+    const report = {
+      id: type + "_report_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8),
+      type: type,
+      title: reportTitle(type),
+      createdAt: new Date().toLocaleString(),
+      summary: makeSummary(type),
+      inputLines: inputLines,
+      resultHtml: resultHtml,
+      resultText: resultText
+    };
+
+    const reports = loadReports(type);
+    const last = reports[reports.length - 1];
+
+    if (last && reportSignature(last) === reportSignature(report)) {
+      renderCalculatorReportHistory(type);
+      return last;
+    }
+
+    reports.push(report);
+    saveReports(type, reports);
+    renderCalculatorReportHistory(type);
+    return report;
+  }
+
+  function scheduleSave(type) {
+    if (!isReportType(type)) return;
+
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () {
+      saveCurrentReport(type);
+    }, 450);
+  }
+
+  function encodeBase64Url(text) {
+    const bytes = new TextEncoder().encode(text);
+    let binary = "";
+
+    bytes.forEach(function (byte) {
+      binary += String.fromCharCode(byte);
+    });
+
+    return btoa(binary)
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/g, "");
+  }
+
+  function decodeBase64Url(text) {
+    const normal = text.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normal + "===".slice((normal.length + 3) % 4);
+    const binary = atob(padded);
+    const bytes = new Uint8Array(binary.length);
+
+    for (let i = 0; i < binary.length; i += 1) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+
+    return new TextDecoder().decode(bytes);
+  }
+
+  function makeReportLink(report) {
+    return window.location.href.split("#")[0] + "#calculator-report=" + encodeBase64Url(JSON.stringify(report));
+  }
+
+  function renderCalculatorReportHistory(type) {
+    if (!isReportType(type)) return;
+    if (rendering) return;
+
+    const list = getHistoryList(type);
+    if (!list) return;
+
+    rendering = true;
+
+    const title =
+      document.querySelector("." + type + "-history-top h3") ||
+      document.querySelector("." + type + "-history-box h3");
+
+    if (title) title.textContent = "History";
+
+    list.innerHTML = "";
+
+    loadReports(type).slice().reverse().forEach(function (report) {
+      const li = document.createElement("li");
+      li.className = "history-item calculator-report-history-item";
+
+      const text = document.createElement("span");
+      text.className = "history-text";
+      text.textContent = report.summary || report.title || "Report";
+
+      const link = document.createElement("a");
+      link.className = "calculator-report-open-link";
+      link.textContent = "open report";
+      link.href = makeReportLink(report);
+      link.target = "_self";
+      link.rel = "noopener";
+
+      li.appendChild(text);
+      li.appendChild(link);
+      list.appendChild(li);
+    });
+
+    rendering = false;
+  }
+
+  window.renderCalculatorReportHistory = renderCalculatorReportHistory;
+
+  function clearReportHistory(type) {
+    if (!isReportType(type)) return;
+
+    try {
+      localStorage.removeItem(reportKey(type));
+      localStorage.removeItem("inputHistory_" + type);
+    } catch {
+      /* ignore */
+    }
+
+    renderCalculatorReportHistory(type);
+  }
+
+  function renderReportPage(report) {
+    if (!report || !Array.isArray(report.inputLines)) return;
+
+    document.body.classList.add("calculator-report-view");
+    document.body.classList.remove("pc-help-overlay-open");
+
+    document
+      .querySelectorAll(".calculator, .history, .age-history-box, .bmi-history-box, .discount-history-box, .percentage-history-box, .compound-history-box, .loan-history-box, .instruction-box, .pc-what-slot, #pcHelpQuestionButton, #pcQuestionOverlayButton")
+      .forEach(function (el) {
+        el.style.setProperty("display", "none", "important");
+      });
+
+    const old = document.getElementById("calculatorReportPage");
+    if (old) old.remove();
+
+    const rows = report.inputLines.map(function (line) {
+      return "<tr><td>" + escapeHtml(line.label) + "</td><td>" + escapeHtml(line.value) + "</td></tr>";
+    }).join("");
+
+    const section = document.createElement("section");
+    section.id = "calculatorReportPage";
+    section.className = "calculator-report-page";
+
+    section.innerHTML =
+      "<h1>" + escapeHtml(report.title || "Calculator Report") + "</h1>" +
+      '<p class="calculator-report-date"><strong>Generated:</strong> ' + escapeHtml(report.createdAt || "") + "</p>" +
+      '<div class="calculator-report-card">' +
+        "<h2>Inputs</h2>" +
+        '<div class="calculator-report-table-scroll">' +
+          '<table class="calculator-report-input-table"><tbody>' + rows + "</tbody></table>" +
+        "</div>" +
+      "</div>" +
+      '<div class="calculator-report-card">' +
+        "<h2>Result</h2>" +
+        '<div class="calculator-report-result">' + cleanResultHtml(report.resultHtml || "") + "</div>" +
+      "</div>" +
+      '<div class="calculator-report-actions">' +
+        '<a class="calculator-report-action-btn calculator-report-back-btn" href="' + escapeHtml(window.location.href.split("#")[0]) + '">Go back</a>' +
+        '<button type="button" class="calculator-report-action-btn calculator-report-copy-btn">Copy report</button>' +
+        '<button type="button" class="calculator-report-action-btn calculator-report-save-btn">Save report</button>' +
+        '<button type="button" class="calculator-report-action-btn calculator-report-share-btn">Share report</button>' +
+      "</div>";
+
+    const main = document.querySelector("main") || document.body;
+    main.insertAdjacentElement("afterbegin", section);
+
+    setupReportActions(section, report);
+  }
+
+  function reportPlainText(reportPage) {
+    return cleanText(reportPage.innerText || reportPage.textContent || "");
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function copyToClipboard(text, button) {
+    function done() {
+      if (!button) return;
+      const old = button.textContent;
+      button.textContent = "Copied!";
+      setTimeout(function () { button.textContent = old; }, 1200);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done).catch(function () {
+        fallbackCopy(text);
+        done();
+      });
+    } else {
+      fallbackCopy(text);
+      done();
+    }
+  }
+
+  function saveReportFile(reportPage, report, button) {
+    const html =
+      "<!DOCTYPE html>" +
+      '<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+      "<title>" + escapeHtml(report.title || "Calculator Report") + "</title>" +
+      "<style>body{background:#dfeeff;color:#000;font-family:'Comic Sans MS','Comic Neue',cursive,sans-serif;padding:24px}.report{max-width:1100px;margin:0 auto;padding:18px;background:#fff;border:5px solid #000;box-shadow:8px 8px 0 #000}h1,h2{text-align:center}table{width:100%;border-collapse:collapse;margin:16px 0}td,th{padding:10px;border:3px solid #000;text-align:left}</style>" +
+      "</head><body><div class=\"report\">" + reportPage.innerHTML + "</div></body></html>";
+
+    const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const date = new Date();
+    const fileDate = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
+
+    link.href = url;
+    link.download = (report.type || "calculator") + "-report-" + fileDate + ".html";
+    document.body.appendChild(link);
+    link.click();
+
+    setTimeout(function () {
+      URL.revokeObjectURL(url);
+      link.remove();
+    }, 500);
+
+    if (button) {
+      const old = button.textContent;
+      button.textContent = "Saved!";
+      setTimeout(function () { button.textContent = old; }, 1200);
+    }
+  }
+
+  function setupReportActions(section, report) {
+    const back = section.querySelector(".calculator-report-back-btn");
+    const copy = section.querySelector(".calculator-report-copy-btn");
+    const save = section.querySelector(".calculator-report-save-btn");
+    const share = section.querySelector(".calculator-report-share-btn");
+
+    if (back) {
+      back.addEventListener("click", function (event) {
+        event.preventDefault();
+        if (window.history.length > 1) window.history.back();
+        else window.location.href = window.location.href.split("#")[0];
+      });
+    }
+
+    if (copy) {
+      copy.addEventListener("click", function () {
+        copyToClipboard(reportPlainText(section), copy);
+      });
+    }
+
+    if (save) {
+      save.addEventListener("click", function () {
+        saveReportFile(section, report, save);
+      });
+    }
+
+    if (share) {
+      share.addEventListener("click", function () {
+        if (navigator.share) {
+          navigator.share({
+            title: report.title || "Calculator Report",
+            text: reportPlainText(section).slice(0, 500),
+            url: window.location.href
+          }).catch(function () {
+            copyToClipboard(window.location.href, share);
+          });
+        } else {
+          copyToClipboard(window.location.href, share);
+        }
+      });
+    }
+  }
+
+  function openReportFromHash() {
+    if (!window.location.hash.startsWith("#calculator-report=")) return false;
+
+    try {
+      const encoded = window.location.hash.replace("#calculator-report=", "");
+      const report = JSON.parse(decodeBase64Url(encoded));
+      renderReportPage(report);
+      return true;
+    } catch (error) {
+      console.error("Could not open calculator report:", error);
+      return false;
+    }
+  }
+
+  function installStyle() {
+    if (document.getElementById("calculatorReportHistoryStyle")) return;
+
+    const style = document.createElement("style");
+    style.id = "calculatorReportHistoryStyle";
+    style.textContent = `
+      .calculator-report-history-item {
+        grid-template-columns: 1fr auto !important;
+        align-items: center !important;
+      }
+
+      .calculator-report-open-link {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 6px 10px !important;
+        background: #d3fff9 !important;
+        color: var(--black) !important;
+        border: 3px solid var(--black) !important;
+        box-shadow: 3px 3px 0 var(--black) !important;
+        text-decoration: none !important;
+        font-weight: bold !important;
+        line-height: 1 !important;
+        white-space: nowrap !important;
+      }
+
+      .calculator-report-open-link:hover {
+        transform: translate(1px, 1px) !important;
+        box-shadow: 2px 2px 0 var(--black) !important;
+      }
+
+      .calculator-report-page {
+        width: min(1100px, 96vw) !important;
+        margin: 30px auto !important;
+        padding: 18px !important;
+        background: #fff !important;
+        color: var(--black) !important;
+        border: 5px solid var(--black) !important;
+        box-shadow: 8px 8px 0 var(--black) !important;
+        box-sizing: border-box !important;
+      }
+
+      .calculator-report-page h1,
+      .calculator-report-page h2,
+      .calculator-report-page h3 {
+        text-align: center !important;
+        margin-bottom: 12px !important;
+      }
+
+      .calculator-report-date {
+        text-align: center !important;
+        margin: 0 0 18px !important;
+        font-weight: bold !important;
+      }
+
+      .calculator-report-card {
+        margin: 18px 0 !important;
+        padding: 14px !important;
+        background: #f8f8f8 !important;
+        border: 4px solid var(--black) !important;
+        box-shadow: 5px 5px 0 var(--black) !important;
+      }
+
+      .calculator-report-table-scroll,
+      .calculator-report-result {
+        width: 100% !important;
+        overflow-x: auto !important;
+      }
+
+      .calculator-report-page table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+      }
+
+      .calculator-report-page th,
+      .calculator-report-page td {
+        padding: 10px !important;
+        border: 3px solid var(--black) !important;
+        text-align: left !important;
+      }
+
+      .calculator-report-actions {
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 14px !important;
+        margin-top: 24px !important;
+        padding-top: 18px !important;
+        border-top: 4px solid var(--black) !important;
+      }
+
+      .calculator-report-action-btn {
+        min-height: 54px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 10px 14px !important;
+        color: var(--black) !important;
+        border: 5px solid var(--black) !important;
+        box-shadow: 5px 5px 0 var(--black) !important;
+        font-family: inherit !important;
+        font-size: 18px !important;
+        font-weight: bold !important;
+        line-height: 1.1 !important;
+        text-align: center !important;
+        text-decoration: none !important;
+        cursor: pointer !important;
+        transition: 0.15s !important;
+      }
+
+      .calculator-report-action-btn:hover {
+        transform: translate(-3px, -3px) rotate(-1deg) !important;
+        box-shadow: 8px 8px 0 var(--black) !important;
+      }
+
+      .calculator-report-back-btn { background: #fff4b8 !important; }
+      .calculator-report-copy-btn { background: #ffd3d3 !important; }
+      .calculator-report-save-btn { background: #b8ffb8 !important; }
+      .calculator-report-share-btn { background: #d3fff9 !important; }
+
+      @media (max-width: 850px) {
+        .calculator-report-history-item {
+          grid-template-columns: 1fr !important;
+          gap: 8px !important;
+        }
+
+        .calculator-report-open-link {
+          width: 100% !important;
+        }
+
+        .calculator-report-actions {
+          grid-template-columns: 1fr !important;
+          gap: 12px !important;
+        }
+
+        .calculator-report-action-btn {
+          width: 100% !important;
+          min-height: 52px !important;
+          font-size: 16px !important;
+        }
+      }
+    `;
+
+    document.head.appendChild(style);
+  }
+
+  function setupEvents(type) {
+    document.addEventListener("input", function (event) {
+      if (getPageType() !== type) return;
+      if (!event.target.matches("input, select, textarea")) return;
+      if (!event.target.closest(".calculator")) return;
+      scheduleSave(type);
+    }, true);
+
+    document.addEventListener("change", function (event) {
+      if (getPageType() !== type) return;
+      if (!event.target.matches("input, select, textarea")) return;
+      if (!event.target.closest(".calculator")) return;
+      scheduleSave(type);
+    }, true);
+
+    document.addEventListener("click", function (event) {
+      if (getPageType() !== type) return;
+      const button = event.target.closest("button");
+      if (!button) return;
+
+      const text = cleanText(button.textContent).toLowerCase();
+      if (text.includes("clear")) {
+        setTimeout(function () { clearReportHistory(type); }, 0);
+        return;
+      }
+
+      if (text.includes("calculate")) {
+        setTimeout(function () { saveCurrentReport(type); }, 500);
+      }
+    }, true);
+  }
+
+  function start() {
+    installStyle();
+
+    if (openReportFromHash()) return;
+
+    const type = getPageType();
+    if (!isReportType(type)) return;
+
+    renderCalculatorReportHistory(type);
+    setupEvents(type);
+
+    setTimeout(function () { renderCalculatorReportHistory(type); }, 100);
+    setTimeout(function () { saveCurrentReport(type); }, 1000);
   }
 
   if (document.readyState === "loading") {
