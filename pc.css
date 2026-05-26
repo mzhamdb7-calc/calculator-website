@@ -4696,28 +4696,3 @@ body.loan-page .mortgage-report-back a {
     max-width: none !important;
   }
 }
-/* =====================================================
-   STOP PAGE LOAD FLICKER: Hide history boxes until ready
-===================================================== */
-body:not(.history-boxes-ready) .history,
-body:not(.history-boxes-ready) .age-history-box,
-body:not(.history-boxes-ready) .bmi-history-box,
-body:not(.history-boxes-ready) .discount-history-box,
-body:not(.history-boxes-ready) .loan-history-box,
-body:not(.history-boxes-ready) .percentage-history-box,
-body:not(.history-boxes-ready) .compound-history-box {
-  opacity: 0 !important;
-  visibility: hidden !important;
-}
-
-body.history-boxes-ready .history,
-body.history-boxes-ready .age-history-box,
-body.history-boxes-ready .bmi-history-box,
-body.history-boxes-ready .discount-history-box,
-body.history-boxes-ready .loan-history-box,
-body.history-boxes-ready .percentage-history-box,
-body.history-boxes-ready .compound-history-box {
-  opacity: 1 !important;
-  visibility: visible !important;
-  transition: opacity 0.15s ease !important;
-}

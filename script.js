@@ -383,7 +383,7 @@
     if (!historyList) return;
 
     const title = document.querySelector(".history h3");
-    if (title) title.textContent = "Input";
+    if (title) title.textContent = "History";
 
     calcHistory = safeLoadArray("basicEquationHistory");
     historyList.innerHTML = "";
@@ -1070,7 +1070,7 @@
       result.style.display = "none";
     }
 
-    addInputHistory();
+    /* Mortgage history is handled by the final report system. */
     renderLoanExternalOutput(amount, annualRate, years);
   }
 
@@ -1633,7 +1633,7 @@
             result system for Age, because that is what brought back the
             old "Birthdate / Date to calculate" result.
           */
-          if (type !== "basic" && type !== "age" && type !== "bmi") {
+          if (type !== "basic" && type !== "age" && type !== "bmi" && type !== "loan") {
             addInputHistory(type);
           }
 
@@ -1654,7 +1654,7 @@
       setTimeout(function () {
         const type = getPageType();
 
-        if (type !== "basic" && type !== "age" && type !== "bmi") {
+        if (type !== "basic" && type !== "age" && type !== "bmi" && type !== "loan") {
           addInputHistory(type);
         }
 
@@ -1699,8 +1699,13 @@
       hideOldAgePanels();
     }
 
-    if (getPageType() === "basic") showHistory();
-    else renderInputHistory(getPageType());
+    const pageType = getPageType();
+
+    if (pageType === "basic") {
+      showHistory();
+    } else if (pageType !== "loan" && pageType !== "bmi") {
+      renderInputHistory(pageType);
+    }
 
     setTimeout(renderUniversalLoanStyleResult, 250);
   }
@@ -2622,52 +2627,6 @@
   }
 })();
 /* =====================================================
-   ALL CALCULATOR PAGES: History title -> Input
-===================================================== */
-(function () {
-  "use strict";
-
-  function renameHistoryToInput() {
-    const titles = document.querySelectorAll(
-      ".history h3, " +
-      ".age-history-box h3, " +
-      ".bmi-history-box h3, " +
-      ".loan-history-box h3, " +
-      ".discount-history-box h3, " +
-      ".percentage-history-box h3, " +
-      ".compound-history-box h3"
-    );
-
-    titles.forEach(function (title) {
-      if (title.textContent.trim().toLowerCase() === "history") {
-        title.textContent = "Input";
-      }
-    });
-  }
-
-  function start() {
-    renameHistoryToInput();
-
-    setTimeout(renameHistoryToInput, 300);
-    setTimeout(renameHistoryToInput, 900);
-    setTimeout(renameHistoryToInput, 1500);
-
-    document.addEventListener("click", function () {
-      setTimeout(renameHistoryToInput, 0);
-      setTimeout(renameHistoryToInput, 200);
-    });
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
-})();
-/* Removed old BMI overlay block: BMI CALCULATOR: MORE DETAILED RESULT Adds: - BMI - BMI status - Asian BMI status - Healthy weight range - Weight differe */
-/* Removed old BMI overlay block: BMI CALCULATOR: KIDS / ADULT / OLDER / MEN / WOMEN / ASIAN Adds: - Age group selector - Sex selector - Asian / non-Asian */
-/* Removed old BMI overlay block: BMI CALCULATOR: INCLUDE USER PROFILE IN INPUT HISTORY Adds age group, sex, and Asian/non-Asian cut-off to BMI input box */
-/* =====================================================
    BASIC CALCULATOR: REMOVE BOTTOM RESULT BOX
    - Removes bottom result panel
    - Removes side copy button
@@ -2857,7 +2816,7 @@
 
     const title = document.querySelector(".history h3");
     if (title) {
-      title.textContent = "Input";
+      title.textContent = "History";
     }
 
     const history = loadBasicHistory();
@@ -4034,7 +3993,7 @@
       document.querySelector(".loan-history-box h3");
 
     if (title) {
-      title.textContent = "Input";
+      title.textContent = "History";
     }
 
     const history = loadLoanHistory();
@@ -8376,7 +8335,7 @@
       document.querySelector(".bmi-history-top h3") ||
       document.querySelector(".bmi-history-box h3");
 
-    if (title) title.textContent = "Input";
+    if (title) title.textContent = "History";
 
     list.innerHTML = "";
 
@@ -9424,7 +9383,7 @@
       document.querySelector(".loan-history-box .loan-history-top h3") ||
       document.querySelector(".loan-history-box h3");
 
-    if (title) title.textContent = "Report";
+    if (title) title.textContent = "History";
 
     list.innerHTML = "";
 
@@ -9908,63 +9867,6 @@
   }
 })();
 /* =====================================================
-   ALL PAGES: Rename history box title to History
-===================================================== */
-(function () {
-  "use strict";
-
-  function renameHistoryTitle() {
-    document
-      .querySelectorAll(
-        ".history h3, " +
-        ".history-top h3, " +
-        ".age-history-box h3, " +
-        ".age-history-top h3, " +
-        ".bmi-history-box h3, " +
-        ".bmi-history-top h3, " +
-        ".discount-history-box h3, " +
-        ".discount-history-top h3, " +
-        ".loan-history-box h3, " +
-        ".loan-history-top h3, " +
-        ".percentage-history-box h3, " +
-        ".percentage-history-top h3, " +
-        ".compound-history-box h3, " +
-        ".compound-history-top h3"
-      )
-      .forEach(function (title) {
-        title.textContent = "History";
-      });
-  }
-
-  function start() {
-    renameHistoryTitle();
-
-    setTimeout(renameHistoryTitle, 100);
-    setTimeout(renameHistoryTitle, 500);
-    setTimeout(renameHistoryTitle, 1000);
-    setTimeout(renameHistoryTitle, 2000);
-
-    document.addEventListener("input", function () {
-      setTimeout(renameHistoryTitle, 100);
-    }, true);
-
-    document.addEventListener("change", function () {
-      setTimeout(renameHistoryTitle, 100);
-    }, true);
-
-    document.addEventListener("click", function () {
-      setTimeout(renameHistoryTitle, 100);
-      setTimeout(renameHistoryTitle, 500);
-    }, true);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
-})();
-/* =====================================================
    MORTGAGE REPORT: Summary boxes side by side
    - Monthly payment
    - Total interest
@@ -10437,168 +10339,6 @@
   }
 })();
 /* =====================================================
-   REPAIR: Safe page class + hide calculate buttons only
-   - Fixes pages incorrectly becoming mortgage
-   - Keeps one auto-calculate system only
-   - Does not touch Basic calculator keypad
-===================================================== */
-(function () {
-  "use strict";
-
-  const PAGE_CLASSES = [
-    "basic-page",
-    "age-page",
-    "bmi-page",
-    "loan-page",
-    "discount-page",
-    "percentage-page",
-    "compound-page"
-  ];
-
-  function cleanText(value) {
-    return String(value || "").replace(/\s+/g, " ").trim().toLowerCase();
-  }
-
-  function has(id) {
-    return !!document.getElementById(id);
-  }
-
-  function titleText() {
-    const h1 = document.querySelector("h1");
-    return cleanText(h1 ? h1.textContent : "");
-  }
-
-  function pathText() {
-    return cleanText(window.location.pathname);
-  }
-
-  function detectActualPage() {
-    const title = titleText();
-    const path = pathText();
-
-    if (has("display") || document.querySelector(".basic-grid") || document.querySelector(".scientific-grid") || title.includes("basic")) {
-      return "basic";
-    }
-
-    if (has("birthdate") || has("ageResult") || title.includes("age")) {
-      return "age";
-    }
-
-    if (has("bmiResult") || title.includes("bmi") || (has("weight") && has("height") && has("waist"))) {
-      return "bmi";
-    }
-
-    if (has("loanResult") || has("loanExternalOutput") || has("loanHistoryList") || title.includes("mortgage") || title.includes("loan") || path.includes("mortgage") || path.includes("loan-calculator")) {
-      return "loan";
-    }
-
-    if (has("discountResult") || title.includes("discount")) {
-      return "discount";
-    }
-
-    if (has("percentageResult") || title.includes("percentage")) {
-      return "percentage";
-    }
-
-    if (has("compoundResult") || title.includes("compound")) {
-      return "compound";
-    }
-
-    return "";
-  }
-
-  function repairPageClass() {
-    const type = detectActualPage();
-    if (!type) return;
-
-    PAGE_CLASSES.forEach(function (className) {
-      document.body.classList.remove(className);
-    });
-
-    document.body.classList.add(type + "-page");
-    document.body.dataset.page = type;
-  }
-
-  function isBasicPage() {
-    return detectActualPage() === "basic";
-  }
-
-  function isCalculateButton(button) {
-    if (!button) return false;
-    if (button.closest("#navbar")) return false;
-    if (button.closest(".history, .age-history-box, .bmi-history-box, .discount-history-box, .loan-history-box, .percentage-history-box, .compound-history-box")) return false;
-    if (button.closest(".mortgage-report-actions")) return false;
-
-    const txt = cleanText(button.textContent);
-    const onclick = String(button.getAttribute("onclick") || "").toLowerCase();
-    const id = String(button.id || "").toLowerCase();
-
-    if (!txt && !onclick && !id) return false;
-
-    if (id === "unitToggleBtn".toLowerCase()) return false;
-    if (txt.includes("clear")) return false;
-    if (txt.includes("copy")) return false;
-    if (txt.includes("save")) return false;
-    if (txt.includes("share")) return false;
-    if (txt.includes("back")) return false;
-    if (txt.includes("optional")) return false;
-    if (txt.includes("settlement")) return false;
-
-    return (
-      txt.includes("calculate") ||
-      onclick.includes("calculateage") ||
-      onclick.includes("calculatebmi") ||
-      onclick.includes("calculateloan") ||
-      onclick.includes("calculatediscount") ||
-      onclick.includes("calculatepercentage") ||
-      onclick.includes("calculatecompound") ||
-      id.includes("calculate")
-    );
-  }
-
-  function hideCalculateButtons() {
-    repairPageClass();
-
-    if (isBasicPage()) return;
-
-    document.querySelectorAll(".calculator button, main button").forEach(function (button) {
-      if (!isCalculateButton(button)) return;
-
-      button.style.setProperty("display", "none", "important");
-      button.setAttribute("aria-hidden", "true");
-      button.tabIndex = -1;
-    });
-  }
-
-  function startRepair() {
-    repairPageClass();
-    hideCalculateButtons();
-
-    setTimeout(hideCalculateButtons, 100);
-    setTimeout(hideCalculateButtons, 500);
-    setTimeout(hideCalculateButtons, 1200);
-
-    document.addEventListener("input", function () {
-      setTimeout(hideCalculateButtons, 0);
-    }, true);
-
-    document.addEventListener("change", function () {
-      setTimeout(hideCalculateButtons, 0);
-    }, true);
-
-    document.addEventListener("click", function () {
-      setTimeout(hideCalculateButtons, 0);
-      setTimeout(hideCalculateButtons, 250);
-    }, true);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startRepair);
-  } else {
-    startRepair();
-  }
-})();
-/* =====================================================
    MORTGAGE: Put Optional costs beside Early settlement
    - PC: side by side
    - Phone: stacked
@@ -10692,140 +10432,91 @@
     start();
   }
 })();
+
 /* =====================================================
-   MORTGAGE ONLY: Stable optional boxes side by side
-   - Safer page detection
-   - No MutationObserver
-   - Does not affect other calculator pages
+   FINAL CLEANUP: Stable page class + hide calculate buttons
+   - Runs once on load only
+   - Does not rewrite history/result boxes
+   - Prevents non-mortgage pages from inheriting loan-page
 ===================================================== */
 (function () {
   "use strict";
 
-  function text(el) {
-    return String(el ? el.textContent || "" : "")
-      .replace(/\s+/g, " ")
-      .trim()
-      .toLowerCase();
+  const PAGE_CLASSES = [
+    "basic-page",
+    "age-page",
+    "bmi-page",
+    "loan-page",
+    "discount-page",
+    "percentage-page",
+    "compound-page"
+  ];
+
+  function clean(value) {
+    return String(value || "").replace(/\s+/g, " ").trim().toLowerCase();
   }
 
-  function isRealMortgagePage() {
-    const title = text(document.querySelector("h1"));
-    const path = window.location.pathname.toLowerCase();
-
-    return (
-      path.includes("loan-calculator") ||
-      path.includes("mortgage") ||
-      title.includes("mortgage") ||
-      title.includes("loan calculator") ||
-      !!document.getElementById("loanResult") ||
-      !!document.getElementById("loanHistoryList") ||
-      !!document.getElementById("loanExternalOutput")
-    );
+  function has(id) {
+    return !!document.getElementById(id);
   }
 
-  function groupMortgageOptionalBoxes() {
-    if (!isRealMortgagePage()) return;
+  function detectPage() {
+    const title = clean(document.querySelector("h1") ? document.querySelector("h1").textContent : "");
+    const path = clean(window.location.pathname);
 
-    const calculator = document.querySelector(".calculator");
-    const optionalCostBox = document.querySelector(".optional-mortgage-costs");
-    const earlySettlementBox = document.querySelector(".early-settlement-box");
+    if (has("display") || document.querySelector(".basic-grid") || document.querySelector(".scientific-grid") || title.includes("basic")) return "basic";
+    if (has("birthdate") || has("ageResult") || title.includes("age")) return "age";
+    if (has("bmiResult") || title.includes("bmi") || (has("weight") && has("height") && has("waist"))) return "bmi";
+    if (has("loanResult") || has("loanHistoryList") || has("loanExternalOutput") || title.includes("mortgage") || title.includes("loan") || path.includes("loan-calculator") || path.includes("mortgage")) return "loan";
+    if (has("discountResult") || title.includes("discount")) return "discount";
+    if (has("percentageResult") || title.includes("percentage")) return "percentage";
+    if (has("compoundResult") || title.includes("compound")) return "compound";
 
-    if (!calculator || !optionalCostBox || !earlySettlementBox) return;
-
-    let row = document.querySelector(".loan-optional-row");
-
-    if (!row) {
-      row = document.createElement("div");
-      row.className = "loan-optional-row";
-
-      optionalCostBox.insertAdjacentElement("beforebegin", row);
-    }
-
-    if (!row.contains(optionalCostBox)) {
-      row.appendChild(optionalCostBox);
-    }
-
-    if (!row.contains(earlySettlementBox)) {
-      row.appendChild(earlySettlementBox);
-    }
+    return "";
   }
 
-  function cleanWrongLoanClassOnOtherPages() {
-    if (isRealMortgagePage()) return;
+  function applyPageClass() {
+    const type = detectPage();
+    if (!type) return;
 
-    document.body.classList.remove("loan-page");
+    PAGE_CLASSES.forEach(function (name) {
+      document.body.classList.remove(name);
+    });
 
-    if (document.body.dataset.page === "loan") {
-      delete document.body.dataset.page;
-    }
+    document.body.classList.add(type + "-page");
+    document.body.dataset.page = type;
   }
 
-  function start() {
-    cleanWrongLoanClassOnOtherPages();
+  function isCalculateButton(button) {
+    if (!button) return false;
+    if (button.closest("#navbar")) return false;
+    if (button.closest(".history, .age-history-box, .bmi-history-box, .discount-history-box, .loan-history-box, .percentage-history-box, .compound-history-box")) return false;
+    if (button.closest(".mortgage-report-actions")) return false;
 
-    if (!isRealMortgagePage()) return;
+    const text = clean(button.textContent);
+    const onclick = clean(button.getAttribute("onclick"));
+    const id = clean(button.id);
 
-    document.body.classList.add("loan-page");
-    document.body.dataset.page = "loan";
+    if (id === "unitToggleBtn".toLowerCase()) return false;
+    if (text.includes("clear") || text.includes("copy") || text.includes("save") || text.includes("share") || text.includes("back") || text.includes("optional") || text.includes("settlement")) return false;
 
-    groupMortgageOptionalBoxes();
-
-    setTimeout(groupMortgageOptionalBoxes, 200);
-    setTimeout(groupMortgageOptionalBoxes, 700);
-    setTimeout(groupMortgageOptionalBoxes, 1300);
+    return text.includes("calculate") || onclick.includes("calculate") || id.includes("calculate");
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
-})();
-/* =====================================================
-   STOP PAGE LOAD FLICKER: Reveal history boxes after scripts settle
-   - Prevents user seeing "Input" render then "History" render
-   - Visual fix only, safe for all calculator pages
-===================================================== */
-(function () {
-  "use strict";
+  function hideCalculateButtons() {
+    if (detectPage() === "basic") return;
 
-  function renameHistoryTitle() {
-    document
-      .querySelectorAll(
-        ".history h3, " +
-        ".history-top h3, " +
-        ".age-history-box h3, " +
-        ".age-history-top h3, " +
-        ".bmi-history-box h3, " +
-        ".bmi-history-top h3, " +
-        ".discount-history-box h3, " +
-        ".discount-history-top h3, " +
-        ".loan-history-box h3, " +
-        ".loan-history-top h3, " +
-        ".percentage-history-box h3, " +
-        ".percentage-history-top h3, " +
-        ".compound-history-box h3, " +
-        ".compound-history-top h3"
-      )
-      .forEach(function (title) {
-        title.textContent = "History";
-      });
-  }
-
-  function revealHistoryBoxes() {
-    renameHistoryTitle();
-    document.body.classList.add("history-boxes-ready");
+    document.querySelectorAll(".calculator button, main button").forEach(function (button) {
+      if (!isCalculateButton(button)) return;
+      button.style.setProperty("display", "none", "important");
+      button.setAttribute("aria-hidden", "true");
+      button.tabIndex = -1;
+    });
   }
 
   function start() {
-    document.body.classList.remove("history-boxes-ready");
-
-    /*
-      Let old renderInputHistory / old setTimeout history scripts finish first.
-    */
-    setTimeout(renameHistoryTitle, 300);
-    setTimeout(renameHistoryTitle, 700);
-    setTimeout(revealHistoryBoxes, 950);
+    applyPageClass();
+    hideCalculateButtons();
   }
 
   if (document.readyState === "loading") {
