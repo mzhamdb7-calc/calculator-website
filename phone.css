@@ -824,3 +824,26 @@
     box-sizing: border-box !important;
   }
 }
+
+
+/* =====================================================
+   INDEX: Make Health/Finance dropdown links clickable
+===================================================== */
+body.index-page .calculator-box .group-card,
+body.index-page .calculator-box .group-card > .group-links,
+body.index-page .calculator-box .group-card > .group-links *,
+body.index-page .calculator-box .group-links.index-card-dropdown-enhanced,
+body.index-page .calculator-box .group-links.index-card-dropdown-enhanced *,
+body.index-page .calculator-box .group-links.index-card-dropdown-enhanced a {
+  pointer-events: auto !important;
+}
+
+body.index-page .calculator-box .group-links.index-card-dropdown-enhanced {
+  z-index: 999999 !important;
+}
+
+body.index-page .calculator-box .group-links.index-card-dropdown-enhanced a {
+  cursor: pointer !important;
+  position: relative !important;
+  z-index: 1000000 !important;
+}

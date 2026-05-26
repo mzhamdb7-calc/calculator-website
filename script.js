@@ -3470,3 +3470,40 @@
     start();
   }
 })();
+
+
+/* =====================================================
+   INDEX: Fix Health/Finance card dropdown links
+   - Forces dropdown items to navigate when clicked
+   - Keeps ctrl/cmd/middle-click behavior for new tabs
+===================================================== */
+(function () {
+  "use strict";
+
+  function isIndexDropdownLink(target) {
+    return target && target.closest && target.closest("body.index-page .calculator-box .group-card .group-links a");
+  }
+
+  document.addEventListener(
+    "click",
+    function (event) {
+      const link = isIndexDropdownLink(event.target);
+      if (!link) return;
+
+      const href = link.getAttribute("href");
+      if (!href || href === "#") return;
+
+      /* Allow normal browser new-tab shortcuts. */
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button === 1) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+
+      window.location.href = href;
+    },
+    true
+  );
+})();
