@@ -9896,3 +9896,227 @@
     start();
   }
 })();
+/* =====================================================
+   MORTGAGE: Fix history report matching
+   - Matches reports by amount + interest + term
+   - Shows only loan amount in history
+   - Keeps open report link
+   - Old entries without saved result table cannot recover optional costs
+===================================================== */
+(function () {
+  "use strict";
+
+  const HISTORY_KEY = "inputHistory_loan";
+  const REPORT_KEY = "mortgageHistoryReports_v1";
+
+  function isLoanPage() {
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      window.location.pathname.includes("loan-calculator") ||
+      !!document.getElementById("loanHistoryList")
+    );
+  }
+
+  function loadArray(key) {
+    try {
+      const value = JSON.parse(localStorage.getItem(key) || "[]");
+      return Array.isArray(value) ? value : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function cleanText(value) {
+    return String(value || "").replace(/\s+/g, " ").trim();
+  }
+
+  function onlyNumber(value) {
+    const number = Number(String(value || "").replace(/[^\d.-]/g, ""));
+
+    if (!Number.isFinite(number)) return "";
+
+    return String(Math.round(number * 1000000) / 1000000);
+  }
+
+  function parseHistoryText(text) {
+    text = cleanText(text);
+
+    const amountMatch = text.match(/(?:loan amount|purchase price|amount)\s*[:：]?\s*RM?\s*([\d,.\s]+)/i);
+    const rateMatch = text.match(/(?:annual interest rate|interest rate|rate)\s*[:：]?\s*([\d,.]+)/i);
+    const termMatch = text.match(/(?:loan term in months|loan term|years|term)\s*[:：]?\s*([\d,.]+)/i);
+
+    return {
+      amount: amountMatch ? onlyNumber(amountMatch[1]) : "",
+      rate: rateMatch ? onlyNumber(rateMatch[1]) : "",
+      term: termMatch ? onlyNumber(termMatch[1]) : ""
+    };
+  }
+
+  function parseReport(report) {
+    const lines = Array.isArray(report.inputLines) ? report.inputLines : [];
+
+    function findValue(pattern) {
+      const line = lines.find(function (item) {
+        return pattern.test(String(item.label || ""));
+      });
+
+      return line ? onlyNumber(line.value) : "";
+    }
+
+    return {
+      amount: findValue(/loan amount|purchase price|amount/i),
+      rate: findValue(/annual interest rate|interest rate|rate/i),
+      term: findValue(/loan term|term|years|months/i)
+    };
+  }
+
+  function sameSignature(a, b) {
+    return (
+      a &&
+      b &&
+      a.amount &&
+      b.amount &&
+      a.rate &&
+      b.rate &&
+      a.term &&
+      b.term &&
+      a.amount === b.amount &&
+      a.rate === b.rate &&
+      a.term === b.term
+    );
+  }
+
+  function formatLoanAmount(value) {
+    const number = Number(String(value || "").replace(/[^\d.-]/g, ""));
+
+    if (!Number.isFinite(number) || number <= 0) {
+      return value || "-";
+    }
+
+    return "RM " + number.toLocaleString("en-MY", {
+      maximumFractionDigits: 2
+    });
+  }
+
+  function encodeBase64Url(text) {
+    const bytes = new TextEncoder().encode(text);
+    let binary = "";
+
+    bytes.forEach(function (byte) {
+      binary += String.fromCharCode(byte);
+    });
+
+    return btoa(binary)
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/g, "");
+  }
+
+  function makeReportLink(report) {
+    const cleanUrl = window.location.href.split("#")[0];
+    const data = encodeBase64Url(JSON.stringify(report));
+
+    return cleanUrl + "#mortgage-report=" + data;
+  }
+
+  function findReportForHistory(originalHistoryText) {
+    const reports = loadArray(REPORT_KEY).slice().reverse();
+    const historySignature = parseHistoryText(originalHistoryText);
+
+    return reports.find(function (report) {
+      const reportSignature = parseReport(report);
+
+      return sameSignature(historySignature, reportSignature);
+    });
+  }
+
+  function fixMortgageHistoryReports() {
+    if (!isLoanPage()) return;
+
+    const list = document.getElementById("loanHistoryList");
+    if (!list) return;
+
+    const storedHistory = loadArray(HISTORY_KEY).slice().reverse();
+    const items = Array.from(list.querySelectorAll(".history-item"));
+
+    items.forEach(function (item, index) {
+      const textEl = item.querySelector(".history-text");
+      if (!textEl) return;
+
+      const originalHistoryText =
+        item.dataset.fullMortgageHistory ||
+        storedHistory[index] ||
+        textEl.textContent;
+
+      item.dataset.fullMortgageHistory = originalHistoryText;
+
+      const historySignature = parseHistoryText(originalHistoryText);
+      const report = findReportForHistory(originalHistoryText);
+
+      if (historySignature.amount) {
+        textEl.textContent = "Loan amount: " + formatLoanAmount(historySignature.amount);
+      }
+
+      let oldLink = item.querySelector(".mortgage-report-link");
+
+      if (!report) {
+        if (oldLink) oldLink.remove();
+        return;
+      }
+
+      if (!oldLink) {
+        oldLink = document.createElement("a");
+        oldLink.className = "mortgage-report-link";
+        oldLink.textContent = "open report";
+        oldLink.target = "_blank";
+        oldLink.rel = "noopener";
+        item.appendChild(oldLink);
+      }
+
+      oldLink.href = makeReportLink(report);
+    });
+  }
+
+  function start() {
+    fixMortgageHistoryReports();
+
+    setTimeout(fixMortgageHistoryReports, 300);
+    setTimeout(fixMortgageHistoryReports, 800);
+    setTimeout(fixMortgageHistoryReports, 1500);
+    setTimeout(fixMortgageHistoryReports, 3000);
+
+    document.addEventListener("input", function () {
+      setTimeout(fixMortgageHistoryReports, 900);
+    }, true);
+
+    document.addEventListener("change", function () {
+      setTimeout(fixMortgageHistoryReports, 900);
+    }, true);
+
+    document.addEventListener("click", function () {
+      setTimeout(fixMortgageHistoryReports, 300);
+      setTimeout(fixMortgageHistoryReports, 1000);
+    }, true);
+
+    const list = document.getElementById("loanHistoryList");
+
+    if (list) {
+      const observer = new MutationObserver(function () {
+        setTimeout(fixMortgageHistoryReports, 100);
+        setTimeout(fixMortgageHistoryReports, 700);
+      });
+
+      observer.observe(list, {
+        childList: true,
+        subtree: true
+      });
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
