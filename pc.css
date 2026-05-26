@@ -4998,3 +4998,112 @@ body.loan-page .mortgage-report-back a {
     width: min(1180px, 94vw) !important;
   }
 }
+
+
+/* =====================================================
+   PC INDEX UPDATE: compact side-by-side cards + dropdown size fix
+===================================================== */
+@media (min-width: 851px) {
+  body.index-page .calculator-box {
+    width: min(980px, 94vw) !important;
+    max-width: 980px !important;
+    margin: 120px auto 44px !important;
+    padding: 22px !important;
+  }
+
+  body.index-page .calculator-box h1 {
+    font-size: 34px !important;
+    line-height: 1.1 !important;
+    margin-bottom: 18px !important;
+  }
+
+  body.index-page .calculator-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+    align-items: start !important;
+    overflow: visible !important;
+  }
+
+  body.index-page .calculator-grid > .card,
+  body.index-page .calculator-grid > .group-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 86px !important;
+    min-height: 86px !important;
+    padding: 8px !important;
+    border-width: 4px !important;
+    box-shadow: 4px 4px 0 var(--black) !important;
+    font-size: clamp(17px, 1.65vw, 23px) !important;
+    box-sizing: border-box !important;
+  }
+
+  body.index-page .calculator-grid > .group-card {
+    padding: 0 !important;
+  }
+
+  body.index-page .calculator-grid > .group-card > summary {
+    height: 86px !important;
+    padding: 8px !important;
+    font-size: clamp(17px, 1.65vw, 23px) !important;
+    box-sizing: border-box !important;
+  }
+
+  body.index-page .calculator-grid > .group-card > summary::after {
+    font-size: 15px !important;
+    margin-left: 5px !important;
+  }
+
+  body.index-page .calculator-box .group-card > .group-links {
+    top: calc(100% + 6px) !important;
+    left: 0 !important;
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+    gap: 8px !important;
+  }
+
+  body.index-page .calculator-box .group-link-column {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  body.index-page .calculator-box .finance-card .group-link-column,
+  body.index-page .calculator-box .health-card .group-link-column {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+
+  body.index-page .calculator-box .finance-card > .group-links {
+    grid-template-rows: none !important;
+    grid-auto-flow: unset !important;
+    grid-auto-columns: unset !important;
+  }
+
+  body.index-page .calculator-box .group-link-column a {
+    height: 50px !important;
+    min-height: 50px !important;
+    padding: 0 10px !important;
+    font-size: 18px !important;
+    line-height: 1.05 !important;
+  }
+
+  body.index-page .live-abacus-section {
+    width: min(980px, 94vw) !important;
+    margin: 0 auto 76px !important;
+    padding: 0 !important;
+  }
+
+  body.index-page .live-abacus-card {
+    padding: 22px !important;
+  }
+
+  body.index-page .live-abacus {
+    grid-template-columns: repeat(6, minmax(64px, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  body.index-page .abacus-rod {
+    height: 288px !important;
+  }
+}
