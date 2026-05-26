@@ -1723,14 +1723,100 @@
     );
   }
 
+  function ageReportFlowHtml(rows) {
+    rows = Array.isArray(rows) ? rows : [];
+
+    const groups = [
+      {
+        title: "Birth & calendar",
+        note: "Where the age calculation starts.",
+        match: /date range|day of week born|born date in islamic|born date in chinese/i
+      },
+      {
+        title: "Current age",
+        note: "Main age values for the selected date.",
+        match: /exact age|normal age|asian age|age in .* year/i
+      },
+      {
+        title: "Birthday & milestones",
+        note: "Upcoming birthday and important age milestones.",
+        match: /next birthday countdown|retirement|legal age|leap year age/i
+      },
+      {
+        title: "Zodiac profile",
+        note: "Western and Chinese zodiac details.",
+        match: /western zodiac|chinese zodiac/i
+      },
+      {
+        title: "Life time summary",
+        note: "Estimated time already lived and slept.",
+        match: /days spent alive|estimated sleep time/i
+      },
+      {
+        title: "Space & moon view",
+        note: "Age translated into planet years and moon cycles.",
+        match: /age on other planets|moon cycles experienced/i
+      }
+    ];
+
+    const used = new Set();
+
+    function rowsForGroup(group) {
+      return rows.filter(function (row, index) {
+        if (!row || used.has(index)) return false;
+        const label = String(row.label || "");
+        if (!group.match.test(label)) return false;
+        used.add(index);
+        return true;
+      });
+    }
+
+    function makeStep(group, groupRows, index) {
+      if (!groupRows.length) return "";
+
+      return (
+        '<section class="age-report-flow-step">' +
+          '<div class="age-report-flow-number">' + (index + 1) + '</div>' +
+          '<div class="age-report-flow-content">' +
+            '<h3>' + escapeHtml(group.title) + '</h3>' +
+            '<p>' + escapeHtml(group.note) + '</p>' +
+            '<div class="calculator-report-table-scroll">' +
+              '<table class="age-report-flow-table">' +
+                '<tbody>' + tableRows(groupRows) + '</tbody>' +
+              '</table>' +
+            '</div>' +
+          '</div>' +
+        '</section>'
+      );
+    }
+
+    let html = groups.map(function (group, index) {
+      return makeStep(group, rowsForGroup(group), index);
+    }).join("");
+
+    const remaining = rows.filter(function (row, index) {
+      return row && !used.has(index);
+    });
+
+    if (remaining.length) {
+      html += makeStep({
+        title: "Other details",
+        note: "Additional age information.",
+        match: /.*/
+      }, remaining, groups.length);
+    }
+
+    return '<div class="age-report-flow">' + html + '</div>';
+  }
+
   function reportResultHtml(report) {
     if (report && report.type === "age") {
       if (Array.isArray(report.resultLines) && report.resultLines.length) {
-        return resultRowsToTable(report.resultLines);
+        return ageReportFlowHtml(report.resultLines);
       }
 
       if (report.metrics && Array.isArray(report.metrics.resultRows) && report.metrics.resultRows.length) {
-        return resultRowsToTable(report.metrics.resultRows);
+        return ageReportFlowHtml(report.metrics.resultRows);
       }
     }
 
@@ -2399,6 +2485,82 @@
         display: none !important;
         visibility: hidden !important;
         pointer-events: none !important;
+      }
+
+      .age-report-flow {
+        display: grid !important;
+        gap: 18px !important;
+        margin: 4px 0 0 !important;
+      }
+
+      .age-report-flow-step {
+        position: relative !important;
+        display: grid !important;
+        grid-template-columns: 58px 1fr !important;
+        gap: 14px !important;
+        align-items: stretch !important;
+      }
+
+      .age-report-flow-step:not(:last-child)::after {
+        content: "↓" !important;
+        position: absolute !important;
+        left: 18px !important;
+        bottom: -19px !important;
+        width: 36px !important;
+        height: 24px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 22px !important;
+        font-weight: bold !important;
+        color: var(--black, #000) !important;
+        z-index: 2 !important;
+      }
+
+      .age-report-flow-number {
+        width: 50px !important;
+        height: 50px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: #fff4b8 !important;
+        border: 5px solid var(--black, #000) !important;
+        box-shadow: 4px 4px 0 var(--black, #000) !important;
+        font-size: 22px !important;
+        font-weight: bold !important;
+        box-sizing: border-box !important;
+      }
+
+      .age-report-flow-content {
+        min-width: 0 !important;
+        padding: 14px !important;
+        background: #fff !important;
+        border: 4px solid var(--black, #000) !important;
+        box-shadow: 5px 5px 0 var(--black, #000) !important;
+        box-sizing: border-box !important;
+      }
+
+      .age-report-flow-content h3 {
+        margin: 0 0 6px !important;
+        text-align: left !important;
+        font-size: 20px !important;
+        line-height: 1.2 !important;
+      }
+
+      .age-report-flow-content p {
+        margin: 0 0 12px !important;
+        font-weight: bold !important;
+        opacity: 0.85 !important;
+      }
+
+      .age-report-flow-table td:first-child {
+        width: 34% !important;
+        background: #d3fff9 !important;
+        font-weight: bold !important;
+      }
+
+      .age-report-flow-table td:last-child {
+        background: #fff !important;
       }
 
       @media (max-width: 850px) {
