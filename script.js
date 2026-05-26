@@ -10692,3 +10692,92 @@
     start();
   }
 })();
+/* =====================================================
+   MORTGAGE ONLY: Stable optional boxes side by side
+   - Safer page detection
+   - No MutationObserver
+   - Does not affect other calculator pages
+===================================================== */
+(function () {
+  "use strict";
+
+  function text(el) {
+    return String(el ? el.textContent || "" : "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+  }
+
+  function isRealMortgagePage() {
+    const title = text(document.querySelector("h1"));
+    const path = window.location.pathname.toLowerCase();
+
+    return (
+      path.includes("loan-calculator") ||
+      path.includes("mortgage") ||
+      title.includes("mortgage") ||
+      title.includes("loan calculator") ||
+      !!document.getElementById("loanResult") ||
+      !!document.getElementById("loanHistoryList") ||
+      !!document.getElementById("loanExternalOutput")
+    );
+  }
+
+  function groupMortgageOptionalBoxes() {
+    if (!isRealMortgagePage()) return;
+
+    const calculator = document.querySelector(".calculator");
+    const optionalCostBox = document.querySelector(".optional-mortgage-costs");
+    const earlySettlementBox = document.querySelector(".early-settlement-box");
+
+    if (!calculator || !optionalCostBox || !earlySettlementBox) return;
+
+    let row = document.querySelector(".loan-optional-row");
+
+    if (!row) {
+      row = document.createElement("div");
+      row.className = "loan-optional-row";
+
+      optionalCostBox.insertAdjacentElement("beforebegin", row);
+    }
+
+    if (!row.contains(optionalCostBox)) {
+      row.appendChild(optionalCostBox);
+    }
+
+    if (!row.contains(earlySettlementBox)) {
+      row.appendChild(earlySettlementBox);
+    }
+  }
+
+  function cleanWrongLoanClassOnOtherPages() {
+    if (isRealMortgagePage()) return;
+
+    document.body.classList.remove("loan-page");
+
+    if (document.body.dataset.page === "loan") {
+      delete document.body.dataset.page;
+    }
+  }
+
+  function start() {
+    cleanWrongLoanClassOnOtherPages();
+
+    if (!isRealMortgagePage()) return;
+
+    document.body.classList.add("loan-page");
+    document.body.dataset.page = "loan";
+
+    groupMortgageOptionalBoxes();
+
+    setTimeout(groupMortgageOptionalBoxes, 200);
+    setTimeout(groupMortgageOptionalBoxes, 700);
+    setTimeout(groupMortgageOptionalBoxes, 1300);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
