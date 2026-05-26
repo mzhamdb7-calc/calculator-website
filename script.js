@@ -574,6 +574,89 @@
     );
   }
 
+  function makeAgeGroupedResult(rows) {
+    rows = Array.isArray(rows) ? rows : [];
+
+    const groups = [
+      {
+        title: "Birth & calendar",
+        className: "birth",
+        match: /date range|day of week born|born date in islamic|born date in chinese/i
+      },
+      {
+        title: "Current age",
+        className: "current",
+        match: /exact age|normal age|asian age/i
+      },
+      {
+        title: "Birthday & milestones",
+        className: "milestone",
+        match: /next birthday countdown|retirement|legal age|leap year age/i
+      },
+      {
+        title: "Zodiac",
+        className: "zodiac",
+        match: /western zodiac|chinese zodiac|age in .* year/i
+      },
+      {
+        title: "Life summary",
+        className: "life",
+        match: /days spent alive|estimated sleep time/i
+      },
+      {
+        title: "Space & moon",
+        className: "space",
+        match: /age on other planets|moon cycles experienced/i
+      }
+    ];
+
+    const used = new Set();
+
+    function rowsForGroup(group) {
+      return rows.filter(function (row, index) {
+        if (!row || used.has(index)) return false;
+        const label = String(row[0] || "");
+        if (!group.match.test(label)) return false;
+        used.add(index);
+        return true;
+      });
+    }
+
+    function makeGroup(group, groupRows) {
+      if (!groupRows.length) return "";
+
+      return (
+        '<section class="age-result-group-box age-result-group-' + escapeHtml(group.className) + '">' +
+          '<h3>' + escapeHtml(group.title) + '</h3>' +
+          '<ul class="age-result-group-list">' +
+            groupRows.map(function (row) {
+              return (
+                '<li>' +
+                  '<span class="age-result-group-label">' + escapeHtml(row[0]) + '</span>' +
+                  '<span class="age-result-group-value">' + escapeHtml(row[1]) + '</span>' +
+                '</li>'
+              );
+            }).join("") +
+          '</ul>' +
+        '</section>'
+      );
+    }
+
+    let html = groups.map(function (group) {
+      return makeGroup(group, rowsForGroup(group));
+    }).join("");
+
+    const remaining = rows.filter(function (row, index) {
+      return row && !used.has(index);
+    });
+
+    if (remaining.length) {
+      html += makeGroup({ title: "Other details", className: "other", match: /.*/ }, remaining);
+    }
+
+    return '<div class="age-result-group-wrapper">' + html + '</div>';
+  }
+
   function rowsToPlainText(rows) {
     return rows.map(function (row) {
       return row[0] + ": " + row[1];
@@ -609,7 +692,7 @@
     if (!panel) return null;
 
     const isAgeResult = type === "age";
-    const resultHtml = isAgeResult ? makePointList(rows) : makeTable(rows);
+    const resultHtml = isAgeResult ? makeAgeGroupedResult(rows) : makeTable(rows);
 
     panel.className = "loan-style-output-panel calculator-clean-result " + type + "-clean-result" + (isAgeResult ? " age-point-output" : "");
     panel.innerHTML =
