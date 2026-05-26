@@ -5094,1633 +5094,34 @@
   }
 })();
 
+
 /* =====================================================
-   AUTO CALCULATE: All calculators except Basic
-   - Runs when user types/selects input
-   - Excludes Basic calculator display
-   - Debounced so it does not calculate every keystroke instantly
-   - No MutationObserver, no loading loop
+   FINAL SITE REPAIR: One fast auto-calculate + one report history system
+   - Basic calculator stays unchanged
+   - Age / BMI / Discount / Percentage / Compound / Mortgage use report history
+   - No MutationObserver loops
+   - No duplicate page-load history render
+   - Report opens in the same tab and returns to the calculator in the same tab
 ===================================================== */
 (function () {
   "use strict";
 
-  const AUTO_DELAY = 650;
-
-  if (window.__nonBasicAutoCalcController) {
-    window.__nonBasicAutoCalcController.abort();
-  }
-
-  const controller = new AbortController();
-  window.__nonBasicAutoCalcController = controller;
-
-  let autoTimer = null;
-  let isAutoCalculating = false;
-
-  function getPageTitle() {
-    const h1 = document.querySelector("h1");
-    return h1 ? h1.textContent.trim().toLowerCase() : "";
-  }
-
-  function getPageType() {
-    const title = getPageTitle();
-
-    if (
-      document.body.classList.contains("basic-page") ||
-      document.body.dataset.page === "basic" ||
-      document.getElementById("display") ||
-      title.includes("basic")
-    ) {
-      return "basic";
-    }
-
-    if (
-      document.body.classList.contains("age-page") ||
-      document.body.dataset.page === "age" ||
-      document.getElementById("birthdate") ||
-      title.includes("age")
-    ) {
-      return "age";
-    }
-
-    if (
-      document.body.classList.contains("bmi-page") ||
-      document.body.dataset.page === "bmi" ||
-      document.getElementById("bmiResult") ||
-      title.includes("bmi")
-    ) {
-      return "bmi";
-    }
-
-    if (
-      document.body.classList.contains("loan-page") ||
-      document.body.dataset.page === "loan" ||
-      document.getElementById("loanResult") ||
-      title.includes("loan") ||
-      title.includes("mortgage")
-    ) {
-      return "loan";
-    }
-
-    if (
-      document.body.classList.contains("discount-page") ||
-      document.body.dataset.page === "discount" ||
-      document.getElementById("discountResult") ||
-      title.includes("discount")
-    ) {
-      return "discount";
-    }
-
-    if (
-      document.body.classList.contains("percentage-page") ||
-      document.body.dataset.page === "percentage" ||
-      document.getElementById("percentageResult") ||
-      title.includes("percentage")
-    ) {
-      return "percentage";
-    }
-
-    if (
-      document.body.classList.contains("compound-page") ||
-      document.body.dataset.page === "compound" ||
-      document.getElementById("compoundResult") ||
-      title.includes("compound")
-    ) {
-      return "compound";
-    }
-
-    return "";
-  }
-
-  function getValue(ids) {
-    for (const id of ids) {
-      const el = document.getElementById(id);
-      if (!el) continue;
-
-      const value = String(el.value || "").trim();
-      if (value) return value;
-    }
-
-    return "";
-  }
-
-  function hasValue(ids) {
-    return getValue(ids) !== "";
-  }
-
-  function isReadyToCalculate(type) {
-    if (type === "basic" || !type) return false;
-
-    if (type === "age") {
-      return hasValue(["birthdate", "birthDate", "dob"]);
-    }
-
-    if (type === "bmi") {
-      return (
-        hasValue(["weight", "bmiWeight"]) &&
-        hasValue(["height", "bmiHeight"])
-      );
-    }
-
-    if (type === "loan") {
-      return (
-        hasValue(["amount", "loanAmount", "principal", "loanPrincipal"]) &&
-        hasValue(["interest", "loanRate", "interestRate", "annualRate", "rate"]) &&
-        hasValue(["years", "loanYears", "loanTerm", "term"])
-      );
-    }
-
-    if (type === "discount") {
-      return (
-        hasValue(["price", "originalPrice", "amount"]) &&
-        hasValue(["discount", "discountRate", "percent"])
-      );
-    }
-
-    if (type === "percentage") {
-      return (
-        hasValue(["percentage", "percent"]) &&
-        hasValue(["number", "amount", "value"])
-      );
-    }
-
-    if (type === "compound") {
-      return (
-        hasValue(["principal", "compoundPrincipal", "amount"]) &&
-        hasValue(["rate", "compoundRate", "interest", "interestRate"]) &&
-        hasValue(["years", "compoundYears", "time"])
-      );
-    }
-
-    return false;
-  }
-
-  function getCalculateFunction(type) {
-    if (type === "age") return window.calculateAge;
-    if (type === "bmi") return window.calculateBMI || window.calculateBmi;
-    if (type === "loan") return window.calculateLoan;
-    if (type === "discount") return window.calculateDiscount;
-    if (type === "percentage") return window.calculatePercentage;
-    if (type === "compound") return window.calculateCompoundInterest || window.calculateCompound;
-
-    return null;
-  }
-
-  function shouldWatchInput(input) {
-    if (!input) return false;
-
-    const type = getPageType();
-    if (type === "basic") return false;
-
-    if (!input.closest(".calculator")) return false;
-
-    if (input.id === "display") return false;
-    if (input.type === "hidden") return false;
-    if (input.type === "button") return false;
-    if (input.type === "submit") return false;
-    if (input.type === "reset") return false;
-
-    return (
-      input.matches("input") ||
-      input.matches("select") ||
-      input.matches("textarea")
-    );
-  }
-
-  function runAutoCalculate() {
-    const type = getPageType();
-    if (type === "basic" || !type) return;
-
-    if (!isReadyToCalculate(type)) return;
-
-    const calculateFn = getCalculateFunction(type);
-    if (typeof calculateFn !== "function") return;
-
-    if (isAutoCalculating) return;
-
-    isAutoCalculating = true;
-
-    try {
-      calculateFn();
-    } catch (error) {
-      console.error("Auto calculate error:", error);
-    }
-
-    setTimeout(function () {
-      isAutoCalculating = false;
-    }, 100);
-  }
-
-  function scheduleAutoCalculate() {
-    clearTimeout(autoTimer);
-
-    autoTimer = setTimeout(function () {
-      runAutoCalculate();
-    }, AUTO_DELAY);
-  }
-
-  function handleInputEvent(event) {
-    const input = event.target;
-
-    if (!shouldWatchInput(input)) return;
-
-    scheduleAutoCalculate();
-  }
-
-  function startAutoCalculate() {
-    const type = getPageType();
-    if (type === "basic" || !type) return;
-
-    document.body.dataset.autoCalculateReady = "true";
-
-    document.addEventListener("input", handleInputEvent, {
-      signal: controller.signal,
-      capture: true
-    });
-
-    document.addEventListener("change", handleInputEvent, {
-      signal: controller.signal,
-      capture: true
-    });
-
-    setTimeout(function () {
-      if (isReadyToCalculate(getPageType())) {
-        runAutoCalculate();
-      }
-    }, 800);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startAutoCalculate, {
-      signal: controller.signal
-    });
-  } else {
-    startAutoCalculate();
-  }
-})();
-/* =====================================================
-   BMI: Put measurements beside profile box
-   - Groups Weight / Height / Waist in one box
-   - Places it beside Age group / Sex / BMI cut-off on PC
-===================================================== */
-(function () {
-  "use strict";
-
-  function isBmiPage() {
-    return (
-      document.body.classList.contains("bmi-page") ||
-      document.body.dataset.page === "bmi" ||
-      !!document.getElementById("bmiResult") ||
-      !!document.getElementById("bmiHistoryList")
-    );
-  }
-
-  function get(id) {
-    return document.getElementById(id);
-  }
-
-  function addBoxTitle(box, text) {
-    if (!box || box.querySelector(":scope > .bmi-extra-title")) return;
-
-    const title = document.createElement("div");
-    title.className = "bmi-extra-title";
-    title.textContent = text;
-    box.insertAdjacentElement("afterbegin", title);
-  }
-
-  function moveToBox(box, ids) {
-    ids.forEach(function (id) {
-      const el = get(id);
-      if (el && el.parentElement !== box) {
-        box.appendChild(el);
-      }
-    });
-  }
-
-  function groupBmiInputBoxes() {
-    if (!isBmiPage()) return;
-
-    const calculator = document.querySelector("body.bmi-page .calculator");
-    const profileBox = document.querySelector("body.bmi-page .bmi-extra-profile-box");
-    const weightInput = get("weight");
-
-    if (!calculator || !profileBox || !weightInput) return;
-
-    let layout = calculator.querySelector(".bmi-input-two-box-layout");
-
-    if (!layout) {
-      layout = document.createElement("div");
-      layout.className = "bmi-input-two-box-layout";
-
-      const titleRow = calculator.querySelector(":scope > .bmi-title-row");
-      if (titleRow) {
-        titleRow.insertAdjacentElement("afterend", layout);
-      } else {
-        calculator.insertAdjacentElement("afterbegin", layout);
-      }
-    }
-
-    let measurementBox = layout.querySelector(".bmi-measurement-box");
-
-    if (!measurementBox) {
-      measurementBox = document.createElement("div");
-      measurementBox.className = "bmi-measurement-box";
-    }
-
-    addBoxTitle(profileBox, "Profile");
-    addBoxTitle(measurementBox, "Measurements");
-
-    if (profileBox.parentElement !== layout) {
-      layout.appendChild(profileBox);
-    }
-
-    if (measurementBox.parentElement !== layout) {
-      layout.appendChild(measurementBox);
-    }
-
-    moveToBox(measurementBox, [
-      "weightLabel",
-      "weight",
-      "heightLabel",
-      "height",
-      "waistLabel",
-      "waist"
-    ]);
-  }
-
-  function startBmiInputGrouping() {
-    groupBmiInputBoxes();
-    setTimeout(groupBmiInputBoxes, 100);
-    setTimeout(groupBmiInputBoxes, 500);
-    setTimeout(groupBmiInputBoxes, 1000);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startBmiInputGrouping);
-  } else {
-    startBmiInputGrouping();
-  }
-})();
-
-/* =====================================================
-   MORTGAGE: FAST history report system
-   - Does NOT run calculateLoan()
-   - Saves report only after result changes
-   - History shows Loan amount + open report
-===================================================== */
-(function () {
-  "use strict";
-
-  const REPORT_KEY = "mortgageFastReports_v1";
   const MAX_REPORTS = 50;
-
-  let saveTimer = null;
-  let rendering = false;
-
-  function isLoanPage() {
-    return (
-      document.body.classList.contains("loan-page") ||
-      document.body.dataset.page === "loan" ||
-      window.location.pathname.includes("loan-calculator") ||
-      !!document.getElementById("loanHistoryList") ||
-      !!document.getElementById("loanResult") ||
-      !!document.getElementById("loanExternalOutput")
-    );
-  }
-
-  function cleanText(value) {
-    return String(value || "").replace(/\s+/g, " ").trim();
-  }
-
-  function escapeHtml(value) {
-    return String(value || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
-  function getValue(id) {
-    const input = document.getElementById(id);
-    return input ? cleanText(input.value) : "";
-  }
-
-  function getMainAmount() {
-    return (
-      getValue("amount") ||
-      getValue("loanAmount") ||
-      getValue("principal") ||
-      getValue("loanPrincipal")
-    );
-  }
-
-  function getMainInterest() {
-    return (
-      getValue("interest") ||
-      getValue("loanRate") ||
-      getValue("interestRate") ||
-      getValue("annualRate") ||
-      getValue("rate")
-    );
-  }
-
-  function getMainTerm() {
-    return (
-      getValue("years") ||
-      getValue("loanYears") ||
-      getValue("loanTerm") ||
-      getValue("term")
-    );
-  }
-
-  function ready() {
-    return getMainAmount() && getMainInterest() && getMainTerm();
-  }
-
-  function formatMoney(value) {
-    const number = Number(String(value || "").replace(/[^\d.-]/g, ""));
-
-    if (!Number.isFinite(number) || number <= 0) return value || "-";
-
-    return "RM " + number.toLocaleString("en-MY", {
-      maximumFractionDigits: 2
-    });
-  }
-
-  function getInputLabel(input) {
-    if (!input) return "Input";
-
-    if (input.id) {
-      const label = document.querySelector('label[for="' + input.id + '"]');
-      if (label) return cleanText(label.textContent.replace(/[:：]/g, ""));
-    }
-
-    const previous = input.previousElementSibling;
-
-    if (previous && previous.tagName.toLowerCase() === "label") {
-      return cleanText(previous.textContent.replace(/[:：]/g, ""));
-    }
-
-    return cleanText(input.placeholder || input.name || input.id || "Input");
-  }
-
-  function getInputValue(input) {
-    if (!input) return "";
-
-    if (input.tagName.toLowerCase() === "select") {
-      const option = input.options[input.selectedIndex];
-      return option ? cleanText(option.textContent) : cleanText(input.value);
-    }
-
-    return cleanText(input.value);
-  }
-
-  function getAllFilledInputs() {
-    const used = new Set();
-    const lines = [];
-
-    document
-      .querySelectorAll(
-        ".calculator input, .calculator select, .calculator textarea, " +
-        ".optional-mortgage-costs input, .optional-mortgage-costs select, .optional-mortgage-costs textarea, " +
-        ".early-settlement-box input, .early-settlement-box select, .early-settlement-box textarea"
-      )
-      .forEach(function (input) {
-        if (!input || input.type === "hidden") return;
-
-        const key = input.id || input.name || getInputLabel(input);
-        if (used.has(key)) return;
-        used.add(key);
-
-        const value = getInputValue(input);
-        if (!value) return;
-
-        lines.push({
-          label: getInputLabel(input),
-          value: value
-        });
-      });
-
-    return lines;
-  }
-
-  function getResultElement() {
-    const external = document.getElementById("loanExternalOutput");
-
-    if (external && cleanText(external.textContent)) {
-      return external;
-    }
-
-    const result = document.getElementById("loanResult");
-
-    if (result && cleanText(result.textContent)) {
-      return result;
-    }
-
-    return null;
-  }
-
-  function cleanResultHtml(html) {
-    const template = document.createElement("template");
-    template.innerHTML = html;
-
-    template.content
-      .querySelectorAll("script, iframe, object, embed, link, meta, button")
-      .forEach(function (el) {
-        el.remove();
-      });
-
-    template.content.querySelectorAll("*").forEach(function (el) {
-      Array.from(el.attributes).forEach(function (attr) {
-        const name = attr.name.toLowerCase();
-        const value = String(attr.value || "").trim().toLowerCase();
-
-        if (name.startsWith("on") || value.startsWith("javascript:")) {
-          el.removeAttribute(attr.name);
-        }
-      });
-    });
-
-    return template.innerHTML;
-  }
-
-  function getResultHtml() {
-    const result = getResultElement();
-    if (!result) return "";
-
-    return cleanResultHtml(result.innerHTML || result.outerHTML || "");
-  }
-
-  function getResultText() {
-    const result = getResultElement();
-    return result ? cleanText(result.textContent) : "";
-  }
-
-  function loadReports() {
-    try {
-      const reports = JSON.parse(localStorage.getItem(REPORT_KEY) || "[]");
-      return Array.isArray(reports) ? reports : [];
-    } catch {
-      return [];
-    }
-  }
-
-  function saveReports(reports) {
-    try {
-      localStorage.setItem(REPORT_KEY, JSON.stringify(reports.slice(-MAX_REPORTS)));
-    } catch {
-      /* ignore */
-    }
-  }
-
-  function signature(report) {
-    return JSON.stringify({
-      amount: report.loanAmount,
-      interest: report.interest,
-      term: report.term,
-      result: report.resultText
-    });
-  }
-
-  function saveCurrentReport() {
-    if (!isLoanPage() || !ready()) return;
-
-    const resultHtml = getResultHtml();
-    const resultText = getResultText();
-
-    if (!resultHtml || !resultText) return;
-
-    const report = {
-      id: "mortgage_" + Date.now(),
-      createdAt: new Date().toLocaleString(),
-      loanAmount: getMainAmount(),
-      interest: getMainInterest(),
-      term: getMainTerm(),
-      inputLines: getAllFilledInputs(),
-      resultHtml: resultHtml,
-      resultText: resultText
-    };
-
-    const reports = loadReports();
-    const last = reports[reports.length - 1];
-
-    if (last && signature(last) === signature(report)) {
-      renderHistory();
-      return;
-    }
-
-    reports.push(report);
-    saveReports(reports);
-    renderHistory();
-  }
-
-  function scheduleSave() {
-    clearTimeout(saveTimer);
-
-    saveTimer = setTimeout(function () {
-      saveCurrentReport();
-    }, 350);
-  }
-
-  function encodeBase64Url(text) {
-    const bytes = new TextEncoder().encode(text);
-    let binary = "";
-
-    bytes.forEach(function (byte) {
-      binary += String.fromCharCode(byte);
-    });
-
-    return btoa(binary)
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_")
-      .replace(/=+$/g, "");
-  }
-
-  function decodeBase64Url(text) {
-    const normal = text.replace(/-/g, "+").replace(/_/g, "/");
-    const padded = normal + "===".slice((normal.length + 3) % 4);
-    const binary = atob(padded);
-    const bytes = new Uint8Array(binary.length);
-
-    for (let i = 0; i < binary.length; i += 1) {
-      bytes[i] = binary.charCodeAt(i);
-    }
-
-    return new TextDecoder().decode(bytes);
-  }
-
-  function makeReportLink(report) {
-    return (
-      window.location.href.split("#")[0] +
-      "#mortgage-fast-report=" +
-      encodeBase64Url(JSON.stringify(report))
-    );
-  }
-
-  function renderHistory() {
-    if (rendering) return;
-
-    const list = document.getElementById("loanHistoryList");
-    if (!list) return;
-
-    rendering = true;
-
-    const title =
-      document.querySelector(".loan-history-box .loan-history-top h3") ||
-      document.querySelector(".loan-history-box h3");
-
-    if (title) title.textContent = "History";
-
-    list.innerHTML = "";
-
-    loadReports()
-      .slice()
-      .reverse()
-      .forEach(function (report) {
-        const li = document.createElement("li");
-        li.className = "history-item mortgage-fast-history-item";
-
-        const text = document.createElement("span");
-        text.className = "history-text";
-        text.textContent = "Loan amount: " + formatMoney(report.loanAmount);
-
-        const link = document.createElement("a");
-        link.className = "mortgage-fast-open-link";
-        link.textContent = "open report";
-        link.href = makeReportLink(report);
-        link.target = "_blank";
-        link.rel = "noopener";
-
-        li.appendChild(text);
-        li.appendChild(link);
-        list.appendChild(li);
-      });
-
-    rendering = false;
-  }
-
-  function renderReportPage(report) {
-    if (!report) return;
-
-    document
-      .querySelectorAll(".calculator, .loan-history-box, .instruction-box, .pc-what-slot")
-      .forEach(function (el) {
-        el.style.display = "none";
-      });
-
-    const rows = (report.inputLines || [])
-      .map(function (line) {
-        return (
-          "<tr>" +
-            "<td>" + escapeHtml(line.label) + "</td>" +
-            "<td>" + escapeHtml(line.value) + "</td>" +
-          "</tr>"
-        );
-      })
-      .join("");
-
-    const section = document.createElement("section");
-    section.className = "mortgage-fast-report-page";
-
-    section.innerHTML =
-      "<h1>Mortgage Report</h1>" +
-      "<p><strong>Generated:</strong> " + escapeHtml(report.createdAt || "") + "</p>" +
-      "<h2>Inputs</h2>" +
-      "<table><tbody>" + rows + "</tbody></table>" +
-      "<h2>Result</h2>" +
-      '<div class="mortgage-fast-result">' + cleanResultHtml(report.resultHtml || "") + "</div>" +
-      '<p><a href="' + escapeHtml(window.location.href.split("#")[0]) + '">Back to calculator</a></p>';
-
-    const main = document.querySelector("main") || document.body;
-    main.insertAdjacentElement("afterbegin", section);
-  }
-
-  function openReportFromHash() {
-    if (!window.location.hash.startsWith("#mortgage-fast-report=")) return false;
-
-    try {
-      const encoded = window.location.hash.replace("#mortgage-fast-report=", "");
-      const report = JSON.parse(decodeBase64Url(encoded));
-      renderReportPage(report);
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  function installStyle() {
-    if (document.getElementById("mortgageFastReportStyle")) return;
-
-    const style = document.createElement("style");
-    style.id = "mortgageFastReportStyle";
-
-    style.textContent = `
-      body.loan-page .mortgage-fast-history-item {
-        grid-template-columns: 1fr auto !important;
-        align-items: center !important;
-      }
-
-      body.loan-page .mortgage-fast-open-link {
-        padding: 6px 10px !important;
-        background: #d3fff9 !important;
-        color: var(--black) !important;
-        border: 3px solid var(--black) !important;
-        box-shadow: 3px 3px 0 var(--black) !important;
-        text-decoration: none !important;
-        font-weight: bold !important;
-        white-space: nowrap !important;
-      }
-
-      body.loan-page .mortgage-fast-report-page {
-        width: min(1100px, 96vw) !important;
-        margin: 30px auto !important;
-        padding: 18px !important;
-        background: #fff !important;
-        border: 5px solid var(--black) !important;
-        box-shadow: 8px 8px 0 var(--black) !important;
-      }
-
-      body.loan-page .mortgage-fast-report-page h1,
-      body.loan-page .mortgage-fast-report-page h2 {
-        text-align: center !important;
-        margin-bottom: 12px !important;
-      }
-
-      body.loan-page .mortgage-fast-report-page table {
-        width: 100% !important;
-        border-collapse: collapse !important;
-        margin-bottom: 18px !important;
-      }
-
-      body.loan-page .mortgage-fast-report-page td,
-      body.loan-page .mortgage-fast-report-page th {
-        padding: 10px !important;
-        border: 3px solid var(--black) !important;
-      }
-
-      body.loan-page .mortgage-fast-result {
-        overflow-x: auto !important;
-      }
-    `;
-
-    document.head.appendChild(style);
-  }
-
-  function start() {
-    if (!isLoanPage()) return;
-
-    installStyle();
-
-    if (openReportFromHash()) return;
-
-    renderHistory();
-
-    document.addEventListener("input", scheduleSave, true);
-    document.addEventListener("change", scheduleSave, true);
-
-    const result1 = document.getElementById("loanResult");
-    const result2 = document.getElementById("loanExternalOutput");
-
-    [result1, result2].forEach(function (result) {
-      if (!result) return;
-
-      const observer = new MutationObserver(scheduleSave);
-
-      observer.observe(result, {
-        childList: true,
-        subtree: true,
-        characterData: true
-      });
-    });
-
-    setTimeout(scheduleSave, 700);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
-})();
-/* =====================================================
-   MORTGAGE REPORT: Bottom action buttons
-   - Go back
-   - Copy report
-   - Save report as HTML file
-   - Share report link
-   - Cartoon style matching your page
-===================================================== */
-(function () {
-  "use strict";
-
-  function isMortgageReportPage() {
-    return !!(
-      document.querySelector(".mortgage-fast-report-page") ||
-      document.querySelector(".mortgage-final-report-page") ||
-      document.getElementById("mortgageFinalReportPage") ||
-      document.getElementById("mortgageSharedReport")
-    );
-  }
-
-  function getReportPage() {
-    return (
-      document.querySelector(".mortgage-fast-report-page") ||
-      document.querySelector(".mortgage-final-report-page") ||
-      document.getElementById("mortgageFinalReportPage") ||
-      document.getElementById("mortgageSharedReport")
-    );
-  }
-
-  function cleanText(value) {
-    return String(value || "").replace(/\s+/g, " ").trim();
-  }
-
-  function fallbackCopy(text) {
-    const textarea = document.createElement("textarea");
-    textarea.value = text;
-    textarea.style.position = "fixed";
-    textarea.style.left = "-9999px";
-    textarea.style.top = "-9999px";
-
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-
-    document.execCommand("copy");
-    textarea.remove();
-  }
-
-  function copyToClipboard(text, button) {
-    if (!text) return;
-
-    function done() {
-      const old = button.textContent;
-      button.textContent = "Copied!";
-
-      setTimeout(function () {
-        button.textContent = old;
-      }, 1200);
-    }
-
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(done).catch(function () {
-        fallbackCopy(text);
-        done();
-      });
-    } else {
-      fallbackCopy(text);
-      done();
-    }
-  }
-
-  function getReportText(report) {
-    return cleanText(report.innerText || report.textContent || "");
-  }
-
-  function getReportHtmlFile(report) {
-    const title = "Mortgage Report";
-
-    return (
-      "<!DOCTYPE html>" +
-      '<html lang="en">' +
-      "<head>" +
-      '<meta charset="UTF-8">' +
-      '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
-      "<title>" + title + "</title>" +
-      "<style>" +
-      "body{background:#dfeeff;color:#000;font-family:'Comic Sans MS','Comic Neue',cursive,sans-serif;padding:24px;}" +
-      ".report{max-width:1100px;margin:0 auto;padding:18px;background:#fff;border:5px solid #000;box-shadow:8px 8px 0 #000;}" +
-      "h1,h2{text-align:center;}" +
-      "table{width:100%;border-collapse:collapse;margin:16px 0;}" +
-      "td,th{padding:10px;border:3px solid #000;text-align:left;}" +
-      "a,button{font-family:inherit;}" +
-      "</style>" +
-      "</head>" +
-      "<body>" +
-      '<div class="report">' +
-      report.innerHTML +
-      "</div>" +
-      "</body>" +
-      "</html>"
-    );
-  }
-
-  function saveReport(report, button) {
-    const html = getReportHtmlFile(report);
-    const blob = new Blob([html], {
-      type: "text/html;charset=utf-8"
-    });
-
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-
-    const date = new Date();
-    const fileDate =
-      date.getFullYear() +
-      "-" +
-      String(date.getMonth() + 1).padStart(2, "0") +
-      "-" +
-      String(date.getDate()).padStart(2, "0");
-
-    link.href = url;
-    link.download = "mortgage-report-" + fileDate + ".html";
-    document.body.appendChild(link);
-    link.click();
-
-    setTimeout(function () {
-      URL.revokeObjectURL(url);
-      link.remove();
-    }, 500);
-
-    const old = button.textContent;
-    button.textContent = "Saved!";
-
-    setTimeout(function () {
-      button.textContent = old;
-    }, 1200);
-  }
-
-  function shareReport(report, button) {
-    const shareUrl = window.location.href;
-    const title = "Mortgage Report";
-    const text = getReportText(report);
-
-    if (navigator.share) {
-      navigator
-        .share({
-          title: title,
-          text: text.slice(0, 500),
-          url: shareUrl
-        })
-        .catch(function () {
-          copyToClipboard(shareUrl, button);
-        });
-
-      return;
-    }
-
-    copyToClipboard(shareUrl, button);
-  }
-
-  function addReportButtons() {
-    if (!isMortgageReportPage()) return;
-
-    const report = getReportPage();
-    if (!report) return;
-    if (report.querySelector(".mortgage-report-actions")) return;
-
-    /*
-      Remove the old plain Back link if the report already has one.
-    */
-    report
-      .querySelectorAll(".mortgage-fast-report-page > p:last-child, .mortgage-final-back, .mortgage-report-back")
-      .forEach(function (el) {
-        if (/back to calculator/i.test(el.textContent || "")) {
-          el.remove();
-        }
-      });
-
-    const actions = document.createElement("div");
-    actions.className = "mortgage-report-actions";
-
-    const backButton = document.createElement("a");
-    backButton.className = "mortgage-report-action-btn mortgage-report-back-btn";
-    backButton.href = window.location.href.split("#")[0];
-    backButton.textContent = "Go back";
-
-    const copyButton = document.createElement("button");
-    copyButton.type = "button";
-    copyButton.className = "mortgage-report-action-btn mortgage-report-copy-btn";
-    copyButton.textContent = "Copy report";
-
-    const saveButton = document.createElement("button");
-    saveButton.type = "button";
-    saveButton.className = "mortgage-report-action-btn mortgage-report-save-btn";
-    saveButton.textContent = "Save report";
-
-    const shareButton = document.createElement("button");
-    shareButton.type = "button";
-    shareButton.className = "mortgage-report-action-btn mortgage-report-share-btn";
-    shareButton.textContent = "Share report";
-
-    copyButton.addEventListener("click", function () {
-      copyToClipboard(getReportText(report), copyButton);
-    });
-
-    saveButton.addEventListener("click", function () {
-      saveReport(report, saveButton);
-    });
-
-    shareButton.addEventListener("click", function () {
-      shareReport(report, shareButton);
-    });
-
-    actions.appendChild(backButton);
-    actions.appendChild(copyButton);
-    actions.appendChild(saveButton);
-    actions.appendChild(shareButton);
-
-    report.appendChild(actions);
-  }
-
-  function installStyle() {
-    if (document.getElementById("mortgageReportActionsStyle")) return;
-
-    const style = document.createElement("style");
-    style.id = "mortgageReportActionsStyle";
-
-    style.textContent = `
-      body.loan-page .mortgage-report-actions {
-        display: grid !important;
-        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-        gap: 14px !important;
-        margin-top: 24px !important;
-        padding-top: 18px !important;
-        border-top: 4px solid var(--black) !important;
-      }
-
-      body.loan-page .mortgage-report-action-btn {
-        min-height: 54px !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        padding: 10px 14px !important;
-        color: var(--black) !important;
-        border: 5px solid var(--black) !important;
-        box-shadow: 5px 5px 0 var(--black) !important;
-        font-family: inherit !important;
-        font-size: 18px !important;
-        font-weight: bold !important;
-        line-height: 1.1 !important;
-        text-align: center !important;
-        text-decoration: none !important;
-        cursor: pointer !important;
-        transition: 0.15s !important;
-      }
-
-      body.loan-page .mortgage-report-action-btn:hover {
-        transform: translate(-3px, -3px) rotate(-1deg) !important;
-        box-shadow: 8px 8px 0 var(--black) !important;
-      }
-
-      body.loan-page .mortgage-report-back-btn {
-        background: #fff4b8 !important;
-      }
-
-      body.loan-page .mortgage-report-copy-btn {
-        background: #ffd3d3 !important;
-      }
-
-      body.loan-page .mortgage-report-save-btn {
-        background: #b8ffb8 !important;
-      }
-
-      body.loan-page .mortgage-report-share-btn {
-        background: #d3fff9 !important;
-      }
-
-      @media (max-width: 850px) {
-        body.loan-page .mortgage-report-actions {
-          grid-template-columns: 1fr !important;
-          gap: 12px !important;
-        }
-
-        body.loan-page .mortgage-report-action-btn {
-          width: 100% !important;
-          min-height: 52px !important;
-          font-size: 16px !important;
-        }
-      }
-    `;
-
-    document.head.appendChild(style);
-  }
-
-  function start() {
-    installStyle();
-
-    addReportButtons();
-
-    setTimeout(addReportButtons, 200);
-    setTimeout(addReportButtons, 600);
-    setTimeout(addReportButtons, 1200);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
-})();
-/* =====================================================
-   MORTGAGE REPORT: Summary boxes side by side
-   - Monthly payment
-   - Total interest
-   - Total payment
-   - Shows inside opened report page only
-===================================================== */
-(function () {
-  "use strict";
-
-  function getReportPage() {
-    return (
-      document.querySelector(".mortgage-fast-report-page") ||
-      document.querySelector(".mortgage-final-report-page") ||
-      document.getElementById("mortgageFinalReportPage") ||
-      document.getElementById("mortgageSharedReport")
-    );
-  }
-
-  function cleanText(value) {
-    return String(value || "").replace(/\s+/g, " ").trim();
-  }
-
-  function hasMoney(value) {
-    return /(?:RM\s*)?[\d,]+(?:\.\d{1,2})?/i.test(String(value || ""));
-  }
-
-  function cleanMoney(value) {
-    const text = cleanText(value);
-    const match = text.match(/RM\s*[\d,]+(?:\.\d{1,2})?|[\d,]+(?:\.\d{1,2})?/i);
-
-    if (!match) return text || "-";
-
-    const raw = match[0];
-    const number = Number(raw.replace(/[^\d.-]/g, ""));
-
-    if (!Number.isFinite(number)) return raw;
-
-    return "RM " + number.toLocaleString("en-MY", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-  }
-
-  function findValueInTables(report, labelPattern) {
-    const rows = Array.from(report.querySelectorAll("tr"));
-
-    for (const row of rows) {
-      const cells = Array.from(row.querySelectorAll("th, td"));
-
-      if (cells.length < 2) continue;
-
-      const label = cleanText(cells[0].innerText || cells[0].textContent);
-      const value = cleanText(cells[cells.length - 1].innerText || cells[cells.length - 1].textContent);
-
-      if (labelPattern.test(label) && hasMoney(value)) {
-        return cleanMoney(value);
-      }
-    }
-
-    return "";
-  }
-
-  function findValueInLines(report, labelPattern) {
-    const lines = cleanText(report.innerText || report.textContent || "")
-      .split(/(?=Monthly|Total|Full|Estimated|Payment|Interest)/i)
-      .map(cleanText)
-      .filter(Boolean);
-
-    for (let i = 0; i < lines.length; i += 1) {
-      const line = lines[i];
-
-      if (!labelPattern.test(line)) continue;
-
-      if (hasMoney(line)) {
-        return cleanMoney(line);
-      }
-
-      if (lines[i + 1] && hasMoney(lines[i + 1])) {
-        return cleanMoney(lines[i + 1]);
-      }
-    }
-
-    return "";
-  }
-
-  function findMetric(report, labelPattern) {
-    return (
-      findValueInTables(report, labelPattern) ||
-      findValueInLines(report, labelPattern) ||
-      "-"
-    );
-  }
-
-  function addMortgageReportSummaryBoxes() {
-    const report = getReportPage();
-    if (!report) return;
-
-    const old = report.querySelector(".mortgage-report-summary-boxes");
-    if (old) old.remove();
-
-    const monthlyPayment = findMetric(
-      report,
-      /monthly\s*(mortgage\s*)?(payment|repayment)|payment\s*per\s*month|estimated\s*monthly/i
-    );
-
-    const totalInterest = findMetric(
-      report,
-      /total\s*interest|full\s*loan\s*interest|interest\s*paid|total\s*loan\s*interest/i
-    );
-
-    const totalPayment = findMetric(
-      report,
-      /total\s*payment|full\s*payment\s*value|total\s*repayment|total\s*amount\s*paid|total\s*paid/i
-    );
-
-    if (
-      monthlyPayment === "-" &&
-      totalInterest === "-" &&
-      totalPayment === "-"
-    ) {
-      return;
-    }
-
-    const boxes = document.createElement("div");
-    boxes.className = "mortgage-report-summary-boxes";
-
-    boxes.innerHTML =
-      '<div class="mortgage-report-summary-card mortgage-report-monthly-card">' +
-        '<div class="mortgage-report-summary-label">Monthly payment</div>' +
-        '<div class="mortgage-report-summary-value">' + monthlyPayment + '</div>' +
-      '</div>' +
-
-      '<div class="mortgage-report-summary-card mortgage-report-interest-card">' +
-        '<div class="mortgage-report-summary-label">Total interest</div>' +
-        '<div class="mortgage-report-summary-value">' + totalInterest + '</div>' +
-      '</div>' +
-
-      '<div class="mortgage-report-summary-card mortgage-report-total-card">' +
-        '<div class="mortgage-report-summary-label">Total payment</div>' +
-        '<div class="mortgage-report-summary-value">' + totalPayment + '</div>' +
-      '</div>';
-
-    const dateLine =
-      report.querySelector(".mortgage-final-report-date") ||
-      report.querySelector(".mortgage-report-date") ||
-      report.querySelector("p");
-
-    if (dateLine) {
-      dateLine.insertAdjacentElement("afterend", boxes);
-    } else {
-      report.insertAdjacentElement("afterbegin", boxes);
-    }
-  }
-
-  function installStyle() {
-    if (document.getElementById("mortgageReportSummaryBoxesStyle")) return;
-
-    const style = document.createElement("style");
-    style.id = "mortgageReportSummaryBoxesStyle";
-
-    style.textContent = `
-      body.loan-page .mortgage-report-summary-boxes {
-        width: 100% !important;
-        display: grid !important;
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 14px !important;
-        margin: 20px 0 24px !important;
-        box-sizing: border-box !important;
-      }
-
-      body.loan-page .mortgage-report-summary-card {
-        min-width: 0 !important;
-        padding: 16px 12px !important;
-        color: var(--black) !important;
-        border: 5px solid var(--black) !important;
-        box-shadow: 6px 6px 0 var(--black) !important;
-        text-align: center !important;
-        box-sizing: border-box !important;
-      }
-
-      body.loan-page .mortgage-report-monthly-card {
-        background: #d3fff9 !important;
-      }
-
-      body.loan-page .mortgage-report-interest-card {
-        background: #fff4b8 !important;
-      }
-
-      body.loan-page .mortgage-report-total-card {
-        background: #b8ffb8 !important;
-      }
-
-      body.loan-page .mortgage-report-summary-label {
-        margin-bottom: 8px !important;
-        font-size: 18px !important;
-        line-height: 1.2 !important;
-        font-weight: bold !important;
-      }
-
-      body.loan-page .mortgage-report-summary-value {
-        font-size: 24px !important;
-        line-height: 1.15 !important;
-        font-weight: bold !important;
-        overflow-wrap: break-word !important;
-        word-break: break-word !important;
-      }
-
-      @media (max-width: 850px) {
-        body.loan-page .mortgage-report-summary-boxes {
-          grid-template-columns: 1fr !important;
-          gap: 12px !important;
-          margin: 18px 0 22px !important;
-        }
-
-        body.loan-page .mortgage-report-summary-card {
-          padding: 14px 10px !important;
-          box-shadow: 5px 5px 0 var(--black) !important;
-        }
-
-        body.loan-page .mortgage-report-summary-label {
-          font-size: 16px !important;
-        }
-
-        body.loan-page .mortgage-report-summary-value {
-          font-size: 22px !important;
-        }
-      }
-    `;
-
-    document.head.appendChild(style);
-  }
-
-  function start() {
-    installStyle();
-
-    addMortgageReportSummaryBoxes();
-
-    setTimeout(addMortgageReportSummaryBoxes, 200);
-    setTimeout(addMortgageReportSummaryBoxes, 600);
-    setTimeout(addMortgageReportSummaryBoxes, 1200);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
-})();
-/* =====================================================
-   MORTGAGE REPORT: Hide What box + ? button when report opens
-===================================================== */
-(function () {
-  "use strict";
-
-  function isMortgageReportOpen() {
-    return (
-      window.location.hash.startsWith("#mortgage-fast-report=") ||
-      window.location.hash.startsWith("#mortgage-final-report=") ||
-      window.location.hash.startsWith("#mortgage-report=") ||
-      !!document.querySelector(".mortgage-fast-report-page") ||
-      !!document.querySelector(".mortgage-final-report-page") ||
-      !!document.getElementById("mortgageFinalReportPage") ||
-      !!document.getElementById("mortgageSharedReport")
-    );
-  }
-
-  function hideReportExtraBoxes() {
-    if (!isMortgageReportOpen()) return;
-
-    document.body.classList.add("mortgage-report-clean-view");
-    document.body.classList.remove("pc-help-overlay-open");
-
-    document
-      .querySelectorAll(
-        "#pcHelpQuestionButton, " +
-        "#pcQuestionOverlayButton, " +
-        ".pc-what-slot, " +
-        ".instruction-what-box, " +
-        ".instruction-box"
-      )
-      .forEach(function (el) {
-        el.style.setProperty("display", "none", "important");
-        el.style.setProperty("visibility", "hidden", "important");
-        el.style.setProperty("pointer-events", "none", "important");
-      });
-  }
-
-  function installStyle() {
-    if (document.getElementById("mortgageReportCleanViewStyle")) return;
-
-    const style = document.createElement("style");
-    style.id = "mortgageReportCleanViewStyle";
-
-    style.textContent = `
-      body.mortgage-report-clean-view #pcHelpQuestionButton,
-      body.mortgage-report-clean-view #pcQuestionOverlayButton,
-      body.mortgage-report-clean-view .pc-what-slot,
-      body.mortgage-report-clean-view .instruction-what-box,
-      body.mortgage-report-clean-view .instruction-box {
-        display: none !important;
-        visibility: hidden !important;
-        pointer-events: none !important;
-      }
-
-      body.mortgage-report-clean-view main.pc-calculator-layout {
-        display: block !important;
-      }
-    `;
-
-    document.head.appendChild(style);
-  }
-
-  function start() {
-    installStyle();
-    hideReportExtraBoxes();
-
-    setTimeout(hideReportExtraBoxes, 100);
-    setTimeout(hideReportExtraBoxes, 400);
-    setTimeout(hideReportExtraBoxes, 900);
-    setTimeout(hideReportExtraBoxes, 1600);
-
-    window.addEventListener("hashchange", function () {
-      setTimeout(hideReportExtraBoxes, 50);
-      setTimeout(hideReportExtraBoxes, 400);
-    });
-
-    /* MutationObserver removed to avoid continuous page re-rendering. */
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
-})();
-/* =====================================================
-   MORTGAGE REPORT: Open report in same tab + Go back same tab
-   - Stops report from opening new tab
-   - Go back button returns to previous calculator page in same tab
-===================================================== */
-(function () {
-  "use strict";
-
-  function isMortgageReportLink(link) {
-    if (!link) return false;
-
-    const href = String(link.getAttribute("href") || "");
-
-    return (
-      link.classList.contains("mortgage-fast-open-link") ||
-      link.classList.contains("mortgage-final-open-link") ||
-      link.classList.contains("mortgage-report-link") ||
-      href.includes("#mortgage-fast-report=") ||
-      href.includes("#mortgage-final-report=") ||
-      href.includes("#mortgage-report=")
-    );
-  }
-
-  function isMortgageReportOpen() {
-    return (
-      window.location.hash.startsWith("#mortgage-fast-report=") ||
-      window.location.hash.startsWith("#mortgage-final-report=") ||
-      window.location.hash.startsWith("#mortgage-report=") ||
-      !!document.querySelector(".mortgage-fast-report-page") ||
-      !!document.querySelector(".mortgage-final-report-page") ||
-      !!document.getElementById("mortgageFinalReportPage") ||
-      !!document.getElementById("mortgageSharedReport")
-    );
-  }
-
-  function cleanCalculatorUrl() {
-    return window.location.href.split("#")[0];
-  }
-
-  function fixReportLinks() {
-    document.querySelectorAll("a").forEach(function (link) {
-      if (!isMortgageReportLink(link)) return;
-
-      link.removeAttribute("target");
-      link.setAttribute("target", "_self");
-      link.rel = "";
-    });
-  }
-
-  function isGoBackButton(link) {
-    if (!link) return false;
-
-    const text = String(link.textContent || "").trim().toLowerCase();
-
-    return (
-      link.classList.contains("mortgage-report-back-btn") ||
-      link.closest(".mortgage-final-back") ||
-      link.closest(".mortgage-report-back") ||
-      text === "go back" ||
-      text === "back to calculator"
-    );
-  }
-
-  function goBackSameTab() {
-    /*
-      If the report was opened from the calculator in the same tab,
-      this goes back to the previous calculator view.
-    */
-    if (window.history.length > 1) {
-      window.history.back();
-      return;
-    }
-
-    /*
-      Fallback for shared/direct report links.
-    */
-    window.location.href = cleanCalculatorUrl();
-  }
-
-  function setupClicks() {
-    document.addEventListener(
-      "click",
-      function (event) {
-        const link = event.target.closest("a");
-        if (!link) return;
-
-        if (isMortgageReportLink(link)) {
-          event.preventDefault();
-          event.stopPropagation();
-
-          window.location.href = link.href;
-          return;
-        }
-
-        if (isMortgageReportOpen() && isGoBackButton(link)) {
-          event.preventDefault();
-          event.stopPropagation();
-
-          goBackSameTab();
-        }
-      },
-      true
-    );
-  }
-
-  function start() {
-    fixReportLinks();
-    setupClicks();
-
-    setTimeout(fixReportLinks, 200);
-    setTimeout(fixReportLinks, 700);
-    setTimeout(fixReportLinks, 1500);
-
-    /* MutationObserver removed to avoid continuous page re-rendering. */
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
-})();
-
-/* =====================================================
-   FINAL CLEANUP: Stable page class + hide calculate buttons
-   - Runs once on load only
-   - Does not rewrite history/result boxes
-   - Prevents non-mortgage pages from inheriting loan-page
-===================================================== */
-(function () {
-  "use strict";
-
-  const PAGE_CLASSES = [
+  const VERSION = "v6";
+  const autoTimers = Object.create(null);
+  let isCalculating = false;
+  let isRenderingHistory = false;
+
+  const historyIds = {
+    age: "ageHistoryList",
+    bmi: "bmiHistoryList",
+    loan: "loanHistoryList",
+    discount: "discountHistoryList",
+    percentage: "percentageHistoryList",
+    compound: "compoundHistoryList"
+  };
+
+  const pageClasses = [
     "basic-page",
     "age-page",
     "bmi-page",
@@ -6730,98 +5131,12 @@
     "compound-page"
   ];
 
-  function clean(value) {
-    return String(value || "").replace(/\s+/g, " ").trim().toLowerCase();
-  }
-
-  function has(id) {
-    return !!document.getElementById(id);
-  }
-
-  function detectPage() {
-    const title = clean(document.querySelector("h1") ? document.querySelector("h1").textContent : "");
-    const path = clean(window.location.pathname);
-
-    if (has("display") || document.querySelector(".basic-grid") || document.querySelector(".scientific-grid") || title.includes("basic")) return "basic";
-    if (has("birthdate") || has("ageResult") || title.includes("age")) return "age";
-    if (has("bmiResult") || title.includes("bmi") || (has("weight") && has("height") && has("waist"))) return "bmi";
-    if (has("loanResult") || has("loanHistoryList") || has("loanExternalOutput") || title.includes("mortgage") || title.includes("loan") || path.includes("loan-calculator") || path.includes("mortgage")) return "loan";
-    if (has("discountResult") || title.includes("discount")) return "discount";
-    if (has("percentageResult") || title.includes("percentage")) return "percentage";
-    if (has("compoundResult") || title.includes("compound")) return "compound";
-
-    return "";
-  }
-
-  function applyPageClass() {
-    const type = detectPage();
-    if (!type) return;
-
-    PAGE_CLASSES.forEach(function (name) {
-      document.body.classList.remove(name);
-    });
-
-    document.body.classList.add(type + "-page");
-    document.body.dataset.page = type;
-  }
-
-  function isCalculateButton(button) {
-    if (!button) return false;
-    if (button.closest("#navbar")) return false;
-    if (button.closest(".history, .age-history-box, .bmi-history-box, .discount-history-box, .loan-history-box, .percentage-history-box, .compound-history-box")) return false;
-    if (button.closest(".mortgage-report-actions")) return false;
-
-    const text = clean(button.textContent);
-    const onclick = clean(button.getAttribute("onclick"));
-    const id = clean(button.id);
-
-    if (id === "unitToggleBtn".toLowerCase()) return false;
-    if (text.includes("clear") || text.includes("copy") || text.includes("save") || text.includes("share") || text.includes("back") || text.includes("optional") || text.includes("settlement")) return false;
-
-    return text.includes("calculate") || onclick.includes("calculate") || id.includes("calculate");
-  }
-
-  function hideCalculateButtons() {
-    if (detectPage() === "basic") return;
-
-    document.querySelectorAll(".calculator button, main button").forEach(function (button) {
-      if (!isCalculateButton(button)) return;
-      button.style.setProperty("display", "none", "important");
-      button.setAttribute("aria-hidden", "true");
-      button.tabIndex = -1;
-    });
-  }
-
-  function start() {
-    applyPageClass();
-    hideCalculateButtons();
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
-})();
-
-
-/* =====================================================
-   UNIVERSAL REPORT HISTORY: All calculator pages except Basic
-   - Age / BMI / Discount / Percentage / Compound get mortgage-style history
-   - History shows a short label + open report link
-   - Report contains filled inputs + full result table/panel
-   - Basic calculator stays unchanged
-===================================================== */
-(function () {
-  "use strict";
-
-  const REPORT_VERSION = "v1";
-  const MAX_REPORTS = 50;
-  let saveTimer = null;
-  let rendering = false;
-
   function cleanText(value) {
     return String(value || "").replace(/\s+/g, " ").trim();
+  }
+
+  function lower(value) {
+    return cleanText(value).toLowerCase();
   }
 
   function escapeHtml(value) {
@@ -6833,40 +5148,92 @@
       .replace(/'/g, "&#039;");
   }
 
-  function getTitleText() {
+  function has(id) {
+    return !!document.getElementById(id);
+  }
+
+  function getTitle() {
     const h1 = document.querySelector("h1");
-    return h1 ? cleanText(h1.textContent).toLowerCase() : "";
+    return lower(h1 ? h1.textContent : "");
+  }
+
+  function getPath() {
+    return lower(window.location.pathname);
   }
 
   function getPageType() {
-    const title = getTitleText();
-    const path = window.location.pathname.toLowerCase();
+    const title = getTitle();
+    const path = getPath();
 
-    if (
-      document.body.classList.contains("basic-page") ||
-      document.body.dataset.page === "basic" ||
-      document.getElementById("display") ||
-      title.includes("basic")
-    ) {
-      return "basic";
-    }
-
-    if (document.getElementById("birthdate") || title.includes("age")) return "age";
-    if (document.getElementById("bmiHistoryList") || document.getElementById("bmiResult") || title.includes("bmi")) return "bmi";
-    if (document.getElementById("loanHistoryList") || document.getElementById("loanResult") || path.includes("loan") || path.includes("mortgage") || title.includes("loan") || title.includes("mortgage")) return "loan";
-    if (document.getElementById("discountHistoryList") || document.getElementById("discountResult") || title.includes("discount")) return "discount";
-    if (document.getElementById("percentageHistoryList") || document.getElementById("percentageResult") || title.includes("percentage")) return "percentage";
-    if (document.getElementById("compoundHistoryList") || document.getElementById("compoundResult") || title.includes("compound")) return "compound";
+    if (has("display") || document.querySelector(".basic-grid") || document.querySelector(".scientific-grid") || title.includes("basic")) return "basic";
+    if (has("birthdate") || has("ageResult") || title.includes("age")) return "age";
+    if (has("bmiResult") || has("bmiHistoryList") || title.includes("bmi")) return "bmi";
+    if (has("loanResult") || has("loanHistoryList") || has("loanExternalOutput") || path.includes("loan-calculator") || path.includes("mortgage") || title.includes("mortgage") || title.includes("loan")) return "loan";
+    if (has("discountResult") || has("discountHistoryList") || title.includes("discount")) return "discount";
+    if (has("percentageResult") || has("percentageHistoryList") || title.includes("percentage")) return "percentage";
+    if (has("compoundResult") || has("compoundHistoryList") || title.includes("compound")) return "compound";
 
     return "";
   }
 
   function isReportType(type) {
-    return ["age", "bmi", "discount", "percentage", "compound"].includes(type);
+    return ["age", "bmi", "loan", "discount", "percentage", "compound"].includes(type);
+  }
+
+  function applyCorrectPageClass() {
+    const type = getPageType();
+    if (!type) return;
+
+    pageClasses.forEach(function (className) {
+      document.body.classList.remove(className);
+    });
+
+    document.body.classList.add(type + "-page");
+    document.body.dataset.page = type;
   }
 
   function reportKey(type) {
-    return "calculatorReportHistory_" + type + "_" + REPORT_VERSION;
+    return "calculatorReportHistory_" + type + "_" + VERSION;
+  }
+
+  function oldHistoryKeys(type) {
+    const keys = [
+      "inputHistory_" + type,
+      type + "History",
+      type + "InputHistory",
+      type + "InputOutputHistory"
+    ];
+
+    if (type === "bmi") {
+      keys.push(
+        "bmiCleanHistoryUnifiedV1",
+        "bmiHistory",
+        "inputHistory_bmi",
+        "bmiInputHistoryOnlyFinal",
+        "bmiInputHistoryFinalCleanV2",
+        "bmiCleanInputHistoryFinal",
+        "bmiCleanInputHistoryFinalV2",
+        "bmiProfileInputHistory",
+        "bmiProfileHistory",
+        "bmiHistoryWithProfile"
+      );
+    }
+
+    if (type === "loan") {
+      keys.push(
+        "mortgageFastReports_v1",
+        "mortgageFinalReportHistory_v3",
+        "mortgageHistoryReports_v1",
+        "inputHistory_loan",
+        "loanHistory",
+        "loanInputHistory"
+      );
+    }
+
+    if (type === "percentage") keys.push("percentageHistory");
+    if (type === "compound") keys.push("compoundHistory", "compoundInputHistory", "inputHistory_compound");
+
+    return Array.from(new Set(keys));
   }
 
   function loadReports(type) {
@@ -6886,16 +5253,27 @@
     }
   }
 
-  function getHistoryList(type) {
-    const ids = {
-      age: "ageHistoryList",
-      bmi: "bmiHistoryList",
-      discount: "discountHistoryList",
-      percentage: "percentageHistoryList",
-      compound: "compoundHistoryList"
-    };
+  function clearReports(type) {
+    if (!isReportType(type)) return;
 
-    return document.getElementById(ids[type] || "");
+    try {
+      localStorage.removeItem(reportKey(type));
+      oldHistoryKeys(type).forEach(function (key) { localStorage.removeItem(key); });
+    } catch {
+      /* ignore */
+    }
+
+    renderReportHistory(type);
+
+    const result = getVisibleResultElement(type, true);
+    if (result) {
+      result.hidden = true;
+      result.style.display = "none";
+    }
+  }
+
+  function getHistoryList(type) {
+    return document.getElementById(historyIds[type] || "");
   }
 
   function getInputLabel(input) {
@@ -6917,397 +5295,355 @@
   function getInputValue(input) {
     if (!input) return "";
 
-    if (input.tagName.toLowerCase() === "select") {
+    if (input.tagName && input.tagName.toLowerCase() === "select") {
       const option = input.options[input.selectedIndex];
-      return option ? cleanText(option.textContent) : cleanText(input.value);
+      return cleanText(option ? option.textContent : input.value);
     }
 
     return cleanText(input.value);
   }
 
-  function getAllFilledInputs() {
+  function getInputByIds(ids) {
+    for (const id of ids) {
+      const input = document.getElementById(id);
+      if (input) return input;
+    }
+    return null;
+  }
+
+  function getValue(ids) {
+    const input = getInputByIds(ids);
+    return input ? getInputValue(input) : "";
+  }
+
+  function getFilledInputs(type) {
     const calculator = document.querySelector(".calculator");
     if (!calculator) return [];
 
-    const lines = [];
     const used = new Set();
+    const lines = [];
 
-    calculator.querySelectorAll("input, select, textarea").forEach(function (input) {
+    function addInput(input) {
       if (!input) return;
       if (input.type === "hidden" || input.type === "button" || input.type === "submit" || input.type === "reset") return;
       if (input.id === "display") return;
-
-      const value = getInputValue(input);
-      if (!value) return;
 
       const key = input.id || input.name || getInputLabel(input);
       if (used.has(key)) return;
       used.add(key);
 
-      lines.push({
-        label: getInputLabel(input),
-        value: value
-      });
-    });
+      const value = getInputValue(input);
+      if (!value) return;
+
+      lines.push({ label: getInputLabel(input), value: value });
+    }
+
+    if (type === "loan") {
+      [
+        getInputByIds(["amount", "loanAmount", "principal", "loanPrincipal"]),
+        getInputByIds(["interest", "loanRate", "interestRate", "annualRate", "rate"]),
+        getInputByIds(["years", "loanYears", "loanTerm", "term"])
+      ].forEach(addInput);
+    }
+
+    Array.from(document.querySelectorAll(".calculator input, .calculator select, .calculator textarea, .optional-mortgage-costs input, .optional-mortgage-costs select, .early-settlement-box input, .early-settlement-box select")).forEach(addInput);
 
     return lines;
   }
 
-  function visibleAndFilled(element) {
-    if (!element) return false;
-    if (element.hidden) return false;
-    if (element.style && element.style.display === "none") return false;
-    return cleanText(element.textContent) !== "";
+  function readyToCalculate(type) {
+    if (type === "basic" || !type) return false;
+    if (type === "age") return !!getValue(["birthdate", "birthDate", "dob"]);
+    if (type === "bmi") return !!getValue(["weight", "bmiWeight"]) && !!getValue(["height", "bmiHeight"]);
+    if (type === "loan") return !!getValue(["amount", "loanAmount", "principal", "loanPrincipal"]) && !!getValue(["interest", "loanRate", "interestRate", "annualRate", "rate"]) && !!getValue(["years", "loanYears", "loanTerm", "term"]);
+    if (type === "discount") return !!getValue(["price", "originalPrice", "amount"]) && !!getValue(["discount", "discountRate"]);
+    if (type === "percentage") return !!getValue(["percentage", "percent"]) && !!getValue(["number", "amount", "value"]);
+    if (type === "compound") return !!getValue(["principal", "compoundPrincipal", "amount"]) && !!getValue(["rate", "compoundRate", "interest", "interestRate"]) && !!getValue(["years", "compoundYears", "time"]);
+    return false;
   }
 
-  function resultCandidates(type) {
-    const common = [
-      "universalLoanStyleOutput",
-      "result"
-    ];
-
-    const byType = {
-      age: ["stableBasicAgeOutput", "ageResult"],
-      bmi: ["stableBmiOutput", "bmiResult"],
-      discount: ["stableDiscountOutput", "discountResult"],
-      percentage: ["percentageResult"],
-      compound: ["compoundYearMatrixOutput", "compoundResult"]
-    };
-
-    return (byType[type] || []).concat(common);
+  function getCalculateFunction(type) {
+    if (type === "age") return window.calculateAge;
+    if (type === "bmi") return window.calculateBMI || window.calculateBmi;
+    if (type === "loan") return window.calculateLoan;
+    if (type === "discount") return window.calculateDiscount;
+    if (type === "percentage") return window.calculatePercentage;
+    if (type === "compound") return window.calculateCompoundInterest || window.calculateCompound;
+    return null;
   }
 
-  function getResultElement(type) {
-    const ids = resultCandidates(type);
+  function isCalculateButton(button) {
+    if (!button) return false;
+    if (button.closest("#navbar")) return false;
+    if (button.closest(".history, .age-history-box, .bmi-history-box, .discount-history-box, .loan-history-box, .percentage-history-box, .compound-history-box")) return false;
+    if (button.closest(".calculator-report-actions")) return false;
 
-    for (const id of ids) {
-      const el = document.getElementById(id);
-      if (visibleAndFilled(el)) return el;
+    const text = lower(button.textContent);
+    const onclick = lower(button.getAttribute("onclick") || "");
+    const id = lower(button.id || "");
+
+    if (id === "unittogglebtn") return false;
+    if (text.includes("clear") || text.includes("copy") || text.includes("save") || text.includes("share") || text.includes("back") || text.includes("optional") || text.includes("settlement")) return false;
+    return text.includes("calculate") || onclick.includes("calculate") || id.includes("calculate");
+  }
+
+  function hideCalculateButtons() {
+    const type = getPageType();
+    if (type === "basic") return;
+
+    Array.from(document.querySelectorAll(".calculator button, main button")).forEach(function (button) {
+      if (!isCalculateButton(button)) return;
+      button.style.setProperty("display", "none", "important");
+      button.setAttribute("aria-hidden", "true");
+      button.tabIndex = -1;
+    });
+  }
+
+  function getVisibleResultElement(type, allowHidden) {
+    const selectors = {
+      age: ["#stableBasicAgeOutput", "#ageResult", "#result"],
+      bmi: ["#stableBmiOutput", "#bmiResult", "#result"],
+      loan: ["#loanExternalOutput", "#loanResult", "#result"],
+      discount: ["#stableDiscountOutput", "#universalLoanStyleOutput", "#discountResult", "#result"],
+      percentage: ["#universalLoanStyleOutput", "#percentageResult", "#result"],
+      compound: ["#compoundYearMatrixOutput", "#universalLoanStyleOutput", "#compoundResult", "#result"]
+    }[type] || [];
+
+    for (const selector of selectors) {
+      const element = document.querySelector(selector);
+      if (!element) continue;
+      const html = cleanText(element.innerHTML || "");
+      const text = cleanText(element.innerText || element.textContent || "");
+      if (!html && !text) continue;
+      if (allowHidden) return element;
+      const style = window.getComputedStyle ? window.getComputedStyle(element) : null;
+      const hidden = element.hidden || element.style.display === "none" || (style && style.display === "none") || (style && style.visibility === "hidden");
+      if (!hidden) return element;
     }
-
-    for (const id of ids) {
-      const el = document.getElementById(id);
-      if (el && cleanText(el.textContent)) return el;
-    }
-
     return null;
   }
 
   function cleanResultHtml(html) {
     const template = document.createElement("template");
-    template.innerHTML = html;
-
-    template.content
-      .querySelectorAll("script, iframe, object, embed, link, meta, button")
-      .forEach(function (el) {
-        el.remove();
-      });
-
+    template.innerHTML = String(html || "");
+    template.content.querySelectorAll("script, iframe, object, embed, link, meta, button, .loan-copy-side, .stable-copy-side, .calculator-report-actions").forEach(function (el) { el.remove(); });
     template.content.querySelectorAll("*").forEach(function (el) {
       Array.from(el.attributes).forEach(function (attr) {
         const name = attr.name.toLowerCase();
         const value = String(attr.value || "").trim().toLowerCase();
-
-        if (name.startsWith("on") || value.startsWith("javascript:")) {
-          el.removeAttribute(attr.name);
-        }
+        if (name.startsWith("on") || value.startsWith("javascript:")) el.removeAttribute(attr.name);
       });
     });
-
     return template.innerHTML;
   }
 
   function getResultHtml(type) {
-    const result = getResultElement(type);
-    if (!result) return "";
-
-    return cleanResultHtml(result.innerHTML || result.outerHTML || "");
+    const element = getVisibleResultElement(type, false) || getVisibleResultElement(type, true);
+    if (!element) return "";
+    const clone = element.cloneNode(true);
+    clone.querySelectorAll("script, iframe, object, embed, link, meta, button, .loan-copy-side, .stable-copy-side, .calculator-report-actions").forEach(function (el) { el.remove(); });
+    return cleanResultHtml(clone.innerHTML || clone.outerHTML || "");
   }
 
   function getResultText(type) {
-    const result = getResultElement(type);
-    return result ? cleanText(result.textContent) : "";
+    const element = getVisibleResultElement(type, false) || getVisibleResultElement(type, true);
+    return element ? cleanText(element.innerText || element.textContent || "") : "";
   }
 
-  function tableRowsFromResult(type) {
-    const result = getResultElement(type);
-    if (!result) return [];
-
-    return Array.from(result.querySelectorAll("tr")).map(function (row) {
-      const cells = Array.from(row.querySelectorAll("th, td")).map(function (cell) {
-        return cleanText(cell.textContent);
-      });
-      return cells;
-    }).filter(function (cells) {
-      return cells.length >= 2;
-    });
+  function moneyLabel(value) {
+    const number = Number(String(value || "").replace(/[^\d.-]/g, ""));
+    if (!Number.isFinite(number) || number <= 0) return value || "-";
+    return "RM " + number.toLocaleString("en-MY", { maximumFractionDigits: 2 });
   }
 
-  function findValueInRows(type, pattern) {
-    const rows = tableRowsFromResult(type);
-
-    for (const cells of rows) {
-      const label = cells[0] || "";
-      const value = cells[cells.length - 1] || "";
-
-      if (pattern.test(label) && value) return value;
-    }
-
-    return "";
-  }
-
-  function findValueInText(type, pattern) {
-    const text = getResultText(type);
-    if (!text) return "";
-
-    const escaped = pattern.source.replace(/^\^|\$$/g, "");
-    const generic = new RegExp("(" + escaped + ")\\s*[:：]?\\s*([^|•\\n]+)", "i");
-    const match = text.match(generic);
-    return match ? cleanText(match[2]) : "";
-  }
-
-  function firstInputLineValue(pattern) {
-    const lines = getAllFilledInputs();
-    const found = lines.find(function (line) {
-      return pattern.test(line.label || "");
-    });
+  function firstInputValue(lines, pattern) {
+    const found = (lines || []).find(function (line) { return pattern.test(line.label || ""); });
     return found ? found.value : "";
   }
 
-  function makeSummary(type) {
+  function resultValue(pattern, text) {
+    const match = String(text || "").match(pattern);
+    return match ? cleanText(match[1] || match[0]) : "";
+  }
+
+  function shortLabel(type, inputLines, resultText) {
     if (type === "age") {
-      const value = findValueInRows(type, /normal\s*age/i) || findValueInText(type, /normal\s*age/i);
-      return value ? "Normal age: " + value : "Age report";
+      const birthdate = firstInputValue(inputLines, /birth|date/i) || getValue(["birthdate"]);
+      return birthdate ? "Birthdate: " + birthdate : "Age report";
     }
-
     if (type === "bmi") {
-      const value = findValueInRows(type, /^bmi$/i) || findValueInText(type, /bmi/i);
-      return value ? "BMI: " + value : "BMI report";
+      const bmi = resultValue(/BMI\s*[:：]?\s*([\d.]+)/i, resultText);
+      if (bmi) return "BMI: " + bmi;
+      const weight = firstInputValue(inputLines, /weight/i) || getValue(["weight"]);
+      return weight ? "Weight: " + weight : "BMI report";
     }
-
+    if (type === "loan") {
+      const amount = firstInputValue(inputLines, /loan amount|purchase price|amount/i) || getValue(["amount", "loanAmount", "principal", "loanPrincipal"]);
+      return "Loan amount: " + moneyLabel(amount);
+    }
     if (type === "discount") {
-      const value = findValueInRows(type, /final\s*price/i) || findValueInText(type, /final\s*price/i);
-      return value ? "Final price: " + value : "Discount report";
+      const price = firstInputValue(inputLines, /price|amount/i) || getValue(["price", "originalPrice", "amount"]);
+      return price ? "Price: " + moneyLabel(price) : "Discount report";
     }
-
     if (type === "percentage") {
-      const value = findValueInRows(type, /^result$/i) || findValueInText(type, /result/i);
-      return value ? "Result: " + value : "Percentage report";
+      const percent = firstInputValue(inputLines, /percentage|percent/i) || getValue(["percentage", "percent"]);
+      const number = firstInputValue(inputLines, /number|amount|value/i) || getValue(["number", "amount", "value"]);
+      return percent ? percent + "% of " + (number || "number") : "Percentage report";
     }
-
     if (type === "compound") {
-      const value =
-        findValueInRows(type, /future\s*value|final\s*amount|total\s*value/i) ||
-        findValueInText(type, /future\s*value|final\s*amount|total\s*value/i) ||
-        firstInputLineValue(/principal|amount/i);
-
-      return value ? "Future value: " + value : "Compound report";
+      const principal = firstInputValue(inputLines, /principal|amount/i) || getValue(["principal", "compoundPrincipal", "amount"]);
+      return principal ? "Principal: " + moneyLabel(principal) : "Compound report";
     }
-
     return "Report";
   }
 
-  function reportTitle(type) {
-    const titles = {
-      age: "Age Report",
-      bmi: "BMI Report",
-      discount: "Discount Report",
-      percentage: "Percentage Report",
-      compound: "Compound Interest Report"
-    };
-
-    return titles[type] || "Calculator Report";
-  }
-
   function reportSignature(report) {
-    return JSON.stringify({
-      type: report.type,
-      inputs: report.inputLines || [],
-      result: report.resultText || ""
-    });
+    return JSON.stringify({ type: report.type, inputLines: report.inputLines || [], resultText: report.resultText || "" });
   }
 
   function saveCurrentReport(type) {
-    if (!isReportType(type)) return null;
-
-    const inputLines = getAllFilledInputs();
+    if (!isReportType(type) || !readyToCalculate(type)) return null;
+    const inputLines = getFilledInputs(type);
     const resultHtml = getResultHtml(type);
     const resultText = getResultText(type);
-
-    if (!inputLines.length || !resultHtml || !resultText) return null;
-    if (/please\s+enter\s+valid|select\s+your|must\s+be\s+after/i.test(resultText)) return null;
-
+    if (!inputLines.length || !resultHtml || !resultText || /please enter valid/i.test(resultText)) {
+      renderReportHistory(type);
+      return null;
+    }
     const report = {
       id: type + "_report_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8),
       type: type,
-      title: reportTitle(type),
+      title: pageTitle(type),
       createdAt: new Date().toLocaleString(),
-      summary: makeSummary(type),
       inputLines: inputLines,
       resultHtml: resultHtml,
       resultText: resultText
     };
-
+    report.label = shortLabel(type, inputLines, resultText);
     const reports = loadReports(type);
     const last = reports[reports.length - 1];
-
     if (last && reportSignature(last) === reportSignature(report)) {
-      renderCalculatorReportHistory(type);
+      renderReportHistory(type);
       return last;
     }
-
     reports.push(report);
     saveReports(type, reports);
-    renderCalculatorReportHistory(type);
+    renderReportHistory(type);
     return report;
   }
 
-  function scheduleSave(type) {
-    if (!isReportType(type)) return;
-
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(function () {
-      saveCurrentReport(type);
-    }, 450);
+  function pageTitle(type) {
+    return ({
+      age: "Age Report",
+      bmi: "BMI Report",
+      loan: "Mortgage Report",
+      discount: "Discount Report",
+      percentage: "Percentage Report",
+      compound: "Compound Interest Report"
+    })[type] || "Calculator Report";
   }
 
   function encodeBase64Url(text) {
     const bytes = new TextEncoder().encode(text);
     let binary = "";
-
-    bytes.forEach(function (byte) {
-      binary += String.fromCharCode(byte);
-    });
-
-    return btoa(binary)
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_")
-      .replace(/=+$/g, "");
+    bytes.forEach(function (byte) { binary += String.fromCharCode(byte); });
+    return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
   }
 
   function decodeBase64Url(text) {
-    const normal = text.replace(/-/g, "+").replace(/_/g, "/");
+    const normal = String(text || "").replace(/-/g, "+").replace(/_/g, "/");
     const padded = normal + "===".slice((normal.length + 3) % 4);
     const binary = atob(padded);
     const bytes = new Uint8Array(binary.length);
-
-    for (let i = 0; i < binary.length; i += 1) {
-      bytes[i] = binary.charCodeAt(i);
-    }
-
+    for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
     return new TextDecoder().decode(bytes);
   }
 
-  function makeReportLink(report) {
-    return window.location.href.split("#")[0] + "#calculator-report=" + encodeBase64Url(JSON.stringify(report));
+  function reportHref(report) {
+    return window.location.href.split("#")[0] + "#calc-report=" + encodeBase64Url(JSON.stringify(report));
   }
 
-  function renderCalculatorReportHistory(type) {
+  function renderReportHistory(type) {
     if (!isReportType(type)) return;
-    if (rendering) return;
-
     const list = getHistoryList(type);
     if (!list) return;
-
-    rendering = true;
-
-    const title =
-      document.querySelector("." + type + "-history-top h3") ||
-      document.querySelector("." + type + "-history-box h3");
-
+    if (isRenderingHistory) return;
+    isRenderingHistory = true;
+    const box = list.closest(".history, .age-history-box, .bmi-history-box, .discount-history-box, .loan-history-box, .percentage-history-box, .compound-history-box");
+    const title = box ? box.querySelector("h3") : null;
     if (title) title.textContent = "History";
-
+    const reports = loadReports(type).slice().reverse();
     list.innerHTML = "";
-
-    loadReports(type).slice().reverse().forEach(function (report) {
+    reports.forEach(function (report) {
       const li = document.createElement("li");
       li.className = "history-item calculator-report-history-item";
-
-      const text = document.createElement("span");
-      text.className = "history-text";
-      text.textContent = report.summary || report.title || "Report";
-
+      const label = document.createElement("span");
+      label.className = "history-text calculator-report-history-label";
+      label.textContent = report.label || shortLabel(type, report.inputLines || [], report.resultText || "");
       const link = document.createElement("a");
-      link.className = "calculator-report-open-link";
+      link.className = "calculator-report-open-link mortgage-fast-open-link";
+      link.href = reportHref(report);
       link.textContent = "open report";
-      link.href = makeReportLink(report);
       link.target = "_self";
-      link.rel = "noopener";
-
-      li.appendChild(text);
+      link.rel = "";
+      li.appendChild(label);
       li.appendChild(link);
       list.appendChild(li);
     });
-
-    rendering = false;
+    isRenderingHistory = false;
   }
 
-  window.renderCalculatorReportHistory = renderCalculatorReportHistory;
-
-  function clearReportHistory(type) {
+  function runCalculateAndSave(type) {
     if (!isReportType(type)) return;
-
-    try {
-      localStorage.removeItem(reportKey(type));
-      localStorage.removeItem("inputHistory_" + type);
-    } catch {
-      /* ignore */
+    if (!readyToCalculate(type)) {
+      renderReportHistory(type);
+      return;
     }
-
-    renderCalculatorReportHistory(type);
+    const calculateFn = getCalculateFunction(type);
+    if (typeof calculateFn !== "function" || isCalculating) return;
+    isCalculating = true;
+    try { calculateFn(); } catch (error) { console.error("Calculator auto calculate error:", error); }
+    setTimeout(function () { isCalculating = false; }, 120);
+    setTimeout(function () { saveCurrentReport(type); }, 180);
   }
 
-  function renderReportPage(report) {
-    if (!report || !Array.isArray(report.inputLines)) return;
-
-    document.body.classList.add("calculator-report-view");
-    document.body.classList.remove("pc-help-overlay-open");
-
-    document
-      .querySelectorAll(".calculator, .history, .age-history-box, .bmi-history-box, .discount-history-box, .percentage-history-box, .compound-history-box, .loan-history-box, .instruction-box, .pc-what-slot, #pcHelpQuestionButton, #pcQuestionOverlayButton")
-      .forEach(function (el) {
-        el.style.setProperty("display", "none", "important");
-      });
-
-    const old = document.getElementById("calculatorReportPage");
-    if (old) old.remove();
-
-    const rows = report.inputLines.map(function (line) {
-      return "<tr><td>" + escapeHtml(line.label) + "</td><td>" + escapeHtml(line.value) + "</td></tr>";
-    }).join("");
-
-    const section = document.createElement("section");
-    section.id = "calculatorReportPage";
-    section.className = "calculator-report-page";
-
-    section.innerHTML =
-      "<h1>" + escapeHtml(report.title || "Calculator Report") + "</h1>" +
-      '<p class="calculator-report-date"><strong>Generated:</strong> ' + escapeHtml(report.createdAt || "") + "</p>" +
-      '<div class="calculator-report-card">' +
-        "<h2>Inputs</h2>" +
-        '<div class="calculator-report-table-scroll">' +
-          '<table class="calculator-report-input-table"><tbody>' + rows + "</tbody></table>" +
-        "</div>" +
-      "</div>" +
-      '<div class="calculator-report-card">' +
-        "<h2>Result</h2>" +
-        '<div class="calculator-report-result">' + cleanResultHtml(report.resultHtml || "") + "</div>" +
-      "</div>" +
-      '<div class="calculator-report-actions">' +
-        '<a class="calculator-report-action-btn calculator-report-back-btn" href="' + escapeHtml(window.location.href.split("#")[0]) + '">Go back</a>' +
-        '<button type="button" class="calculator-report-action-btn calculator-report-copy-btn">Copy report</button>' +
-        '<button type="button" class="calculator-report-action-btn calculator-report-save-btn">Save report</button>' +
-        '<button type="button" class="calculator-report-action-btn calculator-report-share-btn">Share report</button>' +
-      "</div>";
-
-    const main = document.querySelector("main") || document.body;
-    main.insertAdjacentElement("afterbegin", section);
-
-    setupReportActions(section, report);
+  function scheduleCalculate(type) {
+    if (!isReportType(type)) return;
+    clearTimeout(autoTimers[type]);
+    autoTimers[type] = setTimeout(function () { runCalculateAndSave(type); }, type === "loan" ? 280 : 220);
   }
 
-  function reportPlainText(reportPage) {
-    return cleanText(reportPage.innerText || reportPage.textContent || "");
+  function shouldWatchInput(target) {
+    if (!target || !target.matches || !target.matches("input, select, textarea")) return false;
+    if (target.id === "display") return false;
+    if (target.type === "hidden" || target.type === "button" || target.type === "submit" || target.type === "reset") return false;
+    return !!target.closest(".calculator, .optional-mortgage-costs, .early-settlement-box");
+  }
+
+  function setupAutoCalculate() {
+    document.addEventListener("input", function (event) {
+      if (!shouldWatchInput(event.target)) return;
+      const type = getPageType();
+      if (!isReportType(type)) return;
+      scheduleCalculate(type);
+    }, true);
+    document.addEventListener("change", function (event) {
+      if (!shouldWatchInput(event.target)) return;
+      const type = getPageType();
+      if (!isReportType(type)) return;
+      scheduleCalculate(type);
+    }, true);
+    document.addEventListener("click", function (event) {
+      const clearButton = event.target.closest("button.clear-btn, #clearCompoundHistoryBtn");
+      if (clearButton) {
+        const type = getPageType();
+        if (isReportType(type)) setTimeout(function () { clearReports(type); }, 0);
+      }
+    }, true);
+  }
+
+  function tableRows(lines) {
+    return (lines || []).map(function (line) { return "<tr><td>" + escapeHtml(line.label) + "</td><td>" + escapeHtml(line.value) + "</td></tr>"; }).join("");
   }
 
   function fallbackCopy(text) {
@@ -7316,6 +5652,7 @@
     textarea.style.position = "fixed";
     textarea.style.left = "-9999px";
     textarea.style.top = "-9999px";
+    textarea.setAttribute("readonly", "");
     document.body.appendChild(textarea);
     textarea.focus();
     textarea.select();
@@ -7323,104 +5660,121 @@
     textarea.remove();
   }
 
-  function copyToClipboard(text, button) {
+  function copyTextToClipboard(text, button) {
     function done() {
       if (!button) return;
-      const old = button.textContent;
+      const oldText = button.textContent;
       button.textContent = "Copied!";
-      setTimeout(function () { button.textContent = old; }, 1200);
+      setTimeout(function () { button.textContent = oldText; }, 1000);
     }
-
     if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(done).catch(function () {
-        fallbackCopy(text);
-        done();
-      });
+      navigator.clipboard.writeText(text).then(done).catch(function () { fallbackCopy(text); done(); });
     } else {
-      fallbackCopy(text);
-      done();
+      fallbackCopy(text); done();
     }
   }
 
-  function saveReportFile(reportPage, report, button) {
-    const html =
-      "<!DOCTYPE html>" +
-      '<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">' +
-      "<title>" + escapeHtml(report.title || "Calculator Report") + "</title>" +
-      "<style>body{background:#dfeeff;color:#000;font-family:'Comic Sans MS','Comic Neue',cursive,sans-serif;padding:24px}.report{max-width:1100px;margin:0 auto;padding:18px;background:#fff;border:5px solid #000;box-shadow:8px 8px 0 #000}h1,h2{text-align:center}table{width:100%;border-collapse:collapse;margin:16px 0}td,th{padding:10px;border:3px solid #000;text-align:left}</style>" +
-      "</head><body><div class=\"report\">" + reportPage.innerHTML + "</div></body></html>";
+  function reportText(report) {
+    const inputText = (report.inputLines || []).map(function (line) { return line.label + ": " + line.value; }).join("\n");
+    return pageTitle(report.type) + "\nGenerated: " + (report.createdAt || "") + "\n\nInputs\n" + inputText + "\n\nResult\n" + cleanText(report.resultText || "");
+  }
 
+  function saveReportFile(report, button) {
+    const html = "<!DOCTYPE html>" +
+      "<html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
+      "<title>" + escapeHtml(pageTitle(report.type)) + "</title>" +
+      "<style>body{background:#dfeeff;color:#000;font-family:'Comic Sans MS','Comic Neue',cursive,sans-serif;padding:24px}.report{max-width:1100px;margin:0 auto;padding:18px;background:#fff;border:5px solid #000;box-shadow:8px 8px 0 #000}h1,h2{text-align:center}table{width:100%;border-collapse:collapse;margin:16px 0}td,th{padding:10px;border:3px solid #000;text-align:left}</style>" +
+      "</head><body><div class=\"report\"><h1>" + escapeHtml(pageTitle(report.type)) + "</h1>" +
+      "<p><strong>Generated:</strong> " + escapeHtml(report.createdAt || "") + "</p>" +
+      "<h2>Inputs</h2><table><tbody>" + tableRows(report.inputLines) + "</tbody></table>" +
+      "<h2>Result</h2>" + cleanResultHtml(report.resultHtml || "") +
+      "</div></body></html>";
     const blob = new Blob([html], { type: "text/html;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     const date = new Date();
     const fileDate = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
-
     link.href = url;
     link.download = (report.type || "calculator") + "-report-" + fileDate + ".html";
     document.body.appendChild(link);
     link.click();
-
-    setTimeout(function () {
-      URL.revokeObjectURL(url);
-      link.remove();
-    }, 500);
-
+    setTimeout(function () { URL.revokeObjectURL(url); link.remove(); }, 500);
     if (button) {
-      const old = button.textContent;
+      const oldText = button.textContent;
       button.textContent = "Saved!";
-      setTimeout(function () { button.textContent = old; }, 1200);
+      setTimeout(function () { button.textContent = oldText; }, 1000);
     }
   }
 
-  function setupReportActions(section, report) {
-    const back = section.querySelector(".calculator-report-back-btn");
-    const copy = section.querySelector(".calculator-report-copy-btn");
-    const save = section.querySelector(".calculator-report-save-btn");
-    const share = section.querySelector(".calculator-report-share-btn");
-
-    if (back) {
-      back.addEventListener("click", function (event) {
-        event.preventDefault();
-        if (window.history.length > 1) window.history.back();
-        else window.location.href = window.location.href.split("#")[0];
-      });
+  function shareReport(report, button) {
+    const url = window.location.href;
+    const title = pageTitle(report.type);
+    const text = reportText(report).slice(0, 500);
+    if (navigator.share) {
+      navigator.share({ title: title, text: text, url: url }).catch(function () { copyTextToClipboard(url, button); });
+    } else {
+      copyTextToClipboard(url, button);
     }
+  }
 
-    if (copy) {
-      copy.addEventListener("click", function () {
-        copyToClipboard(reportPlainText(section), copy);
-      });
+  function renderMortgageSummaryFromReport(report) {
+    if (report.type !== "loan") return "";
+    const text = report.resultText || "";
+    function find(pattern) {
+      const match = text.match(pattern);
+      return match ? cleanText(match[1]) : "-";
     }
+    const monthly = find(/Monthly payment\s*[:：]?\s*([\d,.]+)/i);
+    const interest = find(/Total interest\s*[:：]?\s*([\d,.]+)/i);
+    const total = find(/Total payment\s*[:：]?\s*([\d,.]+)/i);
+    return '<div class="calculator-report-summary-boxes">' +
+      '<div class="calculator-report-summary-card calculator-report-monthly-card"><div>Monthly payment</div><strong>' + escapeHtml(monthly === "-" ? "-" : moneyLabel(monthly)) + '</strong></div>' +
+      '<div class="calculator-report-summary-card calculator-report-interest-card"><div>Total interest</div><strong>' + escapeHtml(interest === "-" ? "-" : moneyLabel(interest)) + '</strong></div>' +
+      '<div class="calculator-report-summary-card calculator-report-total-card"><div>Total payment</div><strong>' + escapeHtml(total === "-" ? "-" : moneyLabel(total)) + '</strong></div>' +
+      '</div>';
+  }
 
-    if (save) {
-      save.addEventListener("click", function () {
-        saveReportFile(section, report, save);
-      });
-    }
-
-    if (share) {
-      share.addEventListener("click", function () {
-        if (navigator.share) {
-          navigator.share({
-            title: report.title || "Calculator Report",
-            text: reportPlainText(section).slice(0, 500),
-            url: window.location.href
-          }).catch(function () {
-            copyToClipboard(window.location.href, share);
-          });
-        } else {
-          copyToClipboard(window.location.href, share);
-        }
-      });
-    }
+  function renderReportPage(report) {
+    if (!report || !isReportType(report.type)) return;
+    applyCorrectPageClass();
+    document.body.classList.add("calculator-report-view", "mortgage-report-clean-view");
+    document.body.classList.remove("pc-help-overlay-open");
+    document.querySelectorAll(".calculator, .history, .age-history-box, .bmi-history-box, .discount-history-box, .loan-history-box, .percentage-history-box, .compound-history-box, .instruction-box, .pc-what-slot, .instruction-what-box, #pcHelpQuestionButton, #pcQuestionOverlayButton").forEach(function (el) {
+      el.style.setProperty("display", "none", "important");
+      el.style.setProperty("visibility", "hidden", "important");
+      el.style.setProperty("pointer-events", "none", "important");
+    });
+    const old = document.getElementById("calculatorUnifiedReportPage");
+    if (old) old.remove();
+    const section = document.createElement("section");
+    section.id = "calculatorUnifiedReportPage";
+    section.className = "calculator-report-page mortgage-fast-report-page";
+    section.innerHTML =
+      "<h1>" + escapeHtml(pageTitle(report.type)) + "</h1>" +
+      '<p class="calculator-report-date"><strong>Generated:</strong> ' + escapeHtml(report.createdAt || "") + "</p>" +
+      renderMortgageSummaryFromReport(report) +
+      '<div class="calculator-report-card"><h2>Inputs</h2><div class="calculator-report-table-scroll"><table><tbody>' + tableRows(report.inputLines) + "</tbody></table></div></div>" +
+      '<div class="calculator-report-card"><h2>Result</h2><div class="calculator-report-result">' + cleanResultHtml(report.resultHtml || "") + "</div></div>" +
+      '<div class="calculator-report-actions">' +
+        '<a href="' + escapeHtml(window.location.href.split("#")[0]) + '" class="calculator-report-action-btn calculator-report-back-btn mortgage-report-back-btn">Go back</a>' +
+        '<button type="button" class="calculator-report-action-btn calculator-report-copy-btn">Copy report</button>' +
+        '<button type="button" class="calculator-report-action-btn calculator-report-save-btn">Save report</button>' +
+        '<button type="button" class="calculator-report-action-btn calculator-report-share-btn">Share report</button>' +
+      "</div>";
+    const main = document.querySelector("main") || document.body;
+    main.insertAdjacentElement("afterbegin", section);
+    const copyButton = section.querySelector(".calculator-report-copy-btn");
+    const saveButton = section.querySelector(".calculator-report-save-btn");
+    const shareButton = section.querySelector(".calculator-report-share-btn");
+    if (copyButton) copyButton.addEventListener("click", function () { copyTextToClipboard(reportText(report), copyButton); });
+    if (saveButton) saveButton.addEventListener("click", function () { saveReportFile(report, saveButton); });
+    if (shareButton) shareButton.addEventListener("click", function () { shareReport(report, shareButton); });
   }
 
   function openReportFromHash() {
-    if (!window.location.hash.startsWith("#calculator-report=")) return false;
-
+    if (!window.location.hash.startsWith("#calc-report=")) return false;
     try {
-      const encoded = window.location.hash.replace("#calculator-report=", "");
+      const encoded = window.location.hash.replace("#calc-report=", "");
       const report = JSON.parse(decodeBase64Url(encoded));
       renderReportPage(report);
       return true;
@@ -7430,201 +5784,82 @@
     }
   }
 
-  function installStyle() {
-    if (document.getElementById("calculatorReportHistoryStyle")) return;
+  function setupReportLinkClicks() {
+    document.addEventListener("click", function (event) {
+      const link = event.target.closest("a.calculator-report-open-link");
+      if (!link) return;
+      event.preventDefault();
+      event.stopPropagation();
+      window.location.href = link.href;
+    }, true);
+  }
 
+  function installStyles() {
+    if (document.getElementById("unifiedCalculatorReportStyle")) return;
     const style = document.createElement("style");
-    style.id = "calculatorReportHistoryStyle";
+    style.id = "unifiedCalculatorReportStyle";
     style.textContent = `
-      .calculator-report-history-item {
-        grid-template-columns: 1fr auto !important;
-        align-items: center !important;
-      }
-
-      .calculator-report-open-link {
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        padding: 6px 10px !important;
-        background: #d3fff9 !important;
-        color: var(--black) !important;
-        border: 3px solid var(--black) !important;
-        box-shadow: 3px 3px 0 var(--black) !important;
-        text-decoration: none !important;
-        font-weight: bold !important;
-        line-height: 1 !important;
-        white-space: nowrap !important;
-      }
-
-      .calculator-report-open-link:hover {
-        transform: translate(1px, 1px) !important;
-        box-shadow: 2px 2px 0 var(--black) !important;
-      }
-
-      .calculator-report-page {
-        width: min(1100px, 96vw) !important;
-        margin: 30px auto !important;
-        padding: 18px !important;
-        background: #fff !important;
-        color: var(--black) !important;
-        border: 5px solid var(--black) !important;
-        box-shadow: 8px 8px 0 var(--black) !important;
-        box-sizing: border-box !important;
-      }
-
-      .calculator-report-page h1,
-      .calculator-report-page h2,
-      .calculator-report-page h3 {
-        text-align: center !important;
-        margin-bottom: 12px !important;
-      }
-
-      .calculator-report-date {
-        text-align: center !important;
-        margin: 0 0 18px !important;
-        font-weight: bold !important;
-      }
-
-      .calculator-report-card {
-        margin: 18px 0 !important;
-        padding: 14px !important;
-        background: #f8f8f8 !important;
-        border: 4px solid var(--black) !important;
-        box-shadow: 5px 5px 0 var(--black) !important;
-      }
-
-      .calculator-report-table-scroll,
-      .calculator-report-result {
-        width: 100% !important;
-        overflow-x: auto !important;
-      }
-
-      .calculator-report-page table {
-        width: 100% !important;
-        border-collapse: collapse !important;
-      }
-
-      .calculator-report-page th,
-      .calculator-report-page td {
-        padding: 10px !important;
-        border: 3px solid var(--black) !important;
-        text-align: left !important;
-      }
-
-      .calculator-report-actions {
-        display: grid !important;
-        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-        gap: 14px !important;
-        margin-top: 24px !important;
-        padding-top: 18px !important;
-        border-top: 4px solid var(--black) !important;
-      }
-
-      .calculator-report-action-btn {
-        min-height: 54px !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        padding: 10px 14px !important;
-        color: var(--black) !important;
-        border: 5px solid var(--black) !important;
-        box-shadow: 5px 5px 0 var(--black) !important;
-        font-family: inherit !important;
-        font-size: 18px !important;
-        font-weight: bold !important;
-        line-height: 1.1 !important;
-        text-align: center !important;
-        text-decoration: none !important;
-        cursor: pointer !important;
-        transition: 0.15s !important;
-      }
-
-      .calculator-report-action-btn:hover {
-        transform: translate(-3px, -3px) rotate(-1deg) !important;
-        box-shadow: 8px 8px 0 var(--black) !important;
-      }
-
-      .calculator-report-back-btn { background: #fff4b8 !important; }
-      .calculator-report-copy-btn { background: #ffd3d3 !important; }
-      .calculator-report-save-btn { background: #b8ffb8 !important; }
-      .calculator-report-share-btn { background: #d3fff9 !important; }
-
-      @media (max-width: 850px) {
-        .calculator-report-history-item {
-          grid-template-columns: 1fr !important;
-          gap: 8px !important;
-        }
-
-        .calculator-report-open-link {
-          width: 100% !important;
-        }
-
-        .calculator-report-actions {
-          grid-template-columns: 1fr !important;
-          gap: 12px !important;
-        }
-
-        .calculator-report-action-btn {
-          width: 100% !important;
-          min-height: 52px !important;
-          font-size: 16px !important;
-        }
-      }
+      .calculator-report-history-item { grid-template-columns: 1fr auto !important; align-items: center !important; }
+      .calculator-report-open-link { display: inline-flex !important; align-items: center !important; justify-content: center !important; padding: 6px 10px !important; background: #d3fff9 !important; color: var(--black) !important; border: 3px solid var(--black) !important; box-shadow: 3px 3px 0 var(--black) !important; text-decoration: none !important; font-weight: bold !important; line-height: 1 !important; white-space: nowrap !important; }
+      .calculator-report-page { width: min(1100px, 96vw) !important; margin: 30px auto !important; padding: 18px !important; background: #fff !important; color: var(--black) !important; border: 5px solid var(--black) !important; box-shadow: 8px 8px 0 var(--black) !important; box-sizing: border-box !important; }
+      .calculator-report-page h1, .calculator-report-page h2, .calculator-report-page h3 { text-align: center !important; }
+      .calculator-report-date { text-align: center !important; margin: 0 0 18px !important; }
+      .calculator-report-card { margin: 18px 0 !important; padding: 14px !important; background: #f8f8f8 !important; border: 4px solid var(--black) !important; box-shadow: 5px 5px 0 var(--black) !important; }
+      .calculator-report-table-scroll, .calculator-report-result { width: 100% !important; overflow-x: auto !important; }
+      .calculator-report-page table { width: 100% !important; border-collapse: collapse !important; }
+      .calculator-report-page th, .calculator-report-page td { padding: 10px !important; border: 3px solid var(--black) !important; text-align: left !important; }
+      .calculator-report-summary-boxes { width: 100% !important; display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 14px !important; margin: 20px 0 24px !important; }
+      .calculator-report-summary-card { min-width: 0 !important; padding: 16px 12px !important; color: var(--black) !important; border: 5px solid var(--black) !important; box-shadow: 6px 6px 0 var(--black) !important; text-align: center !important; font-weight: bold !important; }
+      .calculator-report-monthly-card { background: #d3fff9 !important; } .calculator-report-interest-card { background: #fff4b8 !important; } .calculator-report-total-card { background: #b8ffb8 !important; }
+      .calculator-report-summary-card strong { display: block !important; margin-top: 8px !important; font-size: 24px !important; line-height: 1.15 !important; overflow-wrap: break-word !important; }
+      .calculator-report-actions { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 14px !important; margin-top: 24px !important; padding-top: 18px !important; border-top: 4px solid var(--black) !important; }
+      .calculator-report-action-btn { min-height: 54px !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; padding: 10px 14px !important; color: var(--black) !important; border: 5px solid var(--black) !important; box-shadow: 5px 5px 0 var(--black) !important; font-family: inherit !important; font-size: 18px !important; font-weight: bold !important; line-height: 1.1 !important; text-align: center !important; text-decoration: none !important; cursor: pointer !important; transition: 0.15s !important; }
+      .calculator-report-action-btn:hover { transform: translate(-3px, -3px) rotate(-1deg) !important; box-shadow: 8px 8px 0 var(--black) !important; }
+      .calculator-report-back-btn { background: #fff4b8 !important; } .calculator-report-copy-btn { background: #ffd3d3 !important; } .calculator-report-save-btn { background: #b8ffb8 !important; } .calculator-report-share-btn { background: #d3fff9 !important; }
+      body.calculator-report-view #pcHelpQuestionButton, body.calculator-report-view #pcQuestionOverlayButton, body.calculator-report-view .pc-what-slot, body.calculator-report-view .instruction-what-box, body.calculator-report-view .instruction-box { display: none !important; visibility: hidden !important; pointer-events: none !important; }
+      @media (max-width: 850px) { .calculator-report-history-item, .calculator-report-actions, .calculator-report-summary-boxes { grid-template-columns: 1fr !important; } .calculator-report-open-link, .calculator-report-action-btn { width: 100% !important; } }
     `;
-
     document.head.appendChild(style);
   }
 
-  function setupEvents(type) {
-    document.addEventListener("input", function (event) {
-      if (getPageType() !== type) return;
-      if (!event.target.matches("input, select, textarea")) return;
-      if (!event.target.closest(".calculator")) return;
-      scheduleSave(type);
-    }, true);
+  function setupClearGlobals() {
+    window.clearInputHistory = function (type) { clearReports(type || getPageType()); };
+    window.clearAgeHistory = function () { clearReports("age"); };
+    window.clearBMIHistory = function () { clearReports("bmi"); };
+    window.clearBmiHistory = function () { clearReports("bmi"); };
+    window.clearLoanHistory = function () { clearReports("loan"); };
+    window.clearPercentageHistory = function () { clearReports("percentage"); };
+    window.clearCompoundHistory = function () { clearReports("compound"); };
+  }
 
-    document.addEventListener("change", function (event) {
-      if (getPageType() !== type) return;
-      if (!event.target.matches("input, select, textarea")) return;
-      if (!event.target.closest(".calculator")) return;
-      scheduleSave(type);
-    }, true);
-
-    document.addEventListener("click", function (event) {
-      if (getPageType() !== type) return;
-      const button = event.target.closest("button");
-      if (!button) return;
-
-      const text = cleanText(button.textContent).toLowerCase();
-      if (text.includes("clear")) {
-        setTimeout(function () { clearReportHistory(type); }, 0);
-        return;
-      }
-
-      if (text.includes("calculate")) {
-        setTimeout(function () { saveCurrentReport(type); }, 500);
-      }
-    }, true);
+  function fixBmiUnitToggleAutoCalculate() {
+    const oldToggle = window.toggleBMIUnit;
+    if (typeof oldToggle === "function" && !oldToggle.__reportHistoryWrapped) {
+      window.toggleBMIUnit = function () {
+        const result = oldToggle.apply(this, arguments);
+        scheduleCalculate("bmi");
+        return result;
+      };
+      window.toggleBMIUnit.__reportHistoryWrapped = true;
+    }
   }
 
   function start() {
-    installStyle();
-
+    installStyles();
+    setupClearGlobals();
+    setupAutoCalculate();
+    setupReportLinkClicks();
+    applyCorrectPageClass();
+    hideCalculateButtons();
+    fixBmiUnitToggleAutoCalculate();
     if (openReportFromHash()) return;
-
     const type = getPageType();
-    if (!isReportType(type)) return;
-
-    renderCalculatorReportHistory(type);
-    setupEvents(type);
-
-    setTimeout(function () { renderCalculatorReportHistory(type); }, 100);
-    setTimeout(function () { saveCurrentReport(type); }, 1000);
+    if (isReportType(type)) renderReportHistory(type);
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
+  window.renderCalculatorReportHistory = function (type) { renderReportHistory(type || getPageType()); };
+  window.saveCurrentCalculatorReport = function (type) { return saveCurrentReport(type || getPageType()); };
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
+  else start();
 })();
