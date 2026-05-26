@@ -773,3 +773,23 @@
     margin-top: -38px !important;
   }
 }
+
+
+/* =====================================================
+   PHONE INDEX: Interactive abacus sizing
+===================================================== */
+@media (max-width: 850px) {
+  body.index-page .interactive-abacus {
+    grid-template-columns: repeat(7, minmax(58px, 1fr)) !important;
+  }
+
+  body.index-page .interactive-abacus .abacus-rod {
+    min-width: 58px !important;
+    height: 266px !important;
+  }
+
+  body.index-page .interactive-abacus .abacus-rod-number {
+    font-size: 15px !important;
+    min-width: 28px !important;
+  }
+}

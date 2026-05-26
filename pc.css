@@ -5055,3 +5055,17 @@ body.loan-page .mortgage-report-back a {
     margin-top: -38px !important;
   }
 }
+
+
+/* =====================================================
+   PC INDEX: Interactive abacus sizing
+===================================================== */
+@media (min-width: 851px) {
+  body.index-page .interactive-abacus {
+    grid-template-columns: repeat(7, minmax(72px, 1fr)) !important;
+  }
+
+  body.index-page .interactive-abacus .abacus-rod {
+    height: 286px !important;
+  }
+}

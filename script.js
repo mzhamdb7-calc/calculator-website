@@ -3108,19 +3108,23 @@
   }
 })();
 
-
 /* =====================================================
-   INDEX: Live abacus clock
-   - Shows HHMMSS on a cartoon soroban-style abacus
+   INDEX: Interactive abacus
+   - Click or drag beads to change each rod value
+   - Number indicator appears above each rod
 ===================================================== */
 (function () {
   "use strict";
 
-  const TOP_INACTIVE = 14;
-  const TOP_ACTIVE = 56;
-  const LOWER_ACTIVE_START = 104;
-  const LOWER_INACTIVE_START = 142;
+  const ROD_COUNT = 7;
+  const TOP_INACTIVE = 38;
+  const TOP_ACTIVE = 72;
+  const LOWER_ACTIVE_START = 124;
+  const LOWER_INACTIVE_START = 162;
   const BEAD_GAP = 28;
+
+  let digits = new Array(ROD_COUNT).fill(0);
+  let pointerDown = false;
 
   function isIndexPage() {
     return (
@@ -3130,54 +3134,26 @@
     );
   }
 
-  function pad2(value) {
-    return String(value).padStart(2, "0");
+  function formatValue() {
+    const raw = digits.join("").replace(/^0+(?=\d)/, "");
+    const number = Number(raw || "0");
+
+    if (!Number.isFinite(number)) return raw || "0";
+
+    return number.toLocaleString("en-MY");
   }
 
-  function buildRod(labelText) {
-    const rod = document.createElement("div");
-    rod.className = "abacus-rod";
-
-    const separator = document.createElement("div");
-    separator.className = "abacus-separator";
-
-    const top = document.createElement("span");
-    top.className = "abacus-bead abacus-top-bead";
-    top.dataset.kind = "top";
-
-    rod.appendChild(separator);
-    rod.appendChild(top);
-
-    for (let i = 0; i < 4; i += 1) {
-      const bead = document.createElement("span");
-      bead.className = "abacus-bead abacus-lower-bead";
-      bead.dataset.kind = "lower";
-      bead.dataset.index = String(i);
-      rod.appendChild(bead);
-    }
-
-    const label = document.createElement("span");
-    label.className = "abacus-label";
-    label.innerHTML = labelText + '<span class="abacus-digit">0</span>';
-    rod.appendChild(label);
-
-    return rod;
-  }
-
-  function buildAbacus() {
-    const abacus = document.getElementById("liveAbacus");
-    if (!abacus || abacus.dataset.ready === "true") return;
-
-    abacus.dataset.ready = "true";
-    abacus.innerHTML = "";
-
-    ["H", "H", "M", "M", "S", "S"].forEach(function (label) {
-      abacus.appendChild(buildRod(label));
-    });
+  function updateValueText() {
+    const text = document.getElementById("liveAbacusValueText");
+    if (text) text.textContent = formatValue();
   }
 
   function setRodDigit(rod, digit) {
     const number = Math.max(0, Math.min(9, Number(digit) || 0));
+    const rodIndex = Number(rod.dataset.rodIndex || "0");
+
+    digits[rodIndex] = number;
+
     const topActive = number >= 5;
     const lowerCount = number % 5;
 
@@ -3185,6 +3161,7 @@
     if (top) {
       top.style.top = (topActive ? TOP_ACTIVE : TOP_INACTIVE) + "px";
       top.classList.toggle("is-active", topActive);
+      top.setAttribute("aria-pressed", topActive ? "true" : "false");
     }
 
     rod.querySelectorAll(".abacus-lower-bead").forEach(function (bead) {
@@ -3196,43 +3173,139 @@
         "px";
 
       bead.classList.toggle("is-active", active);
+      bead.setAttribute("aria-pressed", active ? "true" : "false");
     });
 
     const digitLabel = rod.querySelector(".abacus-digit");
-    if (digitLabel) {
-      digitLabel.textContent = String(number);
-    }
+    if (digitLabel) digitLabel.textContent = String(number);
+
+    const numberLabel = rod.querySelector(".abacus-rod-number");
+    if (numberLabel) numberLabel.textContent = String(number);
+
+    updateValueText();
   }
 
-  function updateAbacus() {
-    if (!isIndexPage()) return;
+  function rodPlaceLabel(index) {
+    const labels = ["M", "100K", "10K", "1K", "100", "10", "1"];
+    return labels[index] || "1";
+  }
 
-    buildAbacus();
+  function buildRod(index) {
+    const rod = document.createElement("div");
+    rod.className = "abacus-rod";
+    rod.dataset.rodIndex = String(index);
 
-    const now = new Date();
-    const value = pad2(now.getHours()) + pad2(now.getMinutes()) + pad2(now.getSeconds());
-    const pretty = value.slice(0, 2) + ":" + value.slice(2, 4) + ":" + value.slice(4, 6);
+    const numberLabel = document.createElement("span");
+    numberLabel.className = "abacus-rod-number";
+    numberLabel.textContent = "0";
+    rod.appendChild(numberLabel);
 
-    const text = document.getElementById("liveAbacusTimeText");
-    if (text) {
-      text.textContent = pretty;
+    const separator = document.createElement("div");
+    separator.className = "abacus-separator";
+    rod.appendChild(separator);
+
+    const top = document.createElement("button");
+    top.type = "button";
+    top.className = "abacus-bead abacus-top-bead";
+    top.dataset.kind = "top";
+    top.setAttribute("aria-label", "Toggle top bead for " + rodPlaceLabel(index));
+    rod.appendChild(top);
+
+    for (let i = 0; i < 4; i += 1) {
+      const bead = document.createElement("button");
+      bead.type = "button";
+      bead.className = "abacus-bead abacus-lower-bead";
+      bead.dataset.kind = "lower";
+      bead.dataset.index = String(i);
+      bead.setAttribute("aria-label", "Set lower beads to " + (i + 1) + " for " + rodPlaceLabel(index));
+      rod.appendChild(bead);
     }
 
-    document.querySelectorAll("#liveAbacus .abacus-rod").forEach(function (rod, index) {
-      setRodDigit(rod, value[index] || "0");
+    const label = document.createElement("span");
+    label.className = "abacus-label";
+    label.innerHTML = rodPlaceLabel(index) + '<span class="abacus-digit">0</span>';
+    rod.appendChild(label);
+
+    setRodDigit(rod, 0);
+    return rod;
+  }
+
+  function handleBeadAction(bead) {
+    const rod = bead.closest(".abacus-rod");
+    if (!rod) return;
+
+    const current = digits[Number(rod.dataset.rodIndex || "0")] || 0;
+    const hasTop = current >= 5;
+    const lower = current % 5;
+
+    if (bead.dataset.kind === "top") {
+      setRodDigit(rod, (hasTop ? 0 : 5) + lower);
+      return;
+    }
+
+    const wanted = Number(bead.dataset.index || "0") + 1;
+    const newLower = lower === wanted ? Math.max(0, wanted - 1) : wanted;
+    setRodDigit(rod, (hasTop ? 5 : 0) + newLower);
+  }
+
+  function buildAbacus() {
+    const abacus = document.getElementById("liveAbacus");
+    if (!abacus || abacus.dataset.interactiveReady === "true") return;
+
+    abacus.dataset.interactiveReady = "true";
+    abacus.innerHTML = "";
+
+    for (let i = 0; i < ROD_COUNT; i += 1) {
+      abacus.appendChild(buildRod(i));
+    }
+
+    abacus.addEventListener("pointerdown", function (event) {
+      const bead = event.target.closest(".abacus-bead");
+      if (!bead) return;
+
+      pointerDown = true;
+      event.preventDefault();
+      handleBeadAction(bead);
     });
+
+    abacus.addEventListener("pointerover", function (event) {
+      if (!pointerDown) return;
+      const bead = event.target.closest(".abacus-bead");
+      if (!bead) return;
+      handleBeadAction(bead);
+    });
+
+    document.addEventListener("pointerup", function () {
+      pointerDown = false;
+    });
+
+    abacus.addEventListener("click", function (event) {
+      const bead = event.target.closest(".abacus-bead");
+      if (!bead) return;
+      event.preventDefault();
+    });
+
+    const reset = document.getElementById("liveAbacusReset");
+    if (reset) {
+      reset.addEventListener("click", function () {
+        digits = new Array(ROD_COUNT).fill(0);
+        document.querySelectorAll("#liveAbacus .abacus-rod").forEach(function (rod) {
+          setRodDigit(rod, 0);
+        });
+      });
+    }
+
+    updateValueText();
   }
 
-  function startLiveAbacus() {
+  function startInteractiveAbacus() {
     if (!isIndexPage()) return;
-
-    updateAbacus();
-    setInterval(updateAbacus, 1000);
+    buildAbacus();
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startLiveAbacus);
+    document.addEventListener("DOMContentLoaded", startInteractiveAbacus);
   } else {
-    startLiveAbacus();
+    startInteractiveAbacus();
   }
 })();

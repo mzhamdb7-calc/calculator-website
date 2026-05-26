@@ -1,2 +1,2 @@
-CHATGPT_INDEX_SIDE_BY_SIDE_LIVE_ABACUS
-version=20260526_1905_index_abacus
+CHATGPT_UPDATE_MARKER
+version=20260526_2035_interactive_play_abacus

@@ -1991,3 +1991,89 @@ body.index-page .abacus-digit {
   margin-top: 2px;
   font-size: 20px;
 }
+
+
+/* =====================================================
+   INDEX: Interactive abacus override
+===================================================== */
+body.index-page .interactive-abacus-card .live-abacus-subtitle {
+  margin-bottom: 14px;
+}
+
+body.index-page .interactive-abacus-value {
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+body.index-page .interactive-abacus-reset {
+  padding: 6px 10px;
+  background: #ffd3d3;
+  color: var(--black);
+  border: 3px solid var(--black);
+  box-shadow: 3px 3px 0 var(--black);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
+}
+
+body.index-page .interactive-abacus-reset:hover {
+  background: var(--yellow);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--black);
+}
+
+body.index-page .interactive-abacus {
+  grid-template-columns: repeat(7, minmax(72px, 1fr));
+  touch-action: none;
+  user-select: none;
+}
+
+body.index-page .interactive-abacus .abacus-rod {
+  height: 286px;
+}
+
+body.index-page .interactive-abacus .abacus-rod::before {
+  top: 38px;
+  bottom: 34px;
+}
+
+body.index-page .interactive-abacus .abacus-rod-number {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  z-index: 6;
+  min-width: 34px;
+  padding: 3px 6px;
+  background: #fff4b8;
+  color: var(--black);
+  border: 3px solid var(--black);
+  box-shadow: 2px 2px 0 var(--black);
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+body.index-page .interactive-abacus .abacus-separator {
+  top: 106px;
+}
+
+body.index-page .interactive-abacus .abacus-bead {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+body.index-page .interactive-abacus .abacus-bead:focus-visible {
+  outline: 4px solid #1d4ed8;
+  outline-offset: 2px;
+}
+
+body.index-page .interactive-abacus .abacus-label {
+  bottom: 5px;
+}

@@ -19,9 +19,9 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=20260526_1905_index_abacus">
-  <link rel="stylesheet" href="pc.css?v=20260526_1905_index_abacus" media="screen and (min-width: 851px)">
-  <link rel="stylesheet" href="phone.css?v=20260526_1905_index_abacus" media="screen and (max-width: 850px)">
+  <link rel="stylesheet" href="style.css?v=20260526_2020_interactive_abacus">
+  <link rel="stylesheet" href="pc.css?v=20260526_2020_interactive_abacus" media="screen and (min-width: 851px)">
+  <link rel="stylesheet" href="phone.css?v=20260526_2020_interactive_abacus" media="screen and (max-width: 850px)">
 
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
@@ -130,25 +130,26 @@
 
   </main>
 
-  <!-- Live Abacus -->
-  <section class="live-abacus-section" aria-label="Live abacus">
-    <div class="live-abacus-card">
-      <h2>Live Abacus</h2>
-      <p class="live-abacus-subtitle">A moving abacus that updates every second.</p>
+  <!-- Interactive Abacus -->
+  <section class="live-abacus-section interactive-abacus-section" aria-label="Interactive abacus">
+    <div class="live-abacus-card interactive-abacus-card">
+      <h2>Interactive Abacus</h2>
+      <p class="live-abacus-subtitle">Click or drag the beads to play around with the abacus.</p>
 
-      <div class="live-abacus-value">
-        <span class="live-abacus-value-label">Current time</span>
-        <span id="liveAbacusTimeText">--:--:--</span>
+      <div class="live-abacus-value interactive-abacus-value">
+        <span class="live-abacus-value-label">Current value</span>
+        <span id="liveAbacusValueText">0</span>
+        <button type="button" id="liveAbacusReset" class="interactive-abacus-reset">Reset</button>
       </div>
 
-      <div id="liveAbacus" class="live-abacus" aria-live="polite"></div>
+      <div id="liveAbacus" class="live-abacus interactive-abacus" aria-live="polite"></div>
     </div>
   </section>
 
 
-  <script src="script.js?v=20260526_1905_index_abacus"></script>
-  <script src="pc.js?v=20260526_1905_index_abacus"></script>
-  <script src="phone.js?v=20260526_1905_index_abacus"></script>
+  <script src="script.js?v=20260526_2020_interactive_abacus"></script>
+  <script src="pc.js?v=20260526_2020_interactive_abacus"></script>
+  <script src="phone.js?v=20260526_2020_interactive_abacus"></script>
 
 </body>
 </html>
