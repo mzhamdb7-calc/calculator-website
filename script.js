@@ -11300,3 +11300,403 @@
     startMortgageForceAutoCalculate();
   }
 })();
+/* =====================================================
+   ALL PAGES: Rename history box title to History
+===================================================== */
+(function () {
+  "use strict";
+
+  function renameHistoryTitle() {
+    document
+      .querySelectorAll(
+        ".history h3, " +
+        ".history-top h3, " +
+        ".age-history-box h3, " +
+        ".age-history-top h3, " +
+        ".bmi-history-box h3, " +
+        ".bmi-history-top h3, " +
+        ".discount-history-box h3, " +
+        ".discount-history-top h3, " +
+        ".loan-history-box h3, " +
+        ".loan-history-top h3, " +
+        ".percentage-history-box h3, " +
+        ".percentage-history-top h3, " +
+        ".compound-history-box h3, " +
+        ".compound-history-top h3"
+      )
+      .forEach(function (title) {
+        title.textContent = "History";
+      });
+  }
+
+  function start() {
+    renameHistoryTitle();
+
+    setTimeout(renameHistoryTitle, 100);
+    setTimeout(renameHistoryTitle, 500);
+    setTimeout(renameHistoryTitle, 1000);
+    setTimeout(renameHistoryTitle, 2000);
+
+    document.addEventListener("input", function () {
+      setTimeout(renameHistoryTitle, 100);
+    }, true);
+
+    document.addEventListener("change", function () {
+      setTimeout(renameHistoryTitle, 100);
+    }, true);
+
+    document.addEventListener("click", function () {
+      setTimeout(renameHistoryTitle, 100);
+      setTimeout(renameHistoryTitle, 500);
+    }, true);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+/* =====================================================
+   MORTGAGE REPORT: Summary boxes side by side
+   - Monthly payment
+   - Total interest
+   - Total payment
+   - Shows inside opened report page only
+===================================================== */
+(function () {
+  "use strict";
+
+  function getReportPage() {
+    return (
+      document.querySelector(".mortgage-fast-report-page") ||
+      document.querySelector(".mortgage-final-report-page") ||
+      document.getElementById("mortgageFinalReportPage") ||
+      document.getElementById("mortgageSharedReport")
+    );
+  }
+
+  function cleanText(value) {
+    return String(value || "").replace(/\s+/g, " ").trim();
+  }
+
+  function hasMoney(value) {
+    return /(?:RM\s*)?[\d,]+(?:\.\d{1,2})?/i.test(String(value || ""));
+  }
+
+  function cleanMoney(value) {
+    const text = cleanText(value);
+    const match = text.match(/RM\s*[\d,]+(?:\.\d{1,2})?|[\d,]+(?:\.\d{1,2})?/i);
+
+    if (!match) return text || "-";
+
+    const raw = match[0];
+    const number = Number(raw.replace(/[^\d.-]/g, ""));
+
+    if (!Number.isFinite(number)) return raw;
+
+    return "RM " + number.toLocaleString("en-MY", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function findValueInTables(report, labelPattern) {
+    const rows = Array.from(report.querySelectorAll("tr"));
+
+    for (const row of rows) {
+      const cells = Array.from(row.querySelectorAll("th, td"));
+
+      if (cells.length < 2) continue;
+
+      const label = cleanText(cells[0].innerText || cells[0].textContent);
+      const value = cleanText(cells[cells.length - 1].innerText || cells[cells.length - 1].textContent);
+
+      if (labelPattern.test(label) && hasMoney(value)) {
+        return cleanMoney(value);
+      }
+    }
+
+    return "";
+  }
+
+  function findValueInLines(report, labelPattern) {
+    const lines = cleanText(report.innerText || report.textContent || "")
+      .split(/(?=Monthly|Total|Full|Estimated|Payment|Interest)/i)
+      .map(cleanText)
+      .filter(Boolean);
+
+    for (let i = 0; i < lines.length; i += 1) {
+      const line = lines[i];
+
+      if (!labelPattern.test(line)) continue;
+
+      if (hasMoney(line)) {
+        return cleanMoney(line);
+      }
+
+      if (lines[i + 1] && hasMoney(lines[i + 1])) {
+        return cleanMoney(lines[i + 1]);
+      }
+    }
+
+    return "";
+  }
+
+  function findMetric(report, labelPattern) {
+    return (
+      findValueInTables(report, labelPattern) ||
+      findValueInLines(report, labelPattern) ||
+      "-"
+    );
+  }
+
+  function addMortgageReportSummaryBoxes() {
+    const report = getReportPage();
+    if (!report) return;
+
+    const old = report.querySelector(".mortgage-report-summary-boxes");
+    if (old) old.remove();
+
+    const monthlyPayment = findMetric(
+      report,
+      /monthly\s*(mortgage\s*)?(payment|repayment)|payment\s*per\s*month|estimated\s*monthly/i
+    );
+
+    const totalInterest = findMetric(
+      report,
+      /total\s*interest|full\s*loan\s*interest|interest\s*paid|total\s*loan\s*interest/i
+    );
+
+    const totalPayment = findMetric(
+      report,
+      /total\s*payment|full\s*payment\s*value|total\s*repayment|total\s*amount\s*paid|total\s*paid/i
+    );
+
+    if (
+      monthlyPayment === "-" &&
+      totalInterest === "-" &&
+      totalPayment === "-"
+    ) {
+      return;
+    }
+
+    const boxes = document.createElement("div");
+    boxes.className = "mortgage-report-summary-boxes";
+
+    boxes.innerHTML =
+      '<div class="mortgage-report-summary-card mortgage-report-monthly-card">' +
+        '<div class="mortgage-report-summary-label">Monthly payment</div>' +
+        '<div class="mortgage-report-summary-value">' + monthlyPayment + '</div>' +
+      '</div>' +
+
+      '<div class="mortgage-report-summary-card mortgage-report-interest-card">' +
+        '<div class="mortgage-report-summary-label">Total interest</div>' +
+        '<div class="mortgage-report-summary-value">' + totalInterest + '</div>' +
+      '</div>' +
+
+      '<div class="mortgage-report-summary-card mortgage-report-total-card">' +
+        '<div class="mortgage-report-summary-label">Total payment</div>' +
+        '<div class="mortgage-report-summary-value">' + totalPayment + '</div>' +
+      '</div>';
+
+    const dateLine =
+      report.querySelector(".mortgage-final-report-date") ||
+      report.querySelector(".mortgage-report-date") ||
+      report.querySelector("p");
+
+    if (dateLine) {
+      dateLine.insertAdjacentElement("afterend", boxes);
+    } else {
+      report.insertAdjacentElement("afterbegin", boxes);
+    }
+  }
+
+  function installStyle() {
+    if (document.getElementById("mortgageReportSummaryBoxesStyle")) return;
+
+    const style = document.createElement("style");
+    style.id = "mortgageReportSummaryBoxesStyle";
+
+    style.textContent = `
+      body.loan-page .mortgage-report-summary-boxes {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 14px !important;
+        margin: 20px 0 24px !important;
+        box-sizing: border-box !important;
+      }
+
+      body.loan-page .mortgage-report-summary-card {
+        min-width: 0 !important;
+        padding: 16px 12px !important;
+        color: var(--black) !important;
+        border: 5px solid var(--black) !important;
+        box-shadow: 6px 6px 0 var(--black) !important;
+        text-align: center !important;
+        box-sizing: border-box !important;
+      }
+
+      body.loan-page .mortgage-report-monthly-card {
+        background: #d3fff9 !important;
+      }
+
+      body.loan-page .mortgage-report-interest-card {
+        background: #fff4b8 !important;
+      }
+
+      body.loan-page .mortgage-report-total-card {
+        background: #b8ffb8 !important;
+      }
+
+      body.loan-page .mortgage-report-summary-label {
+        margin-bottom: 8px !important;
+        font-size: 18px !important;
+        line-height: 1.2 !important;
+        font-weight: bold !important;
+      }
+
+      body.loan-page .mortgage-report-summary-value {
+        font-size: 24px !important;
+        line-height: 1.15 !important;
+        font-weight: bold !important;
+        overflow-wrap: break-word !important;
+        word-break: break-word !important;
+      }
+
+      @media (max-width: 850px) {
+        body.loan-page .mortgage-report-summary-boxes {
+          grid-template-columns: 1fr !important;
+          gap: 12px !important;
+          margin: 18px 0 22px !important;
+        }
+
+        body.loan-page .mortgage-report-summary-card {
+          padding: 14px 10px !important;
+          box-shadow: 5px 5px 0 var(--black) !important;
+        }
+
+        body.loan-page .mortgage-report-summary-label {
+          font-size: 16px !important;
+        }
+
+        body.loan-page .mortgage-report-summary-value {
+          font-size: 22px !important;
+        }
+      }
+    `;
+
+    document.head.appendChild(style);
+  }
+
+  function start() {
+    installStyle();
+
+    addMortgageReportSummaryBoxes();
+
+    setTimeout(addMortgageReportSummaryBoxes, 200);
+    setTimeout(addMortgageReportSummaryBoxes, 600);
+    setTimeout(addMortgageReportSummaryBoxes, 1200);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+/* =====================================================
+   MORTGAGE REPORT: Hide What box + ? button when report opens
+===================================================== */
+(function () {
+  "use strict";
+
+  function isMortgageReportOpen() {
+    return (
+      window.location.hash.startsWith("#mortgage-fast-report=") ||
+      window.location.hash.startsWith("#mortgage-final-report=") ||
+      window.location.hash.startsWith("#mortgage-report=") ||
+      !!document.querySelector(".mortgage-fast-report-page") ||
+      !!document.querySelector(".mortgage-final-report-page") ||
+      !!document.getElementById("mortgageFinalReportPage") ||
+      !!document.getElementById("mortgageSharedReport")
+    );
+  }
+
+  function hideReportExtraBoxes() {
+    if (!isMortgageReportOpen()) return;
+
+    document.body.classList.add("mortgage-report-clean-view");
+    document.body.classList.remove("pc-help-overlay-open");
+
+    document
+      .querySelectorAll(
+        "#pcHelpQuestionButton, " +
+        "#pcQuestionOverlayButton, " +
+        ".pc-what-slot, " +
+        ".instruction-what-box, " +
+        ".instruction-box"
+      )
+      .forEach(function (el) {
+        el.style.setProperty("display", "none", "important");
+        el.style.setProperty("visibility", "hidden", "important");
+        el.style.setProperty("pointer-events", "none", "important");
+      });
+  }
+
+  function installStyle() {
+    if (document.getElementById("mortgageReportCleanViewStyle")) return;
+
+    const style = document.createElement("style");
+    style.id = "mortgageReportCleanViewStyle";
+
+    style.textContent = `
+      body.mortgage-report-clean-view #pcHelpQuestionButton,
+      body.mortgage-report-clean-view #pcQuestionOverlayButton,
+      body.mortgage-report-clean-view .pc-what-slot,
+      body.mortgage-report-clean-view .instruction-what-box,
+      body.mortgage-report-clean-view .instruction-box {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+
+      body.mortgage-report-clean-view main.pc-calculator-layout {
+        display: block !important;
+      }
+    `;
+
+    document.head.appendChild(style);
+  }
+
+  function start() {
+    installStyle();
+    hideReportExtraBoxes();
+
+    setTimeout(hideReportExtraBoxes, 100);
+    setTimeout(hideReportExtraBoxes, 400);
+    setTimeout(hideReportExtraBoxes, 900);
+    setTimeout(hideReportExtraBoxes, 1600);
+
+    window.addEventListener("hashchange", function () {
+      setTimeout(hideReportExtraBoxes, 50);
+      setTimeout(hideReportExtraBoxes, 400);
+    });
+
+    const observer = new MutationObserver(function () {
+      hideReportExtraBoxes();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
