@@ -251,7 +251,7 @@
     tan: "Math.tan(",
     log: "Math.log10(",
     ln: "Math.log(",
-    sqrt: "Math.sqrt("
+    sqrt: "√("
   };
 
   function addFunction(func) {
@@ -313,14 +313,23 @@
     if (!display) return;
 
     try {
-      let expression = cleanText(display.value);
-      if (!expression || expression === "Error") return;
+      let displayExpression = cleanText(display.value)
+        .replace(/Math\.sqrt\s*\(/gi, "√(")
+        .replace(/\bsqrt\s*\(/gi, "√(");
 
-      expression = expression
+      if (!displayExpression || displayExpression === "Error") return;
+
+      if (display.value !== displayExpression) {
+        display.value = displayExpression;
+      }
+
+      lastBasicEquation = displayExpression;
+
+      let expression = displayExpression
+        .replace(/√\s*\(/g, "Math.sqrt(")
         .replace(/(\d)(Math\.)/g, "$1*$2")
         .replace(/\)(Math\.)/g, ")*$1");
 
-      lastBasicEquation = expression;
       expression = closeOpenBrackets(expression);
 
       if (!isSafeExpression(expression)) {
@@ -405,6 +414,23 @@
 
       const display = getDisplay();
       if (!display) return;
+
+      const target = event.target;
+
+      if (target && target.closest && target.closest(".site-search")) {
+        return;
+      }
+
+      if (
+        target &&
+        target.id !== "display" &&
+        (
+          (target.matches && target.matches("input, textarea, select")) ||
+          target.isContentEditable
+        )
+      ) {
+        return;
+      }
 
       const key = event.key;
       const lowerKey = key.toLowerCase();
@@ -760,6 +786,8 @@
   function saveCurrentReport(type, metrics) {
     if (!isReportType(type)) return;
 
+    metrics = metrics || {};
+
     const resultHtml = resultPanelHtml(type);
     const resultText = resultPanelText(type);
     if (!resultHtml || !resultText) return;
@@ -769,6 +797,7 @@
       id: type + "_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8),
       createdAt: new Date().toLocaleString(),
       inputLines: getFilledInputs(),
+      resultLines: Array.isArray(metrics.resultRows) ? metrics.resultRows : [],
       resultHtml: resultHtml,
       resultText: resultText,
       metrics: metrics || {}
@@ -1181,7 +1210,17 @@
     ];
 
     renderResultPanel("age", rows);
-    saveCurrentReport("age", { exactAge: exactText, normalAge: exact.years, asianAge: asianAge });
+    saveCurrentReport("age", {
+      exactAge: exactText,
+      normalAge: exact.years,
+      asianAge: asianAge,
+      resultRows: rows.map(function (row) {
+        return {
+          label: row[0],
+          value: row[1]
+        };
+      })
+    });
   }
 
   /* =====================================================
@@ -1673,6 +1712,31 @@
     return template.innerHTML;
   }
 
+  function resultRowsToTable(rows) {
+    return (
+      '<div class="calculator-report-table-scroll age-report-result-table-wrap">' +
+        '<table class="age-report-result-table">' +
+          '<thead><tr><th>Result item</th><th>Details</th></tr></thead>' +
+          '<tbody>' + tableRows(rows || []) + '</tbody>' +
+        '</table>' +
+      '</div>'
+    );
+  }
+
+  function reportResultHtml(report) {
+    if (report && report.type === "age") {
+      if (Array.isArray(report.resultLines) && report.resultLines.length) {
+        return resultRowsToTable(report.resultLines);
+      }
+
+      if (report.metrics && Array.isArray(report.metrics.resultRows) && report.metrics.resultRows.length) {
+        return resultRowsToTable(report.metrics.resultRows);
+      }
+    }
+
+    return cleanResultHtml(report ? report.resultHtml : "");
+  }
+
   function reportPageTitle(type) {
     return ({
       age: "Age Report",
@@ -1734,7 +1798,7 @@
       '</div>' +
       '<div class="calculator-report-card">' +
         '<h2>Result</h2>' +
-        '<div class="calculator-report-result">' + cleanResultHtml(report.resultHtml) + '</div>' +
+        '<div class="calculator-report-result">' + reportResultHtml(report) + '</div>' +
       '</div>' +
       '<div class="calculator-report-actions">' +
         '<button type="button" class="calculator-report-action-btn calculator-report-back-btn">Go back</button>' +
@@ -2049,13 +2113,23 @@
 
   function setupAutoEvents() {
     document.addEventListener("input", function (event) {
-      if (event.target.matches && event.target.matches("input, select, textarea") && event.target.id !== "display") {
+      if (
+        event.target.matches &&
+        event.target.matches("input, select, textarea") &&
+        event.target.id !== "display" &&
+        !(event.target.closest && event.target.closest("#navbar, .site-search"))
+      ) {
         scheduleAutoCalculate();
       }
     }, true);
 
     document.addEventListener("change", function (event) {
-      if (event.target.matches && event.target.matches("input, select, textarea") && event.target.id !== "display") {
+      if (
+        event.target.matches &&
+        event.target.matches("input, select, textarea") &&
+        event.target.id !== "display" &&
+        !(event.target.closest && event.target.closest("#navbar, .site-search"))
+      ) {
         scheduleAutoCalculate();
       }
     }, true);
@@ -2630,7 +2704,17 @@
 
     if (!input || !results) return;
 
-    input.addEventListener("input", function () {
+    input.addEventListener("keydown", function (event) {
+      /* Keep search typing from triggering calculator keyboard shortcuts. */
+      event.stopPropagation();
+    }, true);
+
+    input.addEventListener("keyup", function (event) {
+      event.stopPropagation();
+    }, true);
+
+    input.addEventListener("input", function (event) {
+      event.stopPropagation();
       renderResults(form, input.value);
     });
 
@@ -2741,8 +2825,9 @@
       .replace(/÷/g, "/")
       .replace(/−/g, "-")
       .replace(/π/gi, "Math.PI")
-      .replace(/√/g, "Math.sqrt")
-      .replace(/[^0-9+\-*/().,%\sA-Za-z]/g, "")
+      .replace(/Math\.sqrt\s*\(/gi, "√(")
+      .replace(/\bsqrt\s*\(/gi, "√(")
+      .replace(/[^0-9+\-*/().,%\sA-Za-z√]/g, "")
       .replace(/\bpi\b/gi, "Math.PI")
       .replace(/\bans\b/gi, function () {
         return String(window.lastAnswer || "0");

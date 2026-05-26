@@ -598,3 +598,17 @@
     background: #ffd3d3 !important;
   }
 }
+
+/* =====================================================
+   PHONE: Search does not overpower menu item sizing
+===================================================== */
+@media (max-width: 850px) {
+  #navbar > .site-search {
+    box-sizing: border-box !important;
+  }
+
+  #navbar .site-search-input,
+  #navbar .site-search-submit {
+    touch-action: manipulation !important;
+  }
+}
