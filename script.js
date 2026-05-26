@@ -529,6 +529,29 @@
     );
   }
 
+  function makePointList(rows) {
+    return (
+      '<div class="age-point-result-box">' +
+        '<ul class="age-point-result-list">' +
+          rows.map(function (row) {
+            return (
+              '<li>' +
+                '<strong>' + escapeHtml(row[0]) + ':</strong> ' +
+                '<span>' + escapeHtml(row[1]) + '</span>' +
+              '</li>'
+            );
+          }).join("") +
+        '</ul>' +
+      '</div>'
+    );
+  }
+
+  function rowsToPlainText(rows) {
+    return rows.map(function (row) {
+      return row[0] + ": " + row[1];
+    }).join("\n");
+  }
+
   function copyTable(table, button) {
     if (!table) return;
 
@@ -557,13 +580,16 @@
     const panel = getOrCreateOutputPanel(type);
     if (!panel) return null;
 
-    panel.className = "loan-style-output-panel calculator-clean-result " + type + "-clean-result";
+    const isAgeResult = type === "age";
+    const resultHtml = isAgeResult ? makePointList(rows) : makeTable(rows);
+
+    panel.className = "loan-style-output-panel calculator-clean-result " + type + "-clean-result" + (isAgeResult ? " age-point-output" : "");
     panel.innerHTML =
       (extraTopHtml || "") +
       '<div class="loan-output-top">' +
         '<div class="loan-result-panel">' +
           '<h2 class="loan-panel-title">Result</h2>' +
-          '<div class="loan-result-body">' + makeTable(rows) + '</div>' +
+          '<div class="loan-result-body">' + resultHtml + '</div>' +
         '</div>' +
         '<div class="loan-copy-side"><button type="button" class="loan-copy-btn">Copy</button></div>' +
       '</div>';
@@ -575,6 +601,11 @@
     const copyBtn = panel.querySelector(".loan-copy-btn");
     if (copyBtn) {
       copyBtn.onclick = function () {
+        if (isAgeResult) {
+          copyText(rowsToPlainText(rows), copyBtn);
+          return;
+        }
+
         copyTable(panel.querySelector("table"), copyBtn);
       };
     }
@@ -992,6 +1023,84 @@
     return animals[(year - 1900) % 12 < 0 ? ((year - 1900) % 12) + 12 : (year - 1900) % 12];
   }
 
+  function chineseZodiacAnimalAgeText(animal, exactAgeYears) {
+    return "Age in " + animal + " year: " + exactAgeYears;
+  }
+
+  function totalDaysBetween(startDate, endDate) {
+    if (!startDate || !endDate || endDate < startDate) return 0;
+    return Math.floor((endDate.getTime() - startDate.getTime()) / 86400000);
+  }
+
+  function compactDuration(parts) {
+    if (!parts) return "-";
+
+    const values = [
+      [parts.years, "year"],
+      [parts.months, "month"],
+      [parts.days, "day"]
+    ];
+
+    return values
+      .filter(function (item) { return Number(item[0]) > 0; })
+      .map(function (item) {
+        return item[0] + " " + item[1] + (item[0] === 1 ? "" : "s");
+      })
+      .join(", ") || "0 days";
+  }
+
+  function countdownToAge(birthDate, targetDate, ageYears, label) {
+    if (!birthDate || !targetDate) return "-";
+
+    const milestoneDate = new Date(
+      birthDate.getFullYear() + ageYears,
+      birthDate.getMonth(),
+      birthDate.getDate(),
+      birthDate.getHours(),
+      birthDate.getMinutes(),
+      birthDate.getSeconds(),
+      birthDate.getMilliseconds()
+    );
+
+    if (birthDate.getMonth() === 1 && birthDate.getDate() === 29 && !isLeapYear(milestoneDate.getFullYear())) {
+      milestoneDate.setMonth(2, 1);
+    }
+
+    if (targetDate < milestoneDate) {
+      return compactDuration(calendarAgeBreakdown(targetDate, milestoneDate)) + " before " + label + " (age " + ageYears + ")";
+    }
+
+    return label + " reached " + compactDuration(calendarAgeBreakdown(milestoneDate, targetDate)) + " ago";
+  }
+
+  function estimatedSleepText(totalDays) {
+    const sleepDays = Math.floor(totalDays / 3);
+    const years = Math.floor(sleepDays / 365.2425);
+    const days = Math.floor(sleepDays - years * 365.2425);
+
+    return years + " years, " + days + " days (estimated 8 hours/day)";
+  }
+
+  function planetAgeText(totalDays) {
+    const planets = [
+      ["Mercury", 87.969],
+      ["Venus", 224.701],
+      ["Mars", 686.98],
+      ["Jupiter", 4332.59],
+      ["Saturn", 10759.22]
+    ];
+
+    return planets.map(function (item) {
+      const age = totalDays / item[1];
+      return item[0] + ": " + age.toFixed(2);
+    }).join(" | ");
+  }
+
+  function moonCycleText(totalDays) {
+    const cycles = totalDays / 29.530588853;
+    return cycles.toFixed(1) + " lunar cycles";
+  }
+
   function formatIntlDate(date, locale) {
     try {
       return new Intl.DateTimeFormat(locale, { dateStyle: "full" }).format(date);
@@ -1047,6 +1156,9 @@
       exact.hours + " hours, " +
       exact.minutes + " minutes";
 
+    const totalAliveDays = totalDaysBetween(birthDate, targetDate);
+    const chineseAnimal = chineseZodiac(year);
+
     const rows = [
       ["Date range", formatDateDMY(birthdate) + " to " + formatDateDMY(targetValue)],
       ["Exact age", exactText],
@@ -1057,7 +1169,14 @@
       ["Born date in Islamic calendar", formatIntlDate(birthDate, "en-GB-u-ca-islamic")],
       ["Born date in Chinese calendar", formatIntlDate(birthDate, "en-GB-u-ca-chinese")],
       ["Western zodiac", westernZodiac(month, day)],
-      ["Chinese zodiac", chineseZodiac(year)],
+      ["Chinese zodiac", chineseAnimal],
+      ["Age in " + chineseAnimal + " year", String(exact.years)],
+      ["Retirement", countdownToAge(birthDate, targetDate, 60, "retirement")],
+      ["Estimated sleep time", estimatedSleepText(totalAliveDays)],
+      ["Age on other planets", planetAgeText(totalAliveDays)],
+      ["Days spent alive", totalAliveDays.toLocaleString()],
+      ["Moon cycles experienced", moonCycleText(totalAliveDays)],
+      ["Legal age", countdownToAge(birthDate, targetDate, 18, "legal adult age")],
       ["Leap year age", leapBirthdayInfo(birthDate, targetDate)]
     ];
 
@@ -1720,10 +1839,10 @@
       references: [["Order of operations", "Purplemath explains the normal order of operations.", "https://www.purplemath.com/modules/orderops.htm"]]
     },
     age: {
-      what: "It calculates exact age, normal age, Asian age, birthday countdown, weekday born, calendar dates, and zodiac signs.",
+      what: "It calculates exact age, normal age, Asian age, birthday countdown, zodiac signs, retirement countdown, sleep estimate, planet age, days alive, moon cycles, and legal age.",
       how: "Select your birth date. The result updates automatically.",
       formula: "Exact age is calculated from birth date to the selected target date using years, months, days, hours, and minutes.",
-      example: "A birth date of 15/01/2000 shows exact age, next birthday countdown, weekday born, zodiac, and Chinese zodiac.",
+      example: "A birth date of 15/01/2000 shows exact age, birthday countdown, zodiac, retirement countdown, planet ages, days alive, and moon cycles.",
       references: [["Age calculation", "Microsoft shows age calculation using today’s date and a birth date.", "https://support.microsoft.com/en-us/office/calculate-age-113d599f-5fea-448f-a4c3-268927911b37"]]
     },
     bmi: {
