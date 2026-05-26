@@ -877,10 +877,8 @@
     }
 
     const highlightHtml =
-      '<div class="bmi-highlight-grid">' +
+      '<div class="bmi-highlight-grid bmi-highlight-grid-single">' +
         makeHighlight(/^BMI$/i, "BMI", "bmi-highlight-bmi") +
-        makeHighlight(/^BMI category$/i, "BMI category", "bmi-highlight-category") +
-        makeHighlight(/^Difference to healthy range$/i, "Difference to healthy range", "bmi-highlight-difference") +
       '</div>';
 
     const highlightPatterns = [/^BMI$/i, /^BMI category$/i, /^Difference to healthy range$/i];
@@ -4650,5 +4648,77 @@
     document.addEventListener("DOMContentLoaded", installBmiCartoonResultStyle);
   } else {
     installBmiCartoonResultStyle();
+  }
+})();
+
+
+/* =====================================================
+   BMI FINAL LAYOUT CLEANUP
+   - Hide BMI category and difference from visible result box
+   - Body details beside stacked Activity and Optional Target boxes
+===================================================== */
+(function () {
+  "use strict";
+
+  function installBmiFinalLayoutCleanup() {
+    if (document.getElementById("bmiFinalLayoutCleanupStyle")) return;
+
+    const style = document.createElement("style");
+    style.id = "bmiFinalLayoutCleanupStyle";
+    style.textContent = `
+      body.bmi-page .bmi-input-groups {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr) !important;
+        grid-template-areas:
+          "body goal"
+          "body optional" !important;
+        gap: 16px !important;
+        align-items: stretch !important;
+      }
+
+      body.bmi-page .bmi-body-box {
+        grid-area: body !important;
+      }
+
+      body.bmi-page .bmi-goal-box {
+        grid-area: goal !important;
+      }
+
+      body.bmi-page .bmi-optional-box {
+        grid-area: optional !important;
+      }
+
+      body.bmi-page #bmiReportOutput .bmi-highlight-grid,
+      body.bmi-page #bmiReportOutput .bmi-highlight-grid-single {
+        grid-template-columns: minmax(0, 1fr) !important;
+        max-width: 360px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
+
+      body.bmi-page #bmiReportOutput .bmi-highlight-category,
+      body.bmi-page #bmiReportOutput .bmi-highlight-difference {
+        display: none !important;
+      }
+
+      @media (max-width: 850px) {
+        body.bmi-page .bmi-input-groups {
+          grid-template-columns: 1fr !important;
+          grid-template-areas:
+            "body"
+            "goal"
+            "optional" !important;
+        }
+      }
+    `;
+
+    document.head.appendChild(style);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", installBmiFinalLayoutCleanup);
+  } else {
+    installBmiFinalLayoutCleanup();
   }
 })();
