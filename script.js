@@ -1652,23 +1652,43 @@
 
   function historicalEventFallback(month, day) {
     const key = String(month).padStart(2, "0") + "-" + String(day).padStart(2, "0");
+
+    /*
+      Keep the Age Calculator historical event focused only on:
+      - war / battle / treaty events
+      - technology or science advancement
+      - modern or ancient civilization events
+    */
     const list = {
-      "01-01": "1863 - The Emancipation Proclamation took effect in the United States.",
-      "01-15": "1929 - Martin Luther King Jr. was born in Atlanta, Georgia.",
-      "02-12": "1809 - Abraham Lincoln was born.",
-      "03-14": "1879 - Albert Einstein was born.",
-      "04-15": "1912 - RMS Titanic sank in the North Atlantic.",
+      "01-01": "1863 - The Emancipation Proclamation took effect during the American Civil War.",
+      "01-08": "1815 - The Battle of New Orleans was fought during the War of 1812.",
+      "01-15": "1970 - Muammar Gaddafi became premier of Libya after the 1969 revolution.",
+      "02-12": "1818 - Chile formally declared independence from Spain.",
+      "03-14": "1794 - Eli Whitney received a patent for the cotton gin, an important industrial technology.",
+      "04-12": "1961 - Yuri Gagarin became the first human to travel into outer space.",
+      "04-15": "1450 - The Battle of Formigny helped end major English control in northern France.",
       "05-05": "1961 - Alan Shepard became the first American in space.",
       "06-06": "1944 - D-Day landings began in Normandy during World War II.",
       "07-20": "1969 - Apollo 11 landed the first humans on the Moon.",
       "08-31": "1957 - The Federation of Malaya gained independence.",
       "09-16": "1963 - Malaysia was formed.",
-      "10-24": "1945 - The United Nations officially came into existence.",
-      "11-09": "1989 - The Berlin Wall began to fall.",
-      "12-25": "1991 - Mikhail Gorbachev resigned as President of the Soviet Union."
+      "10-24": "1945 - The United Nations officially came into existence after World War II.",
+      "11-09": "1989 - The Berlin Wall began to fall, a major Cold War civilization milestone.",
+      "12-17": "1903 - The Wright brothers made the first controlled powered airplane flight.",
+      "12-25": "1991 - The Soviet Union dissolved, ending a major modern civilization era."
     };
 
-    return list[key] || "Loading a historical event for this date...";
+    return list[key] || "No matching war, technology, or civilization event found for this date yet.";
+  }
+
+  function isRelevantAgeHistoricalEvent(item) {
+    const text = String((item && item.text) || "").toLowerCase();
+    const year = Number(item && item.year);
+
+    if (!text) return false;
+    if (Number.isFinite(year) && year >= 2000) return false;
+
+    return /war|battle|invasion|siege|treaty|revolution|rebellion|independence|civil war|world war|cold war|army|navy|military|empire|kingdom|dynasty|civilization|civilisation|republic|state|nation|founded|formation|unification|collapse|fall of|ancient|roman|greek|egypt|persian|ottoman|maya|aztec|technology|technological|invention|invented|patent|computer|internet|satellite|space|moon|apollo|airplane|aircraft|flight|telephone|telegraph|radio|electricity|nuclear|steam engine|printing press|industrial/i.test(text);
   }
 
   function extractHistoricalEventText(item) {
@@ -1692,8 +1712,8 @@
       })
       .then(function (data) {
         const events = Array.isArray(data.events) ? data.events : [];
-        const before2000 = events.find(function (item) { return Number(item && item.year) < 2000; });
-        const eventText = extractHistoricalEventText(before2000);
+        const focusedEvent = events.find(isRelevantAgeHistoricalEvent);
+        const eventText = extractHistoricalEventText(focusedEvent);
 
         if (!eventText) return;
 
