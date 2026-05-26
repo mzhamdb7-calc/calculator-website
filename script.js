@@ -10601,3 +10601,313 @@
     start();
   }
 })();
+/* =====================================================
+   MORTGAGE REPORT: Bottom action buttons
+   - Go back
+   - Copy report
+   - Save report as HTML file
+   - Share report link
+   - Cartoon style matching your page
+===================================================== */
+(function () {
+  "use strict";
+
+  function isMortgageReportPage() {
+    return !!(
+      document.querySelector(".mortgage-fast-report-page") ||
+      document.querySelector(".mortgage-final-report-page") ||
+      document.getElementById("mortgageFinalReportPage") ||
+      document.getElementById("mortgageSharedReport")
+    );
+  }
+
+  function getReportPage() {
+    return (
+      document.querySelector(".mortgage-fast-report-page") ||
+      document.querySelector(".mortgage-final-report-page") ||
+      document.getElementById("mortgageFinalReportPage") ||
+      document.getElementById("mortgageSharedReport")
+    );
+  }
+
+  function cleanText(value) {
+    return String(value || "").replace(/\s+/g, " ").trim();
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function copyToClipboard(text, button) {
+    if (!text) return;
+
+    function done() {
+      const old = button.textContent;
+      button.textContent = "Copied!";
+
+      setTimeout(function () {
+        button.textContent = old;
+      }, 1200);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done).catch(function () {
+        fallbackCopy(text);
+        done();
+      });
+    } else {
+      fallbackCopy(text);
+      done();
+    }
+  }
+
+  function getReportText(report) {
+    return cleanText(report.innerText || report.textContent || "");
+  }
+
+  function getReportHtmlFile(report) {
+    const title = "Mortgage Report";
+
+    return (
+      "<!DOCTYPE html>" +
+      '<html lang="en">' +
+      "<head>" +
+      '<meta charset="UTF-8">' +
+      '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+      "<title>" + title + "</title>" +
+      "<style>" +
+      "body{background:#dfeeff;color:#000;font-family:'Comic Sans MS','Comic Neue',cursive,sans-serif;padding:24px;}" +
+      ".report{max-width:1100px;margin:0 auto;padding:18px;background:#fff;border:5px solid #000;box-shadow:8px 8px 0 #000;}" +
+      "h1,h2{text-align:center;}" +
+      "table{width:100%;border-collapse:collapse;margin:16px 0;}" +
+      "td,th{padding:10px;border:3px solid #000;text-align:left;}" +
+      "a,button{font-family:inherit;}" +
+      "</style>" +
+      "</head>" +
+      "<body>" +
+      '<div class="report">' +
+      report.innerHTML +
+      "</div>" +
+      "</body>" +
+      "</html>"
+    );
+  }
+
+  function saveReport(report, button) {
+    const html = getReportHtmlFile(report);
+    const blob = new Blob([html], {
+      type: "text/html;charset=utf-8"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    const date = new Date();
+    const fileDate =
+      date.getFullYear() +
+      "-" +
+      String(date.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(date.getDate()).padStart(2, "0");
+
+    link.href = url;
+    link.download = "mortgage-report-" + fileDate + ".html";
+    document.body.appendChild(link);
+    link.click();
+
+    setTimeout(function () {
+      URL.revokeObjectURL(url);
+      link.remove();
+    }, 500);
+
+    const old = button.textContent;
+    button.textContent = "Saved!";
+
+    setTimeout(function () {
+      button.textContent = old;
+    }, 1200);
+  }
+
+  function shareReport(report, button) {
+    const shareUrl = window.location.href;
+    const title = "Mortgage Report";
+    const text = getReportText(report);
+
+    if (navigator.share) {
+      navigator
+        .share({
+          title: title,
+          text: text.slice(0, 500),
+          url: shareUrl
+        })
+        .catch(function () {
+          copyToClipboard(shareUrl, button);
+        });
+
+      return;
+    }
+
+    copyToClipboard(shareUrl, button);
+  }
+
+  function addReportButtons() {
+    if (!isMortgageReportPage()) return;
+
+    const report = getReportPage();
+    if (!report) return;
+    if (report.querySelector(".mortgage-report-actions")) return;
+
+    /*
+      Remove the old plain Back link if the report already has one.
+    */
+    report
+      .querySelectorAll(".mortgage-fast-report-page > p:last-child, .mortgage-final-back, .mortgage-report-back")
+      .forEach(function (el) {
+        if (/back to calculator/i.test(el.textContent || "")) {
+          el.remove();
+        }
+      });
+
+    const actions = document.createElement("div");
+    actions.className = "mortgage-report-actions";
+
+    const backButton = document.createElement("a");
+    backButton.className = "mortgage-report-action-btn mortgage-report-back-btn";
+    backButton.href = window.location.href.split("#")[0];
+    backButton.textContent = "Go back";
+
+    const copyButton = document.createElement("button");
+    copyButton.type = "button";
+    copyButton.className = "mortgage-report-action-btn mortgage-report-copy-btn";
+    copyButton.textContent = "Copy report";
+
+    const saveButton = document.createElement("button");
+    saveButton.type = "button";
+    saveButton.className = "mortgage-report-action-btn mortgage-report-save-btn";
+    saveButton.textContent = "Save report";
+
+    const shareButton = document.createElement("button");
+    shareButton.type = "button";
+    shareButton.className = "mortgage-report-action-btn mortgage-report-share-btn";
+    shareButton.textContent = "Share report";
+
+    copyButton.addEventListener("click", function () {
+      copyToClipboard(getReportText(report), copyButton);
+    });
+
+    saveButton.addEventListener("click", function () {
+      saveReport(report, saveButton);
+    });
+
+    shareButton.addEventListener("click", function () {
+      shareReport(report, shareButton);
+    });
+
+    actions.appendChild(backButton);
+    actions.appendChild(copyButton);
+    actions.appendChild(saveButton);
+    actions.appendChild(shareButton);
+
+    report.appendChild(actions);
+  }
+
+  function installStyle() {
+    if (document.getElementById("mortgageReportActionsStyle")) return;
+
+    const style = document.createElement("style");
+    style.id = "mortgageReportActionsStyle";
+
+    style.textContent = `
+      body.loan-page .mortgage-report-actions {
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 14px !important;
+        margin-top: 24px !important;
+        padding-top: 18px !important;
+        border-top: 4px solid var(--black) !important;
+      }
+
+      body.loan-page .mortgage-report-action-btn {
+        min-height: 54px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 10px 14px !important;
+        color: var(--black) !important;
+        border: 5px solid var(--black) !important;
+        box-shadow: 5px 5px 0 var(--black) !important;
+        font-family: inherit !important;
+        font-size: 18px !important;
+        font-weight: bold !important;
+        line-height: 1.1 !important;
+        text-align: center !important;
+        text-decoration: none !important;
+        cursor: pointer !important;
+        transition: 0.15s !important;
+      }
+
+      body.loan-page .mortgage-report-action-btn:hover {
+        transform: translate(-3px, -3px) rotate(-1deg) !important;
+        box-shadow: 8px 8px 0 var(--black) !important;
+      }
+
+      body.loan-page .mortgage-report-back-btn {
+        background: #fff4b8 !important;
+      }
+
+      body.loan-page .mortgage-report-copy-btn {
+        background: #ffd3d3 !important;
+      }
+
+      body.loan-page .mortgage-report-save-btn {
+        background: #b8ffb8 !important;
+      }
+
+      body.loan-page .mortgage-report-share-btn {
+        background: #d3fff9 !important;
+      }
+
+      @media (max-width: 850px) {
+        body.loan-page .mortgage-report-actions {
+          grid-template-columns: 1fr !important;
+          gap: 12px !important;
+        }
+
+        body.loan-page .mortgage-report-action-btn {
+          width: 100% !important;
+          min-height: 52px !important;
+          font-size: 16px !important;
+        }
+      }
+    `;
+
+    document.head.appendChild(style);
+  }
+
+  function start() {
+    installStyle();
+
+    addReportButtons();
+
+    setTimeout(addReportButtons, 200);
+    setTimeout(addReportButtons, 600);
+    setTimeout(addReportButtons, 1200);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
