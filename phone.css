@@ -612,3 +612,44 @@
     touch-action: manipulation !important;
   }
 }
+
+/* =====================================================
+   INDEX PHONE: Dropdown card links, 3 items per column
+   - Extra links continue to the right
+   - Horizontal scroll prevents overflow on small screens
+===================================================== */
+@media (max-width: 850px) {
+  body.index-page .calculator-box .group-card > .group-links {
+    grid-template-rows: repeat(3, 58px) !important;
+    grid-auto-flow: column !important;
+    grid-auto-columns: minmax(170px, 1fr) !important;
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: calc(100vw - 44px) !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+  }
+
+  body.index-page .calculator-box .group-card[open] > .group-links,
+  body.index-page .calculator-box .group-card:hover > .group-links,
+  body.index-page .calculator-box .group-card:focus-within > .group-links {
+    display: grid !important;
+  }
+
+  body.index-page .calculator-box .group-links a {
+    width: 170px !important;
+    height: 58px !important;
+    min-height: 58px !important;
+    border-bottom: 3px solid var(--black) !important;
+    border-right: 3px solid var(--black) !important;
+    box-sizing: border-box !important;
+  }
+
+  body.index-page .calculator-box .group-links a:nth-child(3n) {
+    border-bottom: none !important;
+  }
+
+  body.index-page .calculator-box .group-links a:last-child {
+    border-right: none !important;
+  }
+}

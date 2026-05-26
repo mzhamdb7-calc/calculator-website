@@ -4915,3 +4915,45 @@ body.loan-page .mortgage-report-back a {
     max-height: 330px !important;
   }
 }
+
+/* =====================================================
+   INDEX: Dropdown card links, 3 items per column
+   - Only affects homepage calculator cards
+   - Keeps navbar dropdown unchanged
+===================================================== */
+@media (min-width: 851px) {
+  body.index-page .calculator-box .group-card > .group-links {
+    grid-template-rows: repeat(3, 60px) !important;
+    grid-auto-flow: column !important;
+    grid-auto-columns: minmax(210px, 1fr) !important;
+    width: max-content !important;
+    min-width: calc(100% + 10px) !important;
+    max-width: none !important;
+    overflow: visible !important;
+  }
+
+  body.index-page .calculator-box .group-card:hover > .group-links,
+  body.index-page .calculator-box .group-card:focus-within > .group-links,
+  body.index-page .calculator-box .group-card[open] > .group-links,
+  body.index-page .calculator-box .group-card.pc-card-open > .group-links {
+    display: grid !important;
+  }
+
+  body.index-page .calculator-box .group-links a {
+    width: 210px !important;
+    height: 60px !important;
+    min-height: 60px !important;
+    border-top: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    border-right: 3px solid var(--black) !important;
+    box-sizing: border-box !important;
+  }
+
+  body.index-page .calculator-box .group-links a:nth-child(3n) {
+    border-bottom: none !important;
+  }
+
+  body.index-page .calculator-box .group-links a:last-child {
+    border-right: none !important;
+  }
+}
