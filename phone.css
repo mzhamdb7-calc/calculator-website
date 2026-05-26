@@ -653,3 +653,73 @@
     border-right: none !important;
   }
 }
+
+
+/* =====================================================
+   PHONE INDEX: Keep calculator cards side by side with scroll
+===================================================== */
+@media (max-width: 850px) {
+  body.index-page .calculator-box {
+    width: 95% !important;
+    overflow: hidden !important;
+  }
+
+  body.index-page .calculator-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(145px, 1fr)) !important;
+    gap: 12px !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    padding: 0 6px 14px !important;
+    scroll-snap-type: x proximity !important;
+  }
+
+  body.index-page .calculator-grid > .card,
+  body.index-page .calculator-grid > .group-card {
+    min-width: 145px !important;
+    min-height: 95px !important;
+    font-size: 22px !important;
+    scroll-snap-align: start !important;
+  }
+
+  body.index-page .calculator-grid > .group-card > summary {
+    height: 95px !important;
+    font-size: 22px !important;
+    padding: 0 8px !important;
+    text-align: center !important;
+  }
+
+  body.index-page .calculator-grid > .card {
+    height: 95px !important;
+  }
+
+  body.index-page .live-abacus-section {
+    width: 95% !important;
+    margin: -45px auto 60px !important;
+    padding: 0 !important;
+  }
+
+  body.index-page .live-abacus-card {
+    padding: 18px !important;
+  }
+
+  body.index-page .live-abacus-card h2 {
+    font-size: 28px !important;
+  }
+
+  body.index-page .live-abacus {
+    grid-template-columns: repeat(6, minmax(58px, 1fr)) !important;
+    gap: 10px !important;
+    padding: 12px !important;
+  }
+
+  body.index-page .abacus-rod {
+    min-width: 58px !important;
+    height: 230px !important;
+  }
+
+  body.index-page .abacus-bead {
+    width: 36px !important;
+    height: 24px !important;
+  }
+}

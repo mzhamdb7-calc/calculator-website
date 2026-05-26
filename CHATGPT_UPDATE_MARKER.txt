@@ -1,3 +1,2 @@
-CHATGPT_FINAL_UPDATE_20260526_SEARCH_SQRT_MORTGAGE_RENAME
-If you see this file on GitHub Pages, deployment is serving the updated root files.
-Search live script.js for: CHATGPT_FINAL_UPDATE_20260526_SEARCH_SQRT_MORTGAGE_RENAME or √ or site-search
+CHATGPT_INDEX_SIDE_BY_SIDE_LIVE_ABACUS
+version=20260526_1905_index_abacus
