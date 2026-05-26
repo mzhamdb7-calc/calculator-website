@@ -1006,3 +1006,61 @@ body.index-page .calculator-box .index-dropdown-card .group-links a:focus-visibl
     font-size: 16px !important;
   }
 }
+
+/* =====================================================
+   BMI REPORT: Professional grouped table flow
+===================================================== */
+body.bmi-page .bmi-report-flow {
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 14px !important;
+  box-sizing: border-box !important;
+}
+
+body.bmi-page .bmi-report-flow-step {
+  width: 100% !important;
+  padding: 12px !important;
+  background: #f8f8f8 !important;
+  border: 4px solid var(--black) !important;
+  box-shadow: 4px 4px 0 var(--black) !important;
+  box-sizing: border-box !important;
+}
+
+body.bmi-page .bmi-report-flow-head h3 {
+  margin: 0 0 6px !important;
+  text-align: left !important;
+  font-size: 16px !important;
+  line-height: 1.25 !important;
+}
+
+body.bmi-page .bmi-report-flow-head p {
+  margin: 0 0 10px !important;
+  text-align: left !important;
+  font-size: 14px !important;
+  line-height: 1.35 !important;
+  font-weight: bold !important;
+}
+
+body.bmi-page .bmi-report-flow-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  background: #fff !important;
+}
+
+body.bmi-page .bmi-report-flow-table th,
+body.bmi-page .bmi-report-flow-table td {
+  padding: 9px !important;
+  border: 3px solid var(--black) !important;
+  text-align: left !important;
+  vertical-align: top !important;
+}
+
+body.bmi-page .bmi-report-flow-table th {
+  width: 40% !important;
+  background: #fff4b8 !important;
+}
+
+body.bmi-page .bmi-report-flow-table td {
+  background: #ffffff !important;
+}

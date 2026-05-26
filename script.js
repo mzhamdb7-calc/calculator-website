@@ -903,7 +903,7 @@
       {
         key: "profile",
         title: "Profile used",
-        match: /Unit|Age range|Gender|Activity level/i
+        match: /Unit|Name|Age range|Gender|Activity level/i
       }
     ];
 
@@ -1896,6 +1896,18 @@
       return input;
     }
 
+    function makeTextInput(id, placeholder) {
+      let input = byId(id);
+      if (!input) {
+        input = document.createElement("input");
+        input.type = "text";
+        input.id = id;
+        input.placeholder = placeholder;
+        input.autocomplete = "name";
+      }
+      return input;
+    }
+
     function makeSelect(id, html) {
       let select = byId(id);
 
@@ -1915,6 +1927,9 @@
       return select;
     }
 
+    const nameLabel = makeLabel("bmiNameLabel", "bmiName", "Name:");
+    const name = makeTextInput("bmiName", "Optional");
+
     const ageLabel = makeLabel("bmiAgeLabel", "bmiAge", "Age:");
     const age = makeNumberInput("bmiAge", "Optional, example: 30");
 
@@ -1930,7 +1945,7 @@
     const targetWeightLabel = makeLabel("bmiTargetWeightLabel", "bmiTargetWeight", "Target weight:");
     const targetWeight = makeNumberInput("bmiTargetWeight", "Optional");
 
-    [ageLabel, age, genderLabel, gender, activityLabel, activity, timeGoalLabel, timeGoal, targetWeightLabel, targetWeight].forEach(function (el) {
+    [nameLabel, name, ageLabel, age, genderLabel, gender, activityLabel, activity, timeGoalLabel, timeGoal, targetWeightLabel, targetWeight].forEach(function (el) {
       if (!el.parentElement) calculator.insertBefore(el, weight);
     });
 
@@ -1972,7 +1987,7 @@
     if (!row.contains(goalBox)) row.appendChild(goalBox);
     if (!row.contains(optionalBox)) row.appendChild(optionalBox);
 
-    ["heightLabel", "height", "weightLabel", "weight", "bmiAgeLabel", "bmiAge", "bmiGenderLabel", "bmiGender"].forEach(function (id) {
+    ["bmiNameLabel", "bmiName", "heightLabel", "height", "weightLabel", "weight", "bmiAgeLabel", "bmiAge", "bmiGenderLabel", "bmiGender"].forEach(function (id) {
       const element = byId(id);
       if (element) bodyBox.appendChild(element);
     });
@@ -2050,6 +2065,7 @@
   function calculateBMI() {
     ensureBMIProfileAndGroups();
 
+    const name = firstValue(["bmiName"]);
     const weight = firstNumber(["weight", "bmiWeight"]);
     const height = firstNumber(["height", "bmiHeight"]);
     const waist = firstNumber(["waist", "bmiWaist"]);
@@ -2192,6 +2208,7 @@
       ["Waist-to-height status", waistStatus],
       ["Health risk", healthRisk],
       ["Unit", unit === "us" ? "US" : "SI"],
+      ["Name", name || "Not provided"],
       ["Age range", ageRangeLabel(age)],
       ["Gender", genderLabel(gender)],
       ["Activity level", activityLabels[activity] || "Moderate activity"],
@@ -2207,6 +2224,7 @@
       calories: caloriesText,
       bodyFat: bodyFatText,
       goalTimeline: goalTimeline,
+      name: name || "",
       resultRows: rows.map(function (row) {
         return { label: row[0], value: row[1] };
       })
@@ -2616,6 +2634,104 @@
     return '<div class="age-report-flow">' + html + '</div>';
   }
 
+  function bmiReportFlowHtml(rows) {
+    rows = Array.isArray(rows) ? rows : [];
+
+    function label(row) {
+      return String((Array.isArray(row) ? row[0] : row.label) || "");
+    }
+
+    function value(row) {
+      return String((Array.isArray(row) ? row[1] : row.value) || "");
+    }
+
+    function tableRowsFor(groupRows) {
+      return groupRows.map(function (row) {
+        return (
+          "<tr>" +
+            "<th>" + escapeHtml(label(row)) + "</th>" +
+            "<td>" + escapeHtml(value(row)) + "</td>" +
+          "</tr>"
+        );
+      }).join("");
+    }
+
+    const groups = [
+      {
+        title: "1. BMI summary",
+        note: "Main BMI reading and category.",
+        match: /^BMI$|^BMI category$|^Difference to healthy range$/i
+      },
+      {
+        title: "2. Health overview",
+        note: "Healthy range, waist check, and risk summary.",
+        match: /Healthy weight range|Health risk|Waist-to-height ratio|Waist-to-height status/i
+      },
+      {
+        title: "3. Calories & body composition",
+        note: "Daily calorie estimate and body fat estimate.",
+        match: /Calories\/day|Body fat estimate/i
+      },
+      {
+        title: "4. Goal planning",
+        note: "Target weight and estimated timeline.",
+        match: /Goal timeline|Target weight|Time goal/i
+      },
+      {
+        title: "5. Input profile",
+        note: "Profile details used for the calculation.",
+        match: /Unit|Name|Age range|Gender|Activity level/i
+      }
+    ];
+
+    const used = new Set();
+
+    function groupRows(group) {
+      return rows.filter(function (row, index) {
+        if (!row || used.has(index)) return false;
+        if (!group.match.test(label(row))) return false;
+        used.add(index);
+        return true;
+      });
+    }
+
+    function makeStep(group, groupRows) {
+      if (!groupRows.length) return "";
+
+      return (
+        '<section class="bmi-report-flow-step">' +
+          '<div class="bmi-report-flow-head">' +
+            '<h3>' + escapeHtml(group.title) + '</h3>' +
+            '<p>' + escapeHtml(group.note) + '</p>' +
+          '</div>' +
+          '<div class="calculator-report-table-scroll">' +
+            '<table class="bmi-report-flow-table">' +
+              '<tbody>' + tableRowsFor(groupRows) + '</tbody>' +
+            '</table>' +
+          '</div>' +
+        '</section>'
+      );
+    }
+
+    let html = groups.map(function (group) {
+      return makeStep(group, groupRows(group));
+    }).join("");
+
+    const remaining = rows.filter(function (row, index) {
+      return row && !used.has(index);
+    });
+
+    if (remaining.length) {
+      html += makeStep({
+        title: "6. Other details",
+        note: "Additional BMI information.",
+        match: /.*/
+      }, remaining);
+    }
+
+    return '<div class="bmi-report-flow">' + html + '</div>';
+  }
+
   function reportResultHtml(report) {
     if (report && report.type === "age") {
       if (Array.isArray(report.resultLines) && report.resultLines.length) {
@@ -2624,6 +2740,16 @@
 
       if (report.metrics && Array.isArray(report.metrics.resultRows) && report.metrics.resultRows.length) {
         return ageReportFlowHtml(report.metrics.resultRows);
+      }
+    }
+
+    if (report && report.type === "bmi") {
+      if (Array.isArray(report.resultLines) && report.resultLines.length) {
+        return bmiReportFlowHtml(report.resultLines);
+      }
+
+      if (report.metrics && Array.isArray(report.metrics.resultRows) && report.metrics.resultRows.length) {
+        return bmiReportFlowHtml(report.metrics.resultRows);
       }
     }
 
