@@ -10781,3 +10781,56 @@
     start();
   }
 })();
+/* =====================================================
+   STOP PAGE LOAD FLICKER: Reveal history boxes after scripts settle
+   - Prevents user seeing "Input" render then "History" render
+   - Visual fix only, safe for all calculator pages
+===================================================== */
+(function () {
+  "use strict";
+
+  function renameHistoryTitle() {
+    document
+      .querySelectorAll(
+        ".history h3, " +
+        ".history-top h3, " +
+        ".age-history-box h3, " +
+        ".age-history-top h3, " +
+        ".bmi-history-box h3, " +
+        ".bmi-history-top h3, " +
+        ".discount-history-box h3, " +
+        ".discount-history-top h3, " +
+        ".loan-history-box h3, " +
+        ".loan-history-top h3, " +
+        ".percentage-history-box h3, " +
+        ".percentage-history-top h3, " +
+        ".compound-history-box h3, " +
+        ".compound-history-top h3"
+      )
+      .forEach(function (title) {
+        title.textContent = "History";
+      });
+  }
+
+  function revealHistoryBoxes() {
+    renameHistoryTitle();
+    document.body.classList.add("history-boxes-ready");
+  }
+
+  function start() {
+    document.body.classList.remove("history-boxes-ready");
+
+    /*
+      Let old renderInputHistory / old setTimeout history scripts finish first.
+    */
+    setTimeout(renameHistoryTitle, 300);
+    setTimeout(renameHistoryTitle, 700);
+    setTimeout(revealHistoryBoxes, 950);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
