@@ -2211,103 +2211,73 @@ body.index-page .calculator-box .index-dropdown-card .group-links a:focus-visibl
 }
 
 /* =====================================================
-   AGE RESULT: grouped result boxes
+   AGE RESULT: grouped boxes + live next-age countdown
 ===================================================== */
-body.age-page #ageReportOutput.age-point-output .loan-result-body,
-body.age-page #ageReportOutput .age-result-group-wrapper {
+.age-live-countdown {
   width: 100% !important;
-  max-width: 100% !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  margin: 0 0 14px !important;
+  padding: 12px !important;
+  background: #fff4b8 !important;
+  color: var(--black) !important;
+  border: 4px solid var(--black) !important;
+  box-shadow: 4px 4px 0 var(--black) !important;
+  font-weight: bold !important;
+  text-align: center !important;
   box-sizing: border-box !important;
 }
 
-body.age-page #ageReportOutput .age-result-group-wrapper {
+.age-live-countdown span {
+  display: block !important;
+  overflow-wrap: anywhere !important;
+}
+
+.age-result-group-grid {
+  width: 100% !important;
   display: grid !important;
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   gap: 14px !important;
-  margin: 0 !important;
+  box-sizing: border-box !important;
 }
 
-body.age-page #ageReportOutput .age-result-group-box {
+.age-result-group-box {
   min-width: 0 !important;
   padding: 14px !important;
-  background: var(--white) !important;
+  background: #f8f8f8 !important;
   color: var(--black) !important;
   border: 4px solid var(--black) !important;
-  box-shadow: 5px 5px 0 var(--black) !important;
+  box-shadow: 4px 4px 0 var(--black) !important;
   box-sizing: border-box !important;
-  overflow-wrap: anywhere !important;
 }
 
-body.age-page #ageReportOutput .age-result-group-birth { background: #fff4b8 !important; }
-body.age-page #ageReportOutput .age-result-group-current { background: #d3fff9 !important; }
-body.age-page #ageReportOutput .age-result-group-milestone { background: #ffd3d3 !important; }
-body.age-page #ageReportOutput .age-result-group-zodiac { background: #d3ffd9 !important; }
-body.age-page #ageReportOutput .age-result-group-life { background: #f3e7ff !important; }
-body.age-page #ageReportOutput .age-result-group-space { background: #dfeeff !important; }
-body.age-page #ageReportOutput .age-result-group-other { background: #f8f8f8 !important; }
-
-body.age-page #ageReportOutput .age-result-group-box h3 {
+.age-result-group-box h3 {
   margin: 0 0 10px !important;
-  padding-bottom: 8px !important;
-  border-bottom: 3px solid var(--black) !important;
-  font-size: 20px !important;
+  font-size: 18px !important;
   line-height: 1.2 !important;
-  font-weight: bold !important;
   text-align: center !important;
 }
 
-body.age-page #ageReportOutput .age-result-group-list {
-  width: 100% !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: grid !important;
-  gap: 8px !important;
-  list-style: none !important;
+.age-result-group-box .age-point-result-list {
+  padding-left: 20px !important;
 }
 
-body.age-page #ageReportOutput .age-result-group-list li {
-  display: grid !important;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr) !important;
-  gap: 8px !important;
-  align-items: start !important;
-  margin: 0 !important;
-  padding: 8px !important;
-  background: rgba(255,255,255,0.72) !important;
-  border: 3px solid var(--black) !important;
-  box-sizing: border-box !important;
+.age-result-group-box .age-point-result-list li {
+  margin: 7px 0 !important;
+  font-size: 16px !important;
 }
 
-body.age-page #ageReportOutput .age-result-group-label,
-body.age-page #ageReportOutput .age-result-group-value {
-  color: var(--black) !important;
-  font-weight: bold !important;
-  line-height: 1.35 !important;
-  text-align: left !important;
-  overflow-wrap: anywhere !important;
-  word-break: break-word !important;
-}
-
-body.age-page #ageReportOutput .age-result-group-label {
-  opacity: 0.8 !important;
-}
+.age-result-group-birth { background: #d3fff9 !important; }
+.age-result-group-age { background: #fff4b8 !important; }
+.age-result-group-milestone { background: #ffd3d3 !important; }
+.age-result-group-life { background: #b8ffb8 !important; }
+.age-result-group-zodiac { background: #e8ddff !important; }
+.age-result-group-space { background: #d9f7ff !important; }
 
 @media (max-width: 850px) {
-  body.age-page #ageReportOutput .age-result-group-wrapper {
+  .age-live-countdown,
+  .age-result-group-grid {
     grid-template-columns: 1fr !important;
-    gap: 12px !important;
-  }
-
-  body.age-page #ageReportOutput .age-result-group-box {
-    padding: 12px !important;
-    box-shadow: 4px 4px 0 var(--black) !important;
-  }
-
-  body.age-page #ageReportOutput .age-result-group-box h3 {
-    font-size: 18px !important;
-  }
-
-  body.age-page #ageReportOutput .age-result-group-list li {
-    grid-template-columns: 1fr !important;
-    gap: 4px !important;
   }
 }

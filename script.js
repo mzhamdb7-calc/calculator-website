@@ -557,83 +557,64 @@
     );
   }
 
-  function makePointList(rows) {
-    return (
-      '<div class="age-point-result-box">' +
-        '<ul class="age-point-result-list">' +
-          rows.map(function (row) {
-            return (
-              '<li>' +
-                '<strong>' + escapeHtml(row[0]) + ':</strong> ' +
-                '<span>' + escapeHtml(row[1]) + '</span>' +
-              '</li>'
-            );
-          }).join("") +
-        '</ul>' +
-      '</div>'
-    );
-  }
-
-  function makeAgeGroupedResult(rows) {
+  function makeAgeResultGroups(rows) {
     rows = Array.isArray(rows) ? rows : [];
 
     const groups = [
       {
+        key: "birth",
         title: "Birth & calendar",
-        className: "birth",
         match: /date range|day of week born|born date in islamic|born date in chinese/i
       },
       {
+        key: "age",
         title: "Current age",
-        className: "current",
-        match: /exact age|normal age|asian age/i
+        match: /exact age|normal age|asian age|age in .* year|days old|seconds old/i
       },
       {
+        key: "milestone",
         title: "Birthday & milestones",
-        className: "milestone",
-        match: /next birthday countdown|retirement|legal age|leap year age/i
+        match: /next birthday countdown|seconds to next age|retirement|legal age|leap year age/i
       },
       {
-        title: "Zodiac",
-        className: "zodiac",
-        match: /western zodiac|chinese zodiac|age in .* year/i
-      },
-      {
+        key: "life",
         title: "Life summary",
-        className: "life",
-        match: /days spent alive|estimated sleep time/i
+        match: /days spent alive|estimated sleep time|breaths taken|heartbeats lived/i
       },
       {
+        key: "zodiac",
+        title: "Zodiac & famous birthdays",
+        match: /western zodiac|chinese zodiac|famous celebrity|famous sports star|famous historical figure/i
+      },
+      {
+        key: "space",
         title: "Space & moon",
-        className: "space",
         match: /age on other planets|moon cycles experienced/i
       }
     ];
 
     const used = new Set();
 
-    function rowsForGroup(group) {
-      return rows.filter(function (row, index) {
-        if (!row || used.has(index)) return false;
-        const label = String(row[0] || "");
-        if (!group.match.test(label)) return false;
-        used.add(index);
-        return true;
-      });
+    function rowLabel(row) {
+      return String((Array.isArray(row) ? row[0] : row.label) || "");
+    }
+
+    function rowValue(row) {
+      return String((Array.isArray(row) ? row[1] : row.value) || "");
     }
 
     function makeGroup(group, groupRows) {
       if (!groupRows.length) return "";
 
       return (
-        '<section class="age-result-group-box age-result-group-' + escapeHtml(group.className) + '">' +
+        '<section class="age-result-group-box age-result-group-' + group.key + '">' +
           '<h3>' + escapeHtml(group.title) + '</h3>' +
-          '<ul class="age-result-group-list">' +
+          '<ul class="age-point-result-list">' +
             groupRows.map(function (row) {
               return (
                 '<li>' +
-                  '<span class="age-result-group-label">' + escapeHtml(row[0]) + '</span>' +
-                  '<span class="age-result-group-value">' + escapeHtml(row[1]) + '</span>' +
+                  '<strong>' + escapeHtml(rowLabel(row)) + ':</strong> ' +
+                  '<span>' + escapeHtml(rowValue(row)) + '</span>' +
                 '</li>'
               );
             }).join("") +
@@ -643,18 +624,33 @@
     }
 
     let html = groups.map(function (group) {
-      return makeGroup(group, rowsForGroup(group));
+      const groupRows = rows.filter(function (row, index) {
+        if (!row || used.has(index)) return false;
+        if (!group.match.test(rowLabel(row))) return false;
+        used.add(index);
+        return true;
+      });
+
+      return makeGroup(group, groupRows);
     }).join("");
 
-    const remaining = rows.filter(function (row, index) {
+    const otherRows = rows.filter(function (row, index) {
       return row && !used.has(index);
     });
 
-    if (remaining.length) {
-      html += makeGroup({ title: "Other details", className: "other", match: /.*/ }, remaining);
+    if (otherRows.length) {
+      html += makeGroup({ key: "other", title: "Other details" }, otherRows);
     }
 
-    return '<div class="age-result-group-wrapper">' + html + '</div>';
+    return '<div class="age-result-group-grid">' + html + '</div>';
+  }
+
+  function makePointList(rows) {
+    return (
+      '<div class="age-point-result-box">' +
+        makeAgeResultGroups(rows) +
+      '</div>'
+    );
   }
 
   function rowsToPlainText(rows) {
@@ -692,14 +688,15 @@
     if (!panel) return null;
 
     const isAgeResult = type === "age";
-    const resultHtml = isAgeResult ? makeAgeGroupedResult(rows) : makeTable(rows);
+    const resultHtml = isAgeResult ? makePointList(rows) : makeTable(rows);
 
     panel.className = "loan-style-output-panel calculator-clean-result " + type + "-clean-result" + (isAgeResult ? " age-point-output" : "");
     panel.innerHTML =
-      (extraTopHtml || "") +
+      (isAgeResult ? "" : (extraTopHtml || "")) +
       '<div class="loan-output-top">' +
         '<div class="loan-result-panel">' +
           '<h2 class="loan-panel-title">Result</h2>' +
+          (isAgeResult ? (extraTopHtml || "") : "") +
           '<div class="loan-result-body">' + resultHtml + '</div>' +
         '</div>' +
         '<div class="loan-copy-side"><button type="button" class="loan-copy-btn">Copy</button></div>' +
@@ -1215,6 +1212,213 @@
     return cycles.toFixed(1) + " lunar cycles";
   }
 
+  function formatLargeNumber(value) {
+    const number = Number(value);
+
+    if (!Number.isFinite(number)) return "-";
+
+    return Math.round(number).toLocaleString("en-US");
+  }
+
+  function totalSecondsBetween(startDate, endDate) {
+    if (!startDate || !endDate || endDate < startDate) return 0;
+    return Math.floor((endDate.getTime() - startDate.getTime()) / 1000);
+  }
+
+  function estimatedBreathsText(totalSeconds) {
+    const breaths = totalSeconds / 60 * 16;
+    return formatLargeNumber(breaths) + " breaths (estimated 16 breaths/minute)";
+  }
+
+  function estimatedHeartbeatsText(totalSeconds) {
+    const beats = totalSeconds / 60 * 70;
+    return formatLargeNumber(beats) + " heartbeats (estimated 70 bpm)";
+  }
+
+  function birthdayForYear(birthDate, year) {
+    let birthday = new Date(
+      year,
+      birthDate.getMonth(),
+      birthDate.getDate(),
+      birthDate.getHours(),
+      birthDate.getMinutes(),
+      birthDate.getSeconds(),
+      birthDate.getMilliseconds()
+    );
+
+    if (birthDate.getMonth() === 1 && birthDate.getDate() === 29 && !isLeapYear(year)) {
+      birthday = new Date(year, 2, 1, birthDate.getHours(), birthDate.getMinutes(), birthDate.getSeconds(), birthDate.getMilliseconds());
+    }
+
+    return birthday;
+  }
+
+  function nextAgeCountdownData(birthDate) {
+    if (!birthDate) return null;
+
+    const now = new Date();
+    let upcomingAge = now.getFullYear() - birthDate.getFullYear();
+    let next = birthdayForYear(birthDate, birthDate.getFullYear() + upcomingAge);
+
+    if (next <= now) {
+      upcomingAge += 1;
+      next = birthdayForYear(birthDate, birthDate.getFullYear() + upcomingAge);
+    }
+
+    const seconds = Math.max(0, Math.floor((next.getTime() - now.getTime()) / 1000));
+
+    return { upcomingAge, seconds, nextDate: next };
+  }
+
+  function ageLiveCountdownHtml(birthdateValue) {
+    const safeBirthdate = escapeHtml(String(birthdateValue || ""));
+
+    return (
+      '<div class="age-live-countdown" data-birthdate="' + safeBirthdate + '">' +
+        '<span>Upcoming age: <strong data-age-upcoming>--</strong></span>' +
+        '<span>Next age countdown: <strong data-age-seconds>--</strong> seconds</span>' +
+      '</div>'
+    );
+  }
+
+  let ageLiveCountdownTimer = null;
+
+  function updateAgeLiveCountdowns() {
+    $$(".age-live-countdown[data-birthdate]").forEach(function (box) {
+      const birthdateValue = box.getAttribute("data-birthdate");
+      const birthDate = parseDateInput(birthdateValue, false);
+      const data = nextAgeCountdownData(birthDate);
+
+      if (!data) return;
+
+      const ageEl = box.querySelector("[data-age-upcoming]");
+      const secondEl = box.querySelector("[data-age-seconds]");
+
+      if (ageEl) ageEl.textContent = String(data.upcomingAge);
+      if (secondEl) secondEl.textContent = formatLargeNumber(data.seconds);
+    });
+  }
+
+  function startAgeLiveCountdown() {
+    updateAgeLiveCountdowns();
+
+    if (ageLiveCountdownTimer) return;
+
+    ageLiveCountdownTimer = setInterval(updateAgeLiveCountdowns, 1000);
+  }
+
+  function famousBirthdayFallback(month, day) {
+    const key = String(month).padStart(2, "0") + "-" + String(day).padStart(2, "0");
+    const list = {
+      "01-01": ["Verne Troyer", "Meryl Davis", "Paul Revere"],
+      "01-08": ["Elvis Presley", "David Silva", "Stephen Hawking"],
+      "01-15": ["Dove Cameron", "Drew Brees", "Martin Luther King Jr."],
+      "02-12": ["Christina Ricci", "Bill Russell", "Abraham Lincoln"],
+      "03-14": ["Billy Crystal", "Stephen Curry", "Albert Einstein"],
+      "04-15": ["Emma Watson", "Seth Rogen", "Leonardo da Vinci"],
+      "05-05": ["Adele", "Tyrone Mings", "Karl Marx"],
+      "06-01": ["Morgan Freeman", "Javier Hernández", "Marilyn Monroe"],
+      "07-24": ["Jennifer Lopez", "Barry Bonds", "Simón Bolívar"],
+      "08-04": ["Barack Obama", "Kurt Busch", "Louis Armstrong"],
+      "09-04": ["Beyoncé", "Damon Wayans", "Darius Milhaud"],
+      "10-28": ["Bill Gates", "Caitlyn Jenner", "Jonas Salk"],
+      "11-30": ["Ben Stiller", "Gary Lineker", "Mark Twain"],
+      "12-25": ["Annie Lennox", "Jairzinho", "Isaac Newton"]
+    };
+
+    return list[key] || ["Will be loaded online", "Will be loaded online", "Will be loaded online"];
+  }
+
+  function extractBirthPersonName(item) {
+    if (!item) return "";
+
+    if (Array.isArray(item.pages) && item.pages.length) {
+      const page = item.pages[0];
+      if (page.normalizedtitle) return page.normalizedtitle;
+      if (page.title) return String(page.title).replace(/_/g, " ");
+    }
+
+    return String(item.text || "").split(",")[0].replace(/^\d+\s*[–-]\s*/, "").trim();
+  }
+
+  function famousDescription(item) {
+    return String((item && item.text) || "").toLowerCase();
+  }
+
+  function pickFamousBirthdayPeople(items) {
+    items = Array.isArray(items) ? items : [];
+
+    function pick(pattern, used) {
+      const found = items.find(function (item) {
+        const name = extractBirthPersonName(item);
+        if (!name || used.has(name)) return false;
+        return pattern.test(famousDescription(item));
+      });
+
+      if (!found) return "";
+
+      const name = extractBirthPersonName(found);
+      used.add(name);
+      return name;
+    }
+
+    const used = new Set();
+    const celebrity = pick(/actor|actress|singer|musician|rapper|film|television|comedian|model|entertainer|director|producer/i, used);
+    const sports = pick(/football|soccer|basketball|baseball|tennis|athlete|boxer|wrestler|cricketer|golfer|racing|olympic|swimmer|runner|sport/i, used);
+    const historical = pick(/president|king|queen|emperor|prime minister|politician|leader|scientist|physicist|chemist|mathematician|philosopher|inventor|writer|poet|artist|composer|historian|activist|revolutionary/i, used);
+
+    return {
+      celebrity: celebrity || "Not found",
+      sports: sports || "Not found",
+      historical: historical || "Not found"
+    };
+  }
+
+  function famousBirthdayRows(month, day) {
+    const fallback = famousBirthdayFallback(month, day);
+
+    return [
+      ["Famous celebrity born this day", fallback[0]],
+      ["Famous sports star born this day", fallback[1]],
+      ["Famous historical figure born this day", fallback[2]]
+    ];
+  }
+
+  function updateFamousBirthdayRowsOnline(month, day, rows, metricsBuilder) {
+    if (!window.fetch) return;
+
+    const url = "https://en.wikipedia.org/api/rest_v1/feed/onthisday/births/" + month + "/" + day;
+
+    fetch(url)
+      .then(function (response) {
+        if (!response.ok) throw new Error("Birthday API unavailable");
+        return response.json();
+      })
+      .then(function (data) {
+        const picked = pickFamousBirthdayPeople(data.births || []);
+        const replacements = {
+          "Famous celebrity born this day": picked.celebrity,
+          "Famous sports star born this day": picked.sports,
+          "Famous historical figure born this day": picked.historical
+        };
+
+        rows.forEach(function (row) {
+          if (replacements[row[0]]) row[1] = replacements[row[0]];
+        });
+
+        const metrics = typeof metricsBuilder === "function" ? metricsBuilder(rows) : {
+          resultRows: rows.map(function (row) { return { label: row[0], value: row[1] }; })
+        };
+
+        renderResultPanel("age", rows, ageLiveCountdownHtml(metrics.birthdate || ""));
+        startAgeLiveCountdown();
+        saveCurrentReport("age", metrics);
+      })
+      .catch(function () {
+        /* Keep offline fallback values. */
+      });
+  }
+
   function formatIntlDate(date, locale) {
     try {
       return new Intl.DateTimeFormat(locale, { dateStyle: "full" }).format(date);
@@ -1271,41 +1475,61 @@
       exact.minutes + " minutes";
 
     const totalAliveDays = totalDaysBetween(birthDate, targetDate);
+    const totalAliveSeconds = totalSecondsBetween(birthDate, targetDate);
     const chineseAnimal = chineseZodiac(year);
+    const nextAgeData = nextAgeCountdownData(birthDate);
+    const secondsToNextAge = nextAgeData ? formatLargeNumber(nextAgeData.seconds) + " seconds until age " + nextAgeData.upcomingAge : "-";
 
     const rows = [
       ["Date range", formatDateDMY(birthdate) + " to " + formatDateDMY(targetValue)],
-      ["Exact age", exactText],
-      ["Normal age", exact.years + " years old"],
-      ["Asian age", asianAge + " years old"],
-      ["Next birthday countdown", nextBirthdayCountdown(birthDate)],
       ["Day of week born", weekday],
       ["Born date in Islamic calendar", formatIntlDate(birthDate, "en-GB-u-ca-islamic")],
       ["Born date in Chinese calendar", formatIntlDate(birthDate, "en-GB-u-ca-chinese")],
-      ["Western zodiac", westernZodiac(month, day)],
-      ["Chinese zodiac", chineseAnimal],
-      ["Age in " + chineseAnimal + " year", String(exact.years)],
-      ["Retirement", countdownToAge(birthDate, targetDate, 60, "retirement")],
-      ["Estimated sleep time", estimatedSleepText(totalAliveDays)],
-      ["Age on other planets", planetAgeText(totalAliveDays)],
-      ["Days spent alive", totalAliveDays.toLocaleString()],
-      ["Moon cycles experienced", moonCycleText(totalAliveDays)],
-      ["Legal age", countdownToAge(birthDate, targetDate, 18, "legal adult age")],
-      ["Leap year age", leapBirthdayInfo(birthDate, targetDate)]
-    ];
 
-    renderResultPanel("age", rows);
-    saveCurrentReport("age", {
-      exactAge: exactText,
-      normalAge: exact.years,
-      asianAge: asianAge,
-      resultRows: rows.map(function (row) {
-        return {
-          label: row[0],
-          value: row[1]
-        };
-      })
-    });
+      ["Exact age", exactText],
+      ["Normal age", exact.years + " years old"],
+      ["Asian age", asianAge + " years old"],
+      ["Age in " + chineseAnimal + " year", String(exact.years)],
+      ["Days old", totalAliveDays.toLocaleString()],
+      ["Seconds old", formatLargeNumber(totalAliveSeconds)],
+
+      ["Next birthday countdown", nextBirthdayCountdown(birthDate)],
+      ["Seconds to next age", secondsToNextAge],
+      ["Retirement", countdownToAge(birthDate, targetDate, 60, "retirement")],
+      ["Legal age", countdownToAge(birthDate, targetDate, 18, "legal adult age")],
+      ["Leap year age", leapBirthdayInfo(birthDate, targetDate)],
+
+      ["Estimated sleep time", estimatedSleepText(totalAliveDays)],
+      ["Breaths taken", estimatedBreathsText(totalAliveSeconds)],
+      ["Heartbeats lived", estimatedHeartbeatsText(totalAliveSeconds)],
+      ["Days spent alive", totalAliveDays.toLocaleString()],
+
+      ["Western zodiac", westernZodiac(month, day)],
+      ["Chinese zodiac", chineseAnimal]
+    ].concat(famousBirthdayRows(month, day)).concat([
+      ["Age on other planets", planetAgeText(totalAliveDays)],
+      ["Moon cycles experienced", moonCycleText(totalAliveDays)]
+    ]);
+
+    function ageMetrics(currentRows) {
+      return {
+        birthdate: birthdate,
+        exactAge: exactText,
+        normalAge: exact.years,
+        asianAge: asianAge,
+        resultRows: currentRows.map(function (row) {
+          return {
+            label: row[0],
+            value: row[1]
+          };
+        })
+      };
+    }
+
+    renderResultPanel("age", rows, ageLiveCountdownHtml(birthdate));
+    startAgeLiveCountdown();
+    saveCurrentReport("age", ageMetrics(rows));
+    updateFamousBirthdayRowsOnline(month, day, rows, ageMetrics);
   }
 
   /* =====================================================
@@ -1820,22 +2044,22 @@
       {
         title: "Current age",
         note: "Main age values for the selected date.",
-        match: /exact age|normal age|asian age|age in .* year/i
+        match: /exact age|normal age|asian age|age in .* year|days old|seconds old/i
       },
       {
         title: "Birthday & milestones",
         note: "Upcoming birthday and important age milestones.",
-        match: /next birthday countdown|retirement|legal age|leap year age/i
+        match: /next birthday countdown|seconds to next age|retirement|legal age|leap year age/i
       },
       {
-        title: "Zodiac profile",
-        note: "Western and Chinese zodiac details.",
-        match: /western zodiac|chinese zodiac/i
+        title: "Life summary",
+        note: "Estimated time already lived, slept, breathed, and heartbeats.",
+        match: /days spent alive|estimated sleep time|breaths taken|heartbeats lived/i
       },
       {
-        title: "Life time summary",
-        note: "Estimated time already lived and slept.",
-        match: /days spent alive|estimated sleep time/i
+        title: "Zodiac & famous birthdays",
+        note: "Western/Chinese zodiac and famous people born on the same date.",
+        match: /western zodiac|chinese zodiac|famous celebrity|famous sports star|famous historical figure/i
       },
       {
         title: "Space & moon view",
