@@ -11700,3 +11700,132 @@
     start();
   }
 })();
+/* =====================================================
+   MORTGAGE REPORT: Open report in same tab + Go back same tab
+   - Stops report from opening new tab
+   - Go back button returns to previous calculator page in same tab
+===================================================== */
+(function () {
+  "use strict";
+
+  function isMortgageReportLink(link) {
+    if (!link) return false;
+
+    const href = String(link.getAttribute("href") || "");
+
+    return (
+      link.classList.contains("mortgage-fast-open-link") ||
+      link.classList.contains("mortgage-final-open-link") ||
+      link.classList.contains("mortgage-report-link") ||
+      href.includes("#mortgage-fast-report=") ||
+      href.includes("#mortgage-final-report=") ||
+      href.includes("#mortgage-report=")
+    );
+  }
+
+  function isMortgageReportOpen() {
+    return (
+      window.location.hash.startsWith("#mortgage-fast-report=") ||
+      window.location.hash.startsWith("#mortgage-final-report=") ||
+      window.location.hash.startsWith("#mortgage-report=") ||
+      !!document.querySelector(".mortgage-fast-report-page") ||
+      !!document.querySelector(".mortgage-final-report-page") ||
+      !!document.getElementById("mortgageFinalReportPage") ||
+      !!document.getElementById("mortgageSharedReport")
+    );
+  }
+
+  function cleanCalculatorUrl() {
+    return window.location.href.split("#")[0];
+  }
+
+  function fixReportLinks() {
+    document.querySelectorAll("a").forEach(function (link) {
+      if (!isMortgageReportLink(link)) return;
+
+      link.removeAttribute("target");
+      link.setAttribute("target", "_self");
+      link.rel = "";
+    });
+  }
+
+  function isGoBackButton(link) {
+    if (!link) return false;
+
+    const text = String(link.textContent || "").trim().toLowerCase();
+
+    return (
+      link.classList.contains("mortgage-report-back-btn") ||
+      link.closest(".mortgage-final-back") ||
+      link.closest(".mortgage-report-back") ||
+      text === "go back" ||
+      text === "back to calculator"
+    );
+  }
+
+  function goBackSameTab() {
+    /*
+      If the report was opened from the calculator in the same tab,
+      this goes back to the previous calculator view.
+    */
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+
+    /*
+      Fallback for shared/direct report links.
+    */
+    window.location.href = cleanCalculatorUrl();
+  }
+
+  function setupClicks() {
+    document.addEventListener(
+      "click",
+      function (event) {
+        const link = event.target.closest("a");
+        if (!link) return;
+
+        if (isMortgageReportLink(link)) {
+          event.preventDefault();
+          event.stopPropagation();
+
+          window.location.href = link.href;
+          return;
+        }
+
+        if (isMortgageReportOpen() && isGoBackButton(link)) {
+          event.preventDefault();
+          event.stopPropagation();
+
+          goBackSameTab();
+        }
+      },
+      true
+    );
+  }
+
+  function start() {
+    fixReportLinks();
+    setupClicks();
+
+    setTimeout(fixReportLinks, 200);
+    setTimeout(fixReportLinks, 700);
+    setTimeout(fixReportLinks, 1500);
+
+    const observer = new MutationObserver(function () {
+      fixReportLinks();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
