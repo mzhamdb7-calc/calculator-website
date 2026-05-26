@@ -11082,3 +11082,221 @@
     startAutoCalculateAllPages();
   }
 })();
+/* =====================================================
+   MORTGAGE: Force hide calculate button + auto calculate
+   - Fixes mortgage page not matching global auto-calculate
+   - Works even if title says Mortgage instead of Loan
+   - Keeps basic calculator untouched
+===================================================== */
+(function () {
+  "use strict";
+
+  let timer = null;
+  let running = false;
+
+  function text(el) {
+    return String(el ? el.textContent || "" : "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+  }
+
+  function value(id) {
+    const el = document.getElementById(id);
+    return el ? String(el.value || "").trim() : "";
+  }
+
+  function isBasicPage() {
+    return (
+      document.body.classList.contains("basic-page") ||
+      document.body.dataset.page === "basic" ||
+      !!document.getElementById("display") ||
+      !!document.querySelector(".basic-grid") ||
+      !!document.querySelector(".scientific-grid")
+    );
+  }
+
+  function isMortgagePage() {
+    const title = text(document.querySelector("h1"));
+
+    return (
+      !isBasicPage() &&
+      (
+        title.includes("mortgage") ||
+        title.includes("loan") ||
+        document.body.classList.contains("loan-page") ||
+        document.body.dataset.page === "loan" ||
+        window.location.pathname.includes("loan") ||
+        window.location.pathname.includes("mortgage") ||
+        !!document.getElementById("loanResult") ||
+        !!document.getElementById("loanExternalOutput") ||
+        !!document.getElementById("loanHistoryList") ||
+        typeof window.calculateLoan === "function"
+      )
+    );
+  }
+
+  function markMortgagePage() {
+    if (!isMortgagePage()) return;
+
+    document.body.classList.add("loan-page");
+    document.body.dataset.page = "loan";
+  }
+
+  function hasRequiredMortgageInputs() {
+    const amount =
+      value("amount") ||
+      value("loanAmount") ||
+      value("principal") ||
+      value("loanPrincipal");
+
+    const interest =
+      value("interest") ||
+      value("loanRate") ||
+      value("interestRate") ||
+      value("annualRate") ||
+      value("rate");
+
+    const term =
+      value("years") ||
+      value("loanYears") ||
+      value("loanTerm") ||
+      value("term") ||
+      value("months");
+
+    return amount && interest && term;
+  }
+
+  function isMortgageCalculateButton(button) {
+    if (!button) return false;
+    if (button.closest("#navbar")) return false;
+    if (button.closest(".loan-history-box")) return false;
+    if (button.closest(".history")) return false;
+    if (button.closest(".mortgage-report-actions")) return false;
+
+    const buttonText = text(button);
+    const onclick = String(button.getAttribute("onclick") || "");
+    const id = String(button.id || "").toLowerCase();
+    const className = String(button.className || "").toLowerCase();
+
+    if (buttonText.includes("clear")) return false;
+    if (buttonText.includes("copy")) return false;
+    if (buttonText.includes("save")) return false;
+    if (buttonText.includes("share")) return false;
+    if (buttonText.includes("back")) return false;
+    if (buttonText.includes("optional")) return false;
+    if (buttonText.includes("settlement")) return false;
+
+    return (
+      onclick.includes("calculateLoan") ||
+      id.includes("calculate") ||
+      id.includes("loan") ||
+      className.includes("main-btn") ||
+      buttonText.includes("calculate")
+    );
+  }
+
+  function hideMortgageCalculateButton() {
+    if (!isMortgagePage()) return;
+
+    markMortgagePage();
+
+    document
+      .querySelectorAll(".calculator button, main button")
+      .forEach(function (button) {
+        if (!isMortgageCalculateButton(button)) return;
+
+        button.style.setProperty("display", "none", "important");
+        button.setAttribute("aria-hidden", "true");
+        button.tabIndex = -1;
+        button.dataset.mortgageAutoHidden = "true";
+      });
+  }
+
+  function runMortgageCalculate() {
+    if (!isMortgagePage()) return;
+    if (!hasRequiredMortgageInputs()) return;
+    if (running) return;
+
+    running = true;
+
+    try {
+      if (typeof window.calculateLoan === "function") {
+        window.calculateLoan();
+      } else {
+        const button = Array.from(
+          document.querySelectorAll(".calculator button, main button")
+        ).find(isMortgageCalculateButton);
+
+        if (button) button.click();
+      }
+    } catch (error) {
+      console.error("Mortgage auto calculate error:", error);
+    }
+
+    setTimeout(function () {
+      running = false;
+    }, 250);
+  }
+
+  function scheduleMortgageAutoCalculate() {
+    clearTimeout(timer);
+
+    timer = setTimeout(function () {
+      hideMortgageCalculateButton();
+      runMortgageCalculate();
+    }, 300);
+  }
+
+  function startMortgageForceAutoCalculate() {
+    if (!isMortgagePage()) return;
+
+    markMortgagePage();
+    hideMortgageCalculateButton();
+
+    document.addEventListener(
+      "input",
+      function (event) {
+        if (!isMortgagePage()) return;
+
+        if (
+          event.target.matches("input") ||
+          event.target.matches("select") ||
+          event.target.matches("textarea")
+        ) {
+          scheduleMortgageAutoCalculate();
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "change",
+      function (event) {
+        if (!isMortgagePage()) return;
+
+        if (
+          event.target.matches("input") ||
+          event.target.matches("select") ||
+          event.target.matches("textarea")
+        ) {
+          scheduleMortgageAutoCalculate();
+        }
+      },
+      true
+    );
+
+    setTimeout(hideMortgageCalculateButton, 100);
+    setTimeout(hideMortgageCalculateButton, 500);
+    setTimeout(hideMortgageCalculateButton, 1000);
+    setTimeout(hideMortgageCalculateButton, 2000);
+
+    setTimeout(scheduleMortgageAutoCalculate, 700);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startMortgageForceAutoCalculate);
+  } else {
+    startMortgageForceAutoCalculate();
+  }
+})();
