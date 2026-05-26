@@ -1889,9 +1889,9 @@
       if (!label) {
         label = document.createElement("label");
         label.id = id;
-        label.setAttribute("for", forId);
-        label.textContent = text;
       }
+      label.setAttribute("for", forId);
+      label.textContent = text;
       return label;
     }
 
@@ -1919,8 +1919,9 @@
       return input;
     }
 
-    function makeSelect(id, html) {
+    function makeSelect(id, html, defaultValue) {
       let select = byId(id);
+      const previousValue = select ? String(select.value || "") : "";
 
       if (select && select.tagName && select.tagName.toLowerCase() !== "select") {
         const old = select;
@@ -1935,6 +1936,17 @@
       }
 
       select.innerHTML = html;
+
+      const values = Array.from(select.options).map(function (option) {
+        return option.value;
+      });
+
+      if (previousValue && values.includes(previousValue)) {
+        select.value = previousValue;
+      } else if (defaultValue && values.includes(defaultValue)) {
+        select.value = defaultValue;
+      }
+
       return select;
     }
 
@@ -1945,18 +1957,21 @@
     const age = makeNumberInput("bmiAge", "Optional, example: 30");
 
     const genderLabel = makeLabel("bmiGenderLabel", "bmiGender", "Gender:");
-    const gender = makeSelect("bmiGender", '<option value="">Optional</option><option value="male">Male</option><option value="female">Female</option>');
+    const gender = makeSelect("bmiGender", '<option value="male">Male</option><option value="female">Female</option>', "male");
 
     const activityLabel = makeLabel("bmiActivityLabel", "bmiActivityLevel", "Activity level:");
-    const activity = makeSelect("bmiActivityLevel", '<option value="sedentary">Sedentary</option><option value="light">Light activity</option><option value="moderate" selected>Moderate activity</option><option value="active">Active</option><option value="veryActive">Very active</option>');
+    const activity = makeSelect("bmiActivityLevel", '<option value="sedentary">Sedentary</option><option value="light">Light activity</option><option value="moderate">Moderate activity</option><option value="active">Active</option><option value="veryActive">Very active</option>', "moderate");
 
-    const timeGoalLabel = makeLabel("bmiTimeGoalLabel", "bmiTimeGoal", "Time goal:");
-    const timeGoal = makeSelect("bmiTimeGoal", '<option value="daily">Daily</option><option value="weekly" selected>Weekly</option><option value="monthly">Monthly</option>');
+    const timeGoalLabel = makeLabel("bmiTimeGoalLabel", "bmiTimeGoalAmount", "Time goal:");
+    const timeGoalAmount = makeNumberInput("bmiTimeGoalAmount", "Example: 12");
+    timeGoalAmount.min = "1";
+    timeGoalAmount.step = "1";
+    const timeGoal = makeSelect("bmiTimeGoal", '<option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option>', "weekly");
 
     const targetWeightLabel = makeLabel("bmiTargetWeightLabel", "bmiTargetWeight", "Target weight:");
     const targetWeight = makeNumberInput("bmiTargetWeight", "Optional");
 
-    [nameLabel, name, ageLabel, age, genderLabel, gender, activityLabel, activity, timeGoalLabel, timeGoal, targetWeightLabel, targetWeight].forEach(function (el) {
+    [nameLabel, name, ageLabel, age, genderLabel, gender, activityLabel, activity, timeGoalLabel, timeGoalAmount, timeGoal, targetWeightLabel, targetWeight].forEach(function (el) {
       if (!el.parentElement) calculator.insertBefore(el, weight);
     });
 
@@ -2003,9 +2018,22 @@
       if (element) bodyBox.appendChild(element);
     });
 
-    ["bmiActivityLabel", "bmiActivityLevel", "bmiTimeGoalLabel", "bmiTimeGoal"].forEach(function (id) {
+    ["bmiActivityLabel", "bmiActivityLevel", "bmiTimeGoalLabel"].forEach(function (id) {
       const element = byId(id);
       if (element) goalBox.appendChild(element);
+    });
+
+    let timeGoalWrap = byId("bmiTimeGoalWrapper");
+    if (!timeGoalWrap) {
+      timeGoalWrap = document.createElement("div");
+      timeGoalWrap.id = "bmiTimeGoalWrapper";
+      timeGoalWrap.className = "bmi-time-goal-row";
+    }
+
+    if (!goalBox.contains(timeGoalWrap)) goalBox.appendChild(timeGoalWrap);
+    ["bmiTimeGoalAmount", "bmiTimeGoal"].forEach(function (id) {
+      const element = byId(id);
+      if (element) timeGoalWrap.appendChild(element);
     });
 
     ["bmiTargetWeightLabel", "bmiTargetWeight", "waistLabel", "waist"].forEach(function (id) {
@@ -2081,8 +2109,9 @@
     const height = firstNumber(["height", "bmiHeight"]);
     const waist = firstNumber(["waist", "bmiWaist"]);
     const age = firstNumber(["bmiAge"]);
-    const gender = firstValue(["bmiGender"]);
+    const gender = firstValue(["bmiGender"]) || "male";
     const activity = firstValue(["bmiActivityLevel"]) || "moderate";
+    const timeGoalAmount = firstNumber(["bmiTimeGoalAmount"]);
     const timeGoal = firstValue(["bmiTimeGoal"]) || "weekly";
     const targetWeight = firstNumber(["bmiTargetWeight"]);
 
@@ -2172,7 +2201,21 @@
       monthly: "Monthly"
     };
 
-    let goalTimeline = "Enter target weight to estimate goal timeline";
+    function goalUnitText(amount, unitValue) {
+      const cleanAmount = Number.isFinite(amount) && amount > 0 ? Math.round(amount) : "";
+      if (!cleanAmount) return timeGoalLabels[unitValue] || "Weekly";
+      const label = unitValue === "daily" ? "day" : (unitValue === "monthly" ? "month" : "week");
+      return cleanAmount + " " + label + (cleanAmount === 1 ? "" : "s");
+    }
+
+    function goalWeeksFromInput(amount, unitValue) {
+      if (!Number.isFinite(amount) || amount <= 0) return NaN;
+      if (unitValue === "daily") return amount / 7;
+      if (unitValue === "monthly") return amount * 4.345;
+      return amount;
+    }
+
+    let goalTimeline = "Enter target weight and time goal to estimate goal timeline";
     if (Number.isFinite(targetWeight) && targetWeight > 0) {
       const targetKg = unit === "us" ? targetWeight * 0.45359237 : targetWeight;
       const diffKg = targetKg - weightKg;
@@ -2182,15 +2225,22 @@
       if (diffAbsKg < 0.05) {
         goalTimeline = "Already at target weight";
       } else {
-        const recommendedWeeks = Math.max(1, Math.ceil(diffAbsKg / 0.5));
-        const perWeekText = displayWeightFromKg(0.5);
+        const availableWeeks = goalWeeksFromInput(timeGoalAmount, timeGoal);
 
-        if (timeGoal === "daily") {
-          goalTimeline = "About " + (recommendedWeeks * 7) + " days to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week";
-        } else if (timeGoal === "monthly") {
-          goalTimeline = "About " + Math.max(1, Math.ceil(recommendedWeeks / 4.345)) + " months to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week";
+        if (Number.isFinite(availableWeeks) && availableWeeks > 0) {
+          const perWeekKg = diffAbsKg / availableWeeks;
+          goalTimeline = "To " + direction + " " + displayWeightFromKg(diffAbsKg) + " in " + goalUnitText(timeGoalAmount, timeGoal) + ", aim for about " + displayWeightFromKg(perWeekKg) + " per week";
         } else {
-          goalTimeline = "About " + recommendedWeeks + " weeks to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week";
+          const recommendedWeeks = Math.max(1, Math.ceil(diffAbsKg / 0.5));
+          const perWeekText = displayWeightFromKg(0.5);
+
+          if (timeGoal === "daily") {
+            goalTimeline = "About " + (recommendedWeeks * 7) + " days to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week";
+          } else if (timeGoal === "monthly") {
+            goalTimeline = "About " + Math.max(1, Math.ceil(recommendedWeeks / 4.345)) + " months to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week";
+          } else {
+            goalTimeline = "About " + recommendedWeeks + " weeks to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week";
+          }
         }
       }
     }
@@ -2224,7 +2274,7 @@
       ["Gender", genderLabel(gender)],
       ["Activity level", activityLabels[activity] || "Moderate activity"],
       ["Target weight", Number.isFinite(targetWeight) && targetWeight > 0 ? targetWeight + " " + displayUnit : "Not provided"],
-      ["Time goal", timeGoalLabels[timeGoal] || "Weekly"]
+      ["Time goal", goalUnitText(timeGoalAmount, timeGoal)]
     ];
 
     const metrics = {
@@ -4436,6 +4486,22 @@
         margin: 0 0 12px !important;
         font-weight: bold !important;
         text-align: center !important;
+      }
+
+      body.bmi-page .bmi-time-goal-row {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) minmax(120px, 0.7fr) !important;
+        gap: 10px !important;
+        align-items: center !important;
+        margin: 0 0 14px !important;
+        box-sizing: border-box !important;
+      }
+
+      body.bmi-page .bmi-time-goal-row input,
+      body.bmi-page .bmi-time-goal-row select {
+        margin: 0 !important;
+        height: 52px !important;
       }
 
       body.bmi-page main.bmi-calculator-container > #bmiReportOutput,
