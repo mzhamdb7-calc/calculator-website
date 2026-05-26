@@ -2711,3 +2711,150 @@
     installCalculatorSearch();
   }
 })();
+
+/* =====================================================
+   BASIC CALCULATOR: Allow paste/type into answer box
+   - Removes readonly from #display
+   - Allows pasted numbers/operators/functions safely
+   - Prevents double input from global keyboard handler
+===================================================== */
+(function () {
+  "use strict";
+
+  function isBasicPage() {
+    return (
+      document.body.classList.contains("basic-page") ||
+      document.body.dataset.page === "basic" ||
+      !!document.getElementById("display") ||
+      !!document.querySelector(".basic-grid") ||
+      !!document.querySelector(".scientific-grid")
+    );
+  }
+
+  function getDisplay() {
+    return document.getElementById("display");
+  }
+
+  function sanitizeExpression(value) {
+    return String(value || "")
+      .replace(/×/g, "*")
+      .replace(/÷/g, "/")
+      .replace(/−/g, "-")
+      .replace(/π/gi, "Math.PI")
+      .replace(/√/g, "Math.sqrt")
+      .replace(/[^0-9+\-*/().,%\sA-Za-z]/g, "")
+      .replace(/\bpi\b/gi, "Math.PI")
+      .replace(/\bans\b/gi, function () {
+        return String(window.lastAnswer || "0");
+      });
+  }
+
+  function insertAtCursor(input, text) {
+    const start = input.selectionStart ?? input.value.length;
+    const end = input.selectionEnd ?? input.value.length;
+    const before = input.value.slice(0, start);
+    const after = input.value.slice(end);
+
+    input.value = before + text + after;
+
+    const next = start + text.length;
+    input.setSelectionRange(next, next);
+  }
+
+  function isAllowedTypingKey(event) {
+    if (event.ctrlKey || event.metaKey) return true;
+
+    const key = event.key;
+
+    if (
+      key === "Backspace" ||
+      key === "Delete" ||
+      key === "ArrowLeft" ||
+      key === "ArrowRight" ||
+      key === "ArrowUp" ||
+      key === "ArrowDown" ||
+      key === "Tab" ||
+      key === "Home" ||
+      key === "End"
+    ) {
+      return true;
+    }
+
+    return /^[0-9+\-*/().,%]$/.test(key);
+  }
+
+  function setupBasicDisplayPaste() {
+    if (!isBasicPage()) return;
+
+    const display = getDisplay();
+    if (!display) return;
+
+    display.removeAttribute("readonly");
+    display.readOnly = false;
+    display.setAttribute("inputmode", "decimal");
+    display.setAttribute("autocomplete", "off");
+    display.setAttribute("spellcheck", "false");
+
+    if (display.dataset.pasteReady === "true") return;
+    display.dataset.pasteReady = "true";
+
+    display.addEventListener("paste", function (event) {
+      event.preventDefault();
+
+      const clipboard = event.clipboardData || window.clipboardData;
+      const pasted = clipboard ? clipboard.getData("text") : "";
+      const clean = sanitizeExpression(pasted);
+
+      if (clean) {
+        insertAtCursor(display, clean);
+      }
+    });
+
+    display.addEventListener("input", function () {
+      const clean = sanitizeExpression(display.value);
+
+      if (display.value !== clean) {
+        const end = clean.length;
+        display.value = clean;
+        display.setSelectionRange(end, end);
+      }
+    });
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (document.activeElement !== display) return;
+
+        if (event.key === "Enter" || event.key === "=") {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+
+          if (typeof window.calculate === "function") {
+            window.calculate();
+          }
+
+          return;
+        }
+
+        if (!isAllowedTypingKey(event)) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+
+        /*
+          Stop the old global keyboard handler from adding the same number twice.
+          Do not prevent default, so normal typing/paste/editing still works.
+        */
+        event.stopImmediatePropagation();
+      },
+      true
+    );
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupBasicDisplayPaste);
+  } else {
+    setupBasicDisplayPaste();
+  }
+})();
