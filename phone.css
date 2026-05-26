@@ -464,3 +464,137 @@
     word-break: break-word !important;
   }
 }
+
+/* =====================================================
+   PHONE: Calculator search in menu bar
+===================================================== */
+@media (max-width: 850px) {
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar > .site-search {
+    width: 25% !important;
+    max-width: 25% !important;
+    height: 54px !important;
+    flex: 1 1 25% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  #navbar > .about-dropdown > .dropbtn {
+    border-right: 3px solid var(--black) !important;
+  }
+
+  #navbar .site-search-label {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  #navbar .site-search-inner {
+    width: 100% !important;
+    height: 54px !important;
+    display: grid !important;
+    grid-template-columns: 1fr 40px !important;
+    gap: 0 !important;
+    background: var(--white) !important;
+  }
+
+  #navbar .site-search-input {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 54px !important;
+    margin: 0 !important;
+    padding: 0 6px !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border: none !important;
+    box-shadow: none !important;
+    font-family: inherit !important;
+    font-size: 13px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    outline: none !important;
+    box-sizing: border-box !important;
+  }
+
+  #navbar .site-search-submit {
+    width: 40px !important;
+    height: 54px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border: none !important;
+    border-right: none !important;
+    box-shadow: none !important;
+    font-family: inherit !important;
+    font-size: 15px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+  }
+
+  #navbar .site-search-results {
+    position: absolute !important;
+    right: 0 !important;
+    bottom: 58px !important;
+    width: min(92vw, 360px) !important;
+    max-height: 300px !important;
+    overflow-y: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+    z-index: 99999999 !important;
+  }
+
+  #navbar .site-search-results[hidden] {
+    display: none !important;
+  }
+
+  #navbar .site-search-result-btn,
+  #navbar .site-search-empty {
+    width: 100% !important;
+    min-height: 48px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    margin: 0 !important;
+    padding: 10px 12px !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
+    font-family: inherit !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    line-height: 1.1 !important;
+    text-align: left !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+  }
+
+  #navbar .site-search-result-btn:hover,
+  #navbar .site-search-result-btn.is-active {
+    background: var(--yellow) !important;
+  }
+
+  #navbar .site-search-empty {
+    cursor: default !important;
+    background: #ffd3d3 !important;
+  }
+}

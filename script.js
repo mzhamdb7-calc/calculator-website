@@ -2434,3 +2434,280 @@
   window.clearPercentageHistory = function () { clearReports("percentage"); };
   window.clearCompoundHistory = function () { clearReports("compound"); };
 })();
+
+/* =====================================================
+   SITE SEARCH: Calculator search bar in top menu
+   - Inserts search bar to the right of Info dropdown
+   - Searches all calculator pages
+===================================================== */
+(function () {
+  "use strict";
+
+  const CALCULATORS = [
+    {
+      title: "Basic Calculator",
+      label: "basic",
+      url: "basic-calculator.html",
+      keywords: "basic calculator math arithmetic add subtract multiply divide scientific square root sin cos tan log"
+    },
+    {
+      title: "Age Calculator",
+      label: "age",
+      url: "age-calculator.html",
+      keywords: "age birthday birthdate retirement zodiac chinese zodiac sleep planet legal adult days alive moon cycle"
+    },
+    {
+      title: "BMI Calculator",
+      label: "bmi",
+      url: "bmi-calculator.html",
+      keywords: "bmi body mass index weight height waist health gender age waist to height ratio"
+    },
+    {
+      title: "Mortgage Calculator",
+      label: "mortgage",
+      url: "mortgage-calculator.html",
+      keywords: "mortgage home loan housing loan monthly payment interest property tax insurance early settlement"
+    },
+    {
+      title: "Personal Loan Calculator",
+      label: "personal loan",
+      url: "personal-loan-calculator.html",
+      keywords: "personal loan monthly payment interest borrowing repayment finance"
+    },
+    {
+      title: "Discount Calculator",
+      label: "discount",
+      url: "discount-calculator.html",
+      keywords: "discount sale price savings final price percent off coupon"
+    },
+    {
+      title: "Compound Interest Calculator",
+      label: "compound interest",
+      url: "compound-interest-calculator.html",
+      keywords: "compound interest investment savings future value principal rate frequency finance"
+    },
+    {
+      title: "Percentage Calculator",
+      label: "percentage",
+      url: "percentage-calculator.html",
+      keywords: "percentage percent of number ratio calculate percent value"
+    }
+  ];
+
+  let activeIndex = -1;
+  let currentMatches = [];
+
+  function normalize(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
+  }
+
+  function getScore(item, query) {
+    const q = normalize(query);
+    if (!q) return 0;
+
+    const label = normalize(item.label);
+    const title = normalize(item.title);
+    const keywords = normalize(item.keywords);
+    const haystack = title + " " + label + " " + keywords;
+
+    if (label === q) return 100;
+    if (title === q) return 95;
+    if (label.startsWith(q)) return 90;
+    if (title.startsWith(q)) return 85;
+    if (haystack.includes(q)) return 70;
+
+    const words = q.split(/\s+/).filter(Boolean);
+    if (words.length && words.every(function (word) { return haystack.includes(word); })) {
+      return 55;
+    }
+
+    return 0;
+  }
+
+  function findMatches(query) {
+    return CALCULATORS
+      .map(function (item) {
+        return {
+          item: item,
+          score: getScore(item, query)
+        };
+      })
+      .filter(function (entry) {
+        return entry.score > 0;
+      })
+      .sort(function (a, b) {
+        return b.score - a.score || a.item.title.localeCompare(b.item.title);
+      })
+      .map(function (entry) {
+        return entry.item;
+      });
+  }
+
+  function goToCalculator(item) {
+    if (!item || !item.url) return;
+    window.location.href = item.url;
+  }
+
+  function closeResults(form) {
+    const results = form ? form.querySelector(".site-search-results") : null;
+    if (results) {
+      results.hidden = true;
+      results.innerHTML = "";
+    }
+
+    activeIndex = -1;
+    currentMatches = [];
+  }
+
+  function setActiveResult(form) {
+    const buttons = Array.from(form.querySelectorAll(".site-search-result-btn"));
+
+    buttons.forEach(function (button, index) {
+      const active = index === activeIndex;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-selected", active ? "true" : "false");
+    });
+  }
+
+  function renderResults(form, query) {
+    const results = form.querySelector(".site-search-results");
+    if (!results) return;
+
+    currentMatches = findMatches(query);
+    activeIndex = currentMatches.length ? 0 : -1;
+
+    if (!normalize(query)) {
+      closeResults(form);
+      return;
+    }
+
+    if (!currentMatches.length) {
+      results.hidden = false;
+      results.innerHTML = '<li class="site-search-empty">No calculator found</li>';
+      return;
+    }
+
+    results.hidden = false;
+    results.innerHTML = currentMatches
+      .slice(0, 8)
+      .map(function (item, index) {
+        return (
+          '<li>' +
+            '<button type="button" class="site-search-result-btn" data-search-index="' + index + '" role="option">' +
+              item.title +
+            '</button>' +
+          '</li>'
+        );
+      })
+      .join("");
+
+    setActiveResult(form);
+  }
+
+  function buildSearchForm() {
+    const form = document.createElement("form");
+    form.className = "site-search";
+    form.setAttribute("role", "search");
+    form.setAttribute("autocomplete", "off");
+
+    form.innerHTML =
+      '<label class="site-search-label" for="calculatorSearchInput">Search calculator</label>' +
+      '<div class="site-search-inner">' +
+        '<input id="calculatorSearchInput" class="site-search-input" type="search" placeholder="search calculator" aria-label="Search calculator" aria-autocomplete="list" aria-controls="calculatorSearchResults">' +
+        '<button type="submit" class="site-search-submit" aria-label="Open calculator search result">🔍</button>' +
+      '</div>' +
+      '<ul id="calculatorSearchResults" class="site-search-results" role="listbox" hidden></ul>';
+
+    return form;
+  }
+
+  function setupSearchEvents(form) {
+    const input = form.querySelector(".site-search-input");
+    const results = form.querySelector(".site-search-results");
+
+    if (!input || !results) return;
+
+    input.addEventListener("input", function () {
+      renderResults(form, input.value);
+    });
+
+    input.addEventListener("focus", function () {
+      if (normalize(input.value)) {
+        renderResults(form, input.value);
+      }
+    });
+
+    input.addEventListener("keydown", function (event) {
+      if (!currentMatches.length) return;
+
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        activeIndex = Math.min(activeIndex + 1, Math.min(currentMatches.length, 8) - 1);
+        setActiveResult(form);
+      }
+
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        activeIndex = Math.max(activeIndex - 1, 0);
+        setActiveResult(form);
+      }
+
+      if (event.key === "Escape") {
+        closeResults(form);
+      }
+    });
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const matches = currentMatches.length ? currentMatches : findMatches(input.value);
+      const selected = matches[activeIndex >= 0 ? activeIndex : 0];
+
+      if (selected) {
+        goToCalculator(selected);
+      }
+    });
+
+    results.addEventListener("click", function (event) {
+      const button = event.target.closest(".site-search-result-btn");
+      if (!button) return;
+
+      const index = Number(button.dataset.searchIndex);
+      const item = currentMatches[index];
+
+      goToCalculator(item);
+    });
+
+    document.addEventListener("click", function (event) {
+      if (!form.contains(event.target)) {
+        closeResults(form);
+      }
+    });
+  }
+
+  function installCalculatorSearch() {
+    const navbar = document.getElementById("navbar");
+    if (!navbar) return;
+    if (navbar.querySelector(".site-search")) return;
+
+    const form = buildSearchForm();
+    const infoDropdown = navbar.querySelector(".about-dropdown");
+
+    if (infoDropdown) {
+      infoDropdown.insertAdjacentElement("afterend", form);
+    } else {
+      navbar.appendChild(form);
+    }
+
+    setupSearchEvents(form);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", installCalculatorSearch);
+  } else {
+    installCalculatorSearch();
+  }
+})();

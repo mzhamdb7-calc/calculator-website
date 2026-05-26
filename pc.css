@@ -4696,3 +4696,159 @@ body.loan-page .mortgage-report-back a {
     max-width: none !important;
   }
 }
+/* =====================================================
+   PC: Calculator search bar beside Info menu
+===================================================== */
+@media (min-width: 851px) {
+  #navbar,
+  #navbar.scrolled,
+  #navbar.open {
+    width: 1040px !important;
+  }
+
+  #navbar > a,
+  #navbar > .dropdown,
+  #navbar.open > a,
+  #navbar.open > .dropdown {
+    width: 210px !important;
+    flex: 0 0 210px !important;
+  }
+
+  #navbar > .about-dropdown > .dropbtn {
+    border-right: 3px solid var(--black) !important;
+  }
+
+  #navbar .site-search {
+    position: relative !important;
+    width: 410px !important;
+    height: 65px !important;
+    flex: 0 0 410px !important;
+    margin: 0 !important;
+    padding: 8px 10px !important;
+    background: var(--white) !important;
+    border: none !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+    z-index: 9999999 !important;
+  }
+
+  #navbar .site-search-label {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  #navbar .site-search-inner {
+    width: 100% !important;
+    height: 100% !important;
+    display: grid !important;
+    grid-template-columns: 1fr 52px !important;
+    gap: 8px !important;
+    align-items: center !important;
+  }
+
+  #navbar .site-search-input {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 46px !important;
+    margin: 0 !important;
+    padding: 8px 12px !important;
+    background: #f8f8f8 !important;
+    color: var(--black) !important;
+    border: 4px solid var(--black) !important;
+    box-shadow: inset 3px 3px 0 #ddd !important;
+    font-family: inherit !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    text-align: left !important;
+    outline: none !important;
+    box-sizing: border-box !important;
+  }
+
+  #navbar .site-search-submit {
+    width: 52px !important;
+    height: 46px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--green) !important;
+    color: var(--black) !important;
+    border: 4px solid var(--black) !important;
+    box-shadow: 3px 3px 0 var(--black) !important;
+    font-family: inherit !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+  }
+
+  #navbar .site-search-submit:hover,
+  #navbar .site-search-result-btn:hover,
+  #navbar .site-search-result-btn.is-active {
+    background: var(--yellow) !important;
+  }
+
+  #navbar .site-search-results {
+    position: absolute !important;
+    top: 62px !important;
+    right: -3px !important;
+    width: 410px !important;
+    max-height: 330px !important;
+    overflow-y: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+    background: var(--white) !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+    z-index: 99999999 !important;
+  }
+
+  #navbar .site-search-results[hidden] {
+    display: none !important;
+  }
+
+  #navbar .site-search-result-btn,
+  #navbar .site-search-empty {
+    width: 100% !important;
+    min-height: 48px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    margin: 0 !important;
+    padding: 10px 14px !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border: none !important;
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
+    font-family: inherit !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    line-height: 1.1 !important;
+    text-align: left !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+  }
+
+  #navbar .site-search-results li:last-child .site-search-result-btn,
+  #navbar .site-search-results li:last-child .site-search-empty {
+    border-bottom: none !important;
+  }
+
+  #navbar .site-search-empty {
+    cursor: default !important;
+    background: #ffd3d3 !important;
+  }
+}
