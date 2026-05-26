@@ -10598,3 +10598,97 @@
     startRepair();
   }
 })();
+/* =====================================================
+   MORTGAGE: Put Optional costs beside Early settlement
+   - PC: side by side
+   - Phone: stacked
+   - Safe if boxes are created later
+===================================================== */
+(function () {
+  "use strict";
+
+  function isMortgagePage() {
+    const title = document.querySelector("h1")
+      ? document.querySelector("h1").textContent.trim().toLowerCase()
+      : "";
+
+    return (
+      document.body.classList.contains("loan-page") ||
+      document.body.dataset.page === "loan" ||
+      title.includes("mortgage") ||
+      title.includes("loan") ||
+      window.location.pathname.includes("loan") ||
+      window.location.pathname.includes("mortgage") ||
+      !!document.getElementById("loanResult") ||
+      !!document.getElementById("loanHistoryList")
+    );
+  }
+
+  function findInsertPoint(calculator) {
+    return (
+      document.querySelector(".optional-mortgage-costs") ||
+      document.querySelector(".early-settlement-box") ||
+      calculator.querySelector(".main-btn") ||
+      Array.from(calculator.querySelectorAll("button")).find(function (button) {
+        return button.textContent.trim().toLowerCase().includes("calculate");
+      }) ||
+      null
+    );
+  }
+
+  function groupMortgageOptionalBoxes() {
+    if (!isMortgagePage()) return;
+
+    const calculator = document.querySelector(".calculator");
+    if (!calculator) return;
+
+    const optionalCostBox = document.querySelector(".optional-mortgage-costs");
+    const earlySettlementBox = document.querySelector(".early-settlement-box");
+
+    if (!optionalCostBox && !earlySettlementBox) return;
+
+    let row = document.querySelector(".loan-optional-row");
+
+    if (!row) {
+      row = document.createElement("div");
+      row.className = "loan-optional-row";
+
+      const insertPoint = findInsertPoint(calculator);
+
+      if (insertPoint && insertPoint.parentElement) {
+        insertPoint.parentElement.insertBefore(row, insertPoint);
+      } else {
+        calculator.appendChild(row);
+      }
+    }
+
+    if (optionalCostBox && optionalCostBox.parentElement !== row) {
+      row.appendChild(optionalCostBox);
+    }
+
+    if (earlySettlementBox && earlySettlementBox.parentElement !== row) {
+      row.appendChild(earlySettlementBox);
+    }
+  }
+
+  function start() {
+    groupMortgageOptionalBoxes();
+
+    setTimeout(groupMortgageOptionalBoxes, 100);
+    setTimeout(groupMortgageOptionalBoxes, 400);
+    setTimeout(groupMortgageOptionalBoxes, 900);
+    setTimeout(groupMortgageOptionalBoxes, 1500);
+    setTimeout(groupMortgageOptionalBoxes, 2500);
+
+    document.addEventListener("click", function () {
+      setTimeout(groupMortgageOptionalBoxes, 100);
+      setTimeout(groupMortgageOptionalBoxes, 500);
+    }, true);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();

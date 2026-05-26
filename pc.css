@@ -4657,3 +4657,42 @@ body.loan-page .mortgage-report-back a {
   font-weight: bold !important;
   text-decoration: none !important;
 }
+/* =====================================================
+   PC: Mortgage optional costs + early settlement side by side
+===================================================== */
+@media (min-width: 851px) {
+  body.loan-page .loan-optional-row {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    gap: 18px !important;
+    align-items: start !important;
+    margin: 18px 0 22px !important;
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .loan-optional-row .optional-mortgage-costs,
+  body.loan-page .loan-optional-row .early-settlement-box {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .loan-optional-row .optional-mortgage-toggle,
+  body.loan-page .loan-optional-row .early-settlement-toggle {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+
+  body.loan-page .loan-optional-row input,
+  body.loan-page .loan-optional-row select,
+  body.loan-page .loan-optional-row textarea {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+}

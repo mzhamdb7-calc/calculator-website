@@ -754,3 +754,35 @@ body.loan-page .mortgage-report-back a {
   font-weight: bold !important;
   text-decoration: none !important;
 }
+/* =====================================================
+   PHONE: Mortgage optional boxes stacked cleanly
+===================================================== */
+@media (max-width: 850px) {
+  body.loan-page .loan-optional-row {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    margin: 16px 0 20px !important;
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .loan-optional-row .optional-mortgage-costs,
+  body.loan-page .loan-optional-row .early-settlement-box {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .loan-optional-row .optional-mortgage-toggle,
+  body.loan-page .loan-optional-row .early-settlement-toggle,
+  body.loan-page .loan-optional-row input,
+  body.loan-page .loan-optional-row select,
+  body.loan-page .loan-optional-row textarea {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+}
