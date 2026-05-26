@@ -9115,177 +9115,7 @@
     start();
   }
 })();
-/* =====================================================
-   MORTGAGE: Remove calculate button + auto calculate
-   - Deletes calculate loan button
-   - Calculates automatically after user input
-   - Waits until loan amount, interest, and term are filled
-===================================================== */
-(function () {
-  "use strict";
 
-  let autoTimer = null;
-  let isCalculating = false;
-
-  function isLoanPage() {
-    const title = document.querySelector("h1")
-      ? document.querySelector("h1").textContent.trim().toLowerCase()
-      : "";
-
-    return (
-      document.body.classList.contains("loan-page") ||
-      document.body.dataset.page === "loan" ||
-      window.location.pathname.includes("loan-calculator") ||
-      title.includes("mortgage") ||
-      title.includes("loan") ||
-      !!document.getElementById("loanResult")
-    );
-  }
-
-  function getValue(ids) {
-    for (const id of ids) {
-      const el = document.getElementById(id);
-      if (!el) continue;
-
-      const value = String(el.value || "").trim();
-      if (value !== "") return value;
-    }
-
-    return "";
-  }
-
-  function isReadyToCalculate() {
-    return (
-      getValue(["amount", "loanAmount", "principal", "loanPrincipal"]) !== "" &&
-      getValue(["interest", "loanRate", "interestRate", "annualRate", "rate"]) !== "" &&
-      getValue(["years", "loanYears", "loanTerm", "term"]) !== ""
-    );
-  }
-
-  function findCalculateButtons() {
-    return Array.from(document.querySelectorAll("button")).filter(function (button) {
-      const text = button.textContent.trim().toLowerCase();
-      const onclick = button.getAttribute("onclick") || "";
-
-      return (
-        button.classList.contains("main-btn") ||
-        text.includes("calculate loan") ||
-        onclick.includes("calculateLoan")
-      );
-    });
-  }
-
-  function removeCalculateButton() {
-    if (!isLoanPage()) return;
-
-    findCalculateButtons().forEach(function (button) {
-      button.remove();
-    });
-  }
-
-  function updateInstructionText() {
-    const howText = document.querySelector(".instruction-how-box p");
-
-    if (howText) {
-      howText.textContent =
-        "Enter the loan amount or purchase price, annual interest rate, loan term in months, and optional costs. The result updates automatically.";
-    }
-
-    const subtitle = document.querySelector(".calculator .subtitle");
-
-    if (subtitle) {
-      subtitle.textContent =
-        "Estimate your monthly payment, full loan interest, and full payment value automatically.";
-    }
-  }
-
-  function runMortgageAutoCalculate() {
-    if (!isLoanPage()) return;
-    if (!isReadyToCalculate()) return;
-    if (typeof window.calculateLoan !== "function") return;
-    if (isCalculating) return;
-
-    isCalculating = true;
-
-    try {
-      window.calculateLoan();
-    } catch (error) {
-      console.error("Mortgage auto calculate error:", error);
-    }
-
-    setTimeout(function () {
-      isCalculating = false;
-    }, 150);
-  }
-
-  function scheduleMortgageAutoCalculate() {
-    clearTimeout(autoTimer);
-
-    autoTimer = setTimeout(function () {
-      removeCalculateButton();
-      runMortgageAutoCalculate();
-    }, 300);
-  }
-
-  function watchMortgageInputs() {
-    document.addEventListener(
-      "input",
-      function (event) {
-        if (!isLoanPage()) return;
-
-        const input = event.target;
-
-        if (
-          input.matches("input") ||
-          input.matches("select") ||
-          input.matches("textarea")
-        ) {
-          scheduleMortgageAutoCalculate();
-        }
-      },
-      true
-    );
-
-    document.addEventListener(
-      "change",
-      function (event) {
-        if (!isLoanPage()) return;
-
-        const input = event.target;
-
-        if (
-          input.matches("input") ||
-          input.matches("select") ||
-          input.matches("textarea")
-        ) {
-          scheduleMortgageAutoCalculate();
-        }
-      },
-      true
-    );
-  }
-
-  function startMortgageAutoCalculate() {
-    if (!isLoanPage()) return;
-
-    removeCalculateButton();
-    updateInstructionText();
-    watchMortgageInputs();
-
-    setTimeout(removeCalculateButton, 100);
-    setTimeout(removeCalculateButton, 500);
-    setTimeout(removeCalculateButton, 1000);
-    setTimeout(removeCalculateButton, 2000);
-
-    setTimeout(runMortgageAutoCalculate, 800);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startMortgageAutoCalculate);
-  } else {
-    startMortgageAutoCalculate();
-  }
-})();
 /* =====================================================
    MORTGAGE: History report links
    - Adds "open report" link to each mortgage history item
@@ -10909,5 +10739,346 @@
     document.addEventListener("DOMContentLoaded", start);
   } else {
     start();
+  }
+})();
+/* =====================================================
+   ALL CALCULATOR PAGES: Hide calculate button + auto calculate
+   - Works for age, BMI, discount, percentage, compound, loan
+   - Skips basic calculator
+   - Hides calculate buttons instead of deleting them
+   - Auto-clicks the original button when inputs are ready
+===================================================== */
+(function () {
+  "use strict";
+
+  let autoTimer = null;
+  let isAutoRunning = false;
+
+  const PAGE_RULES = [
+    {
+      name: "age",
+      detect: function () {
+        return (
+          document.body.classList.contains("age-page") ||
+          document.body.dataset.page === "age" ||
+          !!document.getElementById("birthdate") ||
+          !!document.getElementById("ageResult")
+        );
+      },
+      required: ["birthdate"],
+      functions: ["calculateAge"],
+      buttonText: /calculate\s*age/i
+    },
+    {
+      name: "bmi",
+      detect: function () {
+        return (
+          document.body.classList.contains("bmi-page") ||
+          document.body.dataset.page === "bmi" ||
+          !!document.getElementById("bmiResult") ||
+          (!!document.getElementById("weight") && !!document.getElementById("height"))
+        );
+      },
+      required: ["weight", "height"],
+      functions: ["calculateBMI", "calculateBmi"],
+      buttonText: /calculate\s*bmi/i
+    },
+    {
+      name: "discount",
+      detect: function () {
+        return (
+          document.body.classList.contains("discount-page") ||
+          document.body.dataset.page === "discount" ||
+          !!document.getElementById("discountResult") ||
+          (!!document.getElementById("price") && !!document.getElementById("discount"))
+        );
+      },
+      required: ["price", "discount"],
+      functions: ["calculateDiscount"],
+      buttonText: /calculate\s*discount/i
+    },
+    {
+      name: "percentage",
+      detect: function () {
+        return (
+          document.body.classList.contains("percentage-page") ||
+          document.body.dataset.page === "percentage" ||
+          !!document.getElementById("percentageResult") ||
+          (!!document.getElementById("percent") && !!document.getElementById("number"))
+        );
+      },
+      required: ["percent", "number"],
+      functions: ["calculatePercentage"],
+      buttonText: /calculate\s*percentage/i
+    },
+    {
+      name: "compound",
+      detect: function () {
+        return (
+          document.body.classList.contains("compound-page") ||
+          document.body.dataset.page === "compound" ||
+          !!document.getElementById("compoundResult") ||
+          !!document.getElementById("calculateCompoundBtn")
+        );
+      },
+      required: ["principal", "rate", "years"],
+      functions: ["calculateCompound", "calculateCompoundInterest"],
+      buttonText: /calculate\s*(compound|interest)/i,
+      buttonIds: ["calculateCompoundBtn"]
+    },
+    {
+      name: "loan",
+      detect: function () {
+        return (
+          document.body.classList.contains("loan-page") ||
+          document.body.dataset.page === "loan" ||
+          window.location.pathname.includes("loan-calculator") ||
+          !!document.getElementById("loanResult") ||
+          !!document.getElementById("loanExternalOutput") ||
+          !!document.getElementById("loanHistoryList")
+        );
+      },
+      required: ["amount", "interest", "years"],
+      functions: ["calculateLoan"],
+      buttonText: /calculate\s*(loan|mortgage)/i
+    }
+  ];
+
+  function isBasicCalculatorPage() {
+    return (
+      document.body.classList.contains("basic-page") ||
+      document.body.dataset.page === "basic" ||
+      !!document.getElementById("display") ||
+      !!document.querySelector(".basic-grid") ||
+      !!document.querySelector(".scientific-grid")
+    );
+  }
+
+  function cleanText(value) {
+    return String(value || "").replace(/\s+/g, " ").trim();
+  }
+
+  function getValue(id) {
+    const input = document.getElementById(id);
+    return input ? cleanText(input.value) : "";
+  }
+
+  function getCurrentRule() {
+    if (isBasicCalculatorPage()) return null;
+
+    return PAGE_RULES.find(function (rule) {
+      return rule.detect();
+    }) || null;
+  }
+
+  function isReady(rule) {
+    if (!rule || !Array.isArray(rule.required)) return false;
+
+    return rule.required.every(function (id) {
+      return getValue(id) !== "";
+    });
+  }
+
+  function isCalculateButton(button, rule) {
+    if (!button || !rule) return false;
+
+    const text = cleanText(button.textContent);
+    const onclick = button.getAttribute("onclick") || "";
+    const id = button.id || "";
+
+    if (rule.buttonIds && rule.buttonIds.includes(id)) {
+      return true;
+    }
+
+    if (rule.buttonText && rule.buttonText.test(text)) {
+      return true;
+    }
+
+    return rule.functions.some(function (functionName) {
+      return onclick.includes(functionName);
+    });
+  }
+
+  function getCalculateButtons(rule) {
+    if (!rule) return [];
+
+    return Array.from(document.querySelectorAll(".calculator button, main button"))
+      .filter(function (button) {
+        if (button.closest("#navbar")) return false;
+        if (button.closest(".history, .age-history-box, .bmi-history-box, .discount-history-box, .loan-history-box, .percentage-history-box, .compound-history-box")) return false;
+
+        const text = cleanText(button.textContent).toLowerCase();
+
+        if (text.includes("clear")) return false;
+        if (text.includes("copy")) return false;
+        if (text.includes("share")) return false;
+        if (text.includes("save")) return false;
+        if (text.includes("go back")) return false;
+        if (button.id === "unitToggleBtn") return false;
+
+        return isCalculateButton(button, rule);
+      });
+  }
+
+  function hideCalculateButtons() {
+    const rule = getCurrentRule();
+    if (!rule) return;
+
+    getCalculateButtons(rule).forEach(function (button) {
+      button.style.display = "none";
+      button.setAttribute("aria-hidden", "true");
+      button.tabIndex = -1;
+      button.dataset.autoCalculateHidden = "true";
+    });
+  }
+
+  function runOriginalButton(rule) {
+    const buttons = getCalculateButtons(rule);
+
+    if (!buttons.length) return false;
+
+    const button = buttons[0];
+
+    button.click();
+    return true;
+  }
+
+  function runFallbackFunction(rule) {
+    if (!rule) return false;
+
+    const functionName = rule.functions.find(function (name) {
+      return typeof window[name] === "function";
+    });
+
+    if (!functionName) return false;
+
+    window[functionName]();
+    return true;
+  }
+
+  function autoCalculateNow() {
+    if (isAutoRunning) return;
+
+    const rule = getCurrentRule();
+    if (!rule) return;
+
+    hideCalculateButtons();
+
+    if (!isReady(rule)) return;
+
+    isAutoRunning = true;
+
+    try {
+      /*
+        Prefer clicking the original hidden button.
+        This keeps your existing result + history behavior.
+      */
+      if (!runOriginalButton(rule)) {
+        runFallbackFunction(rule);
+      }
+    } catch (error) {
+      console.error("Auto calculate error:", error);
+    }
+
+    setTimeout(function () {
+      isAutoRunning = false;
+    }, 250);
+  }
+
+  function scheduleAutoCalculate() {
+    clearTimeout(autoTimer);
+
+    autoTimer = setTimeout(function () {
+      autoCalculateNow();
+    }, 350);
+  }
+
+  function updateCalculatorText() {
+    const rule = getCurrentRule();
+    if (!rule) return;
+
+    const subtitle = document.querySelector(".calculator .subtitle");
+
+    if (subtitle && !subtitle.dataset.autoCalcTextUpdated) {
+      subtitle.dataset.autoCalcTextUpdated = "true";
+
+      subtitle.textContent = subtitle.textContent
+        .replace(/click calculate[^.]*\./gi, "The result updates automatically.")
+        .replace(/press calculate[^.]*\./gi, "The result updates automatically.");
+    }
+
+    document.querySelectorAll(".instruction-how-box p").forEach(function (p) {
+      if (p.dataset.autoCalcTextUpdated) return;
+
+      p.dataset.autoCalcTextUpdated = "true";
+
+      p.textContent = p.textContent
+        .replace(/click calculate[^.]*\./gi, "The result updates automatically.")
+        .replace(/press calculate[^.]*\./gi, "The result updates automatically.");
+    });
+  }
+
+  function startAutoCalculateAllPages() {
+    if (isBasicCalculatorPage()) return;
+
+    hideCalculateButtons();
+    updateCalculatorText();
+
+    document.addEventListener(
+      "input",
+      function (event) {
+        if (isBasicCalculatorPage()) return;
+
+        if (
+          event.target.matches("input") ||
+          event.target.matches("select") ||
+          event.target.matches("textarea")
+        ) {
+          scheduleAutoCalculate();
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "change",
+      function (event) {
+        if (isBasicCalculatorPage()) return;
+
+        if (
+          event.target.matches("input") ||
+          event.target.matches("select") ||
+          event.target.matches("textarea")
+        ) {
+          scheduleAutoCalculate();
+        }
+      },
+      true
+    );
+
+    document.addEventListener(
+      "click",
+      function () {
+        if (isBasicCalculatorPage()) return;
+
+        setTimeout(hideCalculateButtons, 0);
+        setTimeout(updateCalculatorText, 100);
+      },
+      true
+    );
+
+    setTimeout(hideCalculateButtons, 100);
+    setTimeout(hideCalculateButtons, 500);
+    setTimeout(hideCalculateButtons, 1000);
+    setTimeout(hideCalculateButtons, 2000);
+
+    setTimeout(updateCalculatorText, 300);
+    setTimeout(scheduleAutoCalculate, 700);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startAutoCalculateAllPages);
+  } else {
+    startAutoCalculateAllPages();
   }
 })();
