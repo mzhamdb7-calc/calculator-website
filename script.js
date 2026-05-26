@@ -564,7 +564,7 @@
       {
         key: "birth",
         title: "Birth & calendar",
-        match: /date range|day of week born|born date in islamic|born date in chinese/i
+        match: /name|date range|day of week born|born date in islamic|born date in chinese/i
       },
       {
         key: "age",
@@ -574,7 +574,7 @@
       {
         key: "milestone",
         title: "Birthday & milestones",
-        match: /next birthday countdown|seconds to next age|retirement|legal age|leap year age/i
+        match: /next birthday countdown|next age live countdown|seconds to next age|retirement|legal age|leap year age/i
       },
       {
         key: "life",
@@ -583,8 +583,13 @@
       },
       {
         key: "zodiac",
-        title: "Zodiac & famous birthdays",
-        match: /western zodiac|chinese zodiac|famous celebrity|famous sports star|famous historical figure/i
+        title: "Zodiac",
+        match: /western zodiac|chinese zodiac/i
+      },
+      {
+        key: "history",
+        title: "Famous birthdays & historical event",
+        match: /famous celebrity|famous sports star|famous historical figure|historical event/i
       },
       {
         key: "space",
@@ -961,6 +966,13 @@
     const reports = loadReports(type);
     const last = reports[reports.length - 1];
 
+    if (last && JSON.stringify(last.inputLines || []) === JSON.stringify(report.inputLines || [])) {
+      reports[reports.length - 1] = report;
+      saveReports(type, reports);
+      renderReportHistory(type);
+      return;
+    }
+
     if (last && reportSignature(last) === reportSignature(report)) {
       renderReportHistory(type);
       return;
@@ -1085,6 +1097,24 @@
     }
 
     return date;
+  }
+
+  function ensureAgeNameInput() {
+    const birthdateInput = byId("birthdate");
+    if (!birthdateInput || byId("ageName")) return;
+
+    const label = document.createElement("label");
+    label.setAttribute("for", "ageName");
+    label.textContent = "Name (optional):";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.id = "ageName";
+    input.placeholder = "Optional";
+    input.setAttribute("autocomplete", "name");
+
+    birthdateInput.insertAdjacentElement("beforebegin", input);
+    input.insertAdjacentElement("beforebegin", label);
   }
 
   function ensureAgeTargetDateInput() {
@@ -1346,8 +1376,7 @@
 
     return (
       '<div class="age-live-countdown" data-birthdate="' + safeBirthdate + '">' +
-        '<span>Upcoming age: <strong data-age-upcoming>--</strong></span>' +
-        '<span>Next age countdown: <strong data-age-seconds>--</strong> seconds</span>' +
+        '<span class="age-live-countdown-line"><strong data-age-countdown-line>-- second to -- years old</strong></span>' +
       '</div>'
     );
   }
@@ -1362,11 +1391,11 @@
 
       if (!data) return;
 
-      const ageEl = box.querySelector("[data-age-upcoming]");
-      const secondEl = box.querySelector("[data-age-seconds]");
+      const lineEl = box.querySelector("[data-age-countdown-line]");
 
-      if (ageEl) ageEl.textContent = String(data.upcomingAge);
-      if (secondEl) secondEl.textContent = formatLargeNumber(data.seconds);
+      if (lineEl) {
+        lineEl.textContent = formatLargeNumber(data.seconds) + " second to " + data.upcomingAge + " years old";
+      }
     });
   }
 
@@ -1455,6 +1484,69 @@
     ];
   }
 
+  function historicalEventFallback(month, day) {
+    const key = String(month).padStart(2, "0") + "-" + String(day).padStart(2, "0");
+    const list = {
+      "01-01": "1863 - The Emancipation Proclamation took effect in the United States.",
+      "01-15": "2001 - Wikipedia was launched.",
+      "02-12": "1809 - Abraham Lincoln was born.",
+      "03-14": "1879 - Albert Einstein was born.",
+      "04-15": "1912 - RMS Titanic sank in the North Atlantic.",
+      "05-05": "1961 - Alan Shepard became the first American in space.",
+      "06-06": "1944 - D-Day landings began in Normandy during World War II.",
+      "07-20": "1969 - Apollo 11 landed the first humans on the Moon.",
+      "08-31": "1957 - The Federation of Malaya gained independence.",
+      "09-16": "1963 - Malaysia was formed.",
+      "10-24": "1945 - The United Nations officially came into existence.",
+      "11-09": "1989 - The Berlin Wall began to fall.",
+      "12-25": "1991 - Mikhail Gorbachev resigned as President of the Soviet Union."
+    };
+
+    return list[key] || "Loading a historical event for this date...";
+  }
+
+  function extractHistoricalEventText(item) {
+    if (!item) return "";
+
+    const year = item.year ? String(item.year) + " - " : "";
+    const text = String(item.text || "").trim();
+
+    return text ? year + text : "";
+  }
+
+  function updateHistoricalEventOnline(month, day, rows, metricsBuilder) {
+    if (!window.fetch) return;
+
+    const url = "https://en.wikipedia.org/api/rest_v1/feed/onthisday/events/" + month + "/" + day;
+
+    fetch(url)
+      .then(function (response) {
+        if (!response.ok) throw new Error("Historical event API unavailable");
+        return response.json();
+      })
+      .then(function (data) {
+        const events = Array.isArray(data.events) ? data.events : [];
+        const eventText = extractHistoricalEventText(events[0]);
+
+        if (!eventText) return;
+
+        rows.forEach(function (row) {
+          if (row[0] === "Historical event on this day") row[1] = eventText;
+        });
+
+        const metrics = typeof metricsBuilder === "function" ? metricsBuilder(rows) : {
+          resultRows: rows.map(function (row) { return { label: row[0], value: row[1] }; })
+        };
+
+        renderResultPanel("age", rows, ageLiveCountdownHtml(metrics.birthdate || ""));
+        startAgeLiveCountdown();
+        saveCurrentReport("age", metrics);
+      })
+      .catch(function () {
+        /* Keep offline fallback event. */
+      });
+  }
+
   function updateFamousBirthdayRowsOnline(month, day, rows, metricsBuilder) {
     if (!window.fetch) return;
 
@@ -1518,6 +1610,9 @@
   }
 
   function calculateAge() {
+    ensureAgeNameInput();
+
+    const name = firstValue(["ageName", "name", "personName"]);
     const birthdate = firstValue(["birthdate", "birthDate", "dob"]);
     const targetInput = ensureAgeTargetDateInput();
     const targetValue = targetInput ? targetInput.value : todayValueISO();
@@ -1549,9 +1644,10 @@
     const totalAliveSeconds = totalSecondsBetween(birthDate, targetDate);
     const chineseAnimal = chineseZodiac(year);
     const nextAgeData = nextAgeCountdownData(birthDate);
-    const secondsToNextAge = nextAgeData ? formatLargeNumber(nextAgeData.seconds) + " seconds until age " + nextAgeData.upcomingAge : "-";
+    const secondsToNextAge = nextAgeData ? formatLargeNumber(nextAgeData.seconds) + " second to " + nextAgeData.upcomingAge + " years old" : "-";
 
     const rows = [
+      ["Name", name || "-"],
       ["Date range", formatDateDMY(birthdate) + " to " + formatDateDMY(targetValue)],
       ["Day of week born", weekday],
       ["Born date in Islamic calendar", formatIntlDate(birthDate, "en-GB-u-ca-islamic")],
@@ -1565,7 +1661,7 @@
       ["Seconds old", formatLargeNumber(totalAliveSeconds)],
 
       ["Next birthday countdown", nextBirthdayCountdown(birthDate)],
-      ["Seconds to next age", secondsToNextAge],
+      ["Next age live countdown", secondsToNextAge],
       ["Retirement", countdownToAge(birthDate, targetDate, 60, "retirement")],
       ["Legal age", countdownToAge(birthDate, targetDate, 18, "legal adult age")],
       ["Leap year age", leapBirthdayInfo(birthDate, targetDate)],
@@ -1578,6 +1674,7 @@
       ["Western zodiac", westernZodiac(month, day)],
       ["Chinese zodiac", chineseAnimal]
     ].concat(famousBirthdayRows(month, day)).concat([
+      ["Historical event on this day", historicalEventFallback(month, day)],
       ["Age on other planets", planetAgeText(totalAliveDays)],
       ["Moon cycles experienced", moonCycleText(totalAliveDays)]
     ]);
@@ -1585,6 +1682,7 @@
     function ageMetrics(currentRows) {
       return {
         birthdate: birthdate,
+        name: name,
         exactAge: exactText,
         normalAge: exact.years,
         asianAge: asianAge,
@@ -1601,6 +1699,7 @@
     startAgeLiveCountdown();
     saveCurrentReport("age", ageMetrics(rows));
     updateFamousBirthdayRowsOnline(month, day, rows, ageMetrics);
+    updateHistoricalEventOnline(month, day, rows, ageMetrics);
   }
 
   /* =====================================================
@@ -2110,7 +2209,7 @@
       {
         title: "Birth & calendar",
         note: "Where the age calculation starts.",
-        match: /date range|day of week born|born date in islamic|born date in chinese/i
+        match: /name|date range|day of week born|born date in islamic|born date in chinese/i
       },
       {
         title: "Current age",
@@ -2120,7 +2219,7 @@
       {
         title: "Birthday & milestones",
         note: "Upcoming birthday and important age milestones.",
-        match: /next birthday countdown|seconds to next age|retirement|legal age|leap year age/i
+        match: /next birthday countdown|next age live countdown|seconds to next age|retirement|legal age|leap year age/i
       },
       {
         title: "Life summary",
@@ -2128,9 +2227,14 @@
         match: /days spent alive|estimated sleep time|breaths taken|heartbeats lived/i
       },
       {
-        title: "Zodiac & famous birthdays",
-        note: "Western/Chinese zodiac and famous people born on the same date.",
-        match: /western zodiac|chinese zodiac|famous celebrity|famous sports star|famous historical figure/i
+        title: "Zodiac",
+        note: "Western and Chinese zodiac details.",
+        match: /western zodiac|chinese zodiac/i
+      },
+      {
+        title: "Famous birthdays & historical event",
+        note: "People and events connected to the same month and day.",
+        match: /famous celebrity|famous sports star|famous historical figure|historical event/i
       },
       {
         title: "Space & moon view",
@@ -2980,7 +3084,10 @@
 
     const type = getPageType();
 
-    if (type === "age") ensureAgeTargetDateInput();
+    if (type === "age") {
+      ensureAgeNameInput();
+      ensureAgeTargetDateInput();
+    }
     if (type === "bmi") {
       ensureBMIProfileAndGroups();
       setBMIUnit("si");
