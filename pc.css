@@ -4957,3 +4957,44 @@ body.loan-page .mortgage-report-back a {
     border-right: none !important;
   }
 }
+
+
+/* =====================================================
+   PC INDEX: Put all calculator cards side by side
+===================================================== */
+@media (min-width: 851px) {
+  body.index-page .calculator-box {
+    width: min(1180px, 94vw) !important;
+    max-width: 1180px !important;
+  }
+
+  body.index-page .calculator-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 18px !important;
+    align-items: start !important;
+  }
+
+  body.index-page .calculator-grid > .card,
+  body.index-page .calculator-grid > .group-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 110px !important;
+    font-size: clamp(20px, 2vw, 32px) !important;
+    box-sizing: border-box !important;
+  }
+
+  body.index-page .calculator-grid > .group-card > summary {
+    height: 110px !important;
+    font-size: clamp(20px, 2vw, 32px) !important;
+    padding: 0 8px !important;
+    text-align: center !important;
+  }
+
+  body.index-page .calculator-grid > .card {
+    height: 110px !important;
+  }
+
+  body.index-page .live-abacus-section {
+    width: min(1180px, 94vw) !important;
+  }
+}
