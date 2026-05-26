@@ -2198,14 +2198,23 @@
       veryActive: 1.9
     };
 
-    let caloriesText = "Enter age to estimate calories/day";
+    let caloriesMaintainText = "Enter age to estimate calories/day";
+    let caloriesGainText = "Enter age to estimate calories/day";
+    let caloriesLossText = "Enter age to estimate calories/day";
     if (Number.isFinite(age) && age > 0) {
       const maleBmr = 10 * weightKg + 6.25 * heightCm - 5 * age + 5;
       const femaleBmr = 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
       let bmr = (maleBmr + femaleBmr) / 2;
       if (gender === "male") bmr = maleBmr;
       if (gender === "female") bmr = femaleBmr;
-      caloriesText = Math.round(bmr * (activityFactors[activity] || activityFactors.moderate)).toLocaleString("en-US") + " calories/day estimated maintenance";
+
+      const maintenanceCalories = Math.round(bmr * (activityFactors[activity] || activityFactors.moderate));
+      const gainCalories = maintenanceCalories + 500;
+      const lossCalories = Math.max(1200, maintenanceCalories - 500);
+
+      caloriesMaintainText = maintenanceCalories.toLocaleString("en-US") + " calories/day to maintain weight";
+      caloriesGainText = gainCalories.toLocaleString("en-US") + " calories/day to add weight";
+      caloriesLossText = lossCalories.toLocaleString("en-US") + " calories/day to lose weight";
     }
 
     let bodyFatText = "Enter age and gender to estimate body fat";
@@ -2265,9 +2274,9 @@
       }
     }
 
-    let waistStatus = "Enter waist to check; < 0.5 is healthy";
+    let waistStatus = "Enter waist to check";
     if (Number.isFinite(ratio)) {
-      waistStatus = ratio < 0.5 ? "Healthy (< 0.5)" : "Higher risk (≥ 0.5)";
+      waistStatus = ratio < 0.5 ? "Healthy" : "Higher risk";
     }
 
     let healthRisk = "Average risk — use BMI with waist-to-height ratio for a better view";
@@ -2282,7 +2291,9 @@
       ["BMI category", category],
       ["Healthy weight range", healthyRange],
       ["Difference to healthy range", differenceText],
-      ["Calories/day", caloriesText],
+      ["Calories/day to maintain", caloriesMaintainText],
+      ["Calories/day to add weight", caloriesGainText],
+      ["Calories/day to lose weight", caloriesLossText],
       ["Body fat estimate", bodyFatText],
       ["Goal timeline", goalTimeline],
       ["Waist-to-height ratio", Number.isFinite(ratio) ? ratio.toFixed(2) : "Not provided"],
@@ -2302,7 +2313,10 @@
       category: category,
       healthyRange: healthyRange,
       healthRisk: healthRisk,
-      calories: caloriesText,
+      calories: caloriesMaintainText,
+      caloriesMaintain: caloriesMaintainText,
+      caloriesGain: caloriesGainText,
+      caloriesLoss: caloriesLossText,
       bodyFat: bodyFatText,
       goalTimeline: goalTimeline,
       name: name || "",
