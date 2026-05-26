@@ -726,110 +726,116 @@
 
 
 /* =====================================================
-   PHONE INDEX UPDATE: compact cards + interactive abacus
+   INDEX PHONE CLEAN UPDATE: compact cards + natural dropdown flow
+   - smaller homepage card box
+   - dropdown links go down first; wrap only when screen height is reached
 ===================================================== */
 @media (max-width: 850px) {
   body.index-page .calculator-box {
-    width: 94% !important;
-    margin: 105px auto 34px !important;
+    width: min(92vw, 520px) !important;
+    margin-top: 112px !important;
+    margin-bottom: 62px !important;
     padding: 18px !important;
+    overflow: visible !important;
   }
 
   body.index-page .calculator-box h1 {
-    font-size: 28px !important;
+    font-size: 30px !important;
     margin-bottom: 16px !important;
   }
 
   body.index-page .calculator-grid {
+    display: grid !important;
     grid-template-columns: repeat(4, minmax(118px, 1fr)) !important;
     gap: 10px !important;
+    padding: 0 4px 12px !important;
     overflow-x: auto !important;
     overflow-y: visible !important;
-    padding: 0 4px 12px !important;
   }
 
   body.index-page .calculator-grid > .card,
   body.index-page .calculator-grid > .group-card {
     min-width: 118px !important;
-    height: 82px !important;
-    min-height: 82px !important;
-    padding: 8px !important;
+    height: 78px !important;
+    min-height: 78px !important;
+    padding: 0 6px !important;
     border-width: 4px !important;
     box-shadow: 4px 4px 0 var(--black) !important;
     font-size: 18px !important;
+    line-height: 1.05 !important;
+    text-align: center !important;
     box-sizing: border-box !important;
   }
 
-  body.index-page .calculator-grid > .group-card {
-    padding: 0 !important;
+  body.index-page .calculator-grid > .group-card > summary {
+    height: 78px !important;
+    min-height: 78px !important;
+    padding: 0 6px !important;
+    font-size: 18px !important;
+    line-height: 1.05 !important;
+    text-align: center !important;
   }
 
-  body.index-page .calculator-grid > .group-card > summary {
-    height: 82px !important;
-    padding: 8px !important;
-    font-size: 18px !important;
+  body.index-page .calculator-grid > .group-card > summary::after {
+    margin-left: 4px !important;
+    font-size: 13px !important;
   }
 
   body.index-page .calculator-box .group-card > .group-links {
-    top: calc(100% + 6px) !important;
-    left: 0 !important;
+    display: none !important;
+    position: absolute !important;
+    top: calc(100% + 4px) !important;
+    left: -4px !important;
     width: max-content !important;
-    min-width: 100% !important;
+    min-width: calc(100% + 8px) !important;
     max-width: calc(100vw - 28px) !important;
-    gap: 8px !important;
+    max-height: calc(100vh - 230px) !important;
+    flex-direction: column !important;
+    flex-wrap: wrap !important;
+    align-content: flex-start !important;
+    background: var(--white) !important;
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
     overflow-x: auto !important;
+    overflow-y: hidden !important;
+    z-index: 99999 !important;
+    box-sizing: border-box !important;
   }
 
-  body.index-page .calculator-box .group-link-column {
-    width: 118px !important;
-    min-width: 118px !important;
+  body.index-page .calculator-box .group-card[open] > .group-links,
+  body.index-page .calculator-box .group-card:hover > .group-links,
+  body.index-page .calculator-box .group-card:focus-within > .group-links,
+  body.index-page .calculator-box .group-card.pc-card-open > .group-links {
+    display: flex !important;
   }
 
-  body.index-page .calculator-box .group-link-column a {
-    height: 48px !important;
-    min-height: 48px !important;
+  body.index-page .calculator-box .group-links a {
+    width: 166px !important;
+    min-width: 166px !important;
+    height: 50px !important;
+    min-height: 50px !important;
+    max-height: 50px !important;
     padding: 0 8px !important;
+    border: none !important;
+    border-right: 3px solid var(--black) !important;
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
     font-size: 16px !important;
+    line-height: 1.05 !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+  }
+
+  body.index-page .calculator-box .group-links a:nth-child(3n) {
+    border-bottom: 3px solid var(--black) !important;
+  }
+
+  body.index-page .calculator-box .group-links a:last-child {
+    border-right: 3px solid var(--black) !important;
   }
 
   body.index-page .live-abacus-section {
-    width: 94% !important;
-    margin: 0 auto 58px !important;
-    padding: 0 !important;
-  }
-
-  body.index-page .live-abacus-card {
-    padding: 16px !important;
-  }
-
-  body.index-page .live-abacus-card h2 {
-    font-size: 25px !important;
-  }
-
-  body.index-page .live-abacus {
-    grid-template-columns: repeat(6, minmax(54px, 1fr)) !important;
-    gap: 8px !important;
-    padding: 10px !important;
-  }
-
-  body.index-page .abacus-rod {
-    min-width: 54px !important;
-    height: 268px !important;
-  }
-
-  body.index-page .abacus-bead {
-    width: 34px !important;
-    height: 23px !important;
-  }
-
-  body.index-page .abacus-indicator {
-    width: 36px !important;
-    height: 25px !important;
-    font-size: 15px !important;
-  }
-
-  body.index-page .live-abacus-reset {
-    width: 100% !important;
-    font-size: 16px !important;
+    width: min(92vw, 520px) !important;
+    margin-top: -38px !important;
   }
 }

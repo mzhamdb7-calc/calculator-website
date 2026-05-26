@@ -5001,14 +5001,20 @@ body.loan-page .mortgage-report-back a {
 
 
 /* =====================================================
-   PC INDEX UPDATE: compact side-by-side cards + dropdown size fix
+   INDEX CLEAN UPDATE: smaller calculator box/cards
+   - compact homepage card layout
+   - dropdown links flow downward first, then wrap right
 ===================================================== */
 @media (min-width: 851px) {
   body.index-page .calculator-box {
-    width: min(980px, 94vw) !important;
-    max-width: 980px !important;
-    margin: 120px auto 44px !important;
+    width: min(820px, 92vw) !important;
+    max-width: 820px !important;
+    margin-top: 118px !important;
+    margin-bottom: 64px !important;
     padding: 22px !important;
+    border-width: 5px !important;
+    box-shadow: 7px 7px 0 var(--black) !important;
+    overflow: visible !important;
   }
 
   body.index-page .calculator-box h1 {
@@ -5018,6 +5024,7 @@ body.loan-page .mortgage-report-back a {
   }
 
   body.index-page .calculator-grid {
+    display: grid !important;
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
     gap: 14px !important;
     align-items: start !important;
@@ -5028,82 +5035,121 @@ body.loan-page .mortgage-report-back a {
   body.index-page .calculator-grid > .group-card {
     width: 100% !important;
     min-width: 0 !important;
-    height: 86px !important;
-    min-height: 86px !important;
-    padding: 8px !important;
+    height: 82px !important;
+    min-height: 82px !important;
+    padding: 0 8px !important;
     border-width: 4px !important;
     box-shadow: 4px 4px 0 var(--black) !important;
-    font-size: clamp(17px, 1.65vw, 23px) !important;
+    font-size: clamp(17px, 1.8vw, 23px) !important;
+    line-height: 1.05 !important;
+    text-align: center !important;
+    overflow: visible !important;
     box-sizing: border-box !important;
   }
 
+  body.index-page .calculator-grid > .card:hover,
+  body.index-page .calculator-grid > .group-card:hover,
+  body.index-page .calculator-grid > .group-card[open] {
+    box-shadow: 6px 6px 0 var(--black) !important;
+  }
+
   body.index-page .calculator-grid > .group-card {
-    padding: 0 !important;
+    position: relative !important;
+    display: block !important;
   }
 
   body.index-page .calculator-grid > .group-card > summary {
-    height: 86px !important;
-    padding: 8px !important;
-    font-size: clamp(17px, 1.65vw, 23px) !important;
+    width: 100% !important;
+    height: 82px !important;
+    min-height: 82px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 8px !important;
+    font-size: clamp(17px, 1.8vw, 23px) !important;
+    line-height: 1.05 !important;
+    text-align: center !important;
     box-sizing: border-box !important;
   }
 
   body.index-page .calculator-grid > .group-card > summary::after {
+    margin-left: 6px !important;
     font-size: 15px !important;
-    margin-left: 5px !important;
   }
 
+  /* Replaces the old fixed "3 per column" rule.
+     Links flow downward until the available screen height is reached,
+     then wrap into the next column on the right. */
   body.index-page .calculator-box .group-card > .group-links {
-    top: calc(100% + 6px) !important;
-    left: 0 !important;
+    display: none !important;
+    position: absolute !important;
+    top: calc(100% + 4px) !important;
+    left: -4px !important;
+    right: auto !important;
     width: max-content !important;
-    min-width: 100% !important;
-    max-width: none !important;
-    gap: 8px !important;
+    min-width: calc(100% + 8px) !important;
+    max-width: calc(100vw - 34px) !important;
+    max-height: calc(100vh - 245px) !important;
+    flex-direction: column !important;
+    flex-wrap: wrap !important;
+    align-content: flex-start !important;
+    gap: 0 !important;
+    background: var(--white) !important;
+    border: 4px solid var(--black) !important;
+    border-top: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    z-index: 99999 !important;
+    box-sizing: border-box !important;
   }
 
-  body.index-page .calculator-box .group-link-column {
-    width: 100% !important;
-    min-width: 100% !important;
-    max-width: 100% !important;
+  body.index-page .calculator-box .group-card:hover > .group-links,
+  body.index-page .calculator-box .group-card:focus-within > .group-links,
+  body.index-page .calculator-box .group-card[open] > .group-links,
+  body.index-page .calculator-box .group-card.pc-card-open > .group-links {
+    display: flex !important;
   }
 
-  body.index-page .calculator-box .finance-card .group-link-column,
-  body.index-page .calculator-box .health-card .group-link-column {
-    width: 100% !important;
-    min-width: 100% !important;
-  }
-
-  body.index-page .calculator-box .finance-card > .group-links {
-    grid-template-rows: none !important;
-    grid-auto-flow: unset !important;
-    grid-auto-columns: unset !important;
-  }
-
-  body.index-page .calculator-box .group-link-column a {
-    height: 50px !important;
-    min-height: 50px !important;
+  body.index-page .calculator-box .group-links a {
+    width: 190px !important;
+    min-width: 190px !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    max-height: 52px !important;
+    margin: 0 !important;
     padding: 0 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border: none !important;
+    border-right: 3px solid var(--black) !important;
+    border-bottom: 3px solid var(--black) !important;
+    box-shadow: none !important;
     font-size: 18px !important;
+    font-weight: bold !important;
     line-height: 1.05 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    box-sizing: border-box !important;
+  }
+
+  body.index-page .calculator-box .group-links a:nth-child(3n) {
+    border-bottom: 3px solid var(--black) !important;
+  }
+
+  body.index-page .calculator-box .group-links a:last-child {
+    border-right: 3px solid var(--black) !important;
+  }
+
+  body.index-page .calculator-box .group-links a:hover {
+    background: var(--yellow) !important;
   }
 
   body.index-page .live-abacus-section {
-    width: min(980px, 94vw) !important;
-    margin: 0 auto 76px !important;
-    padding: 0 !important;
-  }
-
-  body.index-page .live-abacus-card {
-    padding: 22px !important;
-  }
-
-  body.index-page .live-abacus {
-    grid-template-columns: repeat(6, minmax(64px, 1fr)) !important;
-    gap: 12px !important;
-  }
-
-  body.index-page .abacus-rod {
-    height: 288px !important;
+    width: min(820px, 92vw) !important;
+    margin-top: -38px !important;
   }
 }
