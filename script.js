@@ -4631,15 +4631,29 @@
 
     const form = buildSearchForm();
     const infoDropdown = navbar.querySelector(".about-dropdown");
-    const chatLink = navbar.querySelector(".nav-chat-link");
 
-    if (chatLink) {
-      chatLink.insertAdjacentElement("afterend", form);
-    } else if (infoDropdown) {
-      infoDropdown.insertAdjacentElement("afterend", form);
-    } else {
-      navbar.appendChild(form);
+    let chatLink = navbar.querySelector(".nav-chat-link");
+    if (!chatLink) {
+      chatLink = document.createElement("a");
+      chatLink.href = "chatting.html";
+      chatLink.className = "nav-chat-link";
+      chatLink.textContent = "chatting";
     }
+
+    let inlineWrap = navbar.querySelector(".nav-chat-search-inline");
+    if (!inlineWrap) {
+      inlineWrap = document.createElement("div");
+      inlineWrap.className = "nav-chat-search-inline";
+
+      if (infoDropdown) {
+        infoDropdown.insertAdjacentElement("afterend", inlineWrap);
+      } else {
+        navbar.appendChild(inlineWrap);
+      }
+    }
+
+    inlineWrap.appendChild(chatLink);
+    inlineWrap.appendChild(form);
 
     setupSearchEvents(form);
   }
