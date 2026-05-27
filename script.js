@@ -8581,3 +8581,468 @@
   }
 })();
 
+
+/* =====================================================
+   FINAL GLOBAL AUTOCALC + RESULT ACTION REPAIR
+   - No main calculate buttons required
+   - Waits 2 seconds after last typing/change before auto-calculate
+   - Adds Copy / Save / Share / Report to result boxes that do not have them
+===================================================== */
+(function () {
+  "use strict";
+
+  function ready(fn) {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", fn);
+    } else {
+      fn();
+    }
+  }
+
+  function pagePath() {
+    return (location.pathname || "").toLowerCase();
+  }
+
+  function pageType() {
+    const path = pagePath();
+
+    if (path.includes("age-calculator")) return "age";
+    if (path.includes("bmi-calculator")) return "bmi";
+    if (path.includes("mortgage-calculator")) return "loan";
+    if (path.includes("personal-loan-calculator")) return "personalLoan";
+    if (path.includes("discount-calculator")) return "discount";
+    if (path.includes("percentage-calculator")) return "percentage";
+    if (path.includes("compound-interest-calculator")) return "compound";
+    if (path.includes("salary-calculator")) return "salary";
+    if (path.includes("credit-card-payoff-calculator")) return "creditCardPayoff";
+    if (path.includes("loan-comparison-calculator")) return "loanComparison";
+    if (path.includes("debt-payoff-calculator")) return "debtPayoff";
+    if (path.includes("tax-calculator")) return "tax";
+    if (path.includes("gaji-penjawat-awam-calculator")) return "gajiPenjawatAwam";
+    if (path.includes("inflation-calculator")) return "inflation";
+    if (path.includes("rental-yield-calculator")) return "rentalYield";
+    if (path.includes("fuel-cost-calculator")) return "fuelCost";
+    if (path.includes("credit-card-interest-calculator")) return "creditCardInterest";
+    if (path.includes("scientific-calculator")) return "scientific";
+    if (path.includes("unit-converter-calculator")) return "unitConverter";
+    if (path.includes("currency-converter")) return "currencyConverter";
+    return "";
+  }
+
+  function getValue(id) {
+    const el = document.getElementById(id);
+    return el ? String(el.value || "").trim() : "";
+  }
+
+  function anyValue(ids) {
+    return ids.some(function (id) {
+      return getValue(id) !== "";
+    });
+  }
+
+  function allValue(ids) {
+    return ids.every(function (id) {
+      return getValue(id) !== "";
+    });
+  }
+
+  function canAutoCalculate(type) {
+    if (!type) return false;
+
+    if (type === "age") return anyValue(["birthdate"]);
+    if (type === "bmi") return anyValue(["weight", "bmiWeight"]) && anyValue(["height", "bmiHeight"]);
+    if (type === "loan") return allValue(["amount", "interest", "years"]);
+    if (type === "personalLoan") return anyValue(["personalLoanAmount", "loanAmount", "amount"]);
+    if (type === "discount") return allValue(["price", "discount"]);
+    if (type === "percentage") return anyValue(["percentage", "percent"]) && anyValue(["number", "amount", "value"]);
+    if (type === "compound") return allValue(["principal", "rate", "years"]);
+
+    const extraRequired = {
+      salary: ["salaryGross"],
+      creditCardPayoff: ["ccBalance", "ccApr", "ccPayment"],
+      loanComparison: ["loanCompareAmount", "loanCompareRateA", "loanCompareTermA", "loanCompareRateB", "loanCompareTermB"],
+      debtPayoff: ["debtTotal", "debtApr", "debtPayment"],
+      tax: ["taxAnnualIncome"],
+      gajiPenjawatAwam: ["gajiBasic"],
+      inflation: ["inflationAmount", "inflationRate", "inflationYears"],
+      rentalYield: ["rentalPropertyPrice", "rentalMonthlyRent"],
+      fuelCost: ["fuelDistance", "fuelEfficiency", "fuelPrice"],
+      creditCardInterest: ["ccInterestBalance", "ccInterestApr", "ccInterestDays"],
+      scientific: ["scientificExpression"],
+      unitConverter: ["unitType", "unitValue", "unitFrom", "unitTo"],
+      currencyConverter: ["currencyAmount", "currencyFrom", "currencyTo", "currencyRate"]
+    };
+
+    if (extraRequired[type]) return allValue(extraRequired[type]);
+    return false;
+  }
+
+  function calculateByType(type) {
+    const map = {
+      age: "calculateAge",
+      bmi: "calculateBMI",
+      loan: "calculateLoan",
+      personalLoan: "calculatePersonalLoan",
+      discount: "calculateDiscount",
+      percentage: "calculatePercentage",
+      compound: "calculateCompound",
+      salary: "calculateSalaryExtra",
+      creditCardPayoff: "calculateCreditCardPayoffExtra",
+      loanComparison: "calculateLoanComparisonExtra",
+      debtPayoff: "calculateDebtPayoffExtra",
+      tax: "calculateTaxExtra",
+      gajiPenjawatAwam: "calculateGajiPenjawatAwamExtra",
+      inflation: "calculateInflationExtra",
+      rentalYield: "calculateRentalYieldExtra",
+      fuelCost: "calculateFuelCostExtra",
+      creditCardInterest: "calculateCreditCardInterestExtra",
+      scientific: "calculateScientificExtra",
+      unitConverter: "calculateUnitConverterExtra",
+      currencyConverter: "calculateCurrencyConverterExtra"
+    };
+
+    const fn = map[type];
+    if (fn && typeof window[fn] === "function") {
+      window[fn]();
+      return true;
+    }
+
+    return false;
+  }
+
+  function plainTextFromElement(el) {
+    return (el ? el.innerText : "").replace(/\n{3,}/g, "\n\n").trim();
+  }
+
+  function dateStamp() {
+    const d = new Date();
+    return [
+      d.getFullYear(),
+      String(d.getMonth() + 1).padStart(2, "0"),
+      String(d.getDate()).padStart(2, "0"),
+      String(d.getHours()).padStart(2, "0"),
+      String(d.getMinutes()).padStart(2, "0")
+    ].join("-");
+  }
+
+  function setButton(button, text) {
+    if (!button) return;
+    const old = button.textContent;
+    button.textContent = text;
+    setTimeout(function () {
+      button.textContent = old;
+    }, 1200);
+  }
+
+  function copyText(text, button) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        setButton(button, "Copied!");
+      }).catch(function () {
+        fallbackCopy(text, button);
+      });
+    } else {
+      fallbackCopy(text, button);
+    }
+  }
+
+  function fallbackCopy(text, button) {
+    const area = document.createElement("textarea");
+    area.value = text;
+    area.style.position = "fixed";
+    area.style.left = "-9999px";
+    document.body.appendChild(area);
+    area.select();
+
+    try {
+      document.execCommand("copy");
+      setButton(button, "Copied!");
+    } catch (error) {
+      setButton(button, "Copy failed");
+    }
+
+    area.remove();
+  }
+
+  function downloadText(filename, text, button) {
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+
+    setTimeout(function () {
+      URL.revokeObjectURL(url);
+      a.remove();
+    }, 0);
+
+    setButton(button, "Saved!");
+  }
+
+  function openSimpleReport(sourcePanel) {
+    const old = document.getElementById("globalSimpleReportPage");
+    if (old) old.remove();
+
+    const text = plainTextFromElement(sourcePanel);
+    if (!text) return;
+
+    document.body.classList.add("calculator-report-view");
+
+    document.querySelectorAll("main, .calculator, .extra-calculator-layout").forEach(function (el) {
+      el.style.setProperty("display", "none", "important");
+    });
+
+    const report = document.createElement("section");
+    report.id = "globalSimpleReportPage";
+    report.className = "calculator-report-page global-simple-report-page";
+    report.innerHTML =
+      '<h1>Calculator Report</h1>' +
+      '<p class="calculator-report-date"><strong>Generated:</strong> ' + new Date().toLocaleString() + '</p>' +
+      '<pre class="global-simple-report-text"></pre>' +
+      '<div class="calculator-report-actions">' +
+        '<button type="button" class="calculator-report-action-btn global-report-back">Back</button>' +
+        '<button type="button" class="calculator-report-action-btn global-report-copy">Copy</button>' +
+        '<button type="button" class="calculator-report-action-btn global-report-save">Save</button>' +
+        '<button type="button" class="calculator-report-action-btn global-report-share">Share</button>' +
+      '</div>';
+
+    report.querySelector(".global-simple-report-text").textContent = text;
+    document.body.appendChild(report);
+
+    report.querySelector(".global-report-back").onclick = function () {
+      report.remove();
+      document.body.classList.remove("calculator-report-view");
+      document.querySelectorAll("main, .calculator, .extra-calculator-layout").forEach(function (el) {
+        el.style.removeProperty("display");
+      });
+    };
+    report.querySelector(".global-report-copy").onclick = function () { copyText(text, this); };
+    report.querySelector(".global-report-save").onclick = function () { downloadText("calculator-report-" + dateStamp() + ".txt", text, this); };
+    report.querySelector(".global-report-share").onclick = function () {
+      const button = this;
+      if (navigator.share) {
+        navigator.share({ title: "Calculator Report", text: text }).catch(function () { copyText(text, button); });
+      } else {
+        copyText(text, button);
+      }
+    };
+
+    report.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function makeActions() {
+    const row = document.createElement("div");
+    row.className = "global-result-actions";
+    row.innerHTML =
+      '<button type="button" class="global-result-action-btn global-copy-btn">Copy</button>' +
+      '<button type="button" class="global-result-action-btn global-save-btn">Save</button>' +
+      '<button type="button" class="global-result-action-btn global-share-btn">Share</button>' +
+      '<button type="button" class="global-result-action-btn global-report-btn">Report</button>';
+    return row;
+  }
+
+  function wireActionRow(panel, row) {
+    const copy = row.querySelector(".global-copy-btn");
+    const save = row.querySelector(".global-save-btn");
+    const share = row.querySelector(".global-share-btn");
+    const report = row.querySelector(".global-report-btn");
+
+    copy.onclick = function () {
+      copyText(plainTextFromElement(panel), copy);
+    };
+
+    save.onclick = function () {
+      downloadText("calculator-result-" + dateStamp() + ".txt", plainTextFromElement(panel), save);
+    };
+
+    share.onclick = function () {
+      const text = plainTextFromElement(panel);
+      if (navigator.share) {
+        navigator.share({ title: "Calculator Result", text: text }).catch(function () {
+          copyText(text, share);
+        });
+      } else {
+        copyText(text, share);
+      }
+    };
+
+    report.onclick = function () {
+      openSimpleReport(panel);
+    };
+  }
+
+  function hasActions(panel) {
+    return !!panel.querySelector(
+      ".age-result-actions, .bmi-result-actions, .universal-result-actions, .mortgage-result-actions, .mortgage-result-actions-final, .extra-result-actions, .global-result-actions"
+    );
+  }
+
+  function isRealResultPanel(panel) {
+    if (!panel || panel.closest("#calculatorReportPage") || panel.closest("#globalSimpleReportPage")) return false;
+    if (panel.hidden) return false;
+    const text = plainTextFromElement(panel);
+    return text.length > 0;
+  }
+
+  function ensureActionsOnResults() {
+    const panels = Array.prototype.slice.call(document.querySelectorAll(
+      ".calculator-clean-result, .loan-style-output-panel, .mortgage-modern-result-panel, #extraCalcResult, #discountResult, #percentageResult, #compoundResult, #ageResult, #bmiResult"
+    ));
+
+    panels.forEach(function (panel) {
+      if (!isRealResultPanel(panel)) return;
+      if (hasActions(panel)) return;
+
+      const row = makeActions();
+
+      if (/^H[1-6]$/i.test(panel.tagName)) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "global-heading-result-wrap calculator-clean-result";
+        panel.parentNode.insertBefore(wrapper, panel);
+        wrapper.appendChild(panel);
+        wrapper.appendChild(row);
+        wireActionRow(wrapper, row);
+      } else {
+        panel.appendChild(row);
+        wireActionRow(panel, row);
+      }
+    });
+  }
+
+  function unhideResultPanels() {
+    if (document.body.classList.contains("calculator-report-view")) return;
+
+    document.querySelectorAll(".calculator-clean-result, .loan-style-output-panel, .mortgage-modern-result-panel, #extraCalcResult").forEach(function (panel) {
+      if (!panel.closest("#calculatorReportPage") && !panel.closest("#globalSimpleReportPage")) {
+        panel.style.removeProperty("display");
+        panel.style.removeProperty("visibility");
+        panel.removeAttribute("aria-hidden");
+      }
+    });
+  }
+
+  function setupDebouncedAutoCalculate() {
+    if (document.body.dataset.finalGlobalAutoCalcReady === "true") return;
+    document.body.dataset.finalGlobalAutoCalcReady = "true";
+
+    let timer = null;
+    let lastTypedAt = 0;
+
+    function schedule(event) {
+      const target = event && event.target;
+      if (!target || !target.matches("input, select, textarea")) return;
+      if (target.closest("#navbar, #menuIcon, #scrollTopBtn, .site-search, .clean-nav-search")) return;
+
+      const type = pageType();
+      if (!type) return;
+
+      lastTypedAt = Date.now();
+      clearTimeout(timer);
+
+      timer = setTimeout(function () {
+        if (Date.now() - lastTypedAt < 1900) return;
+        if (!canAutoCalculate(type)) return;
+
+        calculateByType(type);
+
+        setTimeout(function () {
+          unhideResultPanels();
+          ensureActionsOnResults();
+        }, 100);
+        setTimeout(function () {
+          unhideResultPanels();
+          ensureActionsOnResults();
+        }, 450);
+      }, 2000);
+    }
+
+    document.addEventListener("input", schedule, true);
+    document.addEventListener("change", schedule, true);
+  }
+
+  ready(function () {
+    setupDebouncedAutoCalculate();
+
+    setTimeout(ensureActionsOnResults, 300);
+    setTimeout(ensureActionsOnResults, 1200);
+
+    const observer = new MutationObserver(function () {
+      setTimeout(ensureActionsOnResults, 60);
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+  });
+})();
+
+
+/* =====================================================
+   FINAL CLEANUP: remove side menu + force top menu only
+   Also keeps Age/BMI action buttons in one row.
+===================================================== */
+(function () {
+  "use strict";
+
+  function removeSideMenu() {
+    const menu = document.getElementById("menuIcon");
+    if (menu) menu.remove();
+
+    const nav = document.getElementById("navbar");
+    if (nav) nav.classList.remove("open");
+
+    document.body.classList.remove("menu-scrolled");
+    document.documentElement.classList.remove("menu-scrolled");
+
+    window.toggleMenu = function () {
+      const navNow = document.getElementById("navbar");
+      if (navNow) navNow.classList.remove("open");
+      document.body.classList.remove("menu-scrolled");
+      document.documentElement.classList.remove("menu-scrolled");
+      return false;
+    };
+  }
+
+  function forceActionRows() {
+    document.querySelectorAll(
+      ".age-result-actions, .bmi-result-actions, .universal-result-actions, .mortgage-result-actions, .mortgage-result-actions-final, .extra-result-actions, .global-result-actions, .calculator-report-actions"
+    ).forEach(function (row) {
+      row.style.setProperty("display", "grid", "important");
+      row.style.setProperty("grid-template-columns", "repeat(4, minmax(0, 1fr))", "important");
+      row.style.setProperty("gap", "8px", "important");
+      row.style.setProperty("width", "100%", "important");
+      row.style.setProperty("box-sizing", "border-box", "important");
+    });
+
+    document.querySelectorAll(
+      ".age-result-action-btn, .bmi-result-action-btn, .universal-result-action-btn, .mortgage-result-action-btn, .extra-result-action-btn, .global-result-action-btn, .calculator-report-action-btn"
+    ).forEach(function (button) {
+      button.style.setProperty("width", "100%", "important");
+      button.style.setProperty("min-width", "0", "important");
+      button.style.setProperty("max-width", "none", "important");
+      button.style.setProperty("box-sizing", "border-box", "important");
+    });
+  }
+
+  function start() {
+    removeSideMenu();
+    forceActionRows();
+
+    setInterval(removeSideMenu, 700);
+
+    const observer = new MutationObserver(function () {
+      removeSideMenu();
+      forceActionRows();
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "style"] });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+
