@@ -1655,30 +1655,28 @@
 
     /*
       Keep the Age Calculator historical event focused only on:
-      - war / battle / treaty events
+      - sports events
       - technology or science advancement
-      - modern or ancient civilization events
+      - ancient history / ancient civilizations
     */
     const list = {
-      "01-01": "1863 - The Emancipation Proclamation took effect during the American Civil War.",
-      "01-08": "1815 - The Battle of New Orleans was fought during the War of 1812.",
-      "01-15": "1970 - Muammar Gaddafi became premier of Libya after the 1969 revolution.",
-      "02-12": "1818 - Chile formally declared independence from Spain.",
+      "01-01": "45 BCE - The Julian calendar came into effect in ancient Rome.",
+      "01-08": "1935 - Elvis Presley was born, later becoming a major modern music icon.",
+      "02-12": "1809 - Abraham Lincoln was born, later shaping modern democratic history.",
       "03-14": "1794 - Eli Whitney received a patent for the cotton gin, an important industrial technology.",
       "04-12": "1961 - Yuri Gagarin became the first human to travel into outer space.",
-      "04-15": "1450 - The Battle of Formigny helped end major English control in northern France.",
-      "05-05": "1961 - Alan Shepard became the first American in space.",
-      "06-06": "1944 - D-Day landings began in Normandy during World War II.",
+      "05-05": "2002 - Real Madrid won the UEFA Champions League Final with Zinedine Zidane's famous volley.",
+      "06-06": "1934 - The first All-Star baseball game was played in the United States.",
       "07-20": "1969 - Apollo 11 landed the first humans on the Moon.",
-      "08-31": "1957 - The Federation of Malaya gained independence.",
-      "09-16": "1963 - Malaysia was formed.",
-      "10-24": "1945 - The United Nations officially came into existence after World War II.",
-      "11-09": "1989 - The Berlin Wall began to fall, a major Cold War civilization milestone.",
+      "08-08": "2008 - The Beijing Olympics officially opened in China.",
+      "09-02": "31 BCE - Octavian defeated Mark Antony and Cleopatra at the Battle of Actium in ancient history.",
+      "10-14": "1066 - The Battle of Hastings reshaped medieval English history.",
+      "11-09": "1989 - The fall of the Berlin Wall marked a major turning point in modern history.",
       "12-17": "1903 - The Wright brothers made the first controlled powered airplane flight.",
-      "12-25": "1991 - The Soviet Union dissolved, ending a major modern civilization era."
+      "12-25": "800 - Charlemagne was crowned Emperor, a major milestone in medieval civilization."
     };
 
-    return list[key] || "No matching war, technology, or civilization event found for this date yet.";
+    return list[key] || "No matching sports, technology, or ancient-history event found for this date yet.";
   }
 
   function isRelevantAgeHistoricalEvent(item) {
@@ -1688,7 +1686,7 @@
     if (!text) return false;
     if (Number.isFinite(year) && year >= 2000) return false;
 
-    return /war|battle|invasion|siege|treaty|revolution|rebellion|independence|civil war|world war|cold war|army|navy|military|empire|kingdom|dynasty|civilization|civilisation|republic|state|nation|founded|formation|unification|collapse|fall of|ancient|roman|greek|egypt|persian|ottoman|maya|aztec|technology|technological|invention|invented|patent|computer|internet|satellite|space|moon|apollo|airplane|aircraft|flight|telephone|telegraph|radio|electricity|nuclear|steam engine|printing press|industrial/i.test(text);
+    return /olympic|olympics|world cup|championship|tournament|final|league|grand prix|football|soccer|baseball|basketball|tennis|cricket|athletics|sports|sporting|technology|technological|science|scientific|invention|invented|patent|computer|internet|satellite|space|moon|apollo|airplane|aircraft|flight|telephone|telegraph|radio|electricity|nuclear|steam engine|printing press|industrial|ancient|roman|greek|egypt|egyptian|persian|mesopotamia|mesopotamian|babylon|babylonian|maya|aztec|inca|dynasty|pharaoh|empire|kingdom|civilization|civilisation|battle of actium|charlemagne|hastings/i.test(text);
   }
 
   function extractHistoricalEventText(item) {
@@ -4846,3 +4844,150 @@
     installBmiFinalLayoutCleanup();
   }
 })();
+
+
+/* =====================================================
+   BMI TYPING FIX: Wait while typing + keep input focused
+   - Prevents BMI result refresh from stealing focus after first number
+   - Calculates after user stops typing instead of every keystroke
+===================================================== */
+(function () {
+  "use strict";
+
+  let bmiTypingTimer = null;
+  let bmiComposing = false;
+
+  function isBmiPage() {
+    return (
+      document.body.classList.contains("bmi-page") ||
+      document.body.dataset.page === "bmi" ||
+      !!document.getElementById("bmiResult") ||
+      (!!document.getElementById("weight") && !!document.getElementById("height"))
+    );
+  }
+
+  function isBmiInput(el) {
+    if (!el || !isBmiPage()) return false;
+
+    return [
+      "bmiName",
+      "name",
+      "weight",
+      "height",
+      "waist",
+      "bmiAge",
+      "age",
+      "gender",
+      "sex",
+      "activityLevel",
+      "bmiActivityLevel",
+      "timeGoal",
+      "timeGoalValue",
+      "timeGoalUnit",
+      "targetWeight",
+      "targetWaist"
+    ].includes(el.id);
+  }
+
+  function valueOf(id) {
+    const el = document.getElementById(id);
+    return el ? String(el.value || "").trim() : "";
+  }
+
+  function readyForBmi() {
+    return valueOf("weight") !== "" && valueOf("height") !== "";
+  }
+
+  function saveFocusState() {
+    const el = document.activeElement;
+
+    if (!isBmiInput(el)) return null;
+
+    return {
+      id: el.id,
+      start: typeof el.selectionStart === "number" ? el.selectionStart : null,
+      end: typeof el.selectionEnd === "number" ? el.selectionEnd : null
+    };
+  }
+
+  function restoreFocusState(state) {
+    if (!state || !state.id) return;
+
+    const el = document.getElementById(state.id);
+    if (!el) return;
+
+    if (document.activeElement !== el) {
+      el.focus({ preventScroll: true });
+    }
+
+    if (
+      state.start !== null &&
+      state.end !== null &&
+      typeof el.setSelectionRange === "function"
+    ) {
+      try {
+        el.setSelectionRange(state.start, state.end);
+      } catch {
+        /* number inputs may not allow selection range */
+      }
+    }
+  }
+
+  function runBmiAfterTyping() {
+    if (!isBmiPage()) return;
+    if (!readyForBmi()) return;
+    if (bmiComposing) return;
+
+    const focusState = saveFocusState();
+
+    try {
+      if (typeof window.calculateBMI === "function") {
+        window.calculateBMI();
+      } else if (typeof window.calculateBmi === "function") {
+        window.calculateBmi();
+      }
+    } catch (error) {
+      console.error("BMI delayed auto calculate error:", error);
+    }
+
+    setTimeout(function () {
+      restoreFocusState(focusState);
+    }, 0);
+  }
+
+  function scheduleBmiAfterTyping(event) {
+    if (!isBmiInput(event.target)) return;
+
+    clearTimeout(bmiTypingTimer);
+
+    /*
+      Wait enough time for the user to finish typing multi-digit values.
+      Example: typing 170 will not calculate after only "1".
+    */
+    bmiTypingTimer = setTimeout(runBmiAfterTyping, 900);
+  }
+
+  function startBmiTypingFix() {
+    if (!isBmiPage()) return;
+
+    document.addEventListener("compositionstart", function (event) {
+      if (isBmiInput(event.target)) bmiComposing = true;
+    }, true);
+
+    document.addEventListener("compositionend", function (event) {
+      if (!isBmiInput(event.target)) return;
+      bmiComposing = false;
+      scheduleBmiAfterTyping(event);
+    }, true);
+
+    document.addEventListener("input", scheduleBmiAfterTyping, true);
+    document.addEventListener("change", scheduleBmiAfterTyping, true);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startBmiTypingFix);
+  } else {
+    startBmiTypingFix();
+  }
+})();
+
