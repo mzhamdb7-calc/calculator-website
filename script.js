@@ -6747,3 +6747,214 @@
   setTimeout(fillStartDate, 1000);
 })();
 
+
+/* =====================================================
+   FULL NAV REBUILD: Clean top menu + clean side/open menu
+   - Replaces old navbar contents from scratch
+   - Removes old weird gaps / wrapped search / broken chat placement
+   - Keeps calculator dropdown, info dropdown, chatting, and search
+===================================================== */
+(function () {
+  "use strict";
+
+  const calculators = [
+    { title: "basic", url: "basic-calculator.html" },
+    { title: "age", url: "age-calculator.html" },
+    { title: "bmi", url: "bmi-calculator.html" },
+    { title: "mortgage", url: "mortgage-calculator.html" },
+    { title: "personal loan", url: "personal-loan-calculator.html" },
+    { title: "discount", url: "discount-calculator.html" },
+    { title: "compound interest", url: "compound-interest-calculator.html" },
+    { title: "percentage", url: "percentage-calculator.html" }
+  ];
+
+  function normalize(text) {
+    return String(text || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  }
+
+  function closeAllDropdowns(nav) {
+    nav.querySelectorAll(".clean-nav-dropdown.is-open").forEach(function (dropdown) {
+      dropdown.classList.remove("is-open");
+      const button = dropdown.querySelector(".clean-nav-button");
+      if (button) button.setAttribute("aria-expanded", "false");
+    });
+  }
+
+  function buildNavHtml() {
+    return (
+      '<div class="clean-nav-inner">' +
+        '<a class="clean-nav-link" href="index.html">home</a>' +
+
+        '<div class="clean-nav-dropdown">' +
+          '<button type="button" class="clean-nav-link clean-nav-button" aria-expanded="false">calculator <span aria-hidden="true">▼</span></button>' +
+          '<div class="clean-nav-dropdown-panel clean-calculator-panel">' +
+            '<a href="basic-calculator.html">basic</a>' +
+            '<div class="clean-nav-subtitle">health</div>' +
+            '<a href="age-calculator.html">age</a>' +
+            '<a href="bmi-calculator.html">bmi</a>' +
+            '<div class="clean-nav-subtitle">finance</div>' +
+            '<a href="mortgage-calculator.html">mortgage</a>' +
+            '<a href="personal-loan-calculator.html">personal loan</a>' +
+            '<a href="discount-calculator.html">discount</a>' +
+            '<a href="compound-interest-calculator.html">compound interest</a>' +
+            '<a href="percentage-calculator.html">percentage</a>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="clean-nav-dropdown">' +
+          '<button type="button" class="clean-nav-link clean-nav-button" aria-expanded="false">info <span aria-hidden="true">▼</span></button>' +
+          '<div class="clean-nav-dropdown-panel clean-info-panel">' +
+            '<a href="about.html">about</a>' +
+            '<a href="FAQS.html">FAQs</a>' +
+            '<a href="privacy-policy.html">privacy policy</a>' +
+            '<a href="contact.html">contact</a>' +
+          '</div>' +
+        '</div>' +
+
+        '<a class="clean-nav-link clean-chat-link" href="chatting.html">chatting</a>' +
+
+        '<form class="clean-nav-search" role="search" autocomplete="off">' +
+          '<label class="clean-nav-search-label" for="cleanCalculatorSearchInput">Search calculator</label>' +
+          '<input id="cleanCalculatorSearchInput" class="clean-nav-search-input" type="search" placeholder="search calculator" aria-label="Search calculator">' +
+          '<button type="submit" class="clean-nav-search-button" aria-label="Search">🔍</button>' +
+          '<ul class="clean-nav-search-results" hidden></ul>' +
+        '</form>' +
+      '</div>'
+    );
+  }
+
+  function setupDropdowns(nav) {
+    nav.querySelectorAll(".clean-nav-dropdown").forEach(function (dropdown) {
+      const button = dropdown.querySelector(".clean-nav-button");
+      if (!button) return;
+
+      button.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const isOpen = dropdown.classList.contains("is-open");
+        closeAllDropdowns(nav);
+
+        dropdown.classList.toggle("is-open", !isOpen);
+        button.setAttribute("aria-expanded", !isOpen ? "true" : "false");
+      });
+    });
+
+    document.addEventListener("click", function (event) {
+      if (!nav.contains(event.target)) {
+        closeAllDropdowns(nav);
+      }
+    });
+  }
+
+  function setupSearch(nav) {
+    const form = nav.querySelector(".clean-nav-search");
+    const input = nav.querySelector(".clean-nav-search-input");
+    const results = nav.querySelector(".clean-nav-search-results");
+
+    if (!form || !input || !results) return;
+
+    function hideResults() {
+      results.hidden = true;
+      results.innerHTML = "";
+    }
+
+    function matchesFor(query) {
+      const q = normalize(query);
+      if (!q) return [];
+
+      return calculators.filter(function (item) {
+        return normalize(item.title).includes(q);
+      });
+    }
+
+    function renderResults() {
+      const matches = matchesFor(input.value);
+
+      if (!normalize(input.value)) {
+        hideResults();
+        return;
+      }
+
+      results.hidden = false;
+
+      if (!matches.length) {
+        results.innerHTML = '<li class="clean-nav-search-empty">No calculator found</li>';
+        return;
+      }
+
+      results.innerHTML = matches.slice(0, 8).map(function (item) {
+        return (
+          '<li>' +
+            '<button type="button" class="clean-nav-search-result" data-url="' + item.url + '">' +
+              item.title +
+            '</button>' +
+          '</li>'
+        );
+      }).join("");
+    }
+
+    input.addEventListener("keydown", function (event) {
+      event.stopPropagation();
+
+      if (event.key === "Escape") {
+        hideResults();
+      }
+    }, true);
+
+    input.addEventListener("keyup", function (event) {
+      event.stopPropagation();
+    }, true);
+
+    input.addEventListener("input", function (event) {
+      event.stopPropagation();
+      renderResults();
+    });
+
+    input.addEventListener("focus", function () {
+      renderResults();
+    });
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      const matches = matchesFor(input.value);
+
+      if (matches.length) {
+        window.location.href = matches[0].url;
+      }
+    });
+
+    results.addEventListener("click", function (event) {
+      const button = event.target.closest(".clean-nav-search-result");
+      if (!button) return;
+
+      const url = button.getAttribute("data-url");
+      if (url) window.location.href = url;
+    });
+
+    document.addEventListener("click", function (event) {
+      if (!form.contains(event.target)) {
+        hideResults();
+      }
+    });
+  }
+
+  function rebuildNav() {
+    const nav = document.getElementById("navbar");
+    if (!nav || nav.dataset.cleanRebuilt === "true") return;
+
+    nav.dataset.cleanRebuilt = "true";
+    nav.className = "clean-navbar";
+    nav.innerHTML = buildNavHtml();
+
+    setupDropdowns(nav);
+    setupSearch(nav);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", rebuildNav);
+  } else {
+    rebuildNav();
+  }
+})();
+
