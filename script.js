@@ -913,7 +913,7 @@
       {
         key: "calorie",
         title: "Calories & body fat",
-        match: /Calories\/day|Body fat estimate|Body type comment|Frame size|Fat distribution|Body shape|Somatotype tendency|Physique \/ body type/i
+        match: /Calories\/day|Body fat estimate|Body type comment|Frame size|Fat distribution|Body shape|Somatotype tendency|Suggested exercise|Suggested foods|Physique \/ body type/i
       },
       {
         key: "goal",
@@ -2409,6 +2409,42 @@
       return base;
     }
 
+    function bodyTypeExerciseSuggestion(somatotypeText, shapeText, fatText, categoryText) {
+      const central = /central|abdominal|apple|midsection/i.test(String(fatText) + " " + String(shapeText));
+
+      if (/ectomorph/i.test(somatotypeText)) {
+        return "Strength training 3–4 days/week, progressive overload, compound lifts, light cardio, and enough rest for muscle gain.";
+      }
+
+      if (/mesomorph/i.test(somatotypeText)) {
+        return "Balanced plan: strength training 3 days/week, cardio 2 days/week, mobility work, and sports or circuits for conditioning.";
+      }
+
+      if (/endomorph/i.test(somatotypeText) || central || /overweight|obese/i.test(categoryText)) {
+        return "Low-impact cardio 3–5 days/week, full-body resistance training 2–3 days/week, daily walking, and core stability work.";
+      }
+
+      return "General fitness: full-body strength 2–3 days/week, brisk walking or cycling, stretching, and gradual weekly progression.";
+    }
+
+    function bodyTypeFoodSuggestion(somatotypeText, shapeText, fatText, categoryText) {
+      const central = /central|abdominal|apple|midsection/i.test(String(fatText) + " " + String(shapeText));
+
+      if (/ectomorph/i.test(somatotypeText)) {
+        return "Focus on calorie-dense healthy foods: rice/oats/potatoes, eggs/fish/chicken/tempeh, milk/yogurt, nuts, olive oil, and regular protein meals.";
+      }
+
+      if (/mesomorph/i.test(somatotypeText)) {
+        return "Use balanced plates: lean protein, rice/potato/whole grains, vegetables, fruit, healthy fats, and limit sugary drinks.";
+      }
+
+      if (/endomorph/i.test(somatotypeText) || central || /overweight|obese/i.test(categoryText)) {
+        return "Prioritize high-protein and high-fiber meals: fish/chicken/eggs/tofu, vegetables, beans, fruit, water, and reduce fried food, sweets, and sweet drinks.";
+      }
+
+      return "Choose simple balanced meals: protein each meal, vegetables, whole carbohydrates, fruit, water, and controlled snack portions.";
+    }
+
     const waistCm = toCm(waist);
     const neckCm = toCm(neck);
     const wristCm = toCm(wrist);
@@ -2448,6 +2484,8 @@
     const bodyShape = bodyShapeText(shoulderCm, waistCm, hipCm);
     const somatotypeTendency = somatotypeTendencyText(bmi, bodyFatNumber, calculatedFrameSize, shoulderCm, hipCm);
     const bodyTypeComment = bodyTypeCommentText(calculatedFrameSize, bodyShape, somatotypeTendency, bodyFatNumber);
+    const suggestedExercise = bodyTypeExerciseSuggestion(somatotypeTendency, bodyShape, fatDistribution, category);
+    const suggestedFoods = bodyTypeFoodSuggestion(somatotypeTendency, bodyShape, fatDistribution, category);
     const physiqueText = bodyTypeComment;
 
     const timeGoalLabels = {
@@ -2589,6 +2627,8 @@
       ["Fat distribution", fatDistribution],
       ["Body shape", bodyShape],
       ["Somatotype tendency", somatotypeTendency],
+      ["Suggested exercise", suggestedExercise],
+      ["Suggested foods", suggestedFoods],
       ["Goal timeline", goalTimeline],
       ["Healthy?", goalHealthyText],
       ["Best", goalBestText],
@@ -2624,6 +2664,8 @@
       bodyShape: bodyShape,
       somatotypeTendency: somatotypeTendency,
       bodyTypeComment: bodyTypeComment,
+      suggestedExercise: suggestedExercise,
+      suggestedFoods: suggestedFoods,
       goalTimeline: goalTimeline,
       name: name || "",
       resultRows: rows.map(function (row) {
@@ -3550,7 +3592,7 @@
       {
         title: "3. Calories & body composition",
         note: "Daily calorie estimate and body fat estimate.",
-        match: /Calories\/day|Body fat estimate|Body type comment|Frame size|Fat distribution|Body shape|Somatotype tendency|Physique \/ body type/i
+        match: /Calories\/day|Body fat estimate|Body type comment|Frame size|Fat distribution|Body shape|Somatotype tendency|Suggested exercise|Suggested foods|Physique \/ body type/i
       },
       {
         title: "4. Goal planning",
@@ -6998,6 +7040,89 @@
     document.addEventListener("DOMContentLoaded", rebuildNav);
   } else {
     rebuildNav();
+  }
+})();
+
+
+/* =====================================================
+   AGE RESULT: Strong duplicate render guard
+   - Keeps only one live Age result box
+   - Hides live Age result while report page is open
+   - Removes duplicate result shells caused by delayed online updates
+===================================================== */
+(function () {
+  "use strict";
+
+  function isAgePanel(el) {
+    return !!(
+      el &&
+      (
+        el.classList.contains("age-clean-result") ||
+        el.classList.contains("age-point-output") ||
+        el.id === "ageResult"
+      )
+    );
+  }
+
+  function dedupeAgeResults() {
+    const panels = Array.from(document.querySelectorAll(".age-clean-result, .age-point-output, #ageResult"))
+      .filter(function (el) {
+        return isAgePanel(el) && !el.closest("#calculatorReportPage");
+      });
+
+    if (document.body.classList.contains("calculator-report-view")) {
+      panels.forEach(function (el) {
+        el.style.setProperty("display", "none", "important");
+        el.style.setProperty("visibility", "hidden", "important");
+        el.setAttribute("aria-hidden", "true");
+      });
+      return;
+    }
+
+    if (panels.length <= 1) return;
+
+    const main = panels.find(function (el) {
+      return el.id === "ageExternalOutput";
+    }) || panels[0];
+
+    panels.forEach(function (el) {
+      if (el === main) return;
+      el.remove();
+    });
+
+    main.style.removeProperty("display");
+    main.style.removeProperty("visibility");
+    main.removeAttribute("aria-hidden");
+  }
+
+  function start() {
+    dedupeAgeResults();
+
+    setTimeout(dedupeAgeResults, 80);
+    setTimeout(dedupeAgeResults, 300);
+    setTimeout(dedupeAgeResults, 900);
+    setTimeout(dedupeAgeResults, 1800);
+
+    document.addEventListener("input", function () {
+      setTimeout(dedupeAgeResults, 300);
+      setTimeout(dedupeAgeResults, 900);
+    }, true);
+
+    document.addEventListener("change", function () {
+      setTimeout(dedupeAgeResults, 300);
+      setTimeout(dedupeAgeResults, 900);
+    }, true);
+
+    window.addEventListener("hashchange", function () {
+      setTimeout(dedupeAgeResults, 120);
+      setTimeout(dedupeAgeResults, 700);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
   }
 })();
 

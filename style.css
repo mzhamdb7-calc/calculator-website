@@ -3925,3 +3925,31 @@ body.index-page .abacus-digit {
   }
 }
 
+
+/* =====================================================
+   BMI: Exercise and food suggestions
+===================================================== */
+.bmi-result-group-calorie .bmi-point-result-list li strong {
+  min-width: 150px !important;
+}
+
+.bmi-result-group-calorie .bmi-point-result-list li span {
+  line-height: 1.35 !important;
+}
+
+/* =====================================================
+   AGE: duplicate live result safety
+===================================================== */
+body.calculator-report-view .age-clean-result,
+body.calculator-report-view .age-point-output,
+body.calculator-report-view #ageResult {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+body.calculator-report-view #calculatorReportPage .age-clean-result,
+body.calculator-report-view #calculatorReportPage .age-point-output {
+  display: block !important;
+  visibility: visible !important;
+}
+
