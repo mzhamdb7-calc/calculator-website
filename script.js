@@ -8495,3 +8495,89 @@
   });
 })();
 
+
+/* =====================================================
+   FINAL USER FIX: mortgage 2s autocalc + index dropdown cards
+===================================================== */
+(function () {
+  "use strict";
+
+  function setupMortgageAutoCalculate2s() {
+    if (!/mortgage-calculator\.html/i.test(location.pathname || "")) return;
+    if (document.body.dataset.mortgageAuto2sReady === "true") return;
+
+    document.body.dataset.mortgageAuto2sReady = "true";
+
+    let timer = null;
+
+    function hasMortgageRequiredValues() {
+      const amount = document.getElementById("amount");
+      const interest = document.getElementById("interest");
+      const years = document.getElementById("years");
+
+      return !!(
+        amount && interest && years &&
+        String(amount.value || "").trim() &&
+        String(interest.value || "").trim() &&
+        String(years.value || "").trim()
+      );
+    }
+
+    function schedule(event) {
+      const target = event && event.target;
+      if (!target || !target.closest(".calculator")) return;
+      if (!target.matches("input, select, textarea")) return;
+
+      clearTimeout(timer);
+
+      timer = setTimeout(function () {
+        if (!hasMortgageRequiredValues()) return;
+
+        if (typeof window.calculateLoan === "function") {
+          window.calculateLoan();
+        }
+
+        setTimeout(function () {
+          document.querySelectorAll(".mortgage-modern-result-panel, .loan-style-output-panel, .calculator-clean-result").forEach(function (panel) {
+            if (!panel.closest("#calculatorReportPage")) {
+              panel.style.removeProperty("display");
+              panel.style.removeProperty("visibility");
+              panel.removeAttribute("aria-hidden");
+            }
+          });
+        }, 120);
+      }, 2000);
+    }
+
+    document.addEventListener("input", schedule, true);
+    document.addEventListener("change", schedule, true);
+  }
+
+  function setupIndexDropdownCards() {
+    const home = document.querySelector(".index-dropdown-calculator-home");
+    if (!home || home.dataset.dropdownReady === "true") return;
+
+    home.dataset.dropdownReady = "true";
+
+    home.querySelectorAll(".index-category-dropdown").forEach(function (details) {
+      details.addEventListener("toggle", function () {
+        if (!details.open) return;
+
+        home.querySelectorAll(".index-category-dropdown").forEach(function (other) {
+          if (other !== details) other.open = false;
+        });
+      });
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function () {
+      setupMortgageAutoCalculate2s();
+      setupIndexDropdownCards();
+    });
+  } else {
+    setupMortgageAutoCalculate2s();
+    setupIndexDropdownCards();
+  }
+})();
+

@@ -92,13 +92,14 @@
   </nav>
 
   <!-- Main Content -->
-  <main class="calculator-box grouped-calculator-home">
-<h1>Calculator</h1>
+  <main class="calculator-box grouped-calculator-home index-dropdown-calculator-home">
 
-    <div class="calculator-group-grid">
+    <h1>Calculator</h1>
 
-      <section class="calculator-category-card calculator-category-general">
-        <h2>General tools</h2>
+    <div class="index-category-dropdown-grid">
+
+      <details class="index-category-dropdown calculator-category-general">
+        <summary>General tools</summary>
         <p>Everyday math and conversion tools.</p>
         <div class="calculator-category-links">
           <a href="basic-calculator.html">basic calculator</a>
@@ -106,35 +107,19 @@
           <a href="percentage-calculator.html">percentage calculator</a>
           <a href="unit-converter-calculator.html">unit converter</a>
         </div>
-      </section>
+      </details>
 
-      <section class="calculator-category-card calculator-category-health">
-        <h2>Health & age</h2>
+      <details class="index-category-dropdown calculator-category-health">
+        <summary>Health & age</summary>
         <p>Personal body and age calculators.</p>
         <div class="calculator-category-links">
           <a href="age-calculator.html">age calculator</a>
           <a href="bmi-calculator.html">bmi calculator</a>
         </div>
-      </section>
+      </details>
 
-
-      <section class="calculator-category-card calculator-category-abacus">
-        <div class="live-abacus-card interactive-abacus-card">
-          <h2>Interactive Abacus</h2>
-          <p class="live-abacus-subtitle">Click or drag the beads to play around with the abacus.</p>
-
-          <div class="live-abacus-value interactive-abacus-value">
-            <span class="live-abacus-value-label">Current value</span>
-            <span id="liveAbacusValueText">0</span>
-            <button type="button" id="liveAbacusReset" class="interactive-abacus-reset">Reset</button>
-          </div>
-
-          <div id="liveAbacus" class="live-abacus interactive-abacus" aria-live="polite"></div>
-        </div>
-      </section>
-
-      <section class="calculator-category-card calculator-category-money">
-        <h2>Money & income</h2>
+      <details class="index-category-dropdown calculator-category-money">
+        <summary>Money & income</summary>
         <p>Salary, tax, prices, currency, inflation and growth.</p>
         <div class="calculator-category-links">
           <a href="salary-calculator.html">salary calculator</a>
@@ -145,10 +130,10 @@
           <a href="inflation-calculator.html">inflation calculator</a>
           <a href="compound-interest-calculator.html">compound interest</a>
         </div>
-      </section>
+      </details>
 
-      <section class="calculator-category-card calculator-category-loans">
-        <h2>Loans & debt</h2>
+      <details class="index-category-dropdown calculator-category-loans">
+        <summary>Loans & debt</summary>
         <p>Mortgage, loan, credit card and debt payoff tools.</p>
         <div class="calculator-category-links">
           <a href="mortgage-calculator.html">mortgage calculator</a>
@@ -158,18 +143,33 @@
           <a href="credit-card-payoff-calculator.html">credit card payoff</a>
           <a href="credit-card-interest-calculator.html">credit card interest</a>
         </div>
-      </section>
+      </details>
 
-      <section class="calculator-category-card calculator-category-property">
-        <h2>Property & travel</h2>
+      <details class="index-category-dropdown calculator-category-property">
+        <summary>Property & travel</summary>
         <p>Rental and trip cost calculators.</p>
         <div class="calculator-category-links">
           <a href="rental-yield-calculator.html">rental yield</a>
           <a href="fuel-cost-calculator.html">fuel cost</a>
         </div>
-      </section>
+      </details>
 
     </div>
+
+    <section class="calculator-category-abacus index-abacus-inside-card">
+      <div class="live-abacus-card interactive-abacus-card">
+        <h2>Interactive Abacus</h2>
+        <p class="live-abacus-subtitle">Click or drag the beads to play around with the abacus.</p>
+
+        <div class="live-abacus-value interactive-abacus-value">
+          <span class="live-abacus-value-label">Current value</span>
+          <span id="liveAbacusValueText">0</span>
+          <button type="button" id="liveAbacusReset" class="interactive-abacus-reset">Reset</button>
+        </div>
+
+        <div id="liveAbacus" class="live-abacus interactive-abacus" aria-live="polite"></div>
+      </div>
+    </section>
 
   </main>
 <script src="script.js?v=age_bmi_update_20260527"></script>
