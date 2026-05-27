@@ -8070,3 +8070,49 @@
   }
 })();
 
+
+/* =====================================================
+   EXTRA PAGES: ? help button toggle
+===================================================== */
+(function () {
+  "use strict";
+
+  function setupExtraHelpButton() {
+    const button = document.querySelector(".extra-help-question-button");
+    const panel = document.querySelector(".extra-help-panel");
+
+    if (!button || !panel || button.dataset.ready === "true") return;
+
+    button.dataset.ready = "true";
+    panel.hidden = true;
+
+    function setOpen(open) {
+      panel.hidden = !open;
+      document.body.classList.toggle("extra-help-open", open);
+      button.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+
+    button.addEventListener("click", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      setOpen(panel.hidden);
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") setOpen(false);
+    });
+
+    document.addEventListener("click", function (event) {
+      if (panel.hidden) return;
+      if (panel.contains(event.target) || button.contains(event.target)) return;
+      setOpen(false);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupExtraHelpButton);
+  } else {
+    setupExtraHelpButton();
+  }
+})();
+
