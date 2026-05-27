@@ -589,7 +589,7 @@
       {
         key: "history",
         title: "Famous birthdays & historical event",
-        match: /famous person throughout history|famous celebrity|famous sports star|famous historical figure|historical event/i
+        match: /famous person|famous celebrity|famous sports star|famous historical figure|historical event/i
       },
       {
         key: "space",
@@ -1584,27 +1584,27 @@
     const key = String(month).padStart(2, "0") + "-" + String(day).padStart(2, "0");
 
     /*
-      Famous people throughout history. These are fallback names used when
-      online birthday data is unavailable or no strong match is found.
+      Muslim icons fallback list. Used when online birthday data has no
+      strong Muslim-icon match for the selected date.
     */
     const list = {
-      "01-01": ["Paul Revere", "E. M. Forster", "J. D. Salinger"],
-      "01-08": ["Stephen Hawking", "Elvis Presley", "Alfred Russel Wallace"],
-      "01-15": ["Martin Luther King Jr.", "Molière", "Nasser al-Din Shah Qajar"],
-      "02-12": ["Abraham Lincoln", "Charles Darwin", "Cotton Mather"],
-      "03-14": ["Albert Einstein", "Georg Philipp Telemann", "Diane Arbus"],
-      "04-15": ["Leonardo da Vinci", "Leonhard Euler", "Henry James"],
-      "05-05": ["Karl Marx", "Søren Kierkegaard", "Nellie Bly"],
-      "06-01": ["Marilyn Monroe", "Brigham Young", "Carl von Clausewitz"],
-      "07-24": ["Simón Bolívar", "Alexandre Dumas", "Amelia Earhart"],
-      "08-04": ["Louis Armstrong", "Percy Bysshe Shelley", "Queen Elizabeth The Queen Mother"],
-      "09-04": ["Darius Milhaud", "Anton Bruckner", "Chateaubriand"],
-      "10-28": ["Jonas Salk", "Desiderius Erasmus", "James Cook"],
-      "11-30": ["Mark Twain", "Jonathan Swift", "Winston Churchill"],
-      "12-25": ["Isaac Newton", "Clara Barton", "Anwar Sadat"]
+      "01-01": ["Ibn Khaldun", "Muhammad Ali Jinnah", "Omar Khayyam"],
+      "01-08": ["Abd al-Rahman al-Sufi", "Ibn al-Haytham", "Malala Yousafzai"],
+      "01-15": ["Nasser al-Din Shah Qajar", "Ibn Battuta", "Al-Farabi"],
+      "02-12": ["Nur ad-Din Zengi", "Ibn Sina", "Fatima al-Fihri"],
+      "03-14": ["Harun al-Rashid", "Al-Biruni", "Ibn Rushd"],
+      "04-15": ["Süleyman the Magnificent", "Mimar Sinan", "Ibn Arabi"],
+      "05-05": ["Salahuddin al-Ayyubi", "Muhammad Iqbal", "Al-Khwarizmi"],
+      "06-01": ["Abu Bakr al-Siddiq", "Umar ibn al-Khattab", "Uthman ibn Affan"],
+      "07-24": ["Mehmed II", "Tipu Sultan", "Al-Ghazali"],
+      "08-04": ["Rumi", "Ibn Taymiyyah", "Aisha bint Abi Bakr"],
+      "09-04": ["Al-Masudi", "Ibn Hazm", "Averroes"],
+      "10-28": ["Shah Waliullah Dehlawi", "Tariq ibn Ziyad", "Abd al-Qadir al-Jazairi"],
+      "11-30": ["Anwar Sadat", "Ibn Jubayr", "Ahmad Sirhindi"],
+      "12-25": ["Muhammad Ali", "Muhammad Asad", "Al-Idrisi"]
     };
 
-    return list[key] || ["Will be loaded online", "Will be loaded online", "Will be loaded online"];
+    return list[key] || ["Ibn Sina", "Al-Khwarizmi", "Salahuddin al-Ayyubi"];
   }
 
   function extractBirthPersonName(item) {
@@ -1626,7 +1626,7 @@
   function pickFamousBirthdayPeople(items) {
     items = Array.isArray(items) ? items : [];
 
-    const famousPattern = /president|king|queen|emperor|caliph|sultan|prime minister|politician|leader|scientist|physicist|chemist|mathematician|philosopher|inventor|writer|poet|artist|composer|historian|scholar|explorer|reformer|activist|revolutionary|general|commander|founder|nobel|architect|astronomer|physician|economist|jurist|theologian|imam|muslim scholar|historical|famous|pioneer|novelist|playwright|educator/i;
+    const famousPattern = /muslim|islam|islamic|caliph|sultan|imam|qadi|sheikh|shaykh|muhaddith|mufassir|faqih|scholar|theologian|sufi|ottoman|abbasid|umayyad|ayyubid|mamluk|mughal|malay|arab|persian|andalusian|al-andalus|ibn|al-|bint|abu|abd|salahuddin|saladin|khwarizmi|biruni|sina|rushd|ghazali|farabi|khaldun|rumi|iqbal|jinnah|tariq ibn ziyad|fatima al-fihri|malala/i;
 
     function pick(used) {
       const found = items.find(function (item) {
@@ -1635,8 +1635,6 @@
         const desc = famousDescription(item);
 
         if (!name || used.has(name)) return false;
-        if (Number.isFinite(year) && year >= 2000) return false;
-
         return famousPattern.test(desc);
       });
 
@@ -1663,9 +1661,9 @@
     const fallback = famousBirthdayFallback(month, day);
 
     return [
-      ["Famous person throughout history 1", fallback[0]],
-      ["Famous person throughout history 2", fallback[1]],
-      ["Famous person throughout history 3", fallback[2]]
+      ["Famous person", fallback[0]],
+      ["Famous person", fallback[1]],
+      ["Famous person", fallback[2]]
     ];
   }
 
@@ -1766,14 +1764,17 @@
       })
       .then(function (data) {
         const picked = pickFamousBirthdayPeople(data.births || []);
-        const replacements = {
-          "Famous person throughout history 1": picked.celebrity,
-          "Famous person throughout history 2": picked.sports,
-          "Famous person throughout history 3": picked.historical
-        };
+        const famousPeople = [picked.celebrity, picked.sports, picked.historical].filter(function (name) {
+          return name && name !== "Not found";
+        });
 
+        let famousIndex = 0;
         rows.forEach(function (row) {
-          if (replacements[row[0]] && replacements[row[0]] !== "Not found") row[1] = replacements[row[0]];
+          if (row[0] !== "Famous person") return;
+          if (!famousPeople[famousIndex]) return;
+
+          row[1] = famousPeople[famousIndex];
+          famousIndex += 1;
         });
 
         const metrics = typeof metricsBuilder === "function" ? metricsBuilder(rows) : {
@@ -3297,7 +3298,7 @@
       {
         title: "Famous birthdays & historical event",
         note: "People and events connected to the same month and day.",
-        match: /famous person throughout history|famous celebrity|famous sports star|famous historical figure|historical event/i
+        match: /famous person|famous celebrity|famous sports star|famous historical figure|historical event/i
       },
       {
         title: "Space & moon view",
@@ -5005,7 +5006,9 @@
 
     const label = document.createElement("span");
     label.className = "abacus-label";
-    label.innerHTML = rodPlaceLabel(index) + '<span class="abacus-digit">0</span>';
+    label.innerHTML =
+      '<span class="abacus-place-label">' + rodPlaceLabel(index) + '</span>' +
+      '<span class="abacus-digit">0</span>';
     rod.appendChild(label);
 
     setRodDigit(rod, 0);

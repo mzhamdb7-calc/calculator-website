@@ -7281,3 +7281,260 @@ body.calculator-report-view #calculatorReportPage .age-point-output {
   align-items: flex-start !important;
 }
 
+
+/* =====================================================
+   NATURAL NAV + SIDE MENU CLEANUP
+   - Lets Chatting and Search size naturally beside the menu
+   - Side menu stacks search below Chatting cleanly
+===================================================== */
+@media (min-width: 851px) {
+  #navbar {
+    display: flex !important;
+    align-items: stretch !important;
+    flex-wrap: nowrap !important;
+    gap: 0 !important;
+    overflow: visible !important;
+  }
+
+  #navbar > a:not(.nav-chat-link),
+  #navbar > .dropdown {
+    flex: 0 0 auto !important;
+    min-height: 64px !important;
+    align-self: stretch !important;
+  }
+
+  #navbar > .nav-chat-link {
+    display: none !important;
+  }
+
+  #navbar .nav-chat-search-inline {
+    display: flex !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 64px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    box-sizing: border-box !important;
+    align-self: stretch !important;
+    overflow: visible !important;
+    position: relative !important;
+  }
+
+  #navbar .nav-chat-search-inline .nav-chat-link {
+    flex: 0 0 160px !important;
+    width: 160px !important;
+    min-width: 130px !important;
+    max-width: 190px !important;
+    min-height: 64px !important;
+    margin: 0 !important;
+    padding: 0 14px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    align-self: stretch !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border: 4px solid var(--black) !important;
+    border-left: 0 !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+    text-decoration: none !important;
+    font-family: inherit !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+    position: static !important;
+    transform: none !important;
+  }
+
+  #navbar .nav-chat-search-inline .site-search {
+    flex: 1 1 300px !important;
+    width: auto !important;
+    min-width: 220px !important;
+    max-width: none !important;
+    min-height: 64px !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: var(--white) !important;
+    border: 4px solid var(--black) !important;
+    border-left: 0 !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+    box-sizing: border-box !important;
+    align-self: stretch !important;
+    overflow: visible !important;
+    position: relative !important;
+    transform: none !important;
+  }
+
+  #navbar .nav-chat-search-inline .site-search-inner {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 56px !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 58px !important;
+    gap: 0 !important;
+    align-items: stretch !important;
+  }
+
+  #navbar .nav-chat-search-inline .site-search-input {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 100% !important;
+    min-height: 56px !important;
+    margin: 0 !important;
+    padding: 0 16px !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: var(--white) !important;
+    box-sizing: border-box !important;
+  }
+
+  #navbar .nav-chat-search-inline .site-search-submit {
+    width: 58px !important;
+    min-width: 58px !important;
+    height: 100% !important;
+    min-height: 56px !important;
+    margin: 0 !important;
+    border: none !important;
+    border-left: 4px solid var(--black) !important;
+    box-shadow: none !important;
+    background: var(--white) !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* Open side menu / scrolled menu: stack Chatting then Search cleanly */
+@media (min-width: 851px) {
+  body.menu-scrolled #navbar.open .nav-chat-search-inline,
+  body.menu-open #navbar .nav-chat-search-inline,
+  #navbar.open .nav-chat-search-inline {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    align-self: stretch !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-chat-search-inline .nav-chat-link,
+  body.menu-open #navbar .nav-chat-search-inline .nav-chat-link,
+  #navbar.open .nav-chat-search-inline .nav-chat-link {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    min-height: 55px !important;
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+    background: var(--white) !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-chat-search-inline .site-search,
+  body.menu-open #navbar .nav-chat-search-inline .site-search,
+  #navbar.open .nav-chat-search-inline .site-search {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    height: 55px !important;
+    min-height: 55px !important;
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+    background: var(--white) !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-chat-search-inline .site-search-inner,
+  body.menu-open #navbar .nav-chat-search-inline .site-search-inner,
+  #navbar.open .nav-chat-search-inline .site-search-inner {
+    min-height: 47px !important;
+    grid-template-columns: minmax(0, 1fr) 48px !important;
+  }
+
+  body.menu-scrolled #navbar.open .nav-chat-search-inline .site-search-input,
+  body.menu-scrolled #navbar.open .nav-chat-search-inline .site-search-submit,
+  body.menu-open #navbar .nav-chat-search-inline .site-search-input,
+  body.menu-open #navbar .nav-chat-search-inline .site-search-submit,
+  #navbar.open .nav-chat-search-inline .site-search-input,
+  #navbar.open .nav-chat-search-inline .site-search-submit {
+    min-height: 47px !important;
+    height: 47px !important;
+  }
+}
+
+@media (max-width: 850px) {
+  #navbar > .nav-chat-link {
+    display: none !important;
+  }
+
+  #navbar .nav-chat-search-inline {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  #navbar .nav-chat-search-inline .nav-chat-link,
+  #navbar .nav-chat-search-inline .site-search {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+    background: var(--white) !important;
+  }
+}
+
+/* =====================================================
+   INDEX ABACUS: move bottom number below abacus rod
+===================================================== */
+body.index-page .interactive-abacus {
+  align-items: start !important;
+}
+
+body.index-page .interactive-abacus .abacus-rod,
+body.index-page .abacus-rod {
+  height: 318px !important;
+  padding-bottom: 40px !important;
+  overflow: visible !important;
+  box-sizing: border-box !important;
+}
+
+body.index-page .interactive-abacus .abacus-rod::before,
+body.index-page .abacus-rod::before {
+  bottom: 70px !important;
+}
+
+body.index-page .interactive-abacus .abacus-label,
+body.index-page .abacus-label {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: -2px !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  font-size: 15px !important;
+  font-weight: bold !important;
+  text-align: center !important;
+  background: transparent !important;
+}
+
+body.index-page .abacus-place-label,
+body.index-page .abacus-digit {
+  display: block !important;
+  pointer-events: none !important;
+}
+
+body.index-page .abacus-digit {
+  margin-top: 3px !important;
+  font-size: 20px !important;
+}
+
