@@ -2793,3 +2793,18 @@ body.calculator-report-view #calculatorReportPage .age-point-output {
   }
 }
 
+
+/* =====================================================
+   BMI: Optional body measurements
+===================================================== */
+.bmi-optional-box #bmiNeck,
+.bmi-optional-box #bmiFrameSize {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.bmi-result-group-calorie .bmi-point-result-list li:has(strong),
+.bmi-result-group-health .bmi-point-result-list li:has(strong) {
+  align-items: flex-start !important;
+}
+

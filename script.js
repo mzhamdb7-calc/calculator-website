@@ -908,12 +908,12 @@
       {
         key: "health",
         title: "Health overview",
-        match: /Healthy weight range|Health risk|Waist-to-height ratio|Waist-to-height status/i
+        match: /Healthy weight range|Health risk|Waist-to-height ratio|Waist-to-height status|Neck circumference|Body frame size/i
       },
       {
         key: "calorie",
         title: "Calories & body fat",
-        match: /Calories\/day|Body fat estimate/i
+        match: /Calories\/day|Body fat estimate|Physique \/ body type/i
       },
       {
         key: "goal",
@@ -2011,7 +2011,13 @@
     const targetWeightLabel = makeLabel("bmiTargetWeightLabel", "bmiTargetWeight", "Target weight:");
     const targetWeight = makeNumberInput("bmiTargetWeight", "Optional");
 
-    [nameLabel, name, ageLabel, age, genderLabel, gender, activityLabel, activity, timeGoalLabel, timeGoalAmount, timeGoal, targetWeightLabel, targetWeight].forEach(function (el) {
+    const neckLabel = makeLabel("bmiNeckLabel", "bmiNeck", "Neck circumference:");
+    const neck = makeNumberInput("bmiNeck", "Optional");
+
+    const frameLabel = makeLabel("bmiFrameLabel", "bmiFrameSize", "Body frame size:");
+    const frame = makeSelect("bmiFrameSize", '<option value="">Optional</option><option value="small">Small frame</option><option value="medium">Medium frame</option><option value="large">Large frame</option>', "");
+
+    [nameLabel, name, ageLabel, age, genderLabel, gender, activityLabel, activity, timeGoalLabel, timeGoalAmount, timeGoal, targetWeightLabel, targetWeight, neckLabel, neck, frameLabel, frame].forEach(function (el) {
       if (!el.parentElement) calculator.insertBefore(el, weight);
     });
 
@@ -2076,7 +2082,7 @@
       if (element) timeGoalWrap.appendChild(element);
     });
 
-    ["bmiTargetWeightLabel", "bmiTargetWeight", "waistLabel", "waist"].forEach(function (id) {
+    ["bmiTargetWeightLabel", "bmiTargetWeight", "waistLabel", "waist", "bmiNeckLabel", "bmiNeck", "bmiFrameLabel", "bmiFrameSize"].forEach(function (id) {
       const element = byId(id);
       if (element) optionalBox.appendChild(element);
     });
@@ -2095,29 +2101,35 @@
     const weightLabel = byId("weightLabel");
     const heightLabel = byId("heightLabel");
     const waistLabel = byId("waistLabel");
+    const neckLabel = byId("bmiNeckLabel");
     const targetWeightLabel = byId("bmiTargetWeightLabel");
     const weight = byId("weight");
     const height = byId("height");
     const waist = byId("waist");
+    const neck = byId("bmiNeck");
     const targetWeight = byId("bmiTargetWeight");
 
     if (normalized === "si") {
       if (weightLabel) weightLabel.textContent = "Weight in kg:";
       if (heightLabel) heightLabel.textContent = "Height in cm:";
       if (waistLabel) waistLabel.textContent = "Waist circumference in cm:";
+      if (neckLabel) neckLabel.textContent = "Neck circumference in cm:";
       if (targetWeightLabel) targetWeightLabel.textContent = "Target weight in kg:";
       if (weight) weight.placeholder = "Example: 70";
       if (height) height.placeholder = "Example: 170";
       if (waist) waist.placeholder = "Optional, Example: 80";
+      if (neck) neck.placeholder = "Optional, Example: 38";
       if (targetWeight) targetWeight.placeholder = "Optional, Example: 65";
     } else {
       if (weightLabel) weightLabel.textContent = "Weight in lb:";
       if (heightLabel) heightLabel.textContent = "Height in inch:";
       if (waistLabel) waistLabel.textContent = "Waist circumference in inch:";
+      if (neckLabel) neckLabel.textContent = "Neck circumference in inch:";
       if (targetWeightLabel) targetWeightLabel.textContent = "Target weight in lb:";
       if (weight) weight.placeholder = "Example: 154";
       if (height) height.placeholder = "Example: 67";
       if (waist) waist.placeholder = "Optional, Example: 32";
+      if (neck) neck.placeholder = "Optional, Example: 15";
       if (targetWeight) targetWeight.placeholder = "Optional, Example: 143";
     }
   }
@@ -2148,6 +2160,8 @@
     const weight = firstNumber(["weight", "bmiWeight"]);
     const height = firstNumber(["height", "bmiHeight"]);
     const waist = firstNumber(["waist", "bmiWaist"]);
+    const neck = firstNumber(["bmiNeck"]);
+    const bodyFrame = firstValue(["bmiFrameSize"]);
     const age = firstNumber(["bmiAge"]);
     const gender = firstValue(["bmiGender"]) || "male";
     const activity = firstValue(["bmiActivityLevel"]) || "moderate";
@@ -2237,12 +2251,57 @@
       caloriesLossText = lossCalories.toLocaleString("en-US") + " calories/day to lose weight";
     }
 
-    let bodyFatText = "Enter age and gender to estimate body fat";
-    if (Number.isFinite(age) && age > 0 && gender) {
-      const sexValue = gender === "male" ? 1 : (gender === "female" ? 0 : 0.5);
-      const bodyFat = 1.2 * bmi + 0.23 * age - 10.8 * sexValue - 5.4;
-      bodyFatText = Math.max(0, bodyFat).toFixed(1) + "% estimated body fat";
+    function bodyFrameLabel(value) {
+      if (value === "small") return "Small frame";
+      if (value === "medium") return "Medium frame";
+      if (value === "large") return "Large frame";
+      return "Not provided";
     }
+
+    function estimatedBodyTypeText(bmiValue, ratioValue, frameValue, bodyFatValue) {
+      if (Number.isFinite(bodyFatValue)) {
+        if (bodyFatValue < 14 && gender === "male") return "Lean / athletic build";
+        if (bodyFatValue < 22 && gender === "female") return "Lean / athletic build";
+        if (bodyFatValue < 25 && gender === "male") return frameValue === "large" ? "Solid build with larger frame" : "Average build";
+        if (bodyFatValue < 32 && gender === "female") return frameValue === "large" ? "Curvy / solid build with larger frame" : "Average build";
+        return "Higher body-fat build";
+      }
+
+      if (bmiValue < 18.5) return "Slim / underweight build";
+      if (bmiValue < 25) return frameValue === "large" ? "Normal BMI with larger frame" : "Normal / balanced build";
+      if (bmiValue < 30) return frameValue === "large" ? "Large-frame overweight range" : "Overweight range";
+      return "Obese BMI range";
+    }
+
+    let bodyFatNumber = NaN;
+    let bodyFatText = "Enter age and gender to estimate body fat";
+    const waistForNavy = unit === "us" ? waist : waist / 2.54;
+    const neckForNavy = unit === "us" ? neck : neck / 2.54;
+    const heightForNavy = unit === "us" ? height : height / 2.54;
+
+    if (
+      Number.isFinite(waistForNavy) &&
+      Number.isFinite(neckForNavy) &&
+      Number.isFinite(heightForNavy) &&
+      waistForNavy > neckForNavy &&
+      neckForNavy > 0 &&
+      heightForNavy > 0
+    ) {
+      if (gender === "male") {
+        bodyFatNumber = 86.010 * Math.log10(waistForNavy - neckForNavy) - 70.041 * Math.log10(heightForNavy) + 36.76;
+        bodyFatText = Math.max(0, bodyFatNumber).toFixed(1) + "% estimated body fat using waist + neck";
+      } else {
+        bodyFatText = "For female Navy body-fat estimate, hip circumference is normally needed; showing BMI-age estimate instead";
+      }
+    }
+
+    if (!Number.isFinite(bodyFatNumber) && Number.isFinite(age) && age > 0 && gender) {
+      const sexValue = gender === "male" ? 1 : (gender === "female" ? 0 : 0.5);
+      bodyFatNumber = 1.2 * bmi + 0.23 * age - 10.8 * sexValue - 5.4;
+      bodyFatText = Math.max(0, bodyFatNumber).toFixed(1) + "% estimated body fat";
+    }
+
+    const physiqueText = estimatedBodyTypeText(bmi, ratio, bodyFrame, bodyFatNumber);
 
     const timeGoalLabels = {
       daily: "Daily",
@@ -2350,11 +2409,24 @@
     }
 
     let healthRisk = "Average risk — use BMI with waist-to-height ratio for a better view";
-    if (category === "Normal" && (!Number.isFinite(ratio) || ratio < 0.5)) healthRisk = "Lower risk range";
-    if (category === "Underweight") healthRisk = "Possible underweight risk";
-    if (category === "Overweight") healthRisk = "Moderate health risk";
-    if (category === "Obese") healthRisk = "Higher health risk";
-    if (Number.isFinite(ratio) && ratio >= 0.5) healthRisk += "; waist-to-height ratio is above healthy target";
+    if (category === "Normal" && (!Number.isFinite(ratio) || ratio < 0.5)) {
+      healthRisk = "Lower risk range";
+    }
+    if (category === "Underweight") {
+      healthRisk = "Possible risks: low energy, nutrient deficiency, weaker immunity, and bone health concerns";
+    }
+    if (category === "Overweight") {
+      healthRisk = "Possible risks: higher blood pressure, insulin resistance, fatty liver, joint strain, and higher cholesterol";
+    }
+    if (category === "Obese") {
+      healthRisk = "Possible risks: type 2 diabetes, high blood pressure, heart disease, sleep apnea, fatty liver, and joint problems";
+    }
+    if (Number.isFinite(ratio) && ratio >= 0.5) {
+      healthRisk += "; waist-to-height ratio suggests higher central-body-fat risk";
+    }
+    if (bodyFrame === "large" && (category === "Overweight" || category === "Obese")) {
+      healthRisk += "; larger frame may explain some weight, but health risk still depends on waist and body-fat pattern";
+    }
 
     const rows = [
       ["BMI", bmi.toFixed(2)],
@@ -2365,11 +2437,14 @@
       ["Calories/day to add weight", caloriesGainText],
       ["Calories/day to lose weight", caloriesLossText],
       ["Body fat estimate", bodyFatText],
+      ["Physique / body type", physiqueText],
       ["Goal timeline", goalTimeline],
       ["Healthy?", goalHealthyText],
       ["Best", goalBestText],
       ["Waist-to-height ratio", Number.isFinite(ratio) ? ratio.toFixed(2) : "Not provided"],
       ["Waist-to-height status", waistStatus],
+      ["Neck circumference", Number.isFinite(neck) && neck > 0 ? neck + (unit === "us" ? " inch" : " cm") : "Not provided"],
+      ["Body frame size", bodyFrameLabel(bodyFrame)],
       ["Health risk", healthRisk],
       ["Unit", unit === "us" ? "US" : "SI"],
       ["Name", name || "Not provided"],
@@ -2390,6 +2465,7 @@
       caloriesGain: caloriesGainText,
       caloriesLoss: caloriesLossText,
       bodyFat: bodyFatText,
+      physique: physiqueText,
       goalTimeline: goalTimeline,
       name: name || "",
       resultRows: rows.map(function (row) {
@@ -3311,12 +3387,12 @@
       {
         title: "2. Health overview",
         note: "Healthy range, waist check, and risk summary.",
-        match: /Healthy weight range|Health risk|Waist-to-height ratio|Waist-to-height status/i
+        match: /Healthy weight range|Health risk|Waist-to-height ratio|Waist-to-height status|Neck circumference|Body frame size/i
       },
       {
         title: "3. Calories & body composition",
         note: "Daily calorie estimate and body fat estimate.",
-        match: /Calories\/day|Body fat estimate/i
+        match: /Calories\/day|Body fat estimate|Physique \/ body type/i
       },
       {
         title: "4. Goal planning",
@@ -5564,7 +5640,9 @@
       "timeGoalValue",
       "timeGoalUnit",
       "targetWeight",
-      "targetWaist"
+      "targetWaist",
+      "bmiNeck",
+      "bmiFrameSize"
     ].includes(el.id);
   }
 
