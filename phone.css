@@ -3065,3 +3065,15 @@ body.index-page .abacus-digit {
   font-size: 20px !important;
 }
 
+
+/* =====================================================
+   BMI: Optional body measurement inputs
+===================================================== */
+.bmi-optional-box #bmiNeck,
+.bmi-optional-box #bmiWrist,
+.bmi-optional-box #bmiShoulder,
+.bmi-optional-box #bmiHip {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
