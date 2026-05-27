@@ -4769,3 +4769,124 @@ body.calculator-report-view #calculatorReportPage .mortgage-modern-result-panel 
   visibility: visible !important;
 }
 
+
+/* =====================================================
+   EXTRA CALCULATOR PAGES
+===================================================== */
+.extra-calculator-container {
+  justify-content: center !important;
+}
+
+.extra-calculator-box {
+  max-width: 860px !important;
+}
+
+.extra-input-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px 16px !important;
+  margin: 16px 0 !important;
+  text-align: left !important;
+}
+
+.extra-input-grid label {
+  font-weight: bold !important;
+  align-self: end !important;
+}
+
+.extra-input-grid input,
+.extra-input-grid select {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.extra-page-note {
+  background: #fff4b8 !important;
+  border: 4px solid var(--black, #000) !important;
+  box-shadow: 4px 4px 0 var(--black, #000) !important;
+  padding: 10px !important;
+  font-weight: bold !important;
+}
+
+.extra-result-box {
+  margin-top: 18px !important;
+}
+
+.extra-result-card {
+  background: #d3fff9 !important;
+  border: 5px solid var(--black, #000) !important;
+  box-shadow: 6px 6px 0 var(--black, #000) !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+}
+
+.extra-result-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  background: #fff !important;
+}
+
+.extra-result-table th,
+.extra-result-table td {
+  border: 3px solid var(--black, #000) !important;
+  padding: 9px !important;
+  text-align: left !important;
+  vertical-align: top !important;
+}
+
+.extra-result-table th {
+  width: 42% !important;
+  background: #fff4b8 !important;
+}
+
+.extra-result-note {
+  margin-top: 12px !important;
+  font-weight: bold !important;
+}
+
+/* Longer new finance dropdowns: keep clean and scroll if needed */
+.clean-finance-submenu .clean-nav-submenu-panel {
+  max-height: min(72vh, 520px) !important;
+  overflow-y: auto !important;
+}
+
+.clean-utility-submenu .clean-nav-submenu-panel {
+  max-height: min(60vh, 360px) !important;
+  overflow-y: auto !important;
+}
+
+@media (max-width: 850px) {
+  .extra-input-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* =====================================================
+   INDEX: More calculators links
+===================================================== */
+.extra-home-calculators {
+  max-width: 980px !important;
+}
+
+.extra-home-link-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)) !important;
+  gap: 12px !important;
+}
+
+.extra-home-link-grid a {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 48px !important;
+  padding: 10px !important;
+  background: #fff !important;
+  color: var(--black, #000) !important;
+  border: 4px solid var(--black, #000) !important;
+  box-shadow: 4px 4px 0 var(--black, #000) !important;
+  text-decoration: none !important;
+  font-weight: bold !important;
+  text-align: center !important;
+}
+

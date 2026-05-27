@@ -1,0 +1,50 @@
+<!-- CHATGPT_EXTRA_CALCULATORS_20260528 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Loan Comparison Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Compare two loans by monthly payment and total cost.">
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=extra_calculators_20260528">
+  <link rel="stylesheet" href="pc.css?v=extra_calculators_20260528" media="screen and (min-width: 851px)">
+  <link rel="stylesheet" href="phone.css?v=extra_calculators_20260528" media="screen and (max-width: 850px)">
+  <link rel="icon" href="favicon.ico">
+</head>
+<body class="extra-calculator-page loanComparison-page" data-page="loanComparison">
+
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">↑</button>
+  <button id="menuIcon" type="button" onclick="toggleMenu()" aria-label="Open menu">MENU</button>
+  <nav id="navbar">
+    <a href="index.html">home</a>
+    <a href="basic-calculator.html">calculator</a>
+    <a href="about.html">info</a>
+  </nav>
+
+  <main class="loan-calculator-container extra-calculator-container">
+    <section class="calculator extra-calculator-box">
+      <h1>Loan Comparison Calculator</h1>
+      <p class="subtitle">Compare Loan A and Loan B side by side.</p>
+      
+      <div class="extra-input-grid">
+        <label for="loanCompareAmount">Loan amount</label>
+<input type="number" id="loanCompareAmount" placeholder="Example: 50000" inputmode="decimal">
+<label for="loanCompareRateA">Loan A rate (%)</label>
+<input type="number" id="loanCompareRateA" placeholder="Example: 5" inputmode="decimal">
+<label for="loanCompareTermA">Loan A term (years)</label>
+<input type="number" id="loanCompareTermA" placeholder="Example: 5" inputmode="decimal">
+<label for="loanCompareRateB">Loan B rate (%)</label>
+<input type="number" id="loanCompareRateB" placeholder="Example: 6" inputmode="decimal">
+<label for="loanCompareTermB">Loan B term (years)</label>
+<input type="number" id="loanCompareTermB" placeholder="Example: 7" inputmode="decimal">
+      </div>
+      <button type="button" onclick="calculateLoanComparisonExtra()" class="main-btn">compare loans</button>
+      <section id="extraCalcResult" class="extra-result-box" hidden></section>
+    </section>
+  </main>
+  <script src="script.js?v=extra_calculators_20260528"></script>
+  <script src="pc.js?v=extra_calculators_20260528"></script>
+  <script src="phone.js?v=extra_calculators_20260528"></script>
+</body>
+</html>

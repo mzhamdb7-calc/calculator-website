@@ -1,0 +1,48 @@
+<!-- CHATGPT_EXTRA_CALCULATORS_20260528 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Currency Converter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Static currency converter using your entered exchange rate.">
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=extra_calculators_20260528">
+  <link rel="stylesheet" href="pc.css?v=extra_calculators_20260528" media="screen and (min-width: 851px)">
+  <link rel="stylesheet" href="phone.css?v=extra_calculators_20260528" media="screen and (max-width: 850px)">
+  <link rel="icon" href="favicon.ico">
+</head>
+<body class="extra-calculator-page currencyConverter-page" data-page="currencyConverter">
+
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">↑</button>
+  <button id="menuIcon" type="button" onclick="toggleMenu()" aria-label="Open menu">MENU</button>
+  <nav id="navbar">
+    <a href="index.html">home</a>
+    <a href="basic-calculator.html">calculator</a>
+    <a href="about.html">info</a>
+  </nav>
+
+  <main class="loan-calculator-container extra-calculator-container">
+    <section class="calculator extra-calculator-box">
+      <h1>Currency Converter</h1>
+      <p class="subtitle">Enter the exchange rate manually for this static GitHub Pages converter.</p>
+      <p class="extra-page-note">Because this is a static site, live exchange rates need a backend/API. This page uses the rate you enter.</p>
+      <div class="extra-input-grid">
+        <label for="currencyAmount">Amount</label>
+<input type="number" id="currencyAmount" placeholder="Example: 100" inputmode="decimal">
+<label for="currencyFrom">From currency</label>
+<input type="text" id="currencyFrom" placeholder="Example: MYR">
+<label for="currencyTo">To currency</label>
+<input type="text" id="currencyTo" placeholder="Example: USD">
+<label for="currencyRate">Exchange rate</label>
+<input type="number" id="currencyRate" placeholder="Example: 0.21" inputmode="decimal">
+      </div>
+      <button type="button" onclick="calculateCurrencyConverterExtra()" class="main-btn">convert currency</button>
+      <section id="extraCalcResult" class="extra-result-box" hidden></section>
+    </section>
+  </main>
+  <script src="script.js?v=extra_calculators_20260528"></script>
+  <script src="pc.js?v=extra_calculators_20260528"></script>
+  <script src="phone.js?v=extra_calculators_20260528"></script>
+</body>
+</html>

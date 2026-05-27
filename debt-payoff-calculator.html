@@ -1,0 +1,48 @@
+<!-- CHATGPT_EXTRA_CALCULATORS_20260528 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Debt Payoff Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Estimate debt payoff time with extra payment.">
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=extra_calculators_20260528">
+  <link rel="stylesheet" href="pc.css?v=extra_calculators_20260528" media="screen and (min-width: 851px)">
+  <link rel="stylesheet" href="phone.css?v=extra_calculators_20260528" media="screen and (max-width: 850px)">
+  <link rel="icon" href="favicon.ico">
+</head>
+<body class="extra-calculator-page debtPayoff-page" data-page="debtPayoff">
+
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">↑</button>
+  <button id="menuIcon" type="button" onclick="toggleMenu()" aria-label="Open menu">MENU</button>
+  <nav id="navbar">
+    <a href="index.html">home</a>
+    <a href="basic-calculator.html">calculator</a>
+    <a href="about.html">info</a>
+  </nav>
+
+  <main class="loan-calculator-container extra-calculator-container">
+    <section class="calculator extra-calculator-box">
+      <h1>Debt Payoff Calculator</h1>
+      <p class="subtitle">Estimate debt-free time using your monthly payment.</p>
+      
+      <div class="extra-input-grid">
+        <label for="debtTotal">Total debt</label>
+<input type="number" id="debtTotal" placeholder="Example: 20000" inputmode="decimal">
+<label for="debtApr">Average APR (%)</label>
+<input type="number" id="debtApr" placeholder="Example: 12" inputmode="decimal">
+<label for="debtPayment">Normal monthly payment</label>
+<input type="number" id="debtPayment" placeholder="Example: 800" inputmode="decimal">
+<label for="debtExtra">Extra monthly payment</label>
+<input type="number" id="debtExtra" placeholder="Optional" inputmode="decimal">
+      </div>
+      <button type="button" onclick="calculateDebtPayoffExtra()" class="main-btn">calculate debt payoff</button>
+      <section id="extraCalcResult" class="extra-result-box" hidden></section>
+    </section>
+  </main>
+  <script src="script.js?v=extra_calculators_20260528"></script>
+  <script src="pc.js?v=extra_calculators_20260528"></script>
+  <script src="phone.js?v=extra_calculators_20260528"></script>
+</body>
+</html>

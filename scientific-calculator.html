@@ -1,0 +1,42 @@
+<!-- CHATGPT_EXTRA_CALCULATORS_20260528 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scientific Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Scientific calculator with common math functions.">
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=extra_calculators_20260528">
+  <link rel="stylesheet" href="pc.css?v=extra_calculators_20260528" media="screen and (min-width: 851px)">
+  <link rel="stylesheet" href="phone.css?v=extra_calculators_20260528" media="screen and (max-width: 850px)">
+  <link rel="icon" href="favicon.ico">
+</head>
+<body class="extra-calculator-page scientific-page" data-page="scientific">
+
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">↑</button>
+  <button id="menuIcon" type="button" onclick="toggleMenu()" aria-label="Open menu">MENU</button>
+  <nav id="navbar">
+    <a href="index.html">home</a>
+    <a href="basic-calculator.html">calculator</a>
+    <a href="about.html">info</a>
+  </nav>
+
+  <main class="loan-calculator-container extra-calculator-container">
+    <section class="calculator extra-calculator-box">
+      <h1>Scientific Calculator</h1>
+      <p class="subtitle">Use sin(), cos(), tan(), sqrt(), log(), ln(), pi and ^.</p>
+      
+      <div class="extra-input-grid">
+        <label for="scientificExpression">Expression</label>
+<input type="text" id="scientificExpression" placeholder="Example: sqrt(144)+sin(pi/2)">
+      </div>
+      <button type="button" onclick="calculateScientificExtra()" class="main-btn">calculate</button>
+      <section id="extraCalcResult" class="extra-result-box" hidden></section>
+    </section>
+  </main>
+  <script src="script.js?v=extra_calculators_20260528"></script>
+  <script src="pc.js?v=extra_calculators_20260528"></script>
+  <script src="phone.js?v=extra_calculators_20260528"></script>
+</body>
+</html>

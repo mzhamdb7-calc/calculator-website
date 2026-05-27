@@ -3219,7 +3219,8 @@
     const inflationRate = 3;
     const yearsFloat = months / 12;
     const inflationAdjustedTotal = principalInterestValue / Math.pow(1 + inflationRate / 100, yearsFloat);
-    const assumedRent = totalMonthly * 0.75;
+    const assumedRent = Number.isFinite(currentMonthlyRent) ? currentMonthlyRent : totalMonthly * 0.75;
+    const rentSourceText = Number.isFinite(currentMonthlyRent) ? "Entered current rent" : "Assumed comparable rent at 75% of buy monthly cost";
     const buyVsRentGap = totalMonthly - assumedRent;
     const flexiSuggestedExtra = extraMonthly > 0 ? extraMonthly : Math.min(500, Math.max(100, baseMonthly * 0.05));
     const flexiScenario = mortgagePayoffSchedule(principal, annualRate, months, flexiSuggestedExtra);
@@ -3344,9 +3345,10 @@
           '<h3>Rent buy analysis</h3>' +
           mortgageTable(["Rent vs buy item", "Estimate"], [
             ["Estimated buy monthly cost", moneyRM(totalMonthly)],
-            ["Assumed comparable rent", moneyRM(assumedRent) + "/month"],
+            ["Rent used in analysis", moneyRM(assumedRent) + "/month"],
+            ["Rent source", rentSourceText],
             ["Buy minus rent difference", moneyRM(buyVsRentGap) + "/month"],
-            ["Simple guidance", buyVsRentGap <= 0 ? "Buying is cheaper than assumed rent." : "Buying costs more monthly, but builds ownership equity."]
+            ["Simple guidance", buyVsRentGap <= 0 ? "Buying is cheaper than rent used in the analysis." : "Buying costs more monthly than rent, but may build ownership equity."]
           ], "mortgage-modern-table") +
         '</section>' +
 
@@ -6846,10 +6848,23 @@
 
   const calculators = [
     { title: "basic", url: "basic-calculator.html" },
+    { title: "scientific", url: "scientific-calculator.html" },
+    { title: "unit converter", url: "unit-converter-calculator.html" },
     { title: "age", url: "age-calculator.html" },
     { title: "bmi", url: "bmi-calculator.html" },
     { title: "mortgage", url: "mortgage-calculator.html" },
     { title: "personal loan", url: "personal-loan-calculator.html" },
+    { title: "salary", url: "salary-calculator.html" },
+    { title: "credit card payoff", url: "credit-card-payoff-calculator.html" },
+    { title: "loan comparison", url: "loan-comparison-calculator.html" },
+    { title: "debt payoff", url: "debt-payoff-calculator.html" },
+    { title: "tax", url: "tax-calculator.html" },
+    { title: "gaji penjawat awam", url: "gaji-penjawat-awam-calculator.html" },
+    { title: "inflation", url: "inflation-calculator.html" },
+    { title: "rental yield", url: "rental-yield-calculator.html" },
+    { title: "credit card interest", url: "credit-card-interest-calculator.html" },
+    { title: "currency converter", url: "currency-converter.html" },
+    { title: "fuel cost", url: "fuel-cost-calculator.html" },
     { title: "discount", url: "discount-calculator.html" },
     { title: "compound interest", url: "compound-interest-calculator.html" },
     { title: "percentage", url: "percentage-calculator.html" }
@@ -6890,8 +6905,27 @@
               '<div class="clean-nav-submenu-panel">' +
                 '<a href="mortgage-calculator.html">mortgage</a>' +
                 '<a href="personal-loan-calculator.html">personal loan</a>' +
+                '<a href="salary-calculator.html">salary</a>' +
+                '<a href="credit-card-payoff-calculator.html">credit card payoff</a>' +
+                '<a href="loan-comparison-calculator.html">loan comparison</a>' +
+                '<a href="debt-payoff-calculator.html">debt payoff</a>' +
+                '<a href="tax-calculator.html">tax</a>' +
+                '<a href="gaji-penjawat-awam-calculator.html">gaji penjawat awam</a>' +
+                '<a href="inflation-calculator.html">inflation</a>' +
+                '<a href="rental-yield-calculator.html">rental yield</a>' +
+                '<a href="credit-card-interest-calculator.html">credit card interest</a>' +
+                '<a href="currency-converter.html">currency converter</a>' +
                 '<a href="discount-calculator.html">discount</a>' +
                 '<a href="compound-interest-calculator.html">compound interest</a>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="clean-nav-submenu clean-utility-submenu">' +
+              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">utility <span aria-hidden="true">▶</span></button>' +
+              '<div class="clean-nav-submenu-panel">' +
+                '<a href="scientific-calculator.html">scientific</a>' +
+                '<a href="unit-converter-calculator.html">unit converter</a>' +
+                '<a href="fuel-cost-calculator.html">fuel cost</a>' +
               '</div>' +
             '</div>' +
 
@@ -7353,6 +7387,442 @@
       setTimeout(cleanupAllResults, 100);
       setTimeout(cleanupAllResults, 800);
     });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+
+
+/* =====================================================
+   EXTRA CALCULATORS PACK
+   - Salary, credit card payoff, loan comparison, debt payoff,
+     tax estimator, gaji penjawat awam, inflation, rental yield,
+     fuel cost, credit-card interest, scientific, unit, currency.
+===================================================== */
+(function () {
+  "use strict";
+
+  function $(id) {
+    return document.getElementById(id);
+  }
+
+  function n(id) {
+    const el = $(id);
+    if (!el) return NaN;
+    const value = String(el.value || "").replace(/,/g, "").trim();
+    return value === "" ? NaN : Number(value);
+  }
+
+  function val(id) {
+    const el = $(id);
+    return el ? String(el.value || "").trim() : "";
+  }
+
+  function money(value, prefix) {
+    const p = prefix || "RM";
+    if (!Number.isFinite(value)) return "Not available";
+    return p + " " + value.toLocaleString("en-US", { maximumFractionDigits: 2 });
+  }
+
+  function num(value, digits) {
+    if (!Number.isFinite(value)) return "Not available";
+    return value.toLocaleString("en-US", { maximumFractionDigits: digits == null ? 2 : digits });
+  }
+
+  function getResultBox() {
+    return $("extraCalcResult");
+  }
+
+  function table(title, rows) {
+    return (
+      '<div class="extra-result-card">' +
+        '<h2>' + title + '</h2>' +
+        '<table class="extra-result-table"><tbody>' +
+        rows.map(function (row) {
+          return '<tr><th>' + row[0] + '</th><td>' + row[1] + '</td></tr>';
+        }).join("") +
+        '</tbody></table>' +
+      '</div>'
+    );
+  }
+
+  function show(title, rows, note) {
+    const box = getResultBox();
+    if (!box) return;
+    box.innerHTML = table(title, rows) + (note ? '<p class="extra-result-note">' + note + '</p>' : "");
+    box.hidden = false;
+  }
+
+  function loanPayment(principal, annualRate, months) {
+    if (!Number.isFinite(principal) || !Number.isFinite(annualRate) || !Number.isFinite(months) || principal <= 0 || months <= 0) return NaN;
+    const r = annualRate / 100 / 12;
+    if (r === 0) return principal / months;
+    return principal * r / (1 - Math.pow(1 + r, -months));
+  }
+
+  window.calculateSalaryExtra = function () {
+    const gross = n("salaryGross");
+    const epfRate = n("salaryEpfRate");
+    const socso = n("salarySocso");
+    const tax = n("salaryTax");
+    const other = n("salaryOther");
+    if (!Number.isFinite(gross) || gross <= 0) return;
+
+    const epf = gross * ((Number.isFinite(epfRate) ? epfRate : 11) / 100);
+    const totalDeduct = epf + (Number.isFinite(socso) ? socso : 0) + (Number.isFinite(tax) ? tax : 0) + (Number.isFinite(other) ? other : 0);
+    const net = gross - totalDeduct;
+
+    show("Salary result", [
+      ["Gross monthly salary", money(gross)],
+      ["EPF deduction", money(epf)],
+      ["Other deductions", money(totalDeduct - epf)],
+      ["Net monthly salary", money(net)],
+      ["Estimated net yearly", money(net * 12)]
+    ]);
+  };
+
+  window.calculateCreditCardPayoffExtra = function () {
+    const balance = n("ccBalance");
+    const apr = n("ccApr");
+    const payment = n("ccPayment");
+    if (!Number.isFinite(balance) || !Number.isFinite(apr) || !Number.isFinite(payment) || balance <= 0 || payment <= 0) return;
+
+    let bal = balance;
+    let totalInterest = 0;
+    let months = 0;
+    const monthlyRate = apr / 100 / 12;
+
+    while (bal > 0.01 && months < 1200) {
+      const interest = bal * monthlyRate;
+      totalInterest += interest;
+      bal += interest;
+
+      if (payment <= interest && monthlyRate > 0) {
+        show("Credit card payoff result", [
+          ["Balance", money(balance)],
+          ["Monthly interest", money(interest)],
+          ["Monthly payment", money(payment)],
+          ["Status", "Payment is too low to reduce the balance"]
+        ], "Increase the monthly payment to pay off the card.");
+        return;
+      }
+
+      bal -= payment;
+      months += 1;
+    }
+
+    show("Credit card payoff result", [
+      ["Months to pay off", months + " months"],
+      ["Years to pay off", (months / 12).toFixed(1) + " years"],
+      ["Total interest", money(totalInterest)],
+      ["Total paid", money(balance + totalInterest)]
+    ]);
+  };
+
+  window.calculateLoanComparisonExtra = function () {
+    const amount = n("loanCompareAmount");
+    const rateA = n("loanCompareRateA");
+    const termA = n("loanCompareTermA");
+    const rateB = n("loanCompareRateB");
+    const termB = n("loanCompareTermB");
+    if (![amount, rateA, termA, rateB, termB].every(Number.isFinite)) return;
+
+    const monthsA = termA * 12;
+    const monthsB = termB * 12;
+    const payA = loanPayment(amount, rateA, monthsA);
+    const payB = loanPayment(amount, rateB, monthsB);
+    const totalA = payA * monthsA;
+    const totalB = payB * monthsB;
+
+    show("Loan comparison result", [
+      ["Loan A monthly payment", money(payA)],
+      ["Loan A total interest", money(totalA - amount)],
+      ["Loan A total paid", money(totalA)],
+      ["Loan B monthly payment", money(payB)],
+      ["Loan B total interest", money(totalB - amount)],
+      ["Loan B total paid", money(totalB)],
+      ["Lower total cost", totalA <= totalB ? "Loan A" : "Loan B"],
+      ["Difference", money(Math.abs(totalA - totalB))]
+    ]);
+  };
+
+  window.calculateDebtPayoffExtra = function () {
+    const debt = n("debtTotal");
+    const apr = n("debtApr");
+    const payment = n("debtPayment");
+    const extra = n("debtExtra");
+    if (![debt, apr, payment].every(Number.isFinite) || debt <= 0 || payment <= 0) return;
+
+    const monthlyPayment = payment + (Number.isFinite(extra) ? extra : 0);
+    let bal = debt;
+    let totalInterest = 0;
+    let months = 0;
+    const rate = apr / 100 / 12;
+
+    while (bal > 0.01 && months < 1200) {
+      const interest = bal * rate;
+      totalInterest += interest;
+      bal += interest;
+
+      if (monthlyPayment <= interest && rate > 0) {
+        show("Debt payoff result", [
+          ["Monthly interest", money(interest)],
+          ["Monthly payment", money(monthlyPayment)],
+          ["Status", "Payment is too low to reduce debt"]
+        ]);
+        return;
+      }
+
+      bal -= monthlyPayment;
+      months += 1;
+    }
+
+    show("Debt payoff result", [
+      ["Total debt", money(debt)],
+      ["Monthly payment used", money(monthlyPayment)],
+      ["Months to debt free", months + " months"],
+      ["Years to debt free", (months / 12).toFixed(1) + " years"],
+      ["Total interest", money(totalInterest)]
+    ]);
+  };
+
+  window.calculateTaxExtra = function () {
+    const income = n("taxAnnualIncome");
+    const relief = n("taxRelief");
+    const rate = n("taxRate");
+    if (!Number.isFinite(income) || income <= 0) return;
+
+    const taxable = Math.max(0, income - (Number.isFinite(relief) ? relief : 0));
+    const tax = taxable * ((Number.isFinite(rate) ? rate : 10) / 100);
+
+    show("Tax estimator result", [
+      ["Annual income", money(income)],
+      ["Relief / deduction", money(Number.isFinite(relief) ? relief : 0)],
+      ["Estimated taxable income", money(taxable)],
+      ["Tax rate used", (Number.isFinite(rate) ? rate : 10).toFixed(2) + "%"],
+      ["Estimated tax", money(tax)],
+      ["Estimated monthly tax", money(tax / 12)]
+    ], "This is a simple estimator using your entered rate. It is not official tax advice.");
+  };
+
+  window.calculateGajiPenjawatAwamExtra = function () {
+    const basic = n("gajiBasic");
+    const fixed = n("gajiFixedAllowance");
+    const cola = n("gajiCola");
+    const other = n("gajiOtherAllowance");
+    const deductions = n("gajiDeductions");
+    if (!Number.isFinite(basic) || basic <= 0) return;
+
+    const allowance = (Number.isFinite(fixed) ? fixed : 0) + (Number.isFinite(cola) ? cola : 0) + (Number.isFinite(other) ? other : 0);
+    const gross = basic + allowance;
+    const net = gross - (Number.isFinite(deductions) ? deductions : 0);
+
+    show("Gaji penjawat awam result", [
+      ["Gaji pokok", money(basic)],
+      ["Jumlah elaun", money(allowance)],
+      ["Gaji kasar", money(gross)],
+      ["Potongan", money(Number.isFinite(deductions) ? deductions : 0)],
+      ["Anggaran gaji bersih", money(net)]
+    ], "Masukkan nilai elaun dan potongan sendiri mengikut slip gaji anda.");
+  };
+
+  window.calculateInflationExtra = function () {
+    const amount = n("inflationAmount");
+    const rate = n("inflationRate");
+    const years = n("inflationYears");
+    if (![amount, rate, years].every(Number.isFinite)) return;
+
+    const future = amount * Math.pow(1 + rate / 100, years);
+    const loss = amount / Math.pow(1 + rate / 100, years);
+
+    show("Inflation result", [
+      ["Today amount", money(amount)],
+      ["Inflation rate", rate.toFixed(2) + "%"],
+      ["Years", years],
+      ["Future cost estimate", money(future)],
+      ["Today buying power after period", money(loss)]
+    ]);
+  };
+
+  window.calculateRentalYieldExtra = function () {
+    const price = n("rentalPropertyPrice");
+    const rent = n("rentalMonthlyRent");
+    const expenses = n("rentalAnnualExpenses");
+    if (!Number.isFinite(price) || !Number.isFinite(rent) || price <= 0) return;
+
+    const annualRent = rent * 12;
+    const grossYield = annualRent / price * 100;
+    const netYield = (annualRent - (Number.isFinite(expenses) ? expenses : 0)) / price * 100;
+
+    show("Rental yield result", [
+      ["Property price", money(price)],
+      ["Annual rent", money(annualRent)],
+      ["Annual expenses", money(Number.isFinite(expenses) ? expenses : 0)],
+      ["Gross rental yield", grossYield.toFixed(2) + "%"],
+      ["Net rental yield", netYield.toFixed(2) + "%"]
+    ]);
+  };
+
+  window.calculateFuelCostExtra = function () {
+    const distance = n("fuelDistance");
+    const efficiency = n("fuelEfficiency");
+    const price = n("fuelPrice");
+    const people = n("fuelPeople");
+    if (![distance, efficiency, price].every(Number.isFinite) || efficiency <= 0) return;
+
+    const liters = distance / 100 * efficiency;
+    const total = liters * price;
+    const perPerson = total / (Number.isFinite(people) && people > 0 ? people : 1);
+
+    show("Fuel cost result", [
+      ["Distance", num(distance) + " km"],
+      ["Fuel needed", num(liters) + " L"],
+      ["Total fuel cost", money(total)],
+      ["Cost per person", money(perPerson)]
+    ]);
+  };
+
+  window.calculateCreditCardInterestExtra = function () {
+    const balance = n("ccInterestBalance");
+    const apr = n("ccInterestApr");
+    const days = n("ccInterestDays");
+    const payment = n("ccInterestPayment");
+    if (![balance, apr, days].every(Number.isFinite)) return;
+
+    const afterPayment = Math.max(0, balance - (Number.isFinite(payment) ? payment : 0));
+    const interest = afterPayment * (apr / 100) * (days / 365);
+
+    show("Credit card interest result", [
+      ["Starting balance", money(balance)],
+      ["Payment", money(Number.isFinite(payment) ? payment : 0)],
+      ["Balance used", money(afterPayment)],
+      ["APR", apr.toFixed(2) + "%"],
+      ["Days", days],
+      ["Estimated interest", money(interest)]
+    ]);
+  };
+
+  window.calculateScientificExtra = function () {
+    const expression = val("scientificExpression");
+    if (!expression) return;
+
+    const safe = expression
+      .replace(/\^/g, "**")
+      .replace(/\bsin\(/gi, "Math.sin(")
+      .replace(/\bcos\(/gi, "Math.cos(")
+      .replace(/\btan\(/gi, "Math.tan(")
+      .replace(/\bsqrt\(/gi, "Math.sqrt(")
+      .replace(/\blog\(/gi, "Math.log10(")
+      .replace(/\bln\(/gi, "Math.log(")
+      .replace(/\bpi\b/gi, "Math.PI")
+      .replace(/\be\b/g, "Math.E");
+
+    if (!/^[0-9+\-*/().,\s*MathPIEqrtcosinlag]+$/i.test(safe)) {
+      show("Scientific result", [["Error", "Expression contains unsupported characters"]]);
+      return;
+    }
+
+    try {
+      const result = Function('"use strict"; return (' + safe + ');')();
+      show("Scientific result", [
+        ["Expression", expression],
+        ["Result", num(Number(result), 10)]
+      ]);
+    } catch (error) {
+      show("Scientific result", [["Error", "Cannot calculate this expression"]]);
+    }
+  };
+
+  const unitFactors = {
+    length: { m: 1, km: 1000, cm: 0.01, mm: 0.001, mile: 1609.344, yard: 0.9144, foot: 0.3048, inch: 0.0254 },
+    weight: { kg: 1, g: 0.001, lb: 0.45359237, oz: 0.0283495 },
+    volume: { liter: 1, ml: 0.001, gallon: 3.78541, cup: 0.236588 }
+  };
+
+  function convertTemperature(value, from, to) {
+    let c = value;
+    if (from === "f") c = (value - 32) * 5 / 9;
+    if (from === "k") c = value - 273.15;
+    if (to === "f") return c * 9 / 5 + 32;
+    if (to === "k") return c + 273.15;
+    return c;
+  }
+
+  window.calculateUnitConverterExtra = function () {
+    const type = val("unitType");
+    const value = n("unitValue");
+    const from = val("unitFrom");
+    const to = val("unitTo");
+    if (!Number.isFinite(value) || !type || !from || !to) return;
+
+    let result;
+    if (type === "temperature") {
+      result = convertTemperature(value, from, to);
+    } else {
+      const factors = unitFactors[type] || {};
+      result = value * factors[from] / factors[to];
+    }
+
+    show("Unit converter result", [
+      ["Value", num(value) + " " + from],
+      ["Converted", num(result, 6) + " " + to]
+    ]);
+  };
+
+  window.calculateCurrencyConverterExtra = function () {
+    const amount = n("currencyAmount");
+    const from = val("currencyFrom").toUpperCase() || "FROM";
+    const to = val("currencyTo").toUpperCase() || "TO";
+    const rate = n("currencyRate");
+    if (!Number.isFinite(amount) || !Number.isFinite(rate)) return;
+
+    show("Currency converter result", [
+      ["Amount", num(amount) + " " + from],
+      ["Exchange rate used", "1 " + from + " = " + num(rate, 6) + " " + to],
+      ["Converted amount", num(amount * rate, 2) + " " + to]
+    ], "This static GitHub Pages converter uses the exchange rate you enter manually.");
+  };
+
+  const pageMap = {
+    salary: window.calculateSalaryExtra,
+    creditCardPayoff: window.calculateCreditCardPayoffExtra,
+    loanComparison: window.calculateLoanComparisonExtra,
+    debtPayoff: window.calculateDebtPayoffExtra,
+    tax: window.calculateTaxExtra,
+    gajiPenjawatAwam: window.calculateGajiPenjawatAwamExtra,
+    inflation: window.calculateInflationExtra,
+    rentalYield: window.calculateRentalYieldExtra,
+    fuelCost: window.calculateFuelCostExtra,
+    creditCardInterest: window.calculateCreditCardInterestExtra,
+    scientific: window.calculateScientificExtra,
+    unitConverter: window.calculateUnitConverterExtra,
+    currencyConverter: window.calculateCurrencyConverterExtra
+  };
+
+  function pageType() {
+    return document.body ? document.body.dataset.page : "";
+  }
+
+  function start() {
+    const fn = pageMap[pageType()];
+    if (!fn) return;
+
+    let timer = null;
+    document.addEventListener("input", function (event) {
+      if (!event.target.closest(".extra-calculator-box")) return;
+      clearTimeout(timer);
+      timer = setTimeout(fn, 2000);
+    }, true);
+
+    document.addEventListener("change", function (event) {
+      if (!event.target.closest(".extra-calculator-box")) return;
+      clearTimeout(timer);
+      timer = setTimeout(fn, 400);
+    }, true);
   }
 
   if (document.readyState === "loading") {
