@@ -1470,3 +1470,104 @@ body.mortgage-page .early-settlement-content select {
   }
 }
 
+
+/* =====================================================
+   MORTGAGE ONLY: Fit input boxes to calculator inner width
+   - Does not change the overall calculator box size
+   - Stretches mortgage input boxes to remove empty side space
+===================================================== */
+body.loan-page .calculator .mortgage-two-column-input-layout,
+body.mortgage-page .calculator .mortgage-two-column-input-layout {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box !important;
+  justify-self: stretch !important;
+  align-self: stretch !important;
+}
+
+body.loan-page .calculator .mortgage-left-input-column,
+body.loan-page .calculator .mortgage-right-input-column,
+body.mortgage-page .calculator .mortgage-left-input-column,
+body.mortgage-page .calculator .mortgage-right-input-column {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  justify-self: stretch !important;
+}
+
+body.loan-page .calculator .mortgage-left-input-column > *,
+body.loan-page .calculator .mortgage-right-input-column > *,
+body.mortgage-page .calculator .mortgage-left-input-column > *,
+body.mortgage-page .calculator .mortgage-right-input-column > * {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  justify-self: stretch !important;
+}
+
+body.loan-page .calculator .mortgage-input-box,
+body.loan-page .calculator .mortgage-home-box,
+body.loan-page .calculator .mortgage-loan-box,
+body.loan-page .calculator .mortgage-home-details-box,
+body.loan-page .calculator .mortgage-loan-details-box,
+body.loan-page .calculator .optional-mortgage-costs,
+body.loan-page .calculator .early-settlement-box,
+body.mortgage-page .calculator .mortgage-input-box,
+body.mortgage-page .calculator .mortgage-home-box,
+body.mortgage-page .calculator .mortgage-loan-box,
+body.mortgage-page .calculator .mortgage-home-details-box,
+body.mortgage-page .calculator .mortgage-loan-details-box,
+body.mortgage-page .calculator .optional-mortgage-costs,
+body.mortgage-page .calculator .early-settlement-box {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body.loan-page .calculator .mortgage-input-box input,
+body.loan-page .calculator .mortgage-input-box select,
+body.loan-page .calculator .mortgage-home-box input,
+body.loan-page .calculator .mortgage-home-box select,
+body.loan-page .calculator .mortgage-loan-box input,
+body.loan-page .calculator .mortgage-loan-box select,
+body.loan-page .calculator .optional-mortgage-costs input,
+body.loan-page .calculator .optional-mortgage-costs select,
+body.loan-page .calculator .early-settlement-box input,
+body.loan-page .calculator .early-settlement-box select,
+body.mortgage-page .calculator .mortgage-input-box input,
+body.mortgage-page .calculator .mortgage-input-box select,
+body.mortgage-page .calculator .mortgage-home-box input,
+body.mortgage-page .calculator .mortgage-home-box select,
+body.mortgage-page .calculator .mortgage-loan-box input,
+body.mortgage-page .calculator .mortgage-loan-box select,
+body.mortgage-page .calculator .optional-mortgage-costs input,
+body.mortgage-page .calculator .optional-mortgage-costs select,
+body.mortgage-page .calculator .early-settlement-box input,
+body.mortgage-page .calculator .early-settlement-box select {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+@media (min-width: 851px) {
+  body.loan-page .calculator .mortgage-two-column-input-layout,
+  body.mortgage-page .calculator .mortgage-two-column-input-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    column-gap: 18px !important;
+  }
+}
+
+@media (max-width: 850px) {
+  body.loan-page .calculator .mortgage-two-column-input-layout,
+  body.mortgage-page .calculator .mortgage-two-column-input-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+
