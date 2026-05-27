@@ -5735,3 +5735,88 @@
   }
 })();
 
+
+/* =====================================================
+   MORTGAGE ONLY: Force real width classes/inline cleanup
+   - Removes old narrow inline widths from mortgage boxes only
+===================================================== */
+(function () {
+  "use strict";
+
+  function isMortgagePage() {
+    const title = String(document.querySelector("h1")?.textContent || "").toLowerCase();
+    const path = window.location.pathname.toLowerCase();
+
+    return (
+      path.includes("mortgage") ||
+      title.includes("mortgage") ||
+      !!document.getElementById("loanResult") ||
+      !!document.getElementById("loanHistoryList") ||
+      !!document.querySelector(".mortgage-two-column-input-layout")
+    );
+  }
+
+  function cleanMortgageWidths() {
+    if (!isMortgagePage()) return;
+
+    document.body.classList.add("mortgage-page");
+    document.body.classList.add("loan-page");
+
+    const selector = [
+      ".mortgage-two-column-input-layout",
+      ".mortgage-left-input-column",
+      ".mortgage-right-input-column",
+      ".mortgage-input-box",
+      ".mortgage-home-box",
+      ".mortgage-loan-box",
+      ".mortgage-home-details-box",
+      ".mortgage-loan-details-box",
+      ".optional-mortgage-costs",
+      ".early-settlement-box",
+      ".optional-mortgage-toggle",
+      ".early-settlement-toggle",
+      ".optional-mortgage-content",
+      ".early-settlement-content"
+    ].join(",");
+
+    document.querySelectorAll(selector).forEach(function (el) {
+      el.style.setProperty("width", "100%", "important");
+      el.style.setProperty("max-width", "none", "important");
+      el.style.setProperty("min-width", "0", "important");
+      el.style.setProperty("box-sizing", "border-box", "important");
+    });
+
+    document
+      .querySelectorAll(
+        ".mortgage-input-box input, .mortgage-input-box select, " +
+        ".mortgage-home-box input, .mortgage-home-box select, " +
+        ".mortgage-loan-box input, .mortgage-loan-box select, " +
+        ".mortgage-home-details-box input, .mortgage-home-details-box select, " +
+        ".mortgage-loan-details-box input, .mortgage-loan-details-box select, " +
+        ".optional-mortgage-content input, .optional-mortgage-content select, " +
+        ".early-settlement-content input, .early-settlement-content select"
+      )
+      .forEach(function (el) {
+        el.style.setProperty("width", "100%", "important");
+        el.style.setProperty("max-width", "100%", "important");
+        el.style.setProperty("min-width", "0", "important");
+        el.style.setProperty("box-sizing", "border-box", "important");
+      });
+  }
+
+  function start() {
+    cleanMortgageWidths();
+
+    setTimeout(cleanMortgageWidths, 100);
+    setTimeout(cleanMortgageWidths, 400);
+    setTimeout(cleanMortgageWidths, 900);
+    setTimeout(cleanMortgageWidths, 1800);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+
