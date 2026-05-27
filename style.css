@@ -5805,3 +5805,258 @@ body.calculator-report-view #calculatorReportPage .mortgage-modern-result-panel 
   }
 }
 
+
+/* =====================================================
+   OLD CALCULATORS: replace history sidebar with group sidebar
+===================================================== */
+.old-calculator-groupbar,
+.extra-side-box {
+  min-width: 240px !important;
+}
+
+.old-calculator-groupbar .loan-history-top,
+.extra-side-box .loan-history-top {
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.old-calculator-groupbar .clear-btn,
+.old-calculator-groupbar ul,
+.old-calculator-groupbar [id$="HistoryList"] {
+  display: none !important;
+}
+
+.extra-side-links {
+  display: grid !important;
+  gap: 10px !important;
+  margin-top: 10px !important;
+}
+
+.extra-side-links a {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 42px !important;
+  padding: 8px 10px !important;
+  background: #fff !important;
+  color: var(--black, #000) !important;
+  border: 4px solid var(--black, #000) !important;
+  box-shadow: 4px 4px 0 var(--black, #000) !important;
+  text-decoration: none !important;
+  font-weight: bold !important;
+  line-height: 1.15 !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+}
+
+.extra-side-links a.current-extra-link {
+  background: #d3fff9 !important;
+}
+
+.extra-side-links a:hover {
+  background: #fff4b8 !important;
+  transform: translate(1px, 1px) !important;
+  box-shadow: 3px 3px 0 var(--black, #000) !important;
+}
+
+/* =====================================================
+   SIDE MENU CLEAN FINAL
+   - Remove collapsed icon/text artifacts shown in screenshot
+   - Open menu is a properly sized full panel
+   - All dropdowns fly out to the left
+===================================================== */
+@media (min-width: 851px) {
+  /* When MENU opens, show the actual menu panel, not the broken compact icon list */
+  html body #navbar.clean-navbar.open,
+  html body.menu-scrolled #navbar.clean-navbar.open {
+    position: fixed !important;
+    top: 62px !important;
+    right: 18px !important;
+    left: auto !important;
+    width: 290px !important;
+    min-width: 290px !important;
+    max-width: 290px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    z-index: 99999999 !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-inner,
+  html body.menu-scrolled #navbar.clean-navbar.open .clean-nav-inner {
+    width: 290px !important;
+    min-width: 290px !important;
+    max-width: 290px !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    align-items: stretch !important;
+    margin-left: auto !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Remove artifact pseudo-icons: home⌂, calculator◀, info◀, chat bubble */
+  html body #navbar.clean-navbar.open .clean-nav-link::after,
+  html body #navbar.clean-navbar.open .clean-chat-link::after,
+  html body #navbar.clean-navbar.open .clean-nav-link[href="index.html"]::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  /* Keep only proper dropdown arrows for dropdown buttons */
+  html body #navbar.clean-navbar.open .clean-nav-button::after {
+    content: "◀" !important;
+    display: inline-block !important;
+    margin-left: 8px !important;
+    font-size: 18px !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-dropdown:hover > .clean-nav-button::after,
+  html body #navbar.clean-navbar.open .clean-nav-dropdown:focus-within > .clean-nav-button::after,
+  html body #navbar.clean-navbar.open .clean-nav-dropdown.is-open > .clean-nav-button::after {
+    content: "▶" !important;
+  }
+
+  /* Full readable side menu items */
+  html body #navbar.clean-navbar.open .clean-nav-link,
+  html body #navbar.clean-navbar.open .clean-nav-button {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 52px !important;
+    height: auto !important;
+    padding: 8px 12px !important;
+    font-size: 18px !important;
+    line-height: 1.15 !important;
+    justify-content: center !important;
+    text-align: center !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    overflow: visible !important;
+    border-right: none !important;
+    border-bottom: 4px solid var(--black, #000) !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-search {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 52px !important;
+    height: 52px !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 50px !important;
+    overflow: visible !important;
+    border-bottom: none !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-search-input {
+    display: block !important;
+    min-width: 0 !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    padding: 0 10px !important;
+    font-size: 15px !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-search-button {
+    width: 50px !important;
+    min-width: 50px !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    border-left: 4px solid var(--black, #000) !important;
+  }
+
+  /* Side menu dropdown panels fly LEFT, never downward */
+  html body #navbar.clean-navbar.open .clean-nav-dropdown {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-dropdown > .clean-nav-dropdown-panel,
+  html body.menu-scrolled #navbar.clean-navbar.open .clean-nav-dropdown > .clean-nav-dropdown-panel {
+    position: absolute !important;
+    top: 0 !important;
+    right: calc(100% + 8px) !important;
+    left: auto !important;
+    width: 255px !important;
+    min-width: 255px !important;
+    max-width: 255px !important;
+    display: none !important;
+    grid-template-columns: 1fr !important;
+    background: var(--white, #fff) !important;
+    border: 4px solid var(--black, #000) !important;
+    box-shadow: 6px 6px 0 var(--black, #000) !important;
+    z-index: 999999999 !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-dropdown:hover > .clean-nav-dropdown-panel,
+  html body #navbar.clean-navbar.open .clean-nav-dropdown:focus-within > .clean-nav-dropdown-panel,
+  html body #navbar.clean-navbar.open .clean-nav-dropdown.is-open > .clean-nav-dropdown-panel {
+    display: grid !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-submenu {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-submenu > .clean-nav-submenu-panel {
+    position: absolute !important;
+    top: 0 !important;
+    right: calc(100% + 8px) !important;
+    left: auto !important;
+    width: 245px !important;
+    min-width: 245px !important;
+    max-width: 245px !important;
+    display: none !important;
+    grid-template-columns: 1fr !important;
+    background: var(--white, #fff) !important;
+    border: 4px solid var(--black, #000) !important;
+    box-shadow: 6px 6px 0 var(--black, #000) !important;
+    z-index: 999999999 !important;
+    overflow-y: auto !important;
+    max-height: min(72vh, 480px) !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-submenu:hover > .clean-nav-submenu-panel,
+  html body #navbar.clean-navbar.open .clean-nav-submenu:focus-within > .clean-nav-submenu-panel,
+  html body #navbar.clean-navbar.open .clean-nav-submenu.is-open > .clean-nav-submenu-panel {
+    display: grid !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-dropdown-panel a,
+  html body #navbar.clean-navbar.open .clean-nav-submenu-button,
+  html body #navbar.clean-navbar.open .clean-nav-submenu-panel a {
+    min-height: 40px !important;
+    height: auto !important;
+    padding: 7px 10px !important;
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+    text-align: left !important;
+    justify-content: flex-start !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Side menu search results fly left too */
+  html body #navbar.clean-navbar.open .clean-nav-search-results {
+    position: absolute !important;
+    top: 0 !important;
+    right: calc(100% + 8px) !important;
+    left: auto !important;
+    width: 255px !important;
+    min-width: 255px !important;
+    max-width: 255px !important;
+  }
+}
+
