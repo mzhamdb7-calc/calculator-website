@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <title>Chatting | Cartoon Calculator</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Chat, leave reviews, discuss calculator ideas, and interact using a local browser message board.">
+
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=info_pages_20260527">
+  <link rel="stylesheet" href="pc.css?v=info_pages_20260527" media="screen and (min-width: 851px)">
+  <link rel="stylesheet" href="phone.css?v=info_pages_20260527" media="screen and (max-width: 850px)">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body class="info-page chatting-page" data-page="chatting">
+
+  <!-- Go Up Button -->
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
+    ↑
+  </button>
+
+  <!-- MENU Button shown after scroll on PC -->
+  <button id="menuIcon" type="button" onclick="toggleMenu()" aria-label="Open menu">
+    MENU
+  </button>
+
+  <!-- Navbar -->
+  <nav id="navbar">
+
+    <a href="index.html">home</a>
+
+    <div class="dropdown">
+      <button type="button" class="dropbtn" aria-expanded="false">
+        calculator
+      </button>
+
+      <div class="dropdown-content">
+
+        <a href="basic-calculator.html">basic</a>
+
+        <details class="nav-group">
+          <summary>health</summary>
+
+          <div class="nav-group-links">
+            <a href="age-calculator.html">age</a>
+            <a href="bmi-calculator.html">bmi</a>
+          </div>
+        </details>
+
+        <details class="nav-group">
+          <summary>finance</summary>
+
+          <div class="nav-group-links">
+            <a href="mortgage-calculator.html">mortgage</a>
+            <a href="personal-loan-calculator.html">personal loan</a>
+            <a href="discount-calculator.html">discount</a>
+            <a href="compound-interest-calculator.html">compound interest</a>
+          </div>
+        </details>
+
+        <a href="percentage-calculator.html">percentage</a>
+
+      </div>
+    </div>
+
+    <div class="dropdown about-dropdown">
+      <button type="button" class="dropbtn" aria-expanded="false">
+        info
+      </button>
+
+      <div class="dropdown-content about-dropdown-content">
+        <a href="about.html">about</a>
+        <a href="FAQS.html">FAQs</a>
+        <a href="chatting.html">chatting</a>
+        <a href="privacy-policy.html">privacy policy</a>
+        <a href="contact.html">contact</a>
+      </div>
+    </div>
+
+  </nav>
+
+  <main class="calculator-box info-page-box">
+    <h1>Chatting</h1>
+
+    <section class="info-content-card chat-intro-card">
+      <h2>Community chat & reviews</h2>
+      <p>Use this page to write notes, reviews, suggestions, or discussion messages. This static version stores messages in your browser only.</p>
+    </section>
+
+    <section class="info-content-card chat-form-card">
+      <h2>Leave a message</h2>
+
+      <form id="localChatForm" class="local-chat-form">
+        <label for="chatName">Name</label>
+        <input id="chatName" name="chatName" type="text" placeholder="Your name">
+
+        <label for="chatType">Message type</label>
+        <select id="chatType" name="chatType">
+          <option value="Chat">Chat</option>
+          <option value="Review">Review</option>
+          <option value="Suggestion">Suggestion</option>
+          <option value="Discussion">Discussion</option>
+        </select>
+
+        <label for="chatMessage">Message</label>
+        <textarea id="chatMessage" name="chatMessage" rows="5" placeholder="Write your message..." required></textarea>
+
+        <div class="local-chat-actions">
+          <button type="submit" class="main-btn">post message</button>
+          <button type="button" id="clearLocalChat" class="main-btn secondary-btn">clear messages</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="info-content-card chat-board-card">
+      <h2>Messages</h2>
+      <div id="localChatBoard" class="local-chat-board">
+        <p class="empty-chat-message">No messages yet.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const form = document.getElementById("localChatForm");
+      const board = document.getElementById("localChatBoard");
+      const clearBtn = document.getElementById("clearLocalChat");
+      const storageKey = "cartoonCalculatorLocalChatMessages";
+
+      function escapeText(value) {
+        return String(value || "").replace(/[&<>"']/g, function (ch) {
+          return {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+          }[ch];
+        });
+      }
+
+      function getMessages() {
+        try {
+          return JSON.parse(localStorage.getItem(storageKey) || "[]");
+        } catch {
+          return [];
+        }
+      }
+
+      function saveMessages(messages) {
+        localStorage.setItem(storageKey, JSON.stringify(messages));
+      }
+
+      function renderMessages() {
+        const messages = getMessages();
+
+        if (!messages.length) {
+          board.innerHTML = '<p class="empty-chat-message">No messages yet.</p>';
+          return;
+        }
+
+        board.innerHTML = messages.map(function (msg) {
+          return (
+            '<article class="local-chat-message">' +
+              '<div class="local-chat-message-top">' +
+                '<strong>' + escapeText(msg.name || "Guest") + '</strong>' +
+                '<span>' + escapeText(msg.type || "Chat") + '</span>' +
+              '</div>' +
+              '<p>' + escapeText(msg.message || "") + '</p>' +
+              '<small>' + escapeText(msg.time || "") + '</small>' +
+            '</article>'
+          );
+        }).join("");
+      }
+
+      if (form) {
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const name = document.getElementById("chatName").value.trim() || "Guest";
+          const type = document.getElementById("chatType").value;
+          const message = document.getElementById("chatMessage").value.trim();
+
+          if (!message) return;
+
+          const messages = getMessages();
+          messages.unshift({
+            name: name,
+            type: type,
+            message: message,
+            time: new Date().toLocaleString()
+          });
+
+          saveMessages(messages.slice(0, 50));
+          form.reset();
+          renderMessages();
+        });
+      }
+
+      if (clearBtn) {
+        clearBtn.addEventListener("click", function () {
+          if (!confirm("Clear all messages saved in this browser?")) return;
+          localStorage.removeItem(storageKey);
+          renderMessages();
+        });
+      }
+
+      renderMessages();
+    })();
+  </script>
+
+  <script src="script.js?v=info_pages_20260527"></script>
+  <script src="pc.js?v=info_pages_20260527"></script>
+  <script src="phone.js?v=info_pages_20260527"></script>
+</body>
+</html>

@@ -2433,3 +2433,87 @@ body.age-page #ageReportOutput .age-result-action-btn:hover {
   font-weight: normal !important;
 }
 
+
+/* =====================================================
+   INFO PAGES: FAQs + Chatting
+===================================================== */
+.info-page-box {
+  max-width: 980px !important;
+}
+
+.info-content-card {
+  width: 100% !important;
+  margin: 18px 0 !important;
+  padding: 18px !important;
+  background: #fff4b8 !important;
+  border: 5px solid var(--black) !important;
+  box-shadow: 6px 6px 0 var(--black) !important;
+  box-sizing: border-box !important;
+}
+
+.info-content-card:nth-of-type(2n) {
+  background: #d3fff9 !important;
+}
+
+.site-faq-list,
+.local-chat-board,
+.local-chat-form {
+  display: grid !important;
+  gap: 12px !important;
+}
+
+.site-faq-item,
+.local-chat-message {
+  background: #fff !important;
+  border: 4px solid var(--black) !important;
+  box-shadow: 4px 4px 0 var(--black) !important;
+  padding: 12px !important;
+  box-sizing: border-box !important;
+}
+
+.site-faq-item summary {
+  cursor: pointer !important;
+  font-weight: bold !important;
+}
+
+.local-chat-form label {
+  font-weight: bold !important;
+}
+
+.local-chat-form input,
+.local-chat-form select,
+.local-chat-form textarea {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  border: 4px solid var(--black) !important;
+  box-shadow: 4px 4px 0 var(--black) !important;
+  padding: 10px !important;
+  font-family: inherit !important;
+  font-weight: bold !important;
+}
+
+.local-chat-actions {
+  display: flex !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+  margin-top: 8px !important;
+}
+
+.local-chat-message-top {
+  display: flex !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+}
+
+.local-chat-message-top span {
+  background: #ff8fc7 !important;
+  border: 3px solid var(--black) !important;
+  padding: 3px 8px !important;
+  font-weight: bold !important;
+}
+
+.empty-chat-message {
+  font-weight: bold !important;
+}
+

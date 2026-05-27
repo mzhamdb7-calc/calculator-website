@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <title>FAQs | Cartoon Calculator</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Frequently asked questions about the Cartoon Calculator website and calculator tools.">
+
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=info_pages_20260527">
+  <link rel="stylesheet" href="pc.css?v=info_pages_20260527" media="screen and (min-width: 851px)">
+  <link rel="stylesheet" href="phone.css?v=info_pages_20260527" media="screen and (max-width: 850px)">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body class="info-page faqs-page" data-page="faqs">
+
+  <!-- Go Up Button -->
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
+    ↑
+  </button>
+
+  <!-- MENU Button shown after scroll on PC -->
+  <button id="menuIcon" type="button" onclick="toggleMenu()" aria-label="Open menu">
+    MENU
+  </button>
+
+  <!-- Navbar -->
+  <nav id="navbar">
+
+    <a href="index.html">home</a>
+
+    <div class="dropdown">
+      <button type="button" class="dropbtn" aria-expanded="false">
+        calculator
+      </button>
+
+      <div class="dropdown-content">
+
+        <a href="basic-calculator.html">basic</a>
+
+        <details class="nav-group">
+          <summary>health</summary>
+
+          <div class="nav-group-links">
+            <a href="age-calculator.html">age</a>
+            <a href="bmi-calculator.html">bmi</a>
+          </div>
+        </details>
+
+        <details class="nav-group">
+          <summary>finance</summary>
+
+          <div class="nav-group-links">
+            <a href="mortgage-calculator.html">mortgage</a>
+            <a href="personal-loan-calculator.html">personal loan</a>
+            <a href="discount-calculator.html">discount</a>
+            <a href="compound-interest-calculator.html">compound interest</a>
+          </div>
+        </details>
+
+        <a href="percentage-calculator.html">percentage</a>
+
+      </div>
+    </div>
+
+    <div class="dropdown about-dropdown">
+      <button type="button" class="dropbtn" aria-expanded="false">
+        info
+      </button>
+
+      <div class="dropdown-content about-dropdown-content">
+        <a href="about.html">about</a>
+        <a href="FAQS.html">FAQs</a>
+        <a href="chatting.html">chatting</a>
+        <a href="privacy-policy.html">privacy policy</a>
+        <a href="contact.html">contact</a>
+      </div>
+    </div>
+
+  </nav>
+
+  <main class="calculator-box info-page-box">
+    <h1>FAQs</h1>
+
+    <section class="info-content-card">
+      <h2>General questions</h2>
+
+      <div class="site-faq-list">
+        <details class="site-faq-item" open>
+          <summary>Are these calculators free?</summary>
+          <p>Yes. The calculators are free to use directly in your browser.</p>
+        </details>
+
+        <details class="site-faq-item">
+          <summary>Are the results exact?</summary>
+          <p>The results are estimates based on the inputs you provide. Financial and health results should be used as a guide only.</p>
+        </details>
+
+        <details class="site-faq-item">
+          <summary>Do I need to press a calculate button?</summary>
+          <p>Most calculator pages update automatically after you enter the required inputs. The basic calculator keeps its keypad style.</p>
+        </details>
+
+        <details class="site-faq-item">
+          <summary>Can I copy, save, or share results?</summary>
+          <p>Supported calculators include result actions such as copy, save, share, or report links depending on the page.</p>
+        </details>
+
+        <details class="site-faq-item">
+          <summary>Is my input saved online?</summary>
+          <p>No server database is connected in this static website version. Some browser features may use local storage only on your device.</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="info-content-card">
+      <h2>Calculator questions</h2>
+
+      <div class="site-faq-list">
+        <details class="site-faq-item">
+          <summary>BMI Calculator</summary>
+          <p>BMI is a screening estimate, not a medical diagnosis. Use it with waist-to-height ratio and consult a professional for health advice.</p>
+        </details>
+
+        <details class="site-faq-item">
+          <summary>Mortgage Calculator</summary>
+          <p>Mortgage results are estimates. Real bank approval may depend on income documents, commitments, credit score, loan type, and policy.</p>
+        </details>
+
+        <details class="site-faq-item">
+          <summary>Age Calculator</summary>
+          <p>The age calculator provides exact age, next-age countdown, zodiac information, life stats, and related date facts.</p>
+        </details>
+
+        <details class="site-faq-item">
+          <summary>Compound Interest Calculator</summary>
+          <p>Compound interest depends on principal, interest rate, time, and compounding frequency.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js?v=info_pages_20260527"></script>
+  <script src="pc.js?v=info_pages_20260527"></script>
+  <script src="phone.js?v=info_pages_20260527"></script>
+</body>
+</html>
