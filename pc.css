@@ -7058,3 +7058,211 @@ body.calculator-report-view #calculatorReportPage .age-point-output {
   }
 }
 
+
+/* =====================================================
+   NAV CLEANUP: Make Chatting + Search match main menu style
+   - Chatting and search now look like clean navbar cards
+   - Matches Home / Calculator / Info sizing and border style
+===================================================== */
+@media (min-width: 851px) {
+  #navbar {
+    display: flex !important;
+    align-items: stretch !important;
+    flex-wrap: nowrap !important;
+    gap: 0 !important;
+    overflow: visible !important;
+  }
+
+  #navbar > a:not(.nav-chat-link),
+  #navbar > .dropdown {
+    min-height: 64px !important;
+    display: flex !important;
+    align-items: stretch !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+  }
+
+  #navbar > .nav-chat-link {
+    display: none !important;
+  }
+
+  #navbar .nav-chat-search-inline {
+    display: flex !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    flex: 0 1 560px !important;
+    min-width: 470px !important;
+    max-width: 600px !important;
+    min-height: 64px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    box-sizing: border-box !important;
+    align-self: stretch !important;
+    overflow: visible !important;
+    position: relative !important;
+    z-index: 999999 !important;
+  }
+
+  #navbar .nav-chat-search-inline .nav-chat-link {
+    width: 170px !important;
+    min-width: 170px !important;
+    max-width: 170px !important;
+    min-height: 64px !important;
+    margin: 0 !important;
+    padding: 0 18px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    align-self: stretch !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border: 4px solid var(--black) !important;
+    border-left: 0 !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+    text-decoration: none !important;
+    font-family: inherit !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+  }
+
+  #navbar .nav-chat-search-inline .site-search {
+    position: relative !important;
+    display: block !important;
+    flex: 1 1 390px !important;
+    width: auto !important;
+    min-width: 300px !important;
+    max-width: none !important;
+    min-height: 64px !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: var(--white) !important;
+    border: 4px solid var(--black) !important;
+    border-left: 0 !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+    box-sizing: border-box !important;
+    align-self: stretch !important;
+    overflow: visible !important;
+    z-index: 999999 !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+  }
+
+  #navbar .nav-chat-search-inline .site-search-inner {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 56px !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 58px !important;
+    gap: 0 !important;
+    align-items: stretch !important;
+    box-sizing: border-box !important;
+  }
+
+  #navbar .nav-chat-search-inline .site-search-label {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+  }
+
+  #navbar .nav-chat-search-inline .site-search-input {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 100% !important;
+    min-height: 56px !important;
+    margin: 0 !important;
+    padding: 0 16px !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border: none !important;
+    box-shadow: none !important;
+    font-family: inherit !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    text-align: left !important;
+    outline: none !important;
+    box-sizing: border-box !important;
+  }
+
+  #navbar .nav-chat-search-inline .site-search-input::placeholder {
+    color: #777 !important;
+    opacity: 1 !important;
+  }
+
+  #navbar .nav-chat-search-inline .site-search-submit {
+    width: 58px !important;
+    min-width: 58px !important;
+    height: 100% !important;
+    min-height: 56px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--white) !important;
+    color: var(--black) !important;
+    border: none !important;
+    border-left: 4px solid var(--black) !important;
+    box-shadow: none !important;
+    font-family: inherit !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+  }
+
+  #navbar .nav-chat-search-inline .nav-chat-link:hover,
+  #navbar .nav-chat-search-inline .site-search-submit:hover {
+    background: #d3fff9 !important;
+  }
+
+  #navbar .nav-chat-search-inline .site-search-results {
+    top: 68px !important;
+    right: 0 !important;
+    left: auto !important;
+    width: 100% !important;
+    max-width: 430px !important;
+    background: var(--white) !important;
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+    z-index: 99999999 !important;
+  }
+}
+
+@media (max-width: 850px) {
+  #navbar .nav-chat-search-inline {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  #navbar > .nav-chat-link {
+    display: none !important;
+  }
+
+  #navbar .nav-chat-search-inline .nav-chat-link,
+  #navbar .nav-chat-search-inline .site-search {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    background: var(--white) !important;
+  }
+}
+
