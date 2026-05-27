@@ -6745,3 +6745,24 @@ body.mortgage-page #loanExternalOutput.mortgage-modern-result-panel .mortgage-mo
   font-weight: bold !important;
 }
 
+
+/* =====================================================
+   AGE REPORT: Hide duplicate live result below report
+===================================================== */
+body.calculator-report-view > .age-clean-result,
+body.calculator-report-view > .age-point-output,
+body.calculator-report-view main > .age-clean-result,
+body.calculator-report-view main > .age-point-output,
+body.calculator-report-view #ageResult {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+body.calculator-report-view #calculatorReportPage .age-clean-result,
+body.calculator-report-view #calculatorReportPage .age-point-output {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+

@@ -712,6 +712,15 @@
   }
 
   function renderResultPanel(type, rows, extraTopHtml) {
+    /*
+      Do not recreate live result boxes while a report page is open.
+      Age online updates can return after the report opens, which caused
+      an extra live Age result box to appear below the report.
+    */
+    if (document.body.classList.contains("calculator-report-view")) {
+      return null;
+    }
+
     const panel = getOrCreateOutputPanel(type);
     if (!panel) return null;
 
@@ -909,7 +918,7 @@
       {
         key: "goal",
         title: "Goal timeline",
-        match: /Goal timeline|Target weight|Time goal/i
+        match: /Goal timeline|Healthy\?|Best|Target weight|Time goal/i
       },
       {
         key: "profile",
@@ -2242,65 +2251,83 @@
       return amount;
     }
 
-    function targetWeightHealthStatus(targetKg, diffKg) {
-      if (!Number.isFinite(targetKg) || !Number.isFinite(diffKg)) {
-        return "";
+    function weeklyGoalHealthText(perWeekKg, targetKg, diffKg) {
+      if (!Number.isFinite(perWeekKg) || perWeekKg <= 0) {
+        return "Enter target weight and time goal to check if the weekly change is healthy";
       }
 
-      const targetBmi = targetKg / (heightM * heightM);
-      let targetCategory = "Normal";
-
-      if (targetBmi < 18.5) targetCategory = "Underweight";
-      else if (targetBmi >= 25 && targetBmi < 30) targetCategory = "Overweight";
-      else if (targetBmi >= 30) targetCategory = "Obese";
-
+      const weeklyText = displayWeightFromKg(perWeekKg) + " per week";
+      const isSafePace = perWeekKg <= 1;
+      const targetInHealthyRange = Number.isFinite(targetKg) && targetKg >= healthyMinKg && targetKg <= healthyMaxKg;
       const isReduction = diffKg < 0;
 
-      if (targetKg >= healthyMinKg && targetKg <= healthyMaxKg) {
-        return isReduction
-          ? " Weight reduction target looks healthy because it lands in the healthy BMI range."
-          : " Target weight lands in the healthy BMI range.";
+      if (!isSafePace) {
+        return weeklyText + " is not healthy";
       }
 
-      if (targetKg < healthyMinKg) {
-        return isReduction
-          ? " Weight reduction target may not be healthy because it goes below the healthy BMI range."
-          : " Target weight is still below the healthy BMI range.";
+      if (isReduction && targetInHealthyRange) {
+        return weeklyText + " is healthy and the target weight lands in the healthy BMI range";
       }
 
-      return isReduction
-        ? " Weight reduction helps, but the target is still above the healthy BMI range."
-        : " Target weight is above the healthy BMI range.";
+      if (isReduction && !targetInHealthyRange && Number.isFinite(targetKg) && targetKg > healthyMaxKg) {
+        return weeklyText + " is a safe pace, but the target is still above the healthy BMI range";
+      }
+
+      if (Number.isFinite(targetKg) && targetKg < healthyMinKg) {
+        return weeklyText + " may not be healthy because the target is below the healthy BMI range";
+      }
+
+      return weeklyText + " is within a safer pace";
+    }
+
+    function bestWeeklyGoalText(diffKg) {
+      if (!Number.isFinite(diffKg) || Math.abs(diffKg) < 0.05) {
+        return "Already at target weight";
+      }
+
+      const action = diffKg < 0 ? "loss" : "gain";
+
+      return (
+        "Easy: " + displayWeightFromKg(0.25) + "/week " + action + ", " +
+        "Ideal: " + displayWeightFromKg(0.5) + "/week " + action + ", " +
+        "Hardest safe: " + displayWeightFromKg(1) + "/week " + action
+      );
     }
 
     let goalTimeline = "Enter target weight and time goal to estimate goal timeline";
+    let goalHealthyText = "Enter target weight and time goal to check if it is healthy";
+    let goalBestText = "Enter target weight to see easy, ideal, and hardest safe options";
+
     if (Number.isFinite(targetWeight) && targetWeight > 0) {
       const targetKg = unit === "us" ? targetWeight * 0.45359237 : targetWeight;
       const diffKg = targetKg - weightKg;
       const direction = diffKg < 0 ? "lose" : "gain";
       const diffAbsKg = Math.abs(diffKg);
-      const targetHealthText = targetWeightHealthStatus(targetKg, diffKg);
+      const availableWeeks = goalWeeksFromInput(timeGoalAmount, timeGoal);
+
+      goalBestText = bestWeeklyGoalText(diffKg);
 
       if (diffAbsKg < 0.05) {
-        goalTimeline = "Already at target weight." + targetHealthText;
+        goalTimeline = "Already at target weight";
+        goalHealthyText = "Already at target weight";
+      } else if (Number.isFinite(availableWeeks) && availableWeeks > 0) {
+        const perWeekKg = diffAbsKg / availableWeeks;
+
+        goalTimeline = "To " + direction + " " + displayWeightFromKg(diffAbsKg) + " in " + goalUnitText(timeGoalAmount, timeGoal) + ", aim for about " + displayWeightFromKg(perWeekKg) + " per week.";
+        goalHealthyText = weeklyGoalHealthText(perWeekKg, targetKg, diffKg);
       } else {
-        const availableWeeks = goalWeeksFromInput(timeGoalAmount, timeGoal);
+        const recommendedWeeks = Math.max(1, Math.ceil(diffAbsKg / 0.5));
+        const perWeekText = displayWeightFromKg(0.5);
 
-        if (Number.isFinite(availableWeeks) && availableWeeks > 0) {
-          const perWeekKg = diffAbsKg / availableWeeks;
-          goalTimeline = "To " + direction + " " + displayWeightFromKg(diffAbsKg) + " in " + goalUnitText(timeGoalAmount, timeGoal) + ", aim for about " + displayWeightFromKg(perWeekKg) + " per week." + targetHealthText;
+        if (timeGoal === "daily") {
+          goalTimeline = "About " + (recommendedWeeks * 7) + " days to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week.";
+        } else if (timeGoal === "monthly") {
+          goalTimeline = "About " + Math.max(1, Math.ceil(recommendedWeeks / 4.345)) + " months to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week.";
         } else {
-          const recommendedWeeks = Math.max(1, Math.ceil(diffAbsKg / 0.5));
-          const perWeekText = displayWeightFromKg(0.5);
-
-          if (timeGoal === "daily") {
-            goalTimeline = "About " + (recommendedWeeks * 7) + " days to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week." + targetHealthText;
-          } else if (timeGoal === "monthly") {
-            goalTimeline = "About " + Math.max(1, Math.ceil(recommendedWeeks / 4.345)) + " months to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week." + targetHealthText;
-          } else {
-            goalTimeline = "About " + recommendedWeeks + " weeks to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week." + targetHealthText;
-          }
+          goalTimeline = "About " + recommendedWeeks + " weeks to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week.";
         }
+
+        goalHealthyText = weeklyGoalHealthText(0.5, targetKg, diffKg);
       }
     }
 
@@ -2326,6 +2353,8 @@
       ["Calories/day to lose weight", caloriesLossText],
       ["Body fat estimate", bodyFatText],
       ["Goal timeline", goalTimeline],
+      ["Healthy?", goalHealthyText],
+      ["Best", goalBestText],
       ["Waist-to-height ratio", Number.isFinite(ratio) ? ratio.toFixed(2) : "Not provided"],
       ["Waist-to-height status", waistStatus],
       ["Health risk", healthRisk],
@@ -3229,7 +3258,7 @@
       {
         title: "4. Goal planning",
         note: "Target weight and estimated timeline.",
-        match: /Goal timeline|Target weight|Time goal/i
+        match: /Goal timeline|Healthy\?|Best|Target weight|Time goal/i
       },
       {
         title: "5. Input profile",
@@ -3375,7 +3404,7 @@
     $$(
       ".calculator, .history, .age-history-box, .bmi-history-box, .discount-history-box, .loan-history-box, .percentage-history-box, .compound-history-box, " +
       ".instruction-box, .pc-what-slot, .instruction-what-box, #pcHelpQuestionButton, #pcQuestionOverlayButton, " +
-      "#universalLoanStyleOutput, #loanExternalOutput, #personalLoanExternalOutput, .calculator-clean-result"
+      "#universalLoanStyleOutput, #loanExternalOutput, #personalLoanExternalOutput, .calculator-clean-result, .age-clean-result, .age-point-output, #ageResult"
     ).forEach(function (element) {
       element.style.setProperty("display", "none", "important");
     });
@@ -6345,6 +6374,48 @@
       setTimeout(revealMortgageModernResult, 400);
       setTimeout(revealMortgageModernResult, 900);
     }, true);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+
+
+/* =====================================================
+   AGE REPORT: Prevent duplicate live result below report
+   - Stops delayed Age online updates from showing a second result box
+===================================================== */
+(function () {
+  "use strict";
+
+  function hideAgeLiveResultDuringReport() {
+    if (!document.body.classList.contains("calculator-report-view")) return;
+
+    document
+      .querySelectorAll(".age-clean-result, .age-point-output, #ageResult")
+      .forEach(function (el) {
+        if (el.closest("#calculatorReportPage")) return;
+        el.style.setProperty("display", "none", "important");
+        el.style.setProperty("visibility", "hidden", "important");
+        el.setAttribute("aria-hidden", "true");
+      });
+  }
+
+  function start() {
+    hideAgeLiveResultDuringReport();
+
+    setTimeout(hideAgeLiveResultDuringReport, 100);
+    setTimeout(hideAgeLiveResultDuringReport, 500);
+    setTimeout(hideAgeLiveResultDuringReport, 1200);
+    setTimeout(hideAgeLiveResultDuringReport, 2200);
+
+    window.addEventListener("hashchange", function () {
+      setTimeout(hideAgeLiveResultDuringReport, 100);
+      setTimeout(hideAgeLiveResultDuringReport, 700);
+    });
   }
 
   if (document.readyState === "loading") {
