@@ -93,10 +93,7 @@
 
   <!-- Main Content -->
   <main class="calculator-box grouped-calculator-home">
-
-    <button type="button" id="indexAbacusToggle" class="index-abacus-toggle" aria-expanded="false" aria-controls="indexAbacusPanel" title="Open abacus">🧮</button>
-
-    <h1>Calculator</h1>
+<h1>Calculator</h1>
 
     <div class="calculator-group-grid">
 
@@ -117,6 +114,22 @@
         <div class="calculator-category-links">
           <a href="age-calculator.html">age calculator</a>
           <a href="bmi-calculator.html">bmi calculator</a>
+        </div>
+      </section>
+
+
+      <section class="calculator-category-card calculator-category-abacus">
+        <div class="live-abacus-card interactive-abacus-card">
+          <h2>Interactive Abacus</h2>
+          <p class="live-abacus-subtitle">Click or drag the beads to play around with the abacus.</p>
+
+          <div class="live-abacus-value interactive-abacus-value">
+            <span class="live-abacus-value-label">Current value</span>
+            <span id="liveAbacusValueText">0</span>
+            <button type="button" id="liveAbacusReset" class="interactive-abacus-reset">Reset</button>
+          </div>
+
+          <div id="liveAbacus" class="live-abacus interactive-abacus" aria-live="polite"></div>
         </div>
       </section>
 
@@ -159,23 +172,7 @@
     </div>
 
   </main>
-
-  <!-- Interactive Abacus -->
-  <section id="indexAbacusPanel" class="live-abacus-section interactive-abacus-section index-abacus-panel" aria-label="Interactive abacus" hidden>
-    <div class="live-abacus-card interactive-abacus-card">
-      <h2>Interactive Abacus</h2>
-      <p class="live-abacus-subtitle">Click or drag the beads to play around with the abacus.</p>
-
-      <div class="live-abacus-value interactive-abacus-value">
-        <span class="live-abacus-value-label">Current value</span>
-        <span id="liveAbacusValueText">0</span>
-        <button type="button" id="liveAbacusReset" class="interactive-abacus-reset">Reset</button>
-      </div>
-
-      <div id="liveAbacus" class="live-abacus interactive-abacus" aria-live="polite"></div>
-    </div>
-  </section>
-  <script src="script.js?v=age_bmi_update_20260527"></script>
+<script src="script.js?v=age_bmi_update_20260527"></script>
   <script src="pc.js?v=age_bmi_update_20260527"></script>
 <script src="phone.js?v=age_bmi_update_20260527"></script>
 </body>
