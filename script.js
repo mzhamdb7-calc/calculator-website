@@ -7267,3 +7267,98 @@
   }
 })();
 
+
+/* =====================================================
+   GLOBAL RESULT: final duplicate render cleanup
+   - Keeps one live result panel per page
+   - Hides live panels on report pages
+===================================================== */
+(function () {
+  "use strict";
+
+  const pageResultSelectors = [
+    ["ageReportOutput", "#ageReportOutput, .age-clean-result, .age-point-output, #ageResult"],
+    ["bmiReportOutput", "#bmiReportOutput, .bmi-clean-result, .bmi-box-output, #bmiResult"],
+    ["loanExternalOutput", "#loanExternalOutput, .loan-clean-result, .mortgage-modern-result-panel, #loanResult"],
+    ["personalLoanExternalOutput", "#personalLoanExternalOutput, .personalLoan-clean-result, #personalLoanResult"],
+    ["discountReportOutput", "#discountReportOutput, .discount-clean-result, #discountResult"],
+    ["percentageReportOutput", "#percentageReportOutput, .percentage-clean-result, #percentageResult"],
+    ["compoundReportOutput", "#compoundReportOutput, .compound-clean-result, #compoundResult"]
+  ];
+
+  function inReportView() {
+    return document.body.classList.contains("calculator-report-view") || !!document.getElementById("calculatorReportPage");
+  }
+
+  function cleanupOne(keepId, selector) {
+    const panels = Array.from(document.querySelectorAll(selector)).filter(function (el) {
+      return el && !el.closest("#calculatorReportPage");
+    });
+
+    if (!panels.length) return;
+
+    if (inReportView()) {
+      panels.forEach(function (el) {
+        el.style.setProperty("display", "none", "important");
+        el.style.setProperty("visibility", "hidden", "important");
+        el.setAttribute("aria-hidden", "true");
+      });
+      return;
+    }
+
+    const preferred = document.getElementById(keepId);
+    const keep = preferred && panels.includes(preferred) ? preferred : panels[panels.length - 1];
+
+    panels.forEach(function (el) {
+      if (el === keep) return;
+
+      if (el.id && el.id !== keepId) {
+        el.style.setProperty("display", "none", "important");
+        el.style.setProperty("visibility", "hidden", "important");
+        el.setAttribute("aria-hidden", "true");
+      } else {
+        el.remove();
+      }
+    });
+
+    keep.style.removeProperty("display");
+    keep.style.removeProperty("visibility");
+    keep.removeAttribute("aria-hidden");
+  }
+
+  function cleanupAllResults() {
+    pageResultSelectors.forEach(function (pair) {
+      cleanupOne(pair[0], pair[1]);
+    });
+  }
+
+  function start() {
+    cleanupAllResults();
+
+    [100, 500, 1200, 2200, 3200].forEach(function (delay) {
+      setTimeout(cleanupAllResults, delay);
+    });
+
+    document.addEventListener("input", function () {
+      setTimeout(cleanupAllResults, 2200);
+      setTimeout(cleanupAllResults, 3000);
+    }, true);
+
+    document.addEventListener("change", function () {
+      setTimeout(cleanupAllResults, 2200);
+      setTimeout(cleanupAllResults, 3000);
+    }, true);
+
+    window.addEventListener("hashchange", function () {
+      setTimeout(cleanupAllResults, 100);
+      setTimeout(cleanupAllResults, 800);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+
