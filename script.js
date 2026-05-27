@@ -6849,25 +6849,29 @@
   const calculators = [
     { title: "basic", url: "basic-calculator.html" },
     { title: "scientific", url: "scientific-calculator.html" },
+    { title: "percentage", url: "percentage-calculator.html" },
     { title: "unit converter", url: "unit-converter-calculator.html" },
+
     { title: "age", url: "age-calculator.html" },
     { title: "bmi", url: "bmi-calculator.html" },
+
+    { title: "salary", url: "salary-calculator.html" },
+    { title: "gaji penjawat awam", url: "gaji-penjawat-awam-calculator.html" },
+    { title: "tax", url: "tax-calculator.html" },
+    { title: "currency converter", url: "currency-converter.html" },
+    { title: "discount", url: "discount-calculator.html" },
+    { title: "inflation", url: "inflation-calculator.html" },
+    { title: "compound interest", url: "compound-interest-calculator.html" },
+
     { title: "mortgage", url: "mortgage-calculator.html" },
     { title: "personal loan", url: "personal-loan-calculator.html" },
-    { title: "salary", url: "salary-calculator.html" },
-    { title: "credit card payoff", url: "credit-card-payoff-calculator.html" },
     { title: "loan comparison", url: "loan-comparison-calculator.html" },
     { title: "debt payoff", url: "debt-payoff-calculator.html" },
-    { title: "tax", url: "tax-calculator.html" },
-    { title: "gaji penjawat awam", url: "gaji-penjawat-awam-calculator.html" },
-    { title: "inflation", url: "inflation-calculator.html" },
-    { title: "rental yield", url: "rental-yield-calculator.html" },
+    { title: "credit card payoff", url: "credit-card-payoff-calculator.html" },
     { title: "credit card interest", url: "credit-card-interest-calculator.html" },
-    { title: "currency converter", url: "currency-converter.html" },
-    { title: "fuel cost", url: "fuel-cost-calculator.html" },
-    { title: "discount", url: "discount-calculator.html" },
-    { title: "compound interest", url: "compound-interest-calculator.html" },
-    { title: "percentage", url: "percentage-calculator.html" }
+
+    { title: "rental yield", url: "rental-yield-calculator.html" },
+    { title: "fuel cost", url: "fuel-cost-calculator.html" }
   ];
 
   function normalize(text) {
@@ -6890,46 +6894,58 @@
         '<div class="clean-nav-dropdown clean-calculator-dropdown">' +
           '<button type="button" class="clean-nav-link clean-nav-button" aria-expanded="false">calculator <span aria-hidden="true">▼</span></button>' +
           '<div class="clean-nav-dropdown-panel clean-calculator-panel">' +
-            '<a href="basic-calculator.html">basic</a>' +
 
-            '<div class="clean-nav-submenu clean-health-submenu">' +
-              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">health <span aria-hidden="true">▶</span></button>' +
+            '<div class="clean-nav-submenu clean-general-submenu">' +
+              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">general tools <span aria-hidden="true">▶</span></button>' +
               '<div class="clean-nav-submenu-panel">' +
-                '<a href="age-calculator.html">age</a>' +
-                '<a href="bmi-calculator.html">bmi</a>' +
+                '<a href="basic-calculator.html">basic calculator</a>' +
+                '<a href="scientific-calculator.html">scientific calculator</a>' +
+                '<a href="percentage-calculator.html">percentage calculator</a>' +
+                '<a href="unit-converter-calculator.html">unit converter</a>' +
               '</div>' +
             '</div>' +
 
-            '<div class="clean-nav-submenu clean-finance-submenu">' +
-              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">finance <span aria-hidden="true">▶</span></button>' +
+            '<div class="clean-nav-submenu clean-health-submenu">' +
+              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">health & age <span aria-hidden="true">▶</span></button>' +
               '<div class="clean-nav-submenu-panel">' +
-                '<a href="mortgage-calculator.html">mortgage</a>' +
-                '<a href="personal-loan-calculator.html">personal loan</a>' +
-                '<a href="salary-calculator.html">salary</a>' +
-                '<a href="credit-card-payoff-calculator.html">credit card payoff</a>' +
-                '<a href="loan-comparison-calculator.html">loan comparison</a>' +
-                '<a href="debt-payoff-calculator.html">debt payoff</a>' +
-                '<a href="tax-calculator.html">tax</a>' +
+                '<a href="age-calculator.html">age calculator</a>' +
+                '<a href="bmi-calculator.html">bmi calculator</a>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="clean-nav-submenu clean-money-submenu">' +
+              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">money & income <span aria-hidden="true">▶</span></button>' +
+              '<div class="clean-nav-submenu-panel">' +
+                '<a href="salary-calculator.html">salary calculator</a>' +
                 '<a href="gaji-penjawat-awam-calculator.html">gaji penjawat awam</a>' +
-                '<a href="inflation-calculator.html">inflation</a>' +
-                '<a href="rental-yield-calculator.html">rental yield</a>' +
-                '<a href="credit-card-interest-calculator.html">credit card interest</a>' +
+                '<a href="tax-calculator.html">tax calculator</a>' +
                 '<a href="currency-converter.html">currency converter</a>' +
-                '<a href="discount-calculator.html">discount</a>' +
+                '<a href="discount-calculator.html">discount calculator</a>' +
+                '<a href="inflation-calculator.html">inflation calculator</a>' +
                 '<a href="compound-interest-calculator.html">compound interest</a>' +
               '</div>' +
             '</div>' +
 
-            '<div class="clean-nav-submenu clean-utility-submenu">' +
-              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">utility <span aria-hidden="true">▶</span></button>' +
+            '<div class="clean-nav-submenu clean-loan-submenu">' +
+              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">loans & debt <span aria-hidden="true">▶</span></button>' +
               '<div class="clean-nav-submenu-panel">' +
-                '<a href="scientific-calculator.html">scientific</a>' +
-                '<a href="unit-converter-calculator.html">unit converter</a>' +
+                '<a href="mortgage-calculator.html">mortgage calculator</a>' +
+                '<a href="personal-loan-calculator.html">personal loan</a>' +
+                '<a href="loan-comparison-calculator.html">loan comparison</a>' +
+                '<a href="debt-payoff-calculator.html">debt payoff</a>' +
+                '<a href="credit-card-payoff-calculator.html">credit card payoff</a>' +
+                '<a href="credit-card-interest-calculator.html">credit card interest</a>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="clean-nav-submenu clean-property-submenu">' +
+              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">property & travel <span aria-hidden="true">▶</span></button>' +
+              '<div class="clean-nav-submenu-panel">' +
+                '<a href="rental-yield-calculator.html">rental yield</a>' +
                 '<a href="fuel-cost-calculator.html">fuel cost</a>' +
               '</div>' +
             '</div>' +
 
-            '<a href="percentage-calculator.html">percentage</a>' +
           '</div>' +
         '</div>' +
 

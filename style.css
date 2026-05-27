@@ -5434,3 +5434,148 @@ body.calculator-report-view #calculatorReportPage .mortgage-modern-result-panel 
   }
 }
 
+
+/* =====================================================
+   REGROUPED CALCULATOR MENU + INDEX CARDS
+===================================================== */
+
+/* New grouped calculator dropdowns */
+.clean-calculator-panel {
+  overflow: visible !important;
+}
+
+.clean-general-submenu .clean-nav-submenu-panel,
+.clean-health-submenu .clean-nav-submenu-panel,
+.clean-money-submenu .clean-nav-submenu-panel,
+.clean-loan-submenu .clean-nav-submenu-panel,
+.clean-property-submenu .clean-nav-submenu-panel {
+  width: 245px !important;
+  min-width: 245px !important;
+  max-width: 245px !important;
+  max-height: min(72vh, 520px) !important;
+  overflow-y: auto !important;
+}
+
+.clean-money-submenu .clean-nav-submenu-panel,
+.clean-loan-submenu .clean-nav-submenu-panel {
+  width: 270px !important;
+  min-width: 270px !important;
+  max-width: 270px !important;
+}
+
+.clean-nav-submenu-button {
+  text-transform: none !important;
+}
+
+/* Index grouped calculator cards */
+.grouped-calculator-home {
+  max-width: 1080px !important;
+  padding: 18px !important;
+}
+
+.calculator-group-grid {
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  align-items: start !important;
+  box-sizing: border-box !important;
+}
+
+.calculator-category-card {
+  min-height: 100% !important;
+  padding: 16px !important;
+  background: #fff !important;
+  border: 5px solid var(--black, #000) !important;
+  box-shadow: 6px 6px 0 var(--black, #000) !important;
+  box-sizing: border-box !important;
+  text-align: left !important;
+}
+
+.calculator-category-card h2 {
+  margin: 0 0 6px !important;
+  font-size: 24px !important;
+  text-align: center !important;
+}
+
+.calculator-category-card p {
+  min-height: 38px !important;
+  margin: 0 0 12px !important;
+  font-weight: bold !important;
+  text-align: center !important;
+  line-height: 1.25 !important;
+}
+
+.calculator-category-links {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+  gap: 10px !important;
+}
+
+.calculator-category-links a {
+  min-height: 44px !important;
+  padding: 8px 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #fff4b8 !important;
+  color: var(--black, #000) !important;
+  border: 4px solid var(--black, #000) !important;
+  box-shadow: 4px 4px 0 var(--black, #000) !important;
+  text-decoration: none !important;
+  font-weight: bold !important;
+  text-align: center !important;
+  line-height: 1.15 !important;
+  box-sizing: border-box !important;
+}
+
+.calculator-category-links a:hover {
+  background: #d3fff9 !important;
+  transform: translate(1px, 1px) !important;
+  box-shadow: 3px 3px 0 var(--black, #000) !important;
+}
+
+.calculator-category-health {
+  background: #e8ddff !important;
+}
+
+.calculator-category-money {
+  background: #d3fff9 !important;
+}
+
+.calculator-category-loans {
+  background: #ffd3d3 !important;
+}
+
+.calculator-category-property {
+  background: #fff4b8 !important;
+}
+
+.calculator-category-property {
+  grid-column: 1 / -1 !important;
+}
+
+.calculator-category-property .calculator-category-links {
+  grid-template-columns: repeat(2, minmax(150px, 220px)) !important;
+  justify-content: center !important;
+}
+
+/* Old separate More Calculators section hidden if cached copy remains */
+.extra-home-calculators {
+  display: none !important;
+}
+
+@media (max-width: 850px) {
+  .calculator-group-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .calculator-category-property {
+    grid-column: auto !important;
+  }
+
+  .calculator-category-property .calculator-category-links {
+    grid-template-columns: 1fr !important;
+  }
+}
+
