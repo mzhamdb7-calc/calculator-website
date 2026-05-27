@@ -3042,7 +3042,7 @@
       '<div class="mortgage-modern-result-shell">' +
         '<h2 class="loan-panel-title mortgage-modern-result-title">Result</h2>' +
         (resultHtml || "") +
-        '<div class="mortgage-result-actions">' +
+        '<div class="mortgage-result-actions mortgage-result-actions-final" aria-label="Mortgage result actions">' +
           '<button type="button" class="mortgage-result-action-btn mortgage-result-copy-btn">Copy</button>' +
           '<button type="button" class="mortgage-result-action-btn mortgage-result-save-btn">Save</button>' +
           '<button type="button" class="mortgage-result-action-btn mortgage-result-share-btn">Share</button>' +
@@ -3225,6 +3225,16 @@
     const flexiScenario = mortgagePayoffSchedule(principal, annualRate, months, flexiSuggestedExtra);
     const islamicMonthly = baseMonthly;
     const islamicTotalProfit = Math.max(0, islamicMonthly * months - principal);
+    const islamicTotalSalePrice = principal + islamicTotalProfit;
+    const conventionalTotalRepayment = baseMonthly * months;
+    const conventionalInterestAmount = Math.max(0, conventionalTotalRepayment - principal);
+    const islamicDifferenceAmount = islamicTotalSalePrice - conventionalTotalRepayment;
+    const islamicDifferenceText =
+      Math.abs(islamicDifferenceAmount) < 1
+        ? "Same estimate here because the same entered rate and term are used for comparison."
+        : (islamicDifferenceAmount > 0
+          ? moneyRM(islamicDifferenceAmount) + " higher than the conventional estimate using the same assumptions."
+          : moneyRM(Math.abs(islamicDifferenceAmount)) + " lower than the conventional estimate using the same assumptions.");
 
     const comparisonRows = [
       ["Current loan", annualRate.toFixed(2) + "%", months + " months", moneyRM(baseMonthly), moneyRM(baseTotalInterest)],
@@ -3351,12 +3361,17 @@
         '</section>' +
 
         '<section class="mortgage-modern-section mortgage-islamic-section">' +
-          '<h3>Islamic financing comparison</h3>' +
-          mortgageTable(["Islamic financing item", "Indicative estimate"], [
+          '<h3>Islamic financing analysis</h3>' +
+          mortgageTable(["Islamic financing item", "Analysis"], [
             ["Indicative monthly payment", moneyRM(islamicMonthly)],
             ["Indicative total profit", moneyRM(islamicTotalProfit)],
-            ["Comparison note", "This uses the same entered rate as an indicative profit rate for comparison only."],
-            ["Important note", "Actual Islamic financing uses bank-specific structures such as Murabahah, Tawarruq, or Musharakah Mutanaqisah."]
+            ["Indicative total sale / repayment price", moneyRM(islamicTotalSalePrice)],
+            ["Conventional interest estimate", moneyRM(conventionalInterestAmount)],
+            ["Difference from conventional estimate", islamicDifferenceText],
+            ["What is different?", "Conventional loans charge interest on borrowed principal; Islamic financing usually structures the bank profit through sale, lease, partnership, or commodity-trade contracts."],
+            ["Rate wording", "The entered rate is treated here as an indicative profit rate, not a guaranteed bank offer."],
+            ["Ownership / contract note", "Actual Islamic products may use Murabahah, Tawarruq, Ijarah, or Musharakah Mutanaqisah, and the legal contract can differ from a conventional mortgage."],
+            ["Important note", "This is an educational estimate only. Real Islamic financing depends on the bank, Shariah structure, fees, rebate/ibra policy, and approval terms."]
           ], "mortgage-modern-table") +
         '</section>' +
       '</div>';
