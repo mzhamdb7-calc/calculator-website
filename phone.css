@@ -3451,3 +3451,232 @@ body.index-page .abacus-digit {
   }
 }
 
+
+/* =====================================================
+   NAV FINAL REPAIR: bound top bar + hover expand side menu
+===================================================== */
+
+/* Top navbar must stay inside the viewport */
+#navbar.clean-navbar,
+.clean-navbar {
+  width: min(1120px, calc(100vw - 40px)) !important;
+  max-width: calc(100vw - 40px) !important;
+  margin: 18px auto 22px !important;
+  left: auto !important;
+  right: auto !important;
+  transform: none !important;
+  overflow: visible !important;
+  box-sizing: border-box !important;
+}
+
+.clean-nav-inner {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: grid !important;
+  grid-template-columns: minmax(110px, 0.85fr) minmax(150px, 1fr) minmax(110px, 0.75fr) minmax(120px, 0.8fr) minmax(220px, 1.1fr) !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+}
+
+/* Search must shrink instead of pushing the navbar out */
+.clean-nav-search,
+.clean-nav-search-input {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+/* Dropdown expands on hover for top menu */
+.clean-nav-dropdown:hover > .clean-nav-dropdown-panel,
+.clean-nav-dropdown:focus-within > .clean-nav-dropdown-panel {
+  display: grid !important;
+}
+
+.clean-nav-dropdown:hover > .clean-nav-button,
+.clean-nav-dropdown:focus-within > .clean-nav-button {
+  background: #fff4b8 !important;
+}
+
+/* Keep dropdown within right page edge */
+.clean-nav-dropdown:nth-of-type(2) .clean-nav-dropdown-panel {
+  left: auto !important;
+  right: 0 !important;
+}
+
+/* Side/open menu: closed state small, hover expands LEFT */
+@media (min-width: 851px) {
+  #navbar.clean-navbar.open,
+  body.menu-scrolled #navbar.clean-navbar.open {
+    width: 72px !important;
+    max-width: 72px !important;
+    min-width: 72px !important;
+    position: fixed !important;
+    top: 62px !important;
+    right: 18px !important;
+    left: auto !important;
+    margin: 0 !important;
+    z-index: 99999999 !important;
+    transition: width 0.18s ease !important;
+    overflow: visible !important;
+  }
+
+  #navbar.clean-navbar.open .clean-nav-inner,
+  body.menu-scrolled #navbar.clean-navbar.open .clean-nav-inner {
+    width: 72px !important;
+    max-width: 72px !important;
+    min-width: 72px !important;
+    grid-template-columns: 1fr !important;
+    transition: width 0.18s ease !important;
+    overflow: visible !important;
+    margin-left: auto !important;
+  }
+
+  /* Expand left on hover/focus */
+  #navbar.clean-navbar.open:hover,
+  #navbar.clean-navbar.open:focus-within,
+  body.menu-scrolled #navbar.clean-navbar.open:hover,
+  body.menu-scrolled #navbar.clean-navbar.open:focus-within {
+    width: 290px !important;
+    max-width: 290px !important;
+    min-width: 290px !important;
+  }
+
+  #navbar.clean-navbar.open:hover .clean-nav-inner,
+  #navbar.clean-navbar.open:focus-within .clean-nav-inner,
+  body.menu-scrolled #navbar.clean-navbar.open:hover .clean-nav-inner,
+  body.menu-scrolled #navbar.clean-navbar.open:focus-within .clean-nav-inner {
+    width: 290px !important;
+    max-width: 290px !important;
+    min-width: 290px !important;
+  }
+
+  /* Collapsed side menu shows compact symbols/text */
+  #navbar.clean-navbar.open:not(:hover):not(:focus-within) .clean-nav-link,
+  #navbar.clean-navbar.open:not(:hover):not(:focus-within) .clean-nav-button {
+    width: 72px !important;
+    min-width: 72px !important;
+    max-width: 72px !important;
+    padding: 0 !important;
+    font-size: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #navbar.clean-navbar.open:not(:hover):not(:focus-within) .clean-nav-link[href="index.html"]::after {
+    content: "⌂" !important;
+    font-size: 24px !important;
+  }
+
+  #navbar.clean-navbar.open:not(:hover):not(:focus-within) .clean-nav-button::after {
+    content: "▼" !important;
+    font-size: 22px !important;
+  }
+
+  #navbar.clean-navbar.open:not(:hover):not(:focus-within) .clean-chat-link::after {
+    content: "💬" !important;
+    font-size: 20px !important;
+  }
+
+  #navbar.clean-navbar.open:not(:hover):not(:focus-within) .clean-nav-search {
+    width: 72px !important;
+    min-width: 72px !important;
+    max-width: 72px !important;
+    grid-template-columns: 1fr !important;
+    overflow: hidden !important;
+  }
+
+  #navbar.clean-navbar.open:not(:hover):not(:focus-within) .clean-nav-search-input {
+    display: none !important;
+  }
+
+  #navbar.clean-navbar.open:not(:hover):not(:focus-within) .clean-nav-search-button {
+    width: 72px !important;
+    min-width: 72px !important;
+    border-left: none !important;
+  }
+
+  /* Expanded side menu is clean full-width stack */
+  #navbar.clean-navbar.open:hover .clean-nav-link,
+  #navbar.clean-navbar.open:hover .clean-nav-button,
+  #navbar.clean-navbar.open:focus-within .clean-nav-link,
+  #navbar.clean-navbar.open:focus-within .clean-nav-button,
+  body.menu-scrolled #navbar.clean-navbar.open:hover .clean-nav-link,
+  body.menu-scrolled #navbar.clean-navbar.open:hover .clean-nav-button,
+  body.menu-scrolled #navbar.clean-navbar.open:focus-within .clean-nav-link,
+  body.menu-scrolled #navbar.clean-navbar.open:focus-within .clean-nav-button {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    padding: 0 14px !important;
+    font-size: 20px !important;
+    justify-content: center !important;
+    overflow: visible !important;
+  }
+
+  #navbar.clean-navbar.open:hover .clean-nav-search,
+  #navbar.clean-navbar.open:focus-within .clean-nav-search,
+  body.menu-scrolled #navbar.clean-navbar.open:hover .clean-nav-search,
+  body.menu-scrolled #navbar.clean-navbar.open:focus-within .clean-nav-search {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    grid-template-columns: minmax(0, 1fr) 54px !important;
+    overflow: visible !important;
+  }
+
+  #navbar.clean-navbar.open:hover .clean-nav-search-input,
+  #navbar.clean-navbar.open:focus-within .clean-nav-search-input,
+  body.menu-scrolled #navbar.clean-navbar.open:hover .clean-nav-search-input,
+  body.menu-scrolled #navbar.clean-navbar.open:focus-within .clean-nav-search-input {
+    display: block !important;
+  }
+
+  #navbar.clean-navbar.open:hover .clean-nav-search-button,
+  #navbar.clean-navbar.open:focus-within .clean-nav-search-button,
+  body.menu-scrolled #navbar.clean-navbar.open:hover .clean-nav-search-button,
+  body.menu-scrolled #navbar.clean-navbar.open:focus-within .clean-nav-search-button {
+    width: 54px !important;
+    min-width: 54px !important;
+    border-left: 4px solid var(--black, #000) !important;
+  }
+
+  /* Side dropdown expands on hover and stays inside side menu */
+  #navbar.clean-navbar.open .clean-nav-dropdown-panel,
+  body.menu-scrolled #navbar.clean-navbar.open .clean-nav-dropdown-panel {
+    position: static !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    border: none !important;
+    border-bottom: 4px solid var(--black, #000) !important;
+    box-shadow: none !important;
+  }
+
+  #navbar.clean-navbar.open .clean-nav-dropdown:hover > .clean-nav-dropdown-panel,
+  #navbar.clean-navbar.open .clean-nav-dropdown:focus-within > .clean-nav-dropdown-panel,
+  body.menu-scrolled #navbar.clean-navbar.open .clean-nav-dropdown:hover > .clean-nav-dropdown-panel,
+  body.menu-scrolled #navbar.clean-navbar.open .clean-nav-dropdown:focus-within > .clean-nav-dropdown-panel {
+    display: grid !important;
+  }
+
+  #navbar.clean-navbar.open:not(:hover):not(:focus-within) .clean-nav-dropdown-panel {
+    display: none !important;
+  }
+}
+
+/* Medium screens: reduce item sizes to avoid clipping */
+@media (min-width: 851px) and (max-width: 1180px) {
+  .clean-nav-inner {
+    grid-template-columns: minmax(90px, 0.7fr) minmax(130px, 0.85fr) minmax(90px, 0.65fr) minmax(105px, 0.7fr) minmax(190px, 1fr) !important;
+  }
+
+  .clean-nav-link,
+  .clean-nav-button {
+    font-size: 17px !important;
+    padding: 0 10px !important;
+  }
+
+  .clean-nav-search-input {
+    font-size: 16px !important;
+    padding: 0 10px !important;
+  }
+}
+
