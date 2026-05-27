@@ -2461,8 +2461,22 @@
         '</div>';
     }
 
-    if (!row.contains(optional)) row.appendChild(optional);
-    if (!row.contains(early)) row.appendChild(early);
+    /*
+      Keep optional mortgage sections in the new two-column layout.
+      Previously, every auto-calculate moved these boxes back into the old
+      .loan-optional-row, making them look like they disappeared while typing.
+    */
+    const mortgageLayout = document.querySelector(".mortgage-two-column-input-layout");
+    const mortgageLeftColumn = mortgageLayout ? mortgageLayout.querySelector(".mortgage-left-input-column") : null;
+    const mortgageRightColumn = mortgageLayout ? mortgageLayout.querySelector(".mortgage-right-input-column") : null;
+
+    if (mortgageLeftColumn && mortgageRightColumn) {
+      if (optional.parentElement !== mortgageLeftColumn) mortgageLeftColumn.appendChild(optional);
+      if (early.parentElement !== mortgageRightColumn) mortgageRightColumn.appendChild(early);
+    } else {
+      if (!row.contains(optional)) row.appendChild(optional);
+      if (!row.contains(early)) row.appendChild(early);
+    }
 
     const hoa = byId("hoaMonthly");
     const other = byId("otherMonthlyFees");
@@ -2602,6 +2616,26 @@
       });
   }
 
+
+  function renderMortgageAdvancedResultPanel(resultHtml) {
+    const panel = getOrCreateOutputPanel("loan");
+    if (!panel) return null;
+
+    panel.className = "loan-style-output-panel calculator-clean-result loan-clean-result mortgage-modern-result-panel";
+    panel.innerHTML =
+      '<div class="mortgage-modern-result-shell">' +
+        '<h2 class="loan-panel-title mortgage-modern-result-title">Result</h2>' +
+        (resultHtml || "") +
+      '</div>';
+
+    panel.hidden = false;
+    panel.style.setProperty("display", "block", "important");
+    panel.style.setProperty("visibility", "visible", "important");
+
+    hideNativeResultElements("loan");
+    return panel;
+  }
+
   function calculateLoan() {
     ensureMortgageOptionalSections();
 
@@ -2718,67 +2752,157 @@
       rows.push(["Estimated balance after month " + paidMonths, moneyRM(remainingBalance(principal, annualRate, months, paidMonths, extraMonthly))]);
     }
 
+    const normalPayoffYears = (noExtraSchedule.payoffMonths / 12).toFixed(1);
+    const extraPayoffYears = (schedule.payoffMonths / 12).toFixed(1);
+    const monthsSaved = Math.max(0, noExtraSchedule.payoffMonths - schedule.payoffMonths);
+    const yearlyPaymentTotal = totalMonthly * 12;
+    const loanToValue = homePrice > 0 ? (principal / homePrice) * 100 : 0;
+    const downPaymentPercent = homePrice > 0 ? (downPayment / homePrice) * 100 : 0;
+    const costToIncomePercent = incomeMonthly > 0 ? (totalMonthly / incomeMonthly) * 100 : 0;
+    const inflationRate = 3;
+    const yearsFloat = months / 12;
+    const inflationAdjustedTotal = principalInterestValue / Math.pow(1 + inflationRate / 100, yearsFloat);
+    const assumedRent = totalMonthly * 0.75;
+    const buyVsRentGap = totalMonthly - assumedRent;
+    const flexiSuggestedExtra = extraMonthly > 0 ? extraMonthly : Math.min(500, Math.max(100, baseMonthly * 0.05));
+    const flexiScenario = mortgagePayoffSchedule(principal, annualRate, months, flexiSuggestedExtra);
+    const islamicMonthly = baseMonthly;
+    const islamicTotalProfit = Math.max(0, islamicMonthly * months - principal);
+
+    const comparisonRows = [
+      ["Current loan", annualRate.toFixed(2) + "%", months + " months", moneyRM(baseMonthly), moneyRM(baseTotalInterest)],
+      ["Rate +1%", (annualRate + 1).toFixed(2) + "%", months + " months", moneyRM(calculateLoanPayment(principal, annualRate + 1, months)), moneyRM(calculateLoanPayment(principal, annualRate + 1, months) * months - principal)],
+      ["Rate -1%", Math.max(0, annualRate - 1).toFixed(2) + "%", months + " months", moneyRM(calculateLoanPayment(principal, Math.max(0, annualRate - 1), months)), moneyRM(calculateLoanPayment(principal, Math.max(0, annualRate - 1), months) * months - principal)]
+    ];
+
+    const loanYearRows = yearCompareItems.map(function (item) {
+      const years = Number(String(item.label).replace(/[^\d.]/g, "")) || 0;
+      const compareMonths = years * 12;
+      const monthly = calculateLoanPayment(principal, annualRate, compareMonths);
+      return [item.label, moneyRM(monthly), moneyRM(monthly * compareMonths - principal), moneyRM(monthly * compareMonths)];
+    });
+
     const summary =
-      '<div class="mortgage-advanced-output">' +
-        '<div class="calculator-report-summary-boxes mortgage-result-summary">' +
-          '<div class="calculator-report-summary-card calculator-report-monthly-card">' +
-            '<div class="calculator-report-summary-label">Principal + interest</div>' +
-            '<div class="calculator-report-summary-value">' + moneyRM(baseMonthly) + '/mo</div>' +
-          '</div>' +
-          '<div class="calculator-report-summary-card calculator-report-interest-card">' +
-            '<div class="calculator-report-summary-label">Affordable?</div>' +
-            '<div class="calculator-report-summary-value mortgage-small-value">' + escapeHtml(affordability) + '</div>' +
-          '</div>' +
-          '<div class="calculator-report-summary-card calculator-report-total-card">' +
-            '<div class="calculator-report-summary-label">Income needed</div>' +
-            '<div class="calculator-report-summary-value">' + moneyRM(requiredIncome) + '/mo</div>' +
-          '</div>' +
-        '</div>' +
-
-        '<div class="mortgage-output-grid">' +
-          '<section class="mortgage-output-box mortgage-output-affordability">' +
-            '<h3>Affordability & extra payment</h3>' +
-            mortgageTable(["Item", "Value"], [
-              ["Estimated total monthly payment", moneyRM(totalMonthly)],
-              ["Monthly income entered", incomeMonthly > 0 ? moneyRM(incomeMonthly) : "Not provided"],
-              ["Income needed to afford this", moneyRM(requiredIncome) + "/month"],
-              ["Extra paid over payoff", moneyRM(extraPaidApprox)],
-              ["Interest saved with extra", moneyRM(interestSaved)],
-              ["Break even time", breakEvenText]
-            ], "mortgage-affordability-table") +
-          '</section>' +
-
-          '<section class="mortgage-output-box mortgage-output-downpayment">' +
-            '<h3>Down payment impact</h3>' +
-            mortgageTable(["Down payment", "Cash down", "Loan principal", "Monthly P+I", "Total interest"], downPaymentRows, "mortgage-downpayment-table") +
-          '</section>' +
-        '</div>' +
-
-        '<section class="mortgage-output-box mortgage-output-schedule">' +
-          '<h3>Yearly amortization table</h3>' +
-          mortgageTable(["Year", "Principal paid", "Interest paid", "Remaining balance"], yearlyRows, "mortgage-year-table") +
+      '<div class="mortgage-modern-output">' +
+        '<section class="mortgage-modern-section mortgage-breakdown-section">' +
+          '<h3>Monthly payment breakdown</h3>' +
+          mortgageTable(["Payment part", "Monthly value"], [
+            ["Principal + interest", moneyRM(baseMonthly)],
+            ["Property tax", moneyRM(taxMonthly)],
+            ["Insurance", moneyRM(insuranceMonthly)],
+            ["Other monthly fee", moneyRM(otherMonthly)],
+            ["Extra monthly payment", moneyRM(extraMonthly)],
+            ["Estimated total monthly payment", moneyRM(totalMonthly)]
+          ], "mortgage-modern-table") +
         '</section>' +
 
-        '<div class="mortgage-output-grid mortgage-graph-grid">' +
-          '<section class="mortgage-output-box mortgage-output-chart">' +
-            '<h3>Graph: different interest rates</h3>' +
-            mortgageSimpleBarChart(interestChartItems, "monthly") +
-          '</section>' +
+        '<section class="mortgage-modern-section mortgage-affordability-section">' +
+          '<h3>Affordability analysis</h3>' +
+          mortgageTable(["Check", "Result"], [
+            ["Is this house affordable?", affordability],
+            ["Monthly income entered", incomeMonthly > 0 ? moneyRM(incomeMonthly) : "Not provided"],
+            ["Income needed to afford this", moneyRM(requiredIncome) + "/month"],
+            ["Payment to income ratio", incomeMonthly > 0 ? costToIncomePercent.toFixed(1) + "%" : "Add income to calculate"],
+            ["Rule used", "Payment should stay around 28% of monthly income"]
+          ], "mortgage-modern-table") +
+        '</section>' +
 
-          '<section class="mortgage-output-box mortgage-output-chart">' +
-            '<h3>Graph: loan comparison by years</h3>' +
-            mortgageSimpleBarChart(yearCompareItems, "monthly") +
-          '</section>' +
-        '</div>' +
+        '<section class="mortgage-modern-section mortgage-insights-section">' +
+          '<h3>Loan insights</h3>' +
+          mortgageTable(["Insight", "Value"], [
+            ["Home price", moneyRM(homePrice)],
+            ["Down payment", moneyRM(downPayment) + " (" + downPaymentPercent.toFixed(1) + "%)"],
+            ["Loan principal", moneyRM(principal)],
+            ["Loan-to-value", loanToValue.toFixed(1) + "%"],
+            ["Principal + interest value", moneyRM(principalInterestValue)],
+            ["Total interest", moneyRM(baseTotalInterest)],
+            ["Yearly payment estimate", moneyRM(yearlyPaymentTotal)]
+          ], "mortgage-modern-table") +
+        '</section>' +
 
-        '<section class="mortgage-output-box mortgage-output-break-even">' +
-          '<h3>Break even time</h3>' +
-          '<p><strong>' + escapeHtml(breakEvenText) + '</strong></p>' +
-          '<p>Based on down payment monthly savings compared with no down payment.</p>' +
+        '<section class="mortgage-modern-section mortgage-extra-section">' +
+          '<h3>Extra payment analysis</h3>' +
+          mortgageTable(["Extra payment item", "Result"], [
+            ["Extra monthly payment", moneyRM(extraMonthly)],
+            ["Approx extra paid", moneyRM(extraPaidApprox)],
+            ["Interest saved", moneyRM(interestSaved)],
+            ["Normal payoff time", noExtraSchedule.payoffMonths + " months (" + normalPayoffYears + " years)"],
+            ["Payoff time with extra", schedule.payoffMonths + " months (" + extraPayoffYears + " years)"],
+            ["Time saved", monthsSaved + " months"]
+          ], "mortgage-modern-table") +
+        '</section>' +
+
+        '<section class="mortgage-modern-section mortgage-comparison-section">' +
+          '<h3>Comparison scenario</h3>' +
+          mortgageTable(["Scenario", "Rate", "Term", "Monthly P+I", "Total interest"], comparisonRows, "mortgage-modern-table") +
+          mortgageTable(["Loan term", "Monthly P+I", "Total interest", "Total P+I"], loanYearRows, "mortgage-modern-table mortgage-loan-years-table") +
+        '</section>' +
+
+        '<section class="mortgage-modern-section mortgage-visual-section">' +
+          '<h3>Graph and visualizations</h3>' +
+          '<div class="mortgage-modern-graph-grid">' +
+            '<div><h4>Different interest rates</h4>' + mortgageSimpleBarChart(interestChartItems, "monthly") + '</div>' +
+            '<div><h4>Different loan years</h4>' + mortgageSimpleBarChart(yearCompareItems, "monthly") + '</div>' +
+          '</div>' +
+        '</section>' +
+
+        '<section class="mortgage-modern-section mortgage-amortization-section">' +
+          '<h3>Amortization schedule</h3>' +
+          mortgageTable(["Year", "Principal paid", "Interest paid", "Remaining balance"], yearlyRows, "mortgage-modern-table mortgage-year-table") +
+        '</section>' +
+
+        '<section class="mortgage-modern-section mortgage-smart-section">' +
+          '<h3>Smart insight</h3>' +
+          mortgageTable(["Smart insight", "Meaning"], [
+            ["Break-even time", breakEvenText],
+            ["Best quick improvement", extraMonthly > 0 ? "Your extra payment is reducing interest and payoff time." : "Try adding a small extra monthly payment to reduce interest."],
+            ["Main cost driver", baseTotalInterest > principal * 0.5 ? "Interest is a major part of total cost." : "Principal is the main part of total cost."],
+            ["Affordability note", affordability]
+          ], "mortgage-modern-table") +
+        '</section>' +
+
+        '<section class="mortgage-modern-section mortgage-inflation-section">' +
+          '<h3>Inflation adjusted analysis</h3>' +
+          mortgageTable(["Inflation item", "Estimate"], [
+            ["Assumed inflation", inflationRate.toFixed(1) + "% per year"],
+            ["Nominal principal + interest", moneyRM(principalInterestValue)],
+            ["Inflation-adjusted equivalent", moneyRM(inflationAdjustedTotal)],
+            ["Long-term effect", "Future payments may feel cheaper if income rises with inflation."]
+          ], "mortgage-modern-table") +
+        '</section>' +
+
+        '<section class="mortgage-modern-section mortgage-rentbuy-section">' +
+          '<h3>Rent buy analysis</h3>' +
+          mortgageTable(["Rent vs buy item", "Estimate"], [
+            ["Estimated buy monthly cost", moneyRM(totalMonthly)],
+            ["Assumed comparable rent", moneyRM(assumedRent) + "/month"],
+            ["Buy minus rent difference", moneyRM(buyVsRentGap) + "/month"],
+            ["Simple guidance", buyVsRentGap <= 0 ? "Buying is cheaper than assumed rent." : "Buying costs more monthly, but builds ownership equity."]
+          ], "mortgage-modern-table") +
+        '</section>' +
+
+        '<section class="mortgage-modern-section mortgage-flexi-section">' +
+          '<h3>Flexi loan analysis</h3>' +
+          mortgageTable(["Flexi loan item", "Estimate"], [
+            ["Flexible extra payment tested", moneyRM(flexiSuggestedExtra) + "/month"],
+            ["Estimated payoff time", flexiScenario.payoffMonths + " months"],
+            ["Estimated interest saved", moneyRM(Math.max(0, noExtraSchedule.totalInterest - flexiScenario.totalInterest))],
+            ["Flexi loan note", "A flexi loan can help if extra deposits reduce principal or interest calculation."]
+          ], "mortgage-modern-table") +
+        '</section>' +
+
+        '<section class="mortgage-modern-section mortgage-islamic-section">' +
+          '<h3>Islamic financing comparison</h3>' +
+          mortgageTable(["Islamic financing item", "Indicative estimate"], [
+            ["Indicative monthly payment", moneyRM(islamicMonthly)],
+            ["Indicative total profit", moneyRM(islamicTotalProfit)],
+            ["Comparison note", "This uses the same entered rate as an indicative profit rate for comparison only."],
+            ["Important note", "Actual Islamic financing uses bank-specific structures such as Murabahah, Tawarruq, or Musharakah Mutanaqisah."]
+          ], "mortgage-modern-table") +
         '</section>' +
       '</div>';
 
-    renderResultPanel("loan", rows, summary);
+    renderMortgageAdvancedResultPanel(summary);
     saveCurrentReport("loan", {
       monthlyPayment: moneyRM(baseMonthly),
       totalInterest: moneyRM(baseTotalInterest),
@@ -5898,6 +6022,76 @@
     setTimeout(fixMortgageGridWrapper, 800);
     setTimeout(fixMortgageGridWrapper, 1600);
     setTimeout(fixMortgageGridWrapper, 2600);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+
+
+/* =====================================================
+   MORTGAGE: Keep optional dropdowns visible after input
+   - Safety pass for auto-calculate / delayed layout scripts
+===================================================== */
+(function () {
+  "use strict";
+
+  function isMortgagePage() {
+    const title = String(document.querySelector("h1")?.textContent || "").toLowerCase();
+    const path = window.location.pathname.toLowerCase();
+
+    return (
+      path.includes("mortgage") ||
+      title.includes("mortgage") ||
+      !!document.querySelector(".mortgage-two-column-input-layout")
+    );
+  }
+
+  function keepMortgageOptionalVisible() {
+    if (!isMortgagePage()) return;
+
+    const layout = document.querySelector(".mortgage-two-column-input-layout");
+    const left = layout ? layout.querySelector(".mortgage-left-input-column") : null;
+    const right = layout ? layout.querySelector(".mortgage-right-input-column") : null;
+
+    const optional = document.querySelector(".optional-mortgage-costs");
+    const early = document.querySelector(".early-settlement-box");
+
+    if (left && optional && optional.parentElement !== left) {
+      left.appendChild(optional);
+    }
+
+    if (right && early && early.parentElement !== right) {
+      right.appendChild(early);
+    }
+
+    [optional, early].forEach(function (box) {
+      if (!box) return;
+      box.style.setProperty("display", "block", "important");
+      box.style.setProperty("visibility", "visible", "important");
+      box.style.setProperty("opacity", "1", "important");
+    });
+  }
+
+  function start() {
+    keepMortgageOptionalVisible();
+
+    setTimeout(keepMortgageOptionalVisible, 150);
+    setTimeout(keepMortgageOptionalVisible, 600);
+    setTimeout(keepMortgageOptionalVisible, 1200);
+
+    document.addEventListener("input", function () {
+      setTimeout(keepMortgageOptionalVisible, 50);
+      setTimeout(keepMortgageOptionalVisible, 350);
+    }, true);
+
+    document.addEventListener("change", function () {
+      setTimeout(keepMortgageOptionalVisible, 50);
+      setTimeout(keepMortgageOptionalVisible, 350);
+    }, true);
   }
 
   if (document.readyState === "loading") {
