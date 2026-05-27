@@ -3360,20 +3360,7 @@
           ], "mortgage-modern-table") +
         '</section>' +
 
-        '<section class="mortgage-modern-section mortgage-islamic-section">' +
-          '<h3>Islamic financing analysis</h3>' +
-          mortgageTable(["Islamic financing item", "Analysis"], [
-            ["Indicative monthly payment", moneyRM(islamicMonthly)],
-            ["Indicative total profit", moneyRM(islamicTotalProfit)],
-            ["Indicative total sale / repayment price", moneyRM(islamicTotalSalePrice)],
-            ["Conventional interest estimate", moneyRM(conventionalInterestAmount)],
-            ["Difference from conventional estimate", islamicDifferenceText],
-            ["What is different?", "Conventional loans charge interest on borrowed principal; Islamic financing usually structures the bank profit through sale, lease, partnership, or commodity-trade contracts."],
-            ["Rate wording", "The entered rate is treated here as an indicative profit rate, not a guaranteed bank offer."],
-            ["Ownership / contract note", "Actual Islamic products may use Murabahah, Tawarruq, Ijarah, or Musharakah Mutanaqisah, and the legal contract can differ from a conventional mortgage."],
-            ["Important note", "This is an educational estimate only. Real Islamic financing depends on the bank, Shariah structure, fees, rebate/ibra policy, and approval terms."]
-          ], "mortgage-modern-table") +
-        '</section>' +
+
       '</div>';
 
     renderMortgageAdvancedResultPanel(summary);

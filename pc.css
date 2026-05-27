@@ -8855,3 +8855,46 @@ body.calculator-report-view #calculatorReportPage .age-point-output {
   }
 }
 
+
+/* =====================================================
+   MORTGAGE: Fit Copy / Save / Share at bottom of result box
+===================================================== */
+.mortgage-modern-result-shell .mortgage-result-actions,
+.mortgage-modern-result-shell .mortgage-result-actions-final {
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+  margin: 22px 0 0 !important;
+  padding: 16px 0 0 !important;
+  border-top: 4px solid var(--black, #000) !important;
+  box-sizing: border-box !important;
+}
+
+.mortgage-modern-result-shell .mortgage-result-action-btn {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  min-height: 48px !important;
+  margin: 0 !important;
+  padding: 10px 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 4px solid var(--black, #000) !important;
+  box-shadow: 4px 4px 0 var(--black, #000) !important;
+  font-family: inherit !important;
+  font-weight: bold !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 850px) {
+  .mortgage-modern-result-shell .mortgage-result-actions,
+  .mortgage-modern-result-shell .mortgage-result-actions-final {
+    grid-template-columns: 1fr !important;
+  }
+}
+
