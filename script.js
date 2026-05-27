@@ -5385,3 +5385,293 @@
   }
 })();
 
+
+/* =====================================================
+   MORTGAGE INPUT LAYOUT: Costs below home, extra below loan
+   - Left column: Home details + Optional costs
+   - Right column: Loan details + Extra payment / settlement
+===================================================== */
+(function () {
+  "use strict";
+
+  function text(el) {
+    return String(el ? el.textContent || "" : "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+  }
+
+  function isMortgagePage() {
+    const title = text(document.querySelector("h1"));
+    const path = window.location.pathname.toLowerCase();
+
+    return (
+      path.includes("mortgage") ||
+      title.includes("mortgage") ||
+      !!document.getElementById("loanResult") ||
+      !!document.querySelector(".mortgage-home-box") ||
+      !!document.querySelector(".mortgage-loan-box") ||
+      !!document.querySelector(".optional-mortgage-costs") ||
+      !!document.querySelector(".early-settlement-box")
+    );
+  }
+
+  function findBoxByTitle(patterns) {
+    const boxes = Array.from(document.querySelectorAll(
+      ".mortgage-input-box, .mortgage-home-box, .mortgage-loan-box, .optional-mortgage-costs, .early-settlement-box, .loan-optional-row > *"
+    ));
+
+    return boxes.find(function (box) {
+      const title = text(box.querySelector(".bmi-extra-title, .mortgage-box-title, h2, h3, button, .optional-mortgage-toggle, .early-settlement-toggle") || box);
+      return patterns.some(function (pattern) {
+        return pattern.test(title);
+      });
+    }) || null;
+  }
+
+  function getHomeBox() {
+    return (
+      document.querySelector(".mortgage-home-box") ||
+      document.querySelector(".mortgage-home-details-box") ||
+      findBoxByTitle([/home details/, /property details/, /home info/])
+    );
+  }
+
+  function getLoanBox() {
+    return (
+      document.querySelector(".mortgage-loan-box") ||
+      document.querySelector(".mortgage-loan-details-box") ||
+      findBoxByTitle([/loan details/, /financing details/, /loan info/])
+    );
+  }
+
+  function getOptionalCostBox() {
+    return (
+      document.querySelector(".optional-mortgage-costs") ||
+      findBoxByTitle([/optional costs/, /property tax/, /insurance/, /monthly fee/])
+    );
+  }
+
+  function getExtraSettlementBox() {
+    return (
+      document.querySelector(".early-settlement-box") ||
+      document.querySelector(".mortgage-extra-payment-box") ||
+      findBoxByTitle([/extra payment/, /early settlement/, /settlement/])
+    );
+  }
+
+  function moveTo(parent, child) {
+    if (!parent || !child) return;
+
+    if (child.parentElement !== parent) {
+      parent.appendChild(child);
+    }
+  }
+
+  function organizeMortgageInputs() {
+    if (!isMortgagePage()) return;
+
+    const calculator = document.querySelector(".calculator");
+    if (!calculator) return;
+
+    const homeBox = getHomeBox();
+    const loanBox = getLoanBox();
+    const optionalCostBox = getOptionalCostBox();
+    const extraSettlementBox = getExtraSettlementBox();
+
+    if (!homeBox && !loanBox && !optionalCostBox && !extraSettlementBox) return;
+
+    let layout = document.querySelector(".mortgage-two-column-input-layout");
+
+    if (!layout) {
+      layout = document.createElement("div");
+      layout.className = "mortgage-two-column-input-layout";
+
+      const firstBox = homeBox || loanBox || optionalCostBox || extraSettlementBox;
+      if (firstBox && firstBox.parentElement) {
+        firstBox.parentElement.insertBefore(layout, firstBox);
+      } else {
+        calculator.appendChild(layout);
+      }
+    }
+
+    let leftCol = layout.querySelector(".mortgage-left-input-column");
+    let rightCol = layout.querySelector(".mortgage-right-input-column");
+
+    if (!leftCol) {
+      leftCol = document.createElement("div");
+      leftCol.className = "mortgage-left-input-column";
+      layout.appendChild(leftCol);
+    }
+
+    if (!rightCol) {
+      rightCol = document.createElement("div");
+      rightCol.className = "mortgage-right-input-column";
+      layout.appendChild(rightCol);
+    }
+
+    moveTo(leftCol, homeBox);
+    moveTo(leftCol, optionalCostBox);
+
+    moveTo(rightCol, loanBox);
+    moveTo(rightCol, extraSettlementBox);
+
+    if (optionalCostBox) {
+      optionalCostBox.classList.add("mortgage-box-under-home");
+    }
+
+    if (extraSettlementBox) {
+      extraSettlementBox.classList.add("mortgage-box-under-loan");
+    }
+  }
+
+  function start() {
+    organizeMortgageInputs();
+
+    /*
+      Existing mortgage scripts may create dropdown boxes after page load,
+      so run a few delayed passes without using a continuous observer.
+    */
+    setTimeout(organizeMortgageInputs, 200);
+    setTimeout(organizeMortgageInputs, 700);
+    setTimeout(organizeMortgageInputs, 1400);
+    setTimeout(organizeMortgageInputs, 2400);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+
+
+/* =====================================================
+   MORTGAGE: Remove old result-table box + side copy button
+   - Hides/removes the older result box that contains the table
+   - Removes the copy button beside that old result box
+   - Keeps the newer mortgage output/report sections untouched
+===================================================== */
+(function () {
+  "use strict";
+
+  function text(el) {
+    return String(el ? el.textContent || "" : "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+  }
+
+  function isMortgagePage() {
+    const title = text(document.querySelector("h1"));
+    const path = window.location.pathname.toLowerCase();
+
+    return (
+      path.includes("mortgage") ||
+      title.includes("mortgage") ||
+      !!document.getElementById("loanResult") ||
+      !!document.getElementById("loanExternalOutput") ||
+      !!document.querySelector(".mortgage-output-panel")
+    );
+  }
+
+  function isOldMortgageResultBox(el) {
+    if (!el) return false;
+
+    const hasTable = !!el.querySelector("table");
+    const content = text(el);
+
+    if (!hasTable) return false;
+
+    return (
+      content.includes("monthly payment") ||
+      content.includes("principal") ||
+      content.includes("interest") ||
+      content.includes("remaining balance") ||
+      content.includes("total payment")
+    );
+  }
+
+  function removeOldMortgageResultBox() {
+    if (!isMortgagePage()) return;
+
+    /*
+      The older mortgage result box usually lives in #loanResult or #loanExternalOutput.
+      Newer mortgage sections use their own mortgage output panels, so this targets the old
+      table result area only.
+    */
+    [
+      document.getElementById("loanResult"),
+      document.getElementById("loanExternalOutput"),
+      document.getElementById("universalLoanStyleOutput")
+    ].forEach(function (box) {
+      if (!box) return;
+
+      if (isOldMortgageResultBox(box)) {
+        box.innerHTML = "";
+        box.style.setProperty("display", "none", "important");
+        box.setAttribute("aria-hidden", "true");
+      }
+    });
+
+    /*
+      Remove side copy buttons beside the old result area only.
+    */
+    document
+      .querySelectorAll(
+        ".loan-copy-side, " +
+        ".mortgage-old-copy-button, " +
+        "#loanResultCopyButton, " +
+        "#copyLoanResult, " +
+        "#loanCopyButton"
+      )
+      .forEach(function (button) {
+        button.remove();
+      });
+
+    /*
+      Some versions place a plain copy button next to the old result box.
+    */
+    document.querySelectorAll("button").forEach(function (button) {
+      const btnText = text(button);
+      if (btnText !== "copy" && btnText !== "copy result") return;
+
+      const parent = button.parentElement;
+      if (!parent) return;
+
+      if (
+        parent.querySelector("#loanResult") ||
+        parent.querySelector("#loanExternalOutput") ||
+        parent.className.toString().toLowerCase().includes("loan-result") ||
+        parent.className.toString().toLowerCase().includes("mortgage-result")
+      ) {
+        button.remove();
+      }
+    });
+  }
+
+  function start() {
+    removeOldMortgageResultBox();
+
+    setTimeout(removeOldMortgageResultBox, 200);
+    setTimeout(removeOldMortgageResultBox, 700);
+    setTimeout(removeOldMortgageResultBox, 1400);
+
+    document.addEventListener("input", function () {
+      setTimeout(removeOldMortgageResultBox, 350);
+      setTimeout(removeOldMortgageResultBox, 900);
+    }, true);
+
+    document.addEventListener("change", function () {
+      setTimeout(removeOldMortgageResultBox, 350);
+      setTimeout(removeOldMortgageResultBox, 900);
+    }, true);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+

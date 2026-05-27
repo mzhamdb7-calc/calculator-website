@@ -5678,3 +5678,119 @@ body.loan-page .early-settlement-content select {
     line-height: 1.2 !important;
   }
 }
+
+
+/* =====================================================
+   MORTGAGE INPUT LAYOUT: Home+costs left, Loan+extra right
+===================================================== */
+@media (min-width: 851px) {
+  body.loan-page .mortgage-two-column-input-layout,
+  body.mortgage-page .mortgage-two-column-input-layout {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    gap: 18px !important;
+    align-items: start !important;
+    margin: 18px 0 22px !important;
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .mortgage-left-input-column,
+  body.loan-page .mortgage-right-input-column,
+  body.mortgage-page .mortgage-left-input-column,
+  body.mortgage-page .mortgage-right-input-column {
+    min-width: 0 !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+    align-items: start !important;
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .mortgage-left-input-column > *,
+  body.loan-page .mortgage-right-input-column > *,
+  body.mortgage-page .mortgage-left-input-column > *,
+  body.mortgage-page .mortgage-right-input-column > * {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .loan-optional-row,
+  body.mortgage-page .loan-optional-row {
+    display: contents !important;
+  }
+
+  body.loan-page .mortgage-box-under-home,
+  body.loan-page .mortgage-box-under-loan,
+  body.mortgage-page .mortgage-box-under-home,
+  body.mortgage-page .mortgage-box-under-loan {
+    margin-top: 0 !important;
+  }
+}
+
+@media (max-width: 850px) {
+  body.loan-page .mortgage-two-column-input-layout,
+  body.mortgage-page .mortgage-two-column-input-layout {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    margin: 16px 0 20px !important;
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .mortgage-left-input-column,
+  body.loan-page .mortgage-right-input-column,
+  body.mortgage-page .mortgage-left-input-column,
+  body.mortgage-page .mortgage-right-input-column {
+    min-width: 0 !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  body.loan-page .mortgage-left-input-column > *,
+  body.loan-page .mortgage-right-input-column > *,
+  body.mortgage-page .mortgage-left-input-column > *,
+  body.mortgage-page .mortgage-right-input-column > * {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .loan-optional-row,
+  body.mortgage-page .loan-optional-row {
+    display: contents !important;
+  }
+}
+
+
+/* =====================================================
+   MORTGAGE: Hide old result table box + side copy button
+===================================================== */
+body.loan-page #loanResult:has(table),
+body.loan-page #loanExternalOutput:has(table),
+body.loan-page #universalLoanStyleOutput:has(table),
+body.mortgage-page #loanResult:has(table),
+body.mortgage-page #loanExternalOutput:has(table),
+body.mortgage-page #universalLoanStyleOutput:has(table),
+body.loan-page .loan-copy-side,
+body.loan-page .mortgage-old-copy-button,
+body.loan-page #loanResultCopyButton,
+body.loan-page #copyLoanResult,
+body.loan-page #loanCopyButton,
+body.mortgage-page .loan-copy-side,
+body.mortgage-page .mortgage-old-copy-button,
+body.mortgage-page #loanResultCopyButton,
+body.mortgage-page #copyLoanResult,
+body.mortgage-page #loanCopyButton {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
