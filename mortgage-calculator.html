@@ -113,32 +113,101 @@
       <p class="subtitle">
         Estimate your mortgage monthly payment, optional home costs, full loan interest, and full payment value.
       </p>
+      <div class="mortgage-input-grid">
 
-      <label for="amount">Mortgage amount / purchase price:</label>
-      <input
-        type="number"
-        id="amount"
-        placeholder="Example: 300000"
-        inputmode="decimal"
-      >
+        <div class="mortgage-input-box mortgage-home-box">
+          <div class="mortgage-input-title">Home details</div>
 
-      <label for="interest">Annual interest rate (%):</label>
-      <input
-        type="number"
-        id="interest"
-        placeholder="Example: 5"
-        inputmode="decimal"
-      >
+          <label for="homeName">Home name:</label>
+          <input
+            type="text"
+            id="homeName"
+            placeholder="Optional, example: Family home"
+          >
 
-      <label for="years">Loan term in months:</label>
-      <input
-        type="number"
-        id="years"
-        placeholder="Example: 360"
-        inputmode="decimal"
-        aria-label="Loan term in months"
-        data-term-unit="months"
-      >
+          <label for="amount">Home price:</label>
+          <input
+            type="number"
+            id="amount"
+            placeholder="Example: 300000"
+            inputmode="decimal"
+          >
+
+          <label for="downPayment">Down payment:</label>
+          <input
+            type="number"
+            id="downPayment"
+            placeholder="Example: 30000"
+            inputmode="decimal"
+          >
+
+          <label for="startDate">Start date:</label>
+          <input
+            type="date"
+            id="startDate"
+          >
+        </div>
+
+        <div class="mortgage-side-stack">
+          <div class="mortgage-input-box mortgage-loan-box">
+            <div class="mortgage-input-title">Loan details</div>
+
+            <label for="interest">Annual interest rate (%):</label>
+            <input
+              type="number"
+              id="interest"
+              placeholder="Example: 5"
+              inputmode="decimal"
+            >
+
+            <label for="years">Loan term in months:</label>
+            <input
+              type="number"
+              id="years"
+              placeholder="Example: 360"
+              inputmode="decimal"
+              aria-label="Loan term in months"
+              data-term-unit="months"
+            >
+
+            <label for="incomeMonthly">Monthly income:</label>
+            <input
+              type="number"
+              id="incomeMonthly"
+              placeholder="Optional, example: 8000"
+              inputmode="decimal"
+            >
+          </div>
+
+          <div class="loan-optional-row">
+            <div class="optional-mortgage-costs mortgage-input-box">
+              <button type="button" class="optional-mortgage-toggle" aria-expanded="false">Optional costs</button>
+              <div class="optional-mortgage-content" hidden>
+                <label for="propertyTaxYearly">Property tax per year:</label>
+                <input type="number" id="propertyTaxYearly" placeholder="Optional" inputmode="decimal">
+
+                <label for="homeInsuranceYearly">Home insurance per year:</label>
+                <input type="number" id="homeInsuranceYearly" placeholder="Optional" inputmode="decimal">
+
+                <label for="otherMonthlyFees">Other monthly fee:</label>
+                <input type="number" id="otherMonthlyFees" placeholder="Optional" inputmode="decimal">
+              </div>
+            </div>
+
+            <div class="early-settlement-box mortgage-input-box">
+              <button type="button" class="early-settlement-toggle" aria-expanded="false">Extra payment & settlement</button>
+              <div class="early-settlement-content" hidden>
+                <label for="extraMonthlyPayment">Extra monthly payment:</label>
+                <input type="number" id="extraMonthlyPayment" placeholder="Optional" inputmode="decimal">
+
+                <label for="earlySettlementMonth">Settle after month:</label>
+                <input type="number" id="earlySettlementMonth" placeholder="Optional" inputmode="decimal">
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
 
       <button type="button" onclick="calculateLoan()" class="main-btn">
         calculate mortgage

@@ -5516,3 +5516,165 @@ body.loan-page .early-settlement-content select {
   box-sizing: border-box !important;
 }
 
+
+/* =====================================================
+   MORTGAGE: grouped input boxes + advanced output
+===================================================== */
+@media (min-width: 851px) {
+  body.loan-page .calculator .mortgage-input-grid {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: minmax(360px, 1.05fr) minmax(360px, 0.95fr) !important;
+    gap: 18px !important;
+    align-items: start !important;
+    margin: 18px 0 22px !important;
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .calculator .mortgage-side-stack {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+    min-width: 0 !important;
+  }
+
+  body.loan-page .calculator .mortgage-input-box {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 16px !important;
+    background: #fff !important;
+    color: var(--black) !important;
+    border: 5px solid var(--black) !important;
+    box-shadow: 6px 6px 0 var(--black) !important;
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .calculator .mortgage-home-box {
+    background: #fff4b8 !important;
+  }
+
+  body.loan-page .calculator .mortgage-loan-box {
+    background: #d3fff9 !important;
+  }
+
+  body.loan-page .calculator .mortgage-input-title {
+    margin: 0 0 14px !important;
+    font-size: 21px !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+  }
+
+  body.loan-page .calculator .mortgage-input-grid label {
+    display: block !important;
+    margin: 0 0 7px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+  }
+
+  body.loan-page .calculator .mortgage-input-grid input,
+  body.loan-page .calculator .mortgage-input-grid select {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .calculator .mortgage-input-grid .loan-optional-row {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+    margin: 0 !important;
+    align-items: start !important;
+  }
+
+  body.loan-page .mortgage-advanced-output {
+    width: 100% !important;
+    margin: 18px 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .mortgage-output-grid,
+  body.loan-page .mortgage-graph-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 16px !important;
+    margin: 16px 0 !important;
+  }
+
+  body.loan-page .mortgage-output-box {
+    min-width: 0 !important;
+    padding: 14px !important;
+    background: #fff !important;
+    border: 4px solid var(--black) !important;
+    box-shadow: 5px 5px 0 var(--black) !important;
+    box-sizing: border-box !important;
+  }
+
+  body.loan-page .mortgage-output-box:nth-child(1) {
+    background: #d3fff9 !important;
+  }
+
+  body.loan-page .mortgage-output-box:nth-child(2) {
+    background: #fff4b8 !important;
+  }
+
+  body.loan-page .mortgage-output-box h3 {
+    margin: 0 0 12px !important;
+    text-align: center !important;
+    font-weight: bold !important;
+  }
+
+  body.loan-page .mortgage-advanced-table-scroll {
+    width: 100% !important;
+    overflow-x: auto !important;
+  }
+
+  body.loan-page .mortgage-advanced-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    background: #fff !important;
+  }
+
+  body.loan-page .mortgage-advanced-table th,
+  body.loan-page .mortgage-advanced-table td {
+    padding: 8px !important;
+    border: 3px solid var(--black) !important;
+    text-align: left !important;
+    vertical-align: top !important;
+  }
+
+  body.loan-page .mortgage-mini-chart {
+    display: grid !important;
+    gap: 10px !important;
+  }
+
+  body.loan-page .mortgage-chart-row {
+    display: grid !important;
+    grid-template-columns: 90px minmax(0, 1fr) 120px !important;
+    gap: 8px !important;
+    align-items: center !important;
+  }
+
+  body.loan-page .mortgage-chart-label,
+  body.loan-page .mortgage-chart-value {
+    font-weight: bold !important;
+  }
+
+  body.loan-page .mortgage-chart-track {
+    height: 22px !important;
+    background: #fff !important;
+    border: 3px solid var(--black) !important;
+    overflow: hidden !important;
+  }
+
+  body.loan-page .mortgage-chart-bar {
+    height: 100% !important;
+    background: #ffd3d3 !important;
+    border-right: 3px solid var(--black) !important;
+  }
+
+  body.loan-page .mortgage-small-value {
+    font-size: 18px !important;
+    line-height: 1.2 !important;
+  }
+}

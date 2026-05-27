@@ -2474,15 +2474,147 @@
     }
   }
 
+  function mortgageFormatPercent(value) {
+    if (!Number.isFinite(value)) return "-";
+    return (Math.round(value * 100) / 100).toFixed(2) + "%";
+  }
+
+  function mortgageSafeMoney(value) {
+    if (!Number.isFinite(value)) return "-";
+    return moneyRM(value);
+  }
+
+  function mortgagePayoffSchedule(principal, annualRate, months, extraMonthly) {
+    const monthlyRate = annualRate / 100 / 12;
+    const basePayment = calculateLoanPayment(principal, annualRate, months);
+    const extra = Math.max(0, Number(extraMonthly) || 0);
+    const payment = basePayment + extra;
+
+    let balance = principal;
+    let totalInterest = 0;
+    let payoffMonths = 0;
+    let yearPrincipal = 0;
+    let yearInterest = 0;
+    const yearly = [];
+
+    for (let month = 1; month <= months && balance > 0.005; month += 1) {
+      const interestPaid = monthlyRate === 0 ? 0 : balance * monthlyRate;
+      let principalPaid = payment - interestPaid;
+
+      if (principalPaid <= 0) {
+        principalPaid = 0;
+      }
+
+      if (principalPaid > balance) {
+        principalPaid = balance;
+      }
+
+      balance = Math.max(0, balance - principalPaid);
+      totalInterest += interestPaid;
+      yearPrincipal += principalPaid;
+      yearInterest += interestPaid;
+      payoffMonths = month;
+
+      if (month % 12 === 0 || balance <= 0.005 || month === months) {
+        yearly.push({
+          year: Math.ceil(month / 12),
+          principal: yearPrincipal,
+          interest: yearInterest,
+          balance: balance
+        });
+        yearPrincipal = 0;
+        yearInterest = 0;
+      }
+    }
+
+    return {
+      basePayment: basePayment,
+      paymentWithExtra: payment,
+      totalInterest: totalInterest,
+      totalPaid: principal + totalInterest,
+      payoffMonths: payoffMonths,
+      yearly: yearly
+    };
+  }
+
+  function mortgageSimpleBarChart(items, valueKey) {
+    const values = items.map(function (item) { return Number(item[valueKey]) || 0; });
+    const max = Math.max.apply(Math, values.concat([1]));
+
+    return (
+      '<div class="mortgage-mini-chart">' +
+        items.map(function (item) {
+          const value = Number(item[valueKey]) || 0;
+          const width = Math.max(4, Math.round((value / max) * 100));
+          return (
+            '<div class="mortgage-chart-row">' +
+              '<div class="mortgage-chart-label">' + escapeHtml(item.label) + '</div>' +
+              '<div class="mortgage-chart-track"><div class="mortgage-chart-bar" style="width:' + width + '%"></div></div>' +
+              '<div class="mortgage-chart-value">' + escapeHtml(item.display) + '</div>' +
+            '</div>'
+          );
+        }).join("") +
+      '</div>'
+    );
+  }
+
+  function mortgageTable(headers, rows, className) {
+    return (
+      '<div class="mortgage-advanced-table-scroll">' +
+        '<table class="mortgage-advanced-table ' + (className || "") + '">' +
+          '<thead><tr>' + headers.map(function (header) {
+            return '<th>' + escapeHtml(header) + '</th>';
+          }).join("") + '</tr></thead>' +
+          '<tbody>' + rows.map(function (row) {
+            return '<tr>' + row.map(function (cell) {
+              return '<td>' + escapeHtml(cell) + '</td>';
+            }).join("") + '</tr>';
+          }).join("") + '</tbody>' +
+        '</table>' +
+      '</div>'
+    );
+  }
+
+  function mortgageImpactRows(homePrice, annualRate, months, currentDownPayment) {
+    const percents = [0, 10, 20, 30];
+
+    if (currentDownPayment > 0 && homePrice > 0) {
+      const currentPercent = Math.round((currentDownPayment / homePrice) * 1000) / 10;
+      if (!percents.includes(currentPercent)) percents.push(currentPercent);
+    }
+
+    return percents
+      .filter(function (percent, index, arr) { return arr.indexOf(percent) === index; })
+      .sort(function (a, b) { return a - b; })
+      .map(function (percent) {
+        const dp = homePrice * percent / 100;
+        const principal = Math.max(0, homePrice - dp);
+        const monthly = principal > 0 ? calculateLoanPayment(principal, annualRate, months) : 0;
+        const totalInterest = principal > 0 ? (monthly * months - principal) : 0;
+
+        return [
+          percent + "%",
+          moneyRM(dp),
+          moneyRM(principal),
+          moneyRM(monthly),
+          moneyRM(totalInterest)
+        ];
+      });
+  }
+
   function calculateLoan() {
     ensureMortgageOptionalSections();
 
-    const amount = firstNumber(["amount", "loanAmount", "loanPrincipal"]);
+    const homeNameInput = byId("homeName");
+    const homeName = homeNameInput ? String(homeNameInput.value || "").trim() : "";
+    const homePrice = firstNumber(["amount", "loanAmount", "loanPrincipal"]);
+    const downPayment = Math.max(0, firstNumber(["downPayment"]) || 0);
+    const principal = Number.isFinite(homePrice) ? Math.max(0, homePrice - downPayment) : NaN;
     const annualRate = firstNumber(["interest", "loanRate", "interestRate", "annualRate"]);
     const termInput = firstInput(["years", "loanYears", "loanTerm", "term"]);
     const rawTerm = termInput ? numberFromString(termInput.value) : NaN;
 
-    if (!Number.isFinite(amount) || !Number.isFinite(annualRate) || !Number.isFinite(rawTerm) || amount <= 0 || annualRate < 0 || rawTerm <= 0) return;
+    if (!Number.isFinite(homePrice) || !Number.isFinite(principal) || !Number.isFinite(annualRate) || !Number.isFinite(rawTerm) || homePrice <= 0 || principal <= 0 || annualRate < 0 || rawTerm <= 0) return;
 
     const label = termInput ? getInputLabel(termInput) : "";
     const isMonths = termInput && (termInput.dataset.termUnit === "months" || /month/i.test(label));
@@ -2490,56 +2622,170 @@
 
     if (!Number.isFinite(months) || months <= 0) return;
 
-    const baseMonthly = calculateLoanPayment(amount, annualRate, months);
+    const startDateInput = byId("startDate");
+    const startDate = startDateInput && startDateInput.value ? startDateInput.value : "Not provided";
     const taxMonthly = (firstNumber(["propertyTaxYearly"]) || 0) / 12;
     const insuranceMonthly = (firstNumber(["homeInsuranceYearly"]) || 0) / 12;
     const otherMonthly = firstNumber(["otherMonthlyFees", "hoaMonthly"]) || 0;
     const extraMonthly = firstNumber(["extraMonthlyPayment"]) || 0;
+    const incomeMonthly = firstNumber(["incomeMonthly", "monthlyIncome", "income"]) || 0;
+
+    const baseMonthly = calculateLoanPayment(principal, annualRate, months);
+    const principalInterestValue = baseMonthly * months;
+    const baseTotalInterest = principalInterestValue - principal;
     const totalMonthly = baseMonthly + taxMonthly + insuranceMonthly + otherMonthly + extraMonthly;
-    const totalPayment = baseMonthly * months;
-    const totalInterest = totalPayment - amount;
+    const affordRatio = 0.28;
+    const requiredIncome = totalMonthly / affordRatio;
+    const affordability = incomeMonthly > 0
+      ? (totalMonthly <= incomeMonthly * affordRatio ? "Yes, based on 28% of monthly income" : "No, estimated payment is above 28% of income")
+      : "Add monthly income to check affordability";
+
+    const schedule = mortgagePayoffSchedule(principal, annualRate, months, extraMonthly);
+    const noExtraSchedule = mortgagePayoffSchedule(principal, annualRate, months, 0);
+    const extraPaidApprox = Math.max(0, extraMonthly) * Math.max(0, schedule.payoffMonths);
+    const interestSaved = Math.max(0, noExtraSchedule.totalInterest - schedule.totalInterest);
+
+    const noDownMonthly = calculateLoanPayment(homePrice, annualRate, months);
+    const monthlySavingsFromDownPayment = Math.max(0, noDownMonthly - baseMonthly);
+    const breakEvenMonths = downPayment > 0 && monthlySavingsFromDownPayment > 0
+      ? Math.ceil(downPayment / monthlySavingsFromDownPayment)
+      : null;
+    const breakEvenText = breakEvenMonths
+      ? breakEvenMonths + " months (about " + (breakEvenMonths / 12).toFixed(1) + " years)"
+      : "Not available without down payment savings";
+
+    const yearlyRows = schedule.yearly.map(function (row) {
+      return [
+        "Year " + row.year,
+        moneyRM(row.principal),
+        moneyRM(row.interest),
+        moneyRM(row.balance)
+      ];
+    });
+
+    const interestChartItems = [-2, -1, 0, 1, 2].map(function (change) {
+      const rate = Math.max(0, annualRate + change);
+      const monthly = calculateLoanPayment(principal, rate, months);
+      return {
+        label: mortgageFormatPercent(rate),
+        monthly: monthly,
+        display: moneyRM(monthly) + "/mo"
+      };
+    });
+
+    const comparisonYears = [15, 20, 25, 30].filter(function (year, index, arr) {
+      return arr.indexOf(year) === index;
+    });
+    const yearCompareItems = comparisonYears.map(function (year) {
+      const compareMonths = year * 12;
+      const monthly = calculateLoanPayment(principal, annualRate, compareMonths);
+      return {
+        label: year + " years",
+        monthly: monthly,
+        display: moneyRM(monthly) + "/mo"
+      };
+    });
+
+    const downPaymentRows = mortgageImpactRows(homePrice, annualRate, months, downPayment);
 
     const rows = [
-      ["Loan amount", moneyRM(amount)],
+      ["Home name", homeName || "Not provided"],
+      ["Home price", moneyRM(homePrice)],
+      ["Down payment", moneyRM(downPayment)],
+      ["Mortgage principal", moneyRM(principal)],
       ["Annual interest rate", annualRate.toFixed(2) + "%"],
-      ["Loan term", months + " months"],
-      ["Monthly payment", moneyRM(baseMonthly)],
+      ["Loan term", months + " months (" + (months / 12).toFixed(1) + " years)"],
+      ["Start date", startDate],
+      ["Principal + interest value", moneyRM(principalInterestValue)],
+      ["Monthly principal + interest", moneyRM(baseMonthly)],
+      ["Total interest", moneyRM(baseTotalInterest)],
       ["Property tax monthly", moneyRM(taxMonthly)],
-      ["Home insurance monthly", moneyRM(insuranceMonthly)],
-      ["Other monthly fees", moneyRM(otherMonthly)],
+      ["Insurance monthly", moneyRM(insuranceMonthly)],
+      ["Other monthly fee", moneyRM(otherMonthly)],
       ["Extra monthly payment", moneyRM(extraMonthly)],
-      ["Total monthly payment", moneyRM(totalMonthly)],
-      ["Total interest", moneyRM(totalInterest)],
-      ["Total payment", moneyRM(totalPayment)]
+      ["Estimated total monthly payment", moneyRM(totalMonthly)],
+      ["Is this house affordable?", affordability],
+      ["Income needed to afford this", moneyRM(requiredIncome) + "/month"],
+      ["How much I am paying extra", moneyRM(extraPaidApprox) + " over estimated payoff"],
+      ["Interest saved with extra payment", moneyRM(interestSaved)],
+      ["Estimated payoff time with extra", schedule.payoffMonths + " months"],
+      ["Break even time", breakEvenText]
     ];
 
     const settleMonth = firstNumber(["earlySettlementMonth"]);
     if (Number.isFinite(settleMonth) && settleMonth > 0) {
       const paidMonths = Math.min(Math.round(settleMonth), months);
-      rows.push(["Estimated balance after month " + paidMonths, moneyRM(remainingBalance(amount, annualRate, months, paidMonths, extraMonthly))]);
+      rows.push(["Estimated balance after month " + paidMonths, moneyRM(remainingBalance(principal, annualRate, months, paidMonths, extraMonthly))]);
     }
 
     const summary =
-      '<div class="calculator-report-summary-boxes mortgage-result-summary">' +
-        '<div class="calculator-report-summary-card calculator-report-monthly-card">' +
-          '<div class="calculator-report-summary-label">Monthly payment</div>' +
-          '<div class="calculator-report-summary-value">' + moneyRM(baseMonthly) + '</div>' +
+      '<div class="mortgage-advanced-output">' +
+        '<div class="calculator-report-summary-boxes mortgage-result-summary">' +
+          '<div class="calculator-report-summary-card calculator-report-monthly-card">' +
+            '<div class="calculator-report-summary-label">Principal + interest</div>' +
+            '<div class="calculator-report-summary-value">' + moneyRM(baseMonthly) + '/mo</div>' +
+          '</div>' +
+          '<div class="calculator-report-summary-card calculator-report-interest-card">' +
+            '<div class="calculator-report-summary-label">Affordable?</div>' +
+            '<div class="calculator-report-summary-value mortgage-small-value">' + escapeHtml(affordability) + '</div>' +
+          '</div>' +
+          '<div class="calculator-report-summary-card calculator-report-total-card">' +
+            '<div class="calculator-report-summary-label">Income needed</div>' +
+            '<div class="calculator-report-summary-value">' + moneyRM(requiredIncome) + '/mo</div>' +
+          '</div>' +
         '</div>' +
-        '<div class="calculator-report-summary-card calculator-report-interest-card">' +
-          '<div class="calculator-report-summary-label">Total interest</div>' +
-          '<div class="calculator-report-summary-value">' + moneyRM(totalInterest) + '</div>' +
+
+        '<div class="mortgage-output-grid">' +
+          '<section class="mortgage-output-box mortgage-output-affordability">' +
+            '<h3>Affordability & extra payment</h3>' +
+            mortgageTable(["Item", "Value"], [
+              ["Estimated total monthly payment", moneyRM(totalMonthly)],
+              ["Monthly income entered", incomeMonthly > 0 ? moneyRM(incomeMonthly) : "Not provided"],
+              ["Income needed to afford this", moneyRM(requiredIncome) + "/month"],
+              ["Extra paid over payoff", moneyRM(extraPaidApprox)],
+              ["Interest saved with extra", moneyRM(interestSaved)],
+              ["Break even time", breakEvenText]
+            ], "mortgage-affordability-table") +
+          '</section>' +
+
+          '<section class="mortgage-output-box mortgage-output-downpayment">' +
+            '<h3>Down payment impact</h3>' +
+            mortgageTable(["Down payment", "Cash down", "Loan principal", "Monthly P+I", "Total interest"], downPaymentRows, "mortgage-downpayment-table") +
+          '</section>' +
         '</div>' +
-        '<div class="calculator-report-summary-card calculator-report-total-card">' +
-          '<div class="calculator-report-summary-label">Total payment</div>' +
-          '<div class="calculator-report-summary-value">' + moneyRM(totalPayment) + '</div>' +
+
+        '<section class="mortgage-output-box mortgage-output-schedule">' +
+          '<h3>Yearly amortization table</h3>' +
+          mortgageTable(["Year", "Principal paid", "Interest paid", "Remaining balance"], yearlyRows, "mortgage-year-table") +
+        '</section>' +
+
+        '<div class="mortgage-output-grid mortgage-graph-grid">' +
+          '<section class="mortgage-output-box mortgage-output-chart">' +
+            '<h3>Graph: different interest rates</h3>' +
+            mortgageSimpleBarChart(interestChartItems, "monthly") +
+          '</section>' +
+
+          '<section class="mortgage-output-box mortgage-output-chart">' +
+            '<h3>Graph: loan comparison by years</h3>' +
+            mortgageSimpleBarChart(yearCompareItems, "monthly") +
+          '</section>' +
         '</div>' +
+
+        '<section class="mortgage-output-box mortgage-output-break-even">' +
+          '<h3>Break even time</h3>' +
+          '<p><strong>' + escapeHtml(breakEvenText) + '</strong></p>' +
+          '<p>Based on down payment monthly savings compared with no down payment.</p>' +
+        '</section>' +
       '</div>';
 
     renderResultPanel("loan", rows, summary);
     saveCurrentReport("loan", {
       monthlyPayment: moneyRM(baseMonthly),
-      totalInterest: moneyRM(totalInterest),
-      totalPayment: moneyRM(totalPayment)
+      totalInterest: moneyRM(baseTotalInterest),
+      totalPayment: moneyRM(principalInterestValue),
+      affordability: affordability,
+      incomeNeeded: moneyRM(requiredIncome),
+      breakEvenTime: breakEvenText
     });
   }
 
