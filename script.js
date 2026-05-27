@@ -4098,7 +4098,7 @@
           autoRunning = false;
         }, 120);
       }
-    }, 250);
+    }, 2000);
   }
 
   function isCalculateButton(button) {
@@ -4167,7 +4167,7 @@
         event.target.matches &&
         event.target.matches("input, select, textarea") &&
         event.target.id !== "display" &&
-        !(event.target.closest && event.target.closest("#navbar, .site-search"))
+        !(event.target.closest && event.target.closest("#navbar, .site-search, .clean-nav-search"))
       ) {
         scheduleAutoCalculate();
       }
@@ -4178,7 +4178,7 @@
         event.target.matches &&
         event.target.matches("input, select, textarea") &&
         event.target.id !== "display" &&
-        !(event.target.closest && event.target.closest("#navbar, .site-search"))
+        !(event.target.closest && event.target.closest("#navbar, .site-search, .clean-nav-search"))
       ) {
         scheduleAutoCalculate();
       }
@@ -5925,7 +5925,7 @@
       Wait enough time for the user to finish typing multi-digit values.
       Example: typing 170 will not calculate after only "1".
     */
-    bmiTypingTimer = setTimeout(runBmiAfterTyping, 900);
+    bmiTypingTimer = setTimeout(runBmiAfterTyping, 2000);
   }
 
   function startBmiTypingFix() {
@@ -7116,6 +7116,115 @@
     window.addEventListener("hashchange", function () {
       setTimeout(dedupeAgeResults, 120);
       setTimeout(dedupeAgeResults, 700);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+
+
+/* =====================================================
+   GLOBAL RESULT: Double-render cleanup for all calculators
+   - Keeps one live result panel per calculator
+   - Prevents delayed async updates from creating duplicate boxes
+===================================================== */
+(function () {
+  "use strict";
+
+  const resultGroups = [
+    { key: "age", keepId: "ageReportOutput", selector: "#ageReportOutput, .age-clean-result, .age-point-output, #ageResult" },
+    { key: "bmi", keepId: "bmiReportOutput", selector: "#bmiReportOutput, .bmi-clean-result, .bmi-box-output, #bmiResult" },
+    { key: "loan", keepId: "loanExternalOutput", selector: "#loanExternalOutput, .loan-clean-result, .mortgage-modern-result-panel, #loanResult" },
+    { key: "personalLoan", keepId: "personalLoanExternalOutput", selector: "#personalLoanExternalOutput, .personalLoan-clean-result, #personalLoanResult" },
+    { key: "discount", keepId: "discountReportOutput", selector: "#discountReportOutput, .discount-clean-result, #discountResult" },
+    { key: "percentage", keepId: "percentageReportOutput", selector: "#percentageReportOutput, .percentage-clean-result, #percentageResult" },
+    { key: "compound", keepId: "compoundReportOutput", selector: "#compoundReportOutput, .compound-clean-result, #compoundResult" }
+  ];
+
+  function isReportView() {
+    return document.body.classList.contains("calculator-report-view") || !!document.getElementById("calculatorReportPage");
+  }
+
+  function hideLiveResultsDuringReport() {
+    if (!isReportView()) return;
+
+    document
+      .querySelectorAll(".calculator-clean-result, .loan-style-output-panel, .mortgage-modern-result-panel")
+      .forEach(function (panel) {
+        if (panel.closest("#calculatorReportPage")) return;
+
+        panel.style.setProperty("display", "none", "important");
+        panel.style.setProperty("visibility", "hidden", "important");
+        panel.setAttribute("aria-hidden", "true");
+      });
+  }
+
+  function cleanupGroup(group) {
+    let panels = Array.from(document.querySelectorAll(group.selector)).filter(function (panel) {
+      return panel && !panel.closest("#calculatorReportPage");
+    });
+
+    if (!panels.length) return;
+
+    /*
+      Prefer the expected output id if it exists, otherwise keep the newest panel.
+      Remove or hide the rest to prevent duplicate render.
+    */
+    const preferred = document.getElementById(group.keepId);
+    const keep = preferred && panels.includes(preferred) ? preferred : panels[panels.length - 1];
+
+    panels.forEach(function (panel) {
+      if (panel === keep) return;
+
+      if (panel.id && panel.id !== group.keepId) {
+        panel.style.setProperty("display", "none", "important");
+        panel.style.setProperty("visibility", "hidden", "important");
+        panel.setAttribute("aria-hidden", "true");
+      } else {
+        panel.remove();
+      }
+    });
+
+    if (!isReportView()) {
+      keep.style.removeProperty("display");
+      keep.style.removeProperty("visibility");
+      keep.removeAttribute("aria-hidden");
+    }
+  }
+
+  function cleanupResults() {
+    hideLiveResultsDuringReport();
+
+    if (isReportView()) return;
+
+    resultGroups.forEach(cleanupGroup);
+  }
+
+  function start() {
+    cleanupResults();
+
+    setTimeout(cleanupResults, 100);
+    setTimeout(cleanupResults, 500);
+    setTimeout(cleanupResults, 1200);
+    setTimeout(cleanupResults, 2400);
+
+    document.addEventListener("input", function () {
+      setTimeout(cleanupResults, 2100);
+      setTimeout(cleanupResults, 2600);
+    }, true);
+
+    document.addEventListener("change", function () {
+      setTimeout(cleanupResults, 2100);
+      setTimeout(cleanupResults, 2600);
+    }, true);
+
+    window.addEventListener("hashchange", function () {
+      setTimeout(cleanupResults, 100);
+      setTimeout(cleanupResults, 800);
     });
   }
 
