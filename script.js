@@ -4991,3 +4991,151 @@
   }
 })();
 
+
+/* =====================================================
+   MORTGAGE: Optional cost + early settlement dropdowns
+   - Makes both sections collapsible
+   - Adds arrow state: ▼ closed / ▲ open
+   - Mortgage page only
+===================================================== */
+(function () {
+  "use strict";
+
+  function text(el) {
+    return String(el ? el.textContent || "" : "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+  }
+
+  function isMortgagePage() {
+    const title = text(document.querySelector("h1"));
+    const path = window.location.pathname.toLowerCase();
+
+    return (
+      path.includes("mortgage") ||
+      path.includes("loan-calculator") ||
+      title.includes("mortgage") ||
+      !!document.getElementById("loanResult") ||
+      !!document.getElementById("loanHistoryList") ||
+      !!document.getElementById("otherMonthlyFees") ||
+      !!document.getElementById("downPayment") ||
+      !!document.getElementById("propertyTaxYearly") ||
+      !!document.querySelector(".optional-mortgage-costs") ||
+      !!document.querySelector(".early-settlement-box")
+    );
+  }
+
+  function ensureId(el, prefix) {
+    if (!el.id) {
+      el.id = prefix + "-" + Math.random().toString(36).slice(2, 8);
+    }
+
+    return el.id;
+  }
+
+  function getDirectChildrenAfterToggle(box, toggle) {
+    return Array.from(box.children).filter(function (child) {
+      return child !== toggle;
+    });
+  }
+
+  function wrapDropdownContent(box, toggle, contentClass) {
+    let content = box.querySelector(":scope > ." + contentClass);
+
+    if (!content) {
+      content = document.createElement("div");
+      content.className = contentClass;
+
+      getDirectChildrenAfterToggle(box, toggle).forEach(function (child) {
+        content.appendChild(child);
+      });
+
+      box.appendChild(content);
+    }
+
+    return content;
+  }
+
+  function setDropdownState(box, toggle, content, open) {
+    box.classList.toggle("mortgage-dropdown-open", open);
+    box.classList.toggle("mortgage-dropdown-closed", !open);
+
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    content.hidden = !open;
+  }
+
+  function setupDropdown(box, options) {
+    if (!box) return;
+
+    const titleText = options.title;
+    const toggleClass = options.toggleClass;
+    const contentClass = options.contentClass;
+
+    let toggle = box.querySelector(":scope > ." + toggleClass);
+
+    if (!toggle) {
+      toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = toggleClass + " mortgage-dropdown-toggle";
+      toggle.textContent = titleText;
+      box.insertAdjacentElement("afterbegin", toggle);
+    } else {
+      toggle.classList.add("mortgage-dropdown-toggle");
+      if (!text(toggle).replace(/[▼▲]/g, "").trim()) {
+        toggle.textContent = titleText;
+      }
+    }
+
+    const content = wrapDropdownContent(box, toggle, contentClass);
+    const contentId = ensureId(content, contentClass);
+
+    toggle.setAttribute("aria-controls", contentId);
+
+    if (!box.dataset.mortgageDropdownReady) {
+      box.dataset.mortgageDropdownReady = "yes";
+      setDropdownState(box, toggle, content, false);
+
+      toggle.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const isOpen = toggle.getAttribute("aria-expanded") === "true";
+        setDropdownState(box, toggle, content, !isOpen);
+      });
+    }
+  }
+
+  function setupMortgageDropdowns() {
+    if (!isMortgagePage()) return;
+
+    document.body.classList.add("loan-page");
+
+    setupDropdown(document.querySelector(".optional-mortgage-costs"), {
+      title: "Optional costs",
+      toggleClass: "optional-mortgage-toggle",
+      contentClass: "optional-mortgage-content"
+    });
+
+    setupDropdown(document.querySelector(".early-settlement-box"), {
+      title: "Optional early settlement",
+      toggleClass: "early-settlement-toggle",
+      contentClass: "early-settlement-content"
+    });
+  }
+
+  function start() {
+    setupMortgageDropdowns();
+
+    setTimeout(setupMortgageDropdowns, 300);
+    setTimeout(setupMortgageDropdowns, 900);
+    setTimeout(setupMortgageDropdowns, 1600);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+

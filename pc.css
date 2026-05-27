@@ -5425,3 +5425,94 @@ body.bmi-page .bmi-report-flow-table th {
 body.bmi-page .bmi-report-flow-table td {
   background: #ffffff !important;
 }
+
+
+/* =====================================================
+   MORTGAGE: Optional cost + early settlement dropdown style
+===================================================== */
+body.loan-page .optional-mortgage-costs,
+body.loan-page .early-settlement-box {
+  overflow: visible !important;
+}
+
+body.loan-page .optional-mortgage-toggle,
+body.loan-page .early-settlement-toggle,
+body.loan-page .mortgage-dropdown-toggle {
+  position: relative !important;
+  width: 100% !important;
+  min-height: 54px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 10px 46px 10px 14px !important;
+  margin: 0 !important;
+  background: #fff4b8 !important;
+  color: var(--black) !important;
+  border: 5px solid var(--black) !important;
+  box-shadow: 5px 5px 0 var(--black) !important;
+  font-family: inherit !important;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  line-height: 1.15 !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+}
+
+body.loan-page .early-settlement-toggle {
+  background: #d3fff9 !important;
+}
+
+body.loan-page .optional-mortgage-toggle::after,
+body.loan-page .early-settlement-toggle::after,
+body.loan-page .mortgage-dropdown-toggle::after {
+  content: "▼" !important;
+  position: absolute !important;
+  right: 16px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+}
+
+body.loan-page .optional-mortgage-toggle[aria-expanded="true"]::after,
+body.loan-page .early-settlement-toggle[aria-expanded="true"]::after,
+body.loan-page .mortgage-dropdown-toggle[aria-expanded="true"]::after {
+  content: "▲" !important;
+}
+
+body.loan-page .optional-mortgage-content,
+body.loan-page .early-settlement-content {
+  margin-top: 14px !important;
+  padding: 14px !important;
+  background: #fff !important;
+  border: 4px solid var(--black) !important;
+  box-shadow: 5px 5px 0 var(--black) !important;
+  box-sizing: border-box !important;
+}
+
+body.loan-page .optional-mortgage-content[hidden],
+body.loan-page .early-settlement-content[hidden] {
+  display: none !important;
+}
+
+body.loan-page .optional-mortgage-content label,
+body.loan-page .early-settlement-content label {
+  display: block !important;
+  margin-top: 10px !important;
+}
+
+body.loan-page .optional-mortgage-content label:first-child,
+body.loan-page .early-settlement-content label:first-child {
+  margin-top: 0 !important;
+}
+
+body.loan-page .optional-mortgage-content input,
+body.loan-page .optional-mortgage-content select,
+body.loan-page .early-settlement-content input,
+body.loan-page .early-settlement-content select {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
