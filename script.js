@@ -1584,10 +1584,12 @@
     const key = String(month).padStart(2, "0") + "-" + String(day).padStart(2, "0");
 
     /*
-      Muslim icons fallback list. Used when online birthday data has no
-      strong Muslim-icon match for the selected date.
+      Famous person priority:
+      1) Muslim icons first
+      2) Christian icons second
+      3) No Hindu / Buddhist / Sikh / Jewish / other-religion fallback names
     */
-    const list = {
+    const muslimList = {
       "01-01": ["Ibn Khaldun", "Muhammad Ali Jinnah", "Omar Khayyam"],
       "01-08": ["Abd al-Rahman al-Sufi", "Ibn al-Haytham", "Malala Yousafzai"],
       "01-15": ["Nasser al-Din Shah Qajar", "Ibn Battuta", "Al-Farabi"],
@@ -1604,7 +1606,24 @@
       "12-25": ["Muhammad Ali", "Muhammad Asad", "Al-Idrisi"]
     };
 
-    return list[key] || ["Ibn Sina", "Al-Khwarizmi", "Salahuddin al-Ayyubi"];
+    const christianBackup = {
+      "01-01": ["Basil of Caesarea", "Fulgentius of Ruspe", "Zygmunt Gorazdowski"],
+      "01-08": ["Lawrence Giustiniani", "Severinus of Noricum", "Apollinaris Claudius"],
+      "01-15": ["Arnold Janssen", "Paul of Thebes", "Maurus"],
+      "02-12": ["Charles Lwanga", "Benedict Biscop", "Ethelwald of Lindisfarne"],
+      "03-14": ["Matilda of Ringelheim", "Pauline of Thuringia", "Leobinus"],
+      "04-15": ["Damien of Molokai", "Paternus of Avranches", "Hunna of Alsace"],
+      "05-05": ["Augustine of Canterbury", "Nunzio Sulprizio", "Avertinus"],
+      "06-01": ["Justin Martyr", "Simeon of Trier", "Wistan"],
+      "07-24": ["Christina the Astonishing", "Declan of Ardmore", "Charbel Makhlouf"],
+      "08-04": ["John Vianney", "Aristarchus of Thessalonica", "Euphronius of Tours"],
+      "09-04": ["Rosalia", "Cuthbert of Lindisfarne", "Marinus"],
+      "10-28": ["Simon the Zealot", "Jude the Apostle", "Alfred the Great"],
+      "11-30": ["Andrew the Apostle", "Tugdual", "Joseph Marchand"],
+      "12-25": ["Anastasia of Sirmium", "Eugenia of Rome", "Peter Nolasco"]
+    };
+
+    return muslimList[key] || christianBackup[key] || ["Ibn Sina", "Al-Khwarizmi", "Salahuddin al-Ayyubi"];
   }
 
   function extractBirthPersonName(item) {
@@ -1626,16 +1645,33 @@
   function pickFamousBirthdayPeople(items) {
     items = Array.isArray(items) ? items : [];
 
-    const famousPattern = /muslim|islam|islamic|caliph|sultan|imam|qadi|sheikh|shaykh|muhaddith|mufassir|faqih|scholar|theologian|sufi|ottoman|abbasid|umayyad|ayyubid|mamluk|mughal|malay|arab|persian|andalusian|al-andalus|ibn|al-|bint|abu|abd|salahuddin|saladin|khwarizmi|biruni|sina|rushd|ghazali|farabi|khaldun|rumi|iqbal|jinnah|tariq ibn ziyad|fatima al-fihri|malala/i;
+    /*
+      Online famous-person filter:
+      - Muslim icon terms are checked first.
+      - Christian icon terms are checked second.
+      - Hindu and other-religion terms are blocked.
+      This avoids using broad "famous people" data that may include other religions.
+    */
+    const blockedReligionPattern = /hindu|hinduism|buddhist|buddhism|sikh|sikhism|jain|jainism|shinto|taoist|taoism|zoroastrian|zoroastrianism|bah[aā]'?i|baha'i|bahai|pagan|polytheist|judaism|jewish|rabbi|kabbalah/i;
 
-    function pick(used) {
+    const muslimPattern = /muslim|islam|islamic|caliph|sultan|imam|qadi|sheikh|shaykh|muhaddith|mufassir|faqih|sufi|ottoman|abbasid|umayyad|ayyubid|mamluk|mughal|al-andalus|andalusian|ibn|al-|bint|abu|abd|salahuddin|saladin|khwarizmi|biruni|sina|rushd|ghazali|farabi|khaldun|rumi|iqbal|jinnah|tariq ibn ziyad|fatima al-fihri|malala/i;
+
+    const christianPattern = /christian|christianity|catholic|orthodox|protestant|anglican|lutheran|calvinist|methodist|baptist|pope|saint|st\.|apostle|bishop|priest|pastor|monk|nun|missionary|church|theologian|martyr|reformer|archbishop|cardinal|evangelist/i;
+
+    function isBlocked(item) {
+      const desc = famousDescription(item);
+      return blockedReligionPattern.test(desc);
+    }
+
+    function pickByPattern(pattern, used) {
       const found = items.find(function (item) {
         const name = extractBirthPersonName(item);
-        const year = Number(item && item.year);
         const desc = famousDescription(item);
 
         if (!name || used.has(name)) return false;
-        return famousPattern.test(desc);
+        if (isBlocked(item)) return false;
+
+        return pattern.test(desc);
       });
 
       if (!found) return "";
@@ -1646,14 +1682,21 @@
     }
 
     const used = new Set();
-    const person1 = pick(used);
-    const person2 = pick(used);
-    const person3 = pick(used);
+
+    const picked = [
+      pickByPattern(muslimPattern, used),
+      pickByPattern(muslimPattern, used),
+      pickByPattern(muslimPattern, used)
+    ];
+
+    for (let i = 0; i < picked.length; i += 1) {
+      if (!picked[i]) picked[i] = pickByPattern(christianPattern, used);
+    }
 
     return {
-      celebrity: person1 || "Not found",
-      sports: person2 || "Not found",
-      historical: person3 || "Not found"
+      celebrity: picked[0] || "Not found",
+      sports: picked[1] || "Not found",
+      historical: picked[2] || "Not found"
     };
   }
 
