@@ -6885,23 +6885,34 @@
       '<div class="clean-nav-inner">' +
         '<a class="clean-nav-link" href="index.html">home</a>' +
 
-        '<div class="clean-nav-dropdown">' +
+        '<div class="clean-nav-dropdown clean-calculator-dropdown">' +
           '<button type="button" class="clean-nav-link clean-nav-button" aria-expanded="false">calculator <span aria-hidden="true">▼</span></button>' +
           '<div class="clean-nav-dropdown-panel clean-calculator-panel">' +
             '<a href="basic-calculator.html">basic</a>' +
-            '<div class="clean-nav-subtitle">health</div>' +
-            '<a href="age-calculator.html">age</a>' +
-            '<a href="bmi-calculator.html">bmi</a>' +
-            '<div class="clean-nav-subtitle">finance</div>' +
-            '<a href="mortgage-calculator.html">mortgage</a>' +
-            '<a href="personal-loan-calculator.html">personal loan</a>' +
-            '<a href="discount-calculator.html">discount</a>' +
-            '<a href="compound-interest-calculator.html">compound interest</a>' +
+
+            '<div class="clean-nav-submenu clean-health-submenu">' +
+              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">health <span aria-hidden="true">▶</span></button>' +
+              '<div class="clean-nav-submenu-panel">' +
+                '<a href="age-calculator.html">age</a>' +
+                '<a href="bmi-calculator.html">bmi</a>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="clean-nav-submenu clean-finance-submenu">' +
+              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">finance <span aria-hidden="true">▶</span></button>' +
+              '<div class="clean-nav-submenu-panel">' +
+                '<a href="mortgage-calculator.html">mortgage</a>' +
+                '<a href="personal-loan-calculator.html">personal loan</a>' +
+                '<a href="discount-calculator.html">discount</a>' +
+                '<a href="compound-interest-calculator.html">compound interest</a>' +
+              '</div>' +
+            '</div>' +
+
             '<a href="percentage-calculator.html">percentage</a>' +
           '</div>' +
         '</div>' +
 
-        '<div class="clean-nav-dropdown">' +
+        '<div class="clean-nav-dropdown clean-info-dropdown">' +
           '<button type="button" class="clean-nav-link clean-nav-button" aria-expanded="false">info <span aria-hidden="true">▼</span></button>' +
           '<div class="clean-nav-dropdown-panel clean-info-panel">' +
             '<a href="about.html">about</a>' +
@@ -6940,9 +6951,28 @@
       });
     });
 
+    nav.querySelectorAll(".clean-nav-submenu").forEach(function (submenu) {
+      const button = submenu.querySelector(".clean-nav-submenu-button");
+      if (!button) return;
+
+      button.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        nav.querySelectorAll(".clean-nav-submenu.is-open").forEach(function (item) {
+          if (item !== submenu) item.classList.remove("is-open");
+        });
+
+        submenu.classList.toggle("is-open");
+      });
+    });
+
     document.addEventListener("click", function (event) {
       if (!nav.contains(event.target)) {
         closeAllDropdowns(nav);
+        nav.querySelectorAll(".clean-nav-submenu.is-open").forEach(function (item) {
+          item.classList.remove("is-open");
+        });
       }
     });
   }
