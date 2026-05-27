@@ -8251,7 +8251,10 @@
 
 
 /* =====================================================
-   FINAL REPAIR: reliable menu + auto-calculate/result rescue
+   FINAL LIGHT CLEANUP: no side menu, no loading loop
+   - Runs once on page load
+   - Removes duplicate nav/main/abacus only once
+   - Keeps auto-calculate with 2-second debounce
 ===================================================== */
 (function () {
   "use strict";
@@ -8264,109 +8267,47 @@
     }
   }
 
-  function qsa(selector, root) {
-    return Array.prototype.slice.call((root || document).querySelectorAll(selector));
-  }
-
-  function closeMenus(nav, exceptDropdown, exceptSubmenu) {
-    qsa(".clean-nav-dropdown.is-open", nav).forEach(function (item) {
-      if (item !== exceptDropdown) {
-        item.classList.remove("is-open");
-        const button = item.querySelector(".clean-nav-button");
-        if (button) button.setAttribute("aria-expanded", "false");
-        qsa(".clean-nav-submenu.is-open", item).forEach(function (sub) {
-          sub.classList.remove("is-open");
-        });
-      }
-    });
-
-    qsa(".clean-nav-submenu.is-open", nav).forEach(function (item) {
-      if (item !== exceptSubmenu && (!exceptSubmenu || item.closest(".clean-nav-dropdown-panel") === exceptSubmenu.closest(".clean-nav-dropdown-panel"))) {
-        item.classList.remove("is-open");
-      }
+  function keepFirst(selector) {
+    const nodes = Array.prototype.slice.call(document.querySelectorAll(selector));
+    nodes.slice(1).forEach(function (node) {
+      node.remove();
     });
   }
 
-  function setupReliableMenus() {
+  function cleanOnce() {
+    const menu = document.getElementById("menuIcon");
+    if (menu) menu.remove();
+
+    document.body.classList.remove("menu-scrolled");
+    document.documentElement.classList.remove("menu-scrolled");
+
     const nav = document.getElementById("navbar");
-    if (!nav || nav.dataset.finalMenuRepair === "true") return;
+    if (nav) {
+      nav.classList.remove("open");
+      nav.classList.add("clean-navbar");
+    }
 
-    nav.dataset.finalMenuRepair = "true";
-
-    nav.addEventListener("click", function (event) {
-      const dropdownButton = event.target.closest(".clean-nav-button");
-      const submenuButton = event.target.closest(".clean-nav-submenu-button");
-
-      if (dropdownButton && nav.contains(dropdownButton)) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-
-        const dropdown = dropdownButton.closest(".clean-nav-dropdown");
-        const wasOpen = dropdown.classList.contains("is-open");
-
-        closeMenus(nav, dropdown, null);
-        dropdown.classList.toggle("is-open", !wasOpen);
-        dropdownButton.setAttribute("aria-expanded", !wasOpen ? "true" : "false");
-        return;
-      }
-
-      if (submenuButton && nav.contains(submenuButton)) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-
-        const submenu = submenuButton.closest(".clean-nav-submenu");
-        const wasOpen = submenu.classList.contains("is-open");
-        const parentDropdown = submenu.closest(".clean-nav-dropdown");
-
-        if (parentDropdown) {
-          parentDropdown.classList.add("is-open");
-          const parentButton = parentDropdown.querySelector(".clean-nav-button");
-          if (parentButton) parentButton.setAttribute("aria-expanded", "true");
-        }
-
-        closeMenus(nav, parentDropdown, submenu);
-        submenu.classList.toggle("is-open", !wasOpen);
-      }
-    }, true);
-
-    nav.addEventListener("pointerover", function (event) {
-      const submenu = event.target.closest(".clean-nav-submenu");
-      const dropdown = event.target.closest(".clean-nav-dropdown");
-
-      if (submenu && nav.contains(submenu)) {
-        const parentDropdown = submenu.closest(".clean-nav-dropdown");
-        closeMenus(nav, parentDropdown, submenu);
-        if (parentDropdown) {
-          parentDropdown.classList.add("is-open");
-          const parentButton = parentDropdown.querySelector(".clean-nav-button");
-          if (parentButton) parentButton.setAttribute("aria-expanded", "true");
-        }
-        submenu.classList.add("is-open");
-        return;
-      }
-
-      if (dropdown && nav.contains(dropdown)) {
-        closeMenus(nav, dropdown, null);
-        dropdown.classList.add("is-open");
-        const button = dropdown.querySelector(".clean-nav-button");
-        if (button) button.setAttribute("aria-expanded", "true");
-      }
-    }, true);
-
-    document.addEventListener("click", function (event) {
-      if (!nav.contains(event.target)) {
-        closeMenus(nav, null, null);
-      }
-    }, true);
-
-    document.addEventListener("keydown", function (event) {
-      if (event.key === "Escape") {
-        closeMenus(nav, null, null);
-      }
-    });
+    keepFirst("#navbar");
+    keepFirst("main.grouped-calculator-home");
+    keepFirst("#liveAbacus");
+    keepFirst("#liveAbacusValueText");
+    keepFirst("#liveAbacusReset");
   }
 
-  function detectCalculatorPage() {
+  function val(id) {
+    const el = document.getElementById(id);
+    return el ? String(el.value || "").trim() : "";
+  }
+
+  function has(ids) {
+    return ids.some(function (id) { return val(id) !== ""; });
+  }
+
+  function all(ids) {
+    return ids.every(function (id) { return val(id) !== ""; });
+  }
+
+  function pageType() {
     const path = (location.pathname || "").toLowerCase();
     if (path.includes("age-calculator")) return "age";
     if (path.includes("bmi-calculator")) return "bmi";
@@ -8375,7 +8316,6 @@
     if (path.includes("discount-calculator")) return "discount";
     if (path.includes("percentage-calculator")) return "percentage";
     if (path.includes("compound-interest-calculator")) return "compound";
-    if (path.includes("basic-calculator")) return "basic";
     if (path.includes("salary-calculator")) return "salary";
     if (path.includes("credit-card-payoff-calculator")) return "creditCardPayoff";
     if (path.includes("loan-comparison-calculator")) return "loanComparison";
@@ -8392,272 +8332,16 @@
     return "";
   }
 
-  function hasValue(ids) {
-    return ids.some(function (id) {
-      const el = document.getElementById(id);
-      return el && String(el.value || "").trim() !== "";
-    });
-  }
+  function canCalc(type) {
+    if (type === "age") return has(["birthdate"]);
+    if (type === "bmi") return has(["weight", "bmiWeight"]) && has(["height", "bmiHeight"]);
+    if (type === "loan") return all(["amount", "interest", "years"]);
+    if (type === "personalLoan") return has(["personalLoanAmount", "loanAmount", "amount"]);
+    if (type === "discount") return all(["price", "discount"]);
+    if (type === "percentage") return has(["percentage", "percent"]) && has(["number", "amount", "value"]);
+    if (type === "compound") return all(["principal", "rate", "years"]);
 
-  function readyForAuto(type) {
-    if (type === "age") return hasValue(["birthdate"]);
-    if (type === "bmi") return hasValue(["weight", "height", "bmiWeight", "bmiHeight"]);
-    if (type === "loan") return hasValue(["amount"]) && hasValue(["interest"]) && hasValue(["years"]);
-    if (type === "personalLoan") return hasValue(["personalLoanAmount"]) || hasValue(["amount", "loanAmount"]);
-    if (type === "discount") return hasValue(["price", "originalPrice", "amount"]) && hasValue(["discount", "discountRate"]);
-    if (type === "percentage") return hasValue(["percentage", "percent"]) && hasValue(["number", "amount", "value"]);
-    if (type === "compound") return hasValue(["principal", "compoundPrincipal", "amount"]) && hasValue(["rate", "compoundRate", "interest", "interestRate"]);
-    if (type === "basic") return false;
-    return true;
-  }
-
-  function callCalculator(type) {
-    const map = {
-      age: "calculateAge",
-      bmi: "calculateBMI",
-      loan: "calculateLoan",
-      personalLoan: "calculatePersonalLoan",
-      discount: "calculateDiscount",
-      percentage: "calculatePercentage",
-      compound: "calculateCompound",
-      salary: "calculateSalaryExtra",
-      creditCardPayoff: "calculateCreditCardPayoffExtra",
-      loanComparison: "calculateLoanComparisonExtra",
-      debtPayoff: "calculateDebtPayoffExtra",
-      tax: "calculateTaxExtra",
-      gajiPenjawatAwam: "calculateGajiPenjawatAwamExtra",
-      inflation: "calculateInflationExtra",
-      rentalYield: "calculateRentalYieldExtra",
-      fuelCost: "calculateFuelCostExtra",
-      creditCardInterest: "calculateCreditCardInterestExtra",
-      scientific: "calculateScientificExtra",
-      unitConverter: "calculateUnitConverterExtra",
-      currencyConverter: "calculateCurrencyConverterExtra"
-    };
-
-    const fnName = map[type];
-    if (fnName && typeof window[fnName] === "function") {
-      try {
-        window[fnName]();
-      } catch (error) {
-        console.warn("Auto-calculate repair failed:", error);
-      }
-    }
-  }
-
-  function unhideResults() {
-    if (document.body.classList.contains("calculator-report-view")) return;
-
-    qsa(
-      ".calculator-clean-result, .loan-style-output-panel, .mortgage-modern-result-panel, " +
-      "#ageResult, #bmiResult, #loanResult, #personalLoanResult, #discountResult, #percentageResult, #compoundResult, #extraCalcResult"
-    ).forEach(function (el) {
-      if (!el.closest("#calculatorReportPage")) {
-        el.style.removeProperty("display");
-        el.style.removeProperty("visibility");
-        el.removeAttribute("aria-hidden");
-      }
-    });
-  }
-
-  function setupAutoCalculateRepair() {
-    if (document.body.dataset.autoCalcRepair === "true") return;
-    document.body.dataset.autoCalcRepair = "true";
-
-    let timer = null;
-
-    function schedule(event) {
-      const target = event && event.target;
-      if (!target) return;
-      if (target.closest("#navbar, #menuIcon, #scrollTopBtn, .site-search, .clean-nav-search")) return;
-      if (!target.matches("input, select, textarea")) return;
-
-      const type = detectCalculatorPage();
-      if (!type || !readyForAuto(type)) return;
-
-      clearTimeout(timer);
-      timer = setTimeout(function () {
-        callCalculator(type);
-        setTimeout(unhideResults, 80);
-        setTimeout(unhideResults, 350);
-      }, 2000);
-    }
-
-    document.addEventListener("input", schedule, true);
-    document.addEventListener("change", schedule, true);
-    setTimeout(unhideResults, 300);
-    setTimeout(unhideResults, 1200);
-  }
-
-  ready(function () {
-    setupReliableMenus();
-    setupAutoCalculateRepair();
-  });
-})();
-
-
-/* =====================================================
-   FINAL USER FIX: mortgage 2s autocalc + index dropdown cards
-===================================================== */
-(function () {
-  "use strict";
-
-  function setupMortgageAutoCalculate2s() {
-    if (!/mortgage-calculator\.html/i.test(location.pathname || "")) return;
-    if (document.body.dataset.mortgageAuto2sReady === "true") return;
-
-    document.body.dataset.mortgageAuto2sReady = "true";
-
-    let timer = null;
-
-    function hasMortgageRequiredValues() {
-      const amount = document.getElementById("amount");
-      const interest = document.getElementById("interest");
-      const years = document.getElementById("years");
-
-      return !!(
-        amount && interest && years &&
-        String(amount.value || "").trim() &&
-        String(interest.value || "").trim() &&
-        String(years.value || "").trim()
-      );
-    }
-
-    function schedule(event) {
-      const target = event && event.target;
-      if (!target || !target.closest(".calculator")) return;
-      if (!target.matches("input, select, textarea")) return;
-
-      clearTimeout(timer);
-
-      timer = setTimeout(function () {
-        if (!hasMortgageRequiredValues()) return;
-
-        if (typeof window.calculateLoan === "function") {
-          window.calculateLoan();
-        }
-
-        setTimeout(function () {
-          document.querySelectorAll(".mortgage-modern-result-panel, .loan-style-output-panel, .calculator-clean-result").forEach(function (panel) {
-            if (!panel.closest("#calculatorReportPage")) {
-              panel.style.removeProperty("display");
-              panel.style.removeProperty("visibility");
-              panel.removeAttribute("aria-hidden");
-            }
-          });
-        }, 120);
-      }, 2000);
-    }
-
-    document.addEventListener("input", schedule, true);
-    document.addEventListener("change", schedule, true);
-  }
-
-  function setupIndexDropdownCards() {
-    const home = document.querySelector(".index-dropdown-calculator-home");
-    if (!home || home.dataset.dropdownReady === "true") return;
-
-    home.dataset.dropdownReady = "true";
-
-    home.querySelectorAll(".index-category-dropdown").forEach(function (details) {
-      details.addEventListener("toggle", function () {
-        if (!details.open) return;
-
-        home.querySelectorAll(".index-category-dropdown").forEach(function (other) {
-          if (other !== details) other.open = false;
-        });
-      });
-    });
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function () {
-      setupMortgageAutoCalculate2s();
-      setupIndexDropdownCards();
-    });
-  } else {
-    setupMortgageAutoCalculate2s();
-    setupIndexDropdownCards();
-  }
-})();
-
-
-/* =====================================================
-   FINAL GLOBAL AUTOCALC + RESULT ACTION REPAIR
-   - No main calculate buttons required
-   - Waits 2 seconds after last typing/change before auto-calculate
-   - Adds Copy / Save / Share / Report to result boxes that do not have them
-===================================================== */
-(function () {
-  "use strict";
-
-  function ready(fn) {
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", fn);
-    } else {
-      fn();
-    }
-  }
-
-  function pagePath() {
-    return (location.pathname || "").toLowerCase();
-  }
-
-  function pageType() {
-    const path = pagePath();
-
-    if (path.includes("age-calculator")) return "age";
-    if (path.includes("bmi-calculator")) return "bmi";
-    if (path.includes("mortgage-calculator")) return "loan";
-    if (path.includes("personal-loan-calculator")) return "personalLoan";
-    if (path.includes("discount-calculator")) return "discount";
-    if (path.includes("percentage-calculator")) return "percentage";
-    if (path.includes("compound-interest-calculator")) return "compound";
-    if (path.includes("salary-calculator")) return "salary";
-    if (path.includes("credit-card-payoff-calculator")) return "creditCardPayoff";
-    if (path.includes("loan-comparison-calculator")) return "loanComparison";
-    if (path.includes("debt-payoff-calculator")) return "debtPayoff";
-    if (path.includes("tax-calculator")) return "tax";
-    if (path.includes("gaji-penjawat-awam-calculator")) return "gajiPenjawatAwam";
-    if (path.includes("inflation-calculator")) return "inflation";
-    if (path.includes("rental-yield-calculator")) return "rentalYield";
-    if (path.includes("fuel-cost-calculator")) return "fuelCost";
-    if (path.includes("credit-card-interest-calculator")) return "creditCardInterest";
-    if (path.includes("scientific-calculator")) return "scientific";
-    if (path.includes("unit-converter-calculator")) return "unitConverter";
-    if (path.includes("currency-converter")) return "currencyConverter";
-    return "";
-  }
-
-  function getValue(id) {
-    const el = document.getElementById(id);
-    return el ? String(el.value || "").trim() : "";
-  }
-
-  function anyValue(ids) {
-    return ids.some(function (id) {
-      return getValue(id) !== "";
-    });
-  }
-
-  function allValue(ids) {
-    return ids.every(function (id) {
-      return getValue(id) !== "";
-    });
-  }
-
-  function canAutoCalculate(type) {
-    if (!type) return false;
-
-    if (type === "age") return anyValue(["birthdate"]);
-    if (type === "bmi") return anyValue(["weight", "bmiWeight"]) && anyValue(["height", "bmiHeight"]);
-    if (type === "loan") return allValue(["amount", "interest", "years"]);
-    if (type === "personalLoan") return anyValue(["personalLoanAmount", "loanAmount", "amount"]);
-    if (type === "discount") return allValue(["price", "discount"]);
-    if (type === "percentage") return anyValue(["percentage", "percent"]) && anyValue(["number", "amount", "value"]);
-    if (type === "compound") return allValue(["principal", "rate", "years"]);
-
-    const extraRequired = {
+    const required = {
       salary: ["salaryGross"],
       creditCardPayoff: ["ccBalance", "ccApr", "ccPayment"],
       loanComparison: ["loanCompareAmount", "loanCompareRateA", "loanCompareTermA", "loanCompareRateB", "loanCompareTermB"],
@@ -8673,11 +8357,10 @@
       currencyConverter: ["currencyAmount", "currencyFrom", "currencyTo", "currencyRate"]
     };
 
-    if (extraRequired[type]) return allValue(extraRequired[type]);
-    return false;
+    return required[type] ? all(required[type]) : false;
   }
 
-  function calculateByType(type) {
+  function callCalc(type) {
     const map = {
       age: "calculateAge",
       bmi: "calculateBMI",
@@ -8702,447 +8385,49 @@
     };
 
     const fn = map[type];
-    if (fn && typeof window[fn] === "function") {
-      window[fn]();
-      return true;
-    }
-
-    return false;
+    if (fn && typeof window[fn] === "function") window[fn]();
   }
 
-  function plainTextFromElement(el) {
-    return (el ? el.innerText : "").replace(/\n{3,}/g, "\n\n").trim();
-  }
-
-  function dateStamp() {
-    const d = new Date();
-    return [
-      d.getFullYear(),
-      String(d.getMonth() + 1).padStart(2, "0"),
-      String(d.getDate()).padStart(2, "0"),
-      String(d.getHours()).padStart(2, "0"),
-      String(d.getMinutes()).padStart(2, "0")
-    ].join("-");
-  }
-
-  function setButton(button, text) {
-    if (!button) return;
-    const old = button.textContent;
-    button.textContent = text;
-    setTimeout(function () {
-      button.textContent = old;
-    }, 1200);
-  }
-
-  function copyText(text, button) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () {
-        setButton(button, "Copied!");
-      }).catch(function () {
-        fallbackCopy(text, button);
-      });
-    } else {
-      fallbackCopy(text, button);
-    }
-  }
-
-  function fallbackCopy(text, button) {
-    const area = document.createElement("textarea");
-    area.value = text;
-    area.style.position = "fixed";
-    area.style.left = "-9999px";
-    document.body.appendChild(area);
-    area.select();
-
-    try {
-      document.execCommand("copy");
-      setButton(button, "Copied!");
-    } catch (error) {
-      setButton(button, "Copy failed");
-    }
-
-    area.remove();
-  }
-
-  function downloadText(filename, text, button) {
-    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-
-    setTimeout(function () {
-      URL.revokeObjectURL(url);
-      a.remove();
-    }, 0);
-
-    setButton(button, "Saved!");
-  }
-
-  function openSimpleReport(sourcePanel) {
-    const old = document.getElementById("globalSimpleReportPage");
-    if (old) old.remove();
-
-    const text = plainTextFromElement(sourcePanel);
-    if (!text) return;
-
-    document.body.classList.add("calculator-report-view");
-
-    document.querySelectorAll("main, .calculator, .extra-calculator-layout").forEach(function (el) {
-      el.style.setProperty("display", "none", "important");
-    });
-
-    const report = document.createElement("section");
-    report.id = "globalSimpleReportPage";
-    report.className = "calculator-report-page global-simple-report-page";
-    report.innerHTML =
-      '<h1>Calculator Report</h1>' +
-      '<p class="calculator-report-date"><strong>Generated:</strong> ' + new Date().toLocaleString() + '</p>' +
-      '<pre class="global-simple-report-text"></pre>' +
-      '<div class="calculator-report-actions">' +
-        '<button type="button" class="calculator-report-action-btn global-report-back">Back</button>' +
-        '<button type="button" class="calculator-report-action-btn global-report-copy">Copy</button>' +
-        '<button type="button" class="calculator-report-action-btn global-report-save">Save</button>' +
-        '<button type="button" class="calculator-report-action-btn global-report-share">Share</button>' +
-      '</div>';
-
-    report.querySelector(".global-simple-report-text").textContent = text;
-    document.body.appendChild(report);
-
-    report.querySelector(".global-report-back").onclick = function () {
-      report.remove();
-      document.body.classList.remove("calculator-report-view");
-      document.querySelectorAll("main, .calculator, .extra-calculator-layout").forEach(function (el) {
-        el.style.removeProperty("display");
-      });
-    };
-    report.querySelector(".global-report-copy").onclick = function () { copyText(text, this); };
-    report.querySelector(".global-report-save").onclick = function () { downloadText("calculator-report-" + dateStamp() + ".txt", text, this); };
-    report.querySelector(".global-report-share").onclick = function () {
-      const button = this;
-      if (navigator.share) {
-        navigator.share({ title: "Calculator Report", text: text }).catch(function () { copyText(text, button); });
-      } else {
-        copyText(text, button);
-      }
-    };
-
-    report.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  function makeActions() {
-    const row = document.createElement("div");
-    row.className = "global-result-actions";
-    row.innerHTML =
-      '<button type="button" class="global-result-action-btn global-copy-btn">Copy</button>' +
-      '<button type="button" class="global-result-action-btn global-save-btn">Save</button>' +
-      '<button type="button" class="global-result-action-btn global-share-btn">Share</button>' +
-      '<button type="button" class="global-result-action-btn global-report-btn">Report</button>';
-    return row;
-  }
-
-  function wireActionRow(panel, row) {
-    const copy = row.querySelector(".global-copy-btn");
-    const save = row.querySelector(".global-save-btn");
-    const share = row.querySelector(".global-share-btn");
-    const report = row.querySelector(".global-report-btn");
-
-    copy.onclick = function () {
-      copyText(plainTextFromElement(panel), copy);
-    };
-
-    save.onclick = function () {
-      downloadText("calculator-result-" + dateStamp() + ".txt", plainTextFromElement(panel), save);
-    };
-
-    share.onclick = function () {
-      const text = plainTextFromElement(panel);
-      if (navigator.share) {
-        navigator.share({ title: "Calculator Result", text: text }).catch(function () {
-          copyText(text, share);
-        });
-      } else {
-        copyText(text, share);
-      }
-    };
-
-    report.onclick = function () {
-      openSimpleReport(panel);
-    };
-  }
-
-  function hasActions(panel) {
-    return !!panel.querySelector(
-      ".age-result-actions, .bmi-result-actions, .universal-result-actions, .mortgage-result-actions, .mortgage-result-actions-final, .extra-result-actions, .global-result-actions"
-    );
-  }
-
-  function isRealResultPanel(panel) {
-    if (!panel || panel.closest("#calculatorReportPage") || panel.closest("#globalSimpleReportPage")) return false;
-    if (panel.hidden) return false;
-    const text = plainTextFromElement(panel);
-    return text.length > 0;
-  }
-
-  function ensureActionsOnResults() {
-    const panels = Array.prototype.slice.call(document.querySelectorAll(
-      ".calculator-clean-result, .loan-style-output-panel, .mortgage-modern-result-panel, #extraCalcResult, #discountResult, #percentageResult, #compoundResult, #ageResult, #bmiResult"
-    ));
-
-    panels.forEach(function (panel) {
-      if (!isRealResultPanel(panel)) return;
-      if (hasActions(panel)) return;
-
-      const row = makeActions();
-
-      if (/^H[1-6]$/i.test(panel.tagName)) {
-        const wrapper = document.createElement("div");
-        wrapper.className = "global-heading-result-wrap calculator-clean-result";
-        panel.parentNode.insertBefore(wrapper, panel);
-        wrapper.appendChild(panel);
-        wrapper.appendChild(row);
-        wireActionRow(wrapper, row);
-      } else {
-        panel.appendChild(row);
-        wireActionRow(panel, row);
-      }
-    });
-  }
-
-  function unhideResultPanels() {
-    if (document.body.classList.contains("calculator-report-view")) return;
-
-    document.querySelectorAll(".calculator-clean-result, .loan-style-output-panel, .mortgage-modern-result-panel, #extraCalcResult").forEach(function (panel) {
-      if (!panel.closest("#calculatorReportPage") && !panel.closest("#globalSimpleReportPage")) {
-        panel.style.removeProperty("display");
-        panel.style.removeProperty("visibility");
-        panel.removeAttribute("aria-hidden");
-      }
-    });
-  }
-
-  function setupDebouncedAutoCalculate() {
-    if (document.body.dataset.finalGlobalAutoCalcReady === "true") return;
-    document.body.dataset.finalGlobalAutoCalcReady = "true";
-
+  function setupDebounce() {
     let timer = null;
-    let lastTypedAt = 0;
 
-    function schedule(event) {
-      const target = event && event.target;
+    document.addEventListener("input", function (event) {
+      const target = event.target;
       if (!target || !target.matches("input, select, textarea")) return;
-      if (target.closest("#navbar, #menuIcon, #scrollTopBtn, .site-search, .clean-nav-search")) return;
+      if (target.closest("#navbar, #scrollTopBtn, .clean-nav-search")) return;
 
       const type = pageType();
       if (!type) return;
 
-      lastTypedAt = Date.now();
       clearTimeout(timer);
-
       timer = setTimeout(function () {
-        if (Date.now() - lastTypedAt < 1900) return;
-        if (!canAutoCalculate(type)) return;
-
-        calculateByType(type);
-
-        setTimeout(function () {
-          unhideResultPanels();
-          ensureActionsOnResults();
-        }, 100);
-        setTimeout(function () {
-          unhideResultPanels();
-          ensureActionsOnResults();
-        }, 450);
+        if (canCalc(type)) callCalc(type);
       }, 2000);
-    }
+    }, true);
 
-    document.addEventListener("input", schedule, true);
-    document.addEventListener("change", schedule, true);
+    document.addEventListener("change", function (event) {
+      const target = event.target;
+      if (!target || !target.matches("input, select, textarea")) return;
+      if (target.closest("#navbar, #scrollTopBtn, .clean-nav-search")) return;
+
+      const type = pageType();
+      if (!type) return;
+
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        if (canCalc(type)) callCalc(type);
+      }, 2000);
+    }, true);
   }
 
   ready(function () {
-    setupDebouncedAutoCalculate();
-
-    setTimeout(ensureActionsOnResults, 300);
-    setTimeout(ensureActionsOnResults, 1200);
-
-    const observer = new MutationObserver(function () {
-      setTimeout(ensureActionsOnResults, 60);
-    });
-
-    observer.observe(document.body, { childList: true, subtree: true });
-  });
-})();
-
-
-/* =====================================================
-   FINAL CLEANUP: remove side menu + force top menu only
-   Also keeps Age/BMI action buttons in one row.
-===================================================== */
-(function () {
-  "use strict";
-
-  function removeSideMenu() {
-    const menu = document.getElementById("menuIcon");
-    if (menu) menu.remove();
-
-    const nav = document.getElementById("navbar");
-    if (nav) nav.classList.remove("open");
-
-    document.body.classList.remove("menu-scrolled");
-    document.documentElement.classList.remove("menu-scrolled");
-
-    window.toggleMenu = function () {
-      const navNow = document.getElementById("navbar");
-      if (navNow) navNow.classList.remove("open");
-      document.body.classList.remove("menu-scrolled");
-      document.documentElement.classList.remove("menu-scrolled");
-      return false;
-    };
-  }
-
-  function forceActionRows() {
-    document.querySelectorAll(
-      ".age-result-actions, .bmi-result-actions, .universal-result-actions, .mortgage-result-actions, .mortgage-result-actions-final, .extra-result-actions, .global-result-actions, .calculator-report-actions"
-    ).forEach(function (row) {
-      row.style.setProperty("display", "grid", "important");
-      row.style.setProperty("grid-template-columns", "repeat(4, minmax(0, 1fr))", "important");
-      row.style.setProperty("gap", "8px", "important");
-      row.style.setProperty("width", "100%", "important");
-      row.style.setProperty("box-sizing", "border-box", "important");
-    });
-
-    document.querySelectorAll(
-      ".age-result-action-btn, .bmi-result-action-btn, .universal-result-action-btn, .mortgage-result-action-btn, .extra-result-action-btn, .global-result-action-btn, .calculator-report-action-btn"
-    ).forEach(function (button) {
-      button.style.setProperty("width", "100%", "important");
-      button.style.setProperty("min-width", "0", "important");
-      button.style.setProperty("max-width", "none", "important");
-      button.style.setProperty("box-sizing", "border-box", "important");
-    });
-  }
-
-  function start() {
-    removeSideMenu();
-    forceActionRows();
-
-    setInterval(removeSideMenu, 700);
-
-    const observer = new MutationObserver(function () {
-      removeSideMenu();
-      forceActionRows();
-    });
-
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "style"] });
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
-})();
-
-
-/* =====================================================
-   FINAL DOUBLE-RENDER CLEANUP
-   - Keeps one top navbar, one main calculator box, one abacus, one result panel per page
-   - Prevents older delayed render guards from showing duplicate boxes
-===================================================== */
-(function () {
-  "use strict";
-
-  function keepFirst(selector) {
-    const nodes = Array.prototype.slice.call(document.querySelectorAll(selector));
-    nodes.slice(1).forEach(function (node) {
-      node.remove();
-    });
-  }
-
-  function dedupeResult(selector, preferredId) {
-    const panels = Array.prototype.slice.call(document.querySelectorAll(selector)).filter(function (el) {
-      return el && !el.closest("#calculatorReportPage") && !el.closest("#globalSimpleReportPage") && !el.closest("#extraCalculatorReportPage");
-    });
-
-    if (panels.length <= 1) return;
-
-    const preferred = preferredId ? document.getElementById(preferredId) : null;
-    const keep = preferred && panels.indexOf(preferred) !== -1 ? preferred : panels[panels.length - 1];
-
-    panels.forEach(function (panel) {
-      if (panel !== keep) panel.remove();
-    });
-  }
-
-  function cleanupDoubleRender() {
-    keepFirst("#navbar");
-    keepFirst("main.grouped-calculator-home");
-    keepFirst("#liveAbacus");
-    keepFirst("#liveAbacusValueText");
-    keepFirst("#liveAbacusReset");
-
-    // Keep only one information panel per calculator page.
-    keepFirst("main > .pc-what-slot");
-    keepFirst("main > .extra-what-slot");
-
-    // Keep only one side group bar per calculator page.
-    const sidebars = Array.prototype.slice.call(document.querySelectorAll("main > .old-calculator-groupbar, main > .extra-side-box, main > .extra-related-box, main > .loan-history-box"));
-    sidebars.slice(1).forEach(function (node) {
-      if (!node.classList.contains("old-calculator-groupbar") && !node.classList.contains("extra-side-box") && !node.classList.contains("extra-related-box")) return;
-      node.remove();
-    });
-
-    dedupeResult(".age-clean-result, .age-point-output, #ageResult", "ageExternalOutput");
-    dedupeResult(".bmi-clean-result, .bmi-box-output, #bmiResult", "bmiReportOutput");
-    dedupeResult(".loan-clean-result, .mortgage-modern-result-panel, #loanResult", "loanExternalOutput");
-    dedupeResult(".personalLoan-clean-result, #personalLoanResult", "personalLoanExternalOutput");
-    dedupeResult(".discount-clean-result, #discountResult", "discountReportOutput");
-    dedupeResult(".percentage-clean-result, #percentageResult", "percentageReportOutput");
-    dedupeResult(".compound-clean-result, #compoundResult", "compoundReportOutput");
-
-    const nav = document.getElementById("navbar");
-    if (nav) {
-      nav.classList.remove("open");
-      nav.classList.add("clean-navbar");
-    }
-
-    const menu = document.getElementById("menuIcon");
-    if (menu) menu.remove();
-
-    document.body.classList.remove("menu-scrolled");
-    document.documentElement.classList.remove("menu-scrolled");
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", cleanupDoubleRender);
-  } else {
-    cleanupDoubleRender();
-  }
-
-  setTimeout(cleanupDoubleRender, 80);
-  setTimeout(cleanupDoubleRender, 450);
-  setTimeout(cleanupDoubleRender, 1200);
-  setTimeout(cleanupDoubleRender, 2600);
-
-  document.addEventListener("input", function () {
-    setTimeout(cleanupDoubleRender, 2100);
-    setTimeout(cleanupDoubleRender, 2600);
-  }, true);
-
-  document.addEventListener("change", function () {
-    setTimeout(cleanupDoubleRender, 2100);
-    setTimeout(cleanupDoubleRender, 2600);
-  }, true);
-
-  const observer = new MutationObserver(function () {
-    setTimeout(cleanupDoubleRender, 50);
+    cleanOnce();
+    setupDebounce();
   });
 
-  if (document.body) {
-    observer.observe(document.body, { childList: true, subtree: true });
-  }
+  window.toggleMenu = function () {
+    cleanOnce();
+    return false;
+  };
 })();
 

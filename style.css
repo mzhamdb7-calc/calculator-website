@@ -8448,3 +8448,77 @@ html body .bmi-result-action-btn {
   }
 }
 
+
+/* =====================================================
+   FINAL LOADING FIX: no side menu, stable top nav only
+===================================================== */
+#menuIcon {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+html body #navbar,
+html body #navbar.clean-navbar,
+html body #navbar.clean-navbar.open,
+html body.menu-scrolled #navbar.clean-navbar.open {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  left: auto !important;
+  width: min(1120px, calc(100vw - 36px)) !important;
+  max-width: calc(100vw - 36px) !important;
+  margin: 18px auto 44px !important;
+  overflow: visible !important;
+  transform: none !important;
+}
+
+html body #navbar.clean-navbar .clean-nav-inner,
+html body #navbar.clean-navbar.open .clean-nav-inner {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: grid !important;
+  grid-template-columns: minmax(100px, 0.8fr) minmax(160px, 1fr) minmax(110px, 0.75fr) minmax(130px, 0.8fr) minmax(240px, 1.15fr) !important;
+  overflow: visible !important;
+}
+
+body.menu-scrolled,
+html.menu-scrolled {
+  padding-right: 0 !important;
+}
+
+body.index-page .index-dropdown-calculator-home,
+body.index-page .grouped-calculator-home {
+  width: min(1120px, calc(100vw - 36px)) !important;
+  max-width: min(1120px, calc(100vw - 36px)) !important;
+  margin: 44px auto 80px !important;
+}
+
+body.index-page .index-category-dropdown-grid {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  align-items: start !important;
+}
+
+html body .age-result-actions,
+html body .bmi-result-actions,
+html body .universal-result-actions,
+html body .mortgage-result-actions,
+html body .mortgage-result-actions-final,
+html body .extra-result-actions,
+html body .global-result-actions,
+html body .calculator-report-actions {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+}
+
+@media (max-width: 850px) {
+  html body #navbar.clean-navbar .clean-nav-inner,
+  html body #navbar.clean-navbar.open .clean-nav-inner,
+  body.index-page .index-category-dropdown-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
