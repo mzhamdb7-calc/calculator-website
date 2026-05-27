@@ -3047,6 +3047,7 @@
           '<h3>Inflation adjusted analysis</h3>' +
           mortgageTable(["Inflation item", "Estimate"], [
             ["Assumed inflation", inflationRate.toFixed(1) + "% per year"],
+            ["Years assumed", yearsFloat.toFixed(1) + " years"],
             ["Nominal principal + interest", moneyRM(principalInterestValue)],
             ["Inflation-adjusted equivalent", moneyRM(inflationAdjustedTotal)],
             ["Long-term effect", "Future payments may feel cheaper if income rises with inflation."]
