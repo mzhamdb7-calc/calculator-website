@@ -6527,3 +6527,82 @@ body.mortgage-page .mortgage-mini-chart {
     min-width: 460px !important;
   }
 }
+
+
+/* =====================================================
+   MORTGAGE: Modern result visible + line graph style
+===================================================== */
+body.loan-page #loanExternalOutput.mortgage-modern-result-panel,
+body.mortgage-page #loanExternalOutput.mortgage-modern-result-panel,
+body.loan-page #loanExternalOutput.mortgage-modern-result-panel:has(table),
+body.mortgage-page #loanExternalOutput.mortgage-modern-result-panel:has(table) {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+body.loan-page #loanExternalOutput.mortgage-modern-result-panel .mortgage-modern-output,
+body.mortgage-page #loanExternalOutput.mortgage-modern-result-panel .mortgage-modern-output {
+  display: block !important;
+  visibility: visible !important;
+}
+
+.mortgage-line-chart-wrap {
+  width: 100% !important;
+  overflow-x: auto !important;
+  padding: 10px !important;
+  background: #fff !important;
+  border: 4px solid var(--black) !important;
+  box-shadow: 5px 5px 0 var(--black) !important;
+  box-sizing: border-box !important;
+}
+
+.mortgage-line-chart {
+  width: 100% !important;
+  min-width: 520px !important;
+  height: auto !important;
+  display: block !important;
+}
+
+.mortgage-line-axis {
+  stroke: var(--black) !important;
+  stroke-width: 4 !important;
+}
+
+.mortgage-line-path {
+  fill: none !important;
+  stroke: var(--black) !important;
+  stroke-width: 5 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+.mortgage-line-point circle {
+  fill: #ff8fc7 !important;
+  stroke: var(--black) !important;
+  stroke-width: 3 !important;
+}
+
+.mortgage-line-point text {
+  fill: var(--black) !important;
+  font-family: inherit !important;
+  font-size: 13px !important;
+  font-weight: bold !important;
+}
+
+.mortgage-modern-graph-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  gap: 16px !important;
+  align-items: start !important;
+}
+
+.mortgage-chart-empty {
+  padding: 12px !important;
+  background: #fff4b8 !important;
+  border: 4px solid var(--black) !important;
+  box-shadow: 4px 4px 0 var(--black) !important;
+  font-weight: bold !important;
+}
+

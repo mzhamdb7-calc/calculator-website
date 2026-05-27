@@ -2242,31 +2242,63 @@
       return amount;
     }
 
+    function targetWeightHealthStatus(targetKg, diffKg) {
+      if (!Number.isFinite(targetKg) || !Number.isFinite(diffKg)) {
+        return "";
+      }
+
+      const targetBmi = targetKg / (heightM * heightM);
+      let targetCategory = "Normal";
+
+      if (targetBmi < 18.5) targetCategory = "Underweight";
+      else if (targetBmi >= 25 && targetBmi < 30) targetCategory = "Overweight";
+      else if (targetBmi >= 30) targetCategory = "Obese";
+
+      const isReduction = diffKg < 0;
+
+      if (targetKg >= healthyMinKg && targetKg <= healthyMaxKg) {
+        return isReduction
+          ? " Weight reduction target looks healthy because it lands in the healthy BMI range."
+          : " Target weight lands in the healthy BMI range.";
+      }
+
+      if (targetKg < healthyMinKg) {
+        return isReduction
+          ? " Weight reduction target may not be healthy because it goes below the healthy BMI range."
+          : " Target weight is still below the healthy BMI range.";
+      }
+
+      return isReduction
+        ? " Weight reduction helps, but the target is still above the healthy BMI range."
+        : " Target weight is above the healthy BMI range.";
+    }
+
     let goalTimeline = "Enter target weight and time goal to estimate goal timeline";
     if (Number.isFinite(targetWeight) && targetWeight > 0) {
       const targetKg = unit === "us" ? targetWeight * 0.45359237 : targetWeight;
       const diffKg = targetKg - weightKg;
       const direction = diffKg < 0 ? "lose" : "gain";
       const diffAbsKg = Math.abs(diffKg);
+      const targetHealthText = targetWeightHealthStatus(targetKg, diffKg);
 
       if (diffAbsKg < 0.05) {
-        goalTimeline = "Already at target weight";
+        goalTimeline = "Already at target weight." + targetHealthText;
       } else {
         const availableWeeks = goalWeeksFromInput(timeGoalAmount, timeGoal);
 
         if (Number.isFinite(availableWeeks) && availableWeeks > 0) {
           const perWeekKg = diffAbsKg / availableWeeks;
-          goalTimeline = "To " + direction + " " + displayWeightFromKg(diffAbsKg) + " in " + goalUnitText(timeGoalAmount, timeGoal) + ", aim for about " + displayWeightFromKg(perWeekKg) + " per week";
+          goalTimeline = "To " + direction + " " + displayWeightFromKg(diffAbsKg) + " in " + goalUnitText(timeGoalAmount, timeGoal) + ", aim for about " + displayWeightFromKg(perWeekKg) + " per week." + targetHealthText;
         } else {
           const recommendedWeeks = Math.max(1, Math.ceil(diffAbsKg / 0.5));
           const perWeekText = displayWeightFromKg(0.5);
 
           if (timeGoal === "daily") {
-            goalTimeline = "About " + (recommendedWeeks * 7) + " days to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week";
+            goalTimeline = "About " + (recommendedWeeks * 7) + " days to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week." + targetHealthText;
           } else if (timeGoal === "monthly") {
-            goalTimeline = "About " + Math.max(1, Math.ceil(recommendedWeeks / 4.345)) + " months to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week";
+            goalTimeline = "About " + Math.max(1, Math.ceil(recommendedWeeks / 4.345)) + " months to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week." + targetHealthText;
           } else {
-            goalTimeline = "About " + recommendedWeeks + " weeks to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week";
+            goalTimeline = "About " + recommendedWeeks + " weeks to " + direction + " " + displayWeightFromKg(diffAbsKg) + " at ~" + perWeekText + "/week." + targetHealthText;
           }
         }
       }
@@ -2552,24 +2584,82 @@
   }
 
   function mortgageSimpleBarChart(items, valueKey) {
-    const values = items.map(function (item) { return Number(item[valueKey]) || 0; });
+    /*
+      Kept this function name so existing mortgage code still works,
+      but the visual output is now a line graph instead of a bar chart.
+    */
+    items = Array.isArray(items) ? items : [];
+
+    const values = items.map(function (item) {
+      return Number(item[valueKey]) || 0;
+    });
+
+    const width = 520;
+    const height = 220;
+    const padLeft = 54;
+    const padRight = 24;
+    const padTop = 24;
+    const padBottom = 46;
+    const chartWidth = width - padLeft - padRight;
+    const chartHeight = height - padTop - padBottom;
     const max = Math.max.apply(Math, values.concat([1]));
+    const min = Math.min.apply(Math, values.concat([0]));
+    const range = Math.max(1, max - min);
+
+    function xAt(index) {
+      if (items.length <= 1) return padLeft + chartWidth / 2;
+      return padLeft + (index / (items.length - 1)) * chartWidth;
+    }
+
+    function yAt(value) {
+      return padTop + chartHeight - ((value - min) / range) * chartHeight;
+    }
+
+    const points = values.map(function (value, index) {
+      return xAt(index).toFixed(2) + "," + yAt(value).toFixed(2);
+    }).join(" ");
+
+    const dots = items.map(function (item, index) {
+      const value = values[index];
+      const x = xAt(index);
+      const y = yAt(value);
+      return (
+        '<g class="mortgage-line-point">' +
+          '<circle cx="' + x.toFixed(2) + '" cy="' + y.toFixed(2) + '" r="5"></circle>' +
+          '<text x="' + x.toFixed(2) + '" y="' + (height - 18) + '" text-anchor="middle">' + escapeHtml(item.label || "") + '</text>' +
+          '<text x="' + x.toFixed(2) + '" y="' + Math.max(12, y - 10).toFixed(2) + '" text-anchor="middle">' + escapeHtml(item.display || moneyRM(value)) + '</text>' +
+        '</g>'
+      );
+    }).join("");
 
     return (
-      '<div class="mortgage-mini-chart">' +
-        items.map(function (item) {
-          const value = Number(item[valueKey]) || 0;
-          const width = Math.max(4, Math.round((value / max) * 100));
-          return (
-            '<div class="mortgage-chart-row">' +
-              '<div class="mortgage-chart-label">' + escapeHtml(item.label) + '</div>' +
-              '<div class="mortgage-chart-track"><div class="mortgage-chart-bar" style="width:' + width + '%"></div></div>' +
-              '<div class="mortgage-chart-value">' + escapeHtml(item.display) + '</div>' +
-            '</div>'
-          );
-        }).join("") +
+      '<div class="mortgage-line-chart-wrap">' +
+        '<svg class="mortgage-line-chart" viewBox="0 0 ' + width + ' ' + height + '" role="img" aria-label="Mortgage line graph">' +
+          '<line class="mortgage-line-axis" x1="' + padLeft + '" y1="' + (padTop + chartHeight) + '" x2="' + (padLeft + chartWidth) + '" y2="' + (padTop + chartHeight) + '"></line>' +
+          '<line class="mortgage-line-axis" x1="' + padLeft + '" y1="' + padTop + '" x2="' + padLeft + '" y2="' + (padTop + chartHeight) + '"></line>' +
+          '<polyline class="mortgage-line-path" points="' + points + '"></polyline>' +
+          dots +
+        '</svg>' +
       '</div>'
     );
+  }
+
+  function mortgageAmortizationLineChart(yearly) {
+    yearly = Array.isArray(yearly) ? yearly : [];
+
+    const items = yearly.slice(0, 40).map(function (row) {
+      return {
+        label: "Y" + row.year,
+        balance: Number(row.balance) || 0,
+        display: moneyRM(row.balance)
+      };
+    });
+
+    if (!items.length) {
+      return '<p class="mortgage-chart-empty">Enter loan details to see amortization line graph.</p>';
+    }
+
+    return mortgageSimpleBarChart(items, "balance");
   }
 
   function mortgageTable(headers, rows, className) {
@@ -2843,6 +2933,7 @@
           '<div class="mortgage-modern-graph-grid">' +
             '<div><h4>Different interest rates</h4>' + mortgageSimpleBarChart(interestChartItems, "monthly") + '</div>' +
             '<div><h4>Different loan years</h4>' + mortgageSimpleBarChart(yearCompareItems, "monthly") + '</div>' +
+            '<div><h4>Amortization balance</h4>' + mortgageAmortizationLineChart(schedule.yearly) + '</div>' +
           '</div>' +
         '</section>' +
 
@@ -3195,7 +3286,33 @@
     return '<div class="bmi-report-flow">' + html + '</div>';
   }
 
+  function mortgageReportResultHtml(report) {
+    const template = document.createElement("template");
+    template.innerHTML = cleanResultHtml(report ? report.resultHtml : "");
+
+    /*
+      Live mortgage result panel already has its own Result title and outer result shell.
+      The report page also has a Result card/title, so remove the inner duplicate.
+    */
+    template.content.querySelectorAll(".mortgage-modern-result-title, .loan-panel-title").forEach(function (title) {
+      if (/^result$/i.test(cleanText(title.textContent))) {
+        title.remove();
+      }
+    });
+
+    const shell = template.content.querySelector(".mortgage-modern-result-shell");
+    if (shell) {
+      return shell.innerHTML;
+    }
+
+    return template.innerHTML;
+  }
+
   function reportResultHtml(report) {
+    if (report && report.type === "loan") {
+      return mortgageReportResultHtml(report);
+    }
+
     if (report && report.type === "age") {
       if (Array.isArray(report.resultLines) && report.resultLines.length) {
         return ageReportFlowHtml(report.resultLines);
@@ -5731,6 +5848,14 @@
     ].forEach(function (box) {
       if (!box) return;
 
+      if (box.classList.contains("mortgage-modern-result-panel") || box.querySelector(".mortgage-modern-output")) {
+        box.hidden = false;
+        box.style.setProperty("display", "block", "important");
+        box.style.setProperty("visibility", "visible", "important");
+        box.removeAttribute("aria-hidden");
+        return;
+      }
+
       if (isOldMortgageResultBox(box)) {
         box.innerHTML = "";
         box.style.setProperty("display", "none", "important");
@@ -6091,6 +6216,51 @@
     document.addEventListener("change", function () {
       setTimeout(keepMortgageOptionalVisible, 50);
       setTimeout(keepMortgageOptionalVisible, 350);
+    }, true);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+
+
+/* =====================================================
+   MORTGAGE: Keep modern result box visible
+   - Fixes hidden bottom result caused by old table-removal CSS/JS
+===================================================== */
+(function () {
+  "use strict";
+
+  function revealMortgageModernResult() {
+    const panel = document.getElementById("loanExternalOutput");
+
+    if (!panel || !panel.classList.contains("mortgage-modern-result-panel")) return;
+
+    panel.hidden = false;
+    panel.style.setProperty("display", "block", "important");
+    panel.style.setProperty("visibility", "visible", "important");
+    panel.style.setProperty("opacity", "1", "important");
+    panel.removeAttribute("aria-hidden");
+  }
+
+  function start() {
+    revealMortgageModernResult();
+
+    setTimeout(revealMortgageModernResult, 100);
+    setTimeout(revealMortgageModernResult, 500);
+    setTimeout(revealMortgageModernResult, 1100);
+
+    document.addEventListener("input", function () {
+      setTimeout(revealMortgageModernResult, 400);
+      setTimeout(revealMortgageModernResult, 900);
+    }, true);
+
+    document.addEventListener("change", function () {
+      setTimeout(revealMortgageModernResult, 400);
+      setTimeout(revealMortgageModernResult, 900);
     }, true);
   }
 
