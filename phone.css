@@ -8101,3 +8101,105 @@ html body .calculator-report-actions {
   }
 }
 
+
+/* =====================================================
+   FINAL DOUBLE-RENDER / INDEX ALIGNMENT OVERRIDE
+===================================================== */
+
+/* Static clean navbar renders correctly immediately, before JS rebuilds it. */
+html body #navbar.clean-navbar,
+html body #navbar.clean-navbar.open {
+  width: min(1120px, calc(100vw - 36px)) !important;
+  max-width: calc(100vw - 36px) !important;
+  margin: 18px auto 44px !important;
+  position: relative !important;
+  overflow: visible !important;
+}
+
+html body #navbar.clean-navbar > .clean-nav-inner,
+html body #navbar.clean-navbar.open > .clean-nav-inner {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: grid !important;
+  grid-template-columns:
+    minmax(100px, .8fr)
+    minmax(150px, 1fr)
+    minmax(100px, .75fr)
+    minmax(120px, .8fr)
+    minmax(220px, 1.15fr) !important;
+}
+
+/* Remove side menu permanently. */
+#menuIcon {
+  display: none !important;
+}
+
+/* Main page: force all category cards into one clean row above abacus. */
+body.index-page .index-category-dropdown-grid {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  align-items: start !important;
+}
+
+body.index-page .index-category-dropdown,
+body.index-page .index-category-dropdown.calculator-category-general,
+body.index-page .index-category-dropdown.calculator-category-health,
+body.index-page .index-category-dropdown.calculator-category-money,
+body.index-page .index-category-dropdown.calculator-category-loans,
+body.index-page .index-category-dropdown.calculator-category-property {
+  grid-column: auto !important;
+  grid-row: auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+}
+
+body.index-page .index-abacus-inside-card,
+body.index-page .calculator-category-abacus {
+  grid-column: 1 / -1 !important;
+  grid-row: auto !important;
+  width: 100% !important;
+  clear: both !important;
+}
+
+/* Hide any duplicate index abacus/old section if a cached script creates one. */
+body.index-page main.grouped-calculator-home ~ .live-abacus-section,
+body.index-page main.grouped-calculator-home ~ #indexAbacusPanel {
+  display: none !important;
+}
+
+/* Result boxes: no duplicated panels visible in normal view. */
+body:not(.calculator-report-view) .calculator-clean-result,
+body:not(.calculator-report-view) .loan-style-output-panel,
+body:not(.calculator-report-view) .mortgage-modern-result-panel,
+body:not(.calculator-report-view) #extraCalcResult {
+  visibility: visible !important;
+}
+
+/* Age/BMI action row remains one line. */
+html body .age-result-actions,
+html body .bmi-result-actions {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+}
+
+html body .age-result-action-btn,
+html body .bmi-result-action-btn {
+  min-width: 0 !important;
+  width: 100% !important;
+  font-size: clamp(10px, 1.4vw, 15px) !important;
+}
+
+@media (max-width: 850px) {
+  body.index-page .index-category-dropdown-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  html body #navbar.clean-navbar > .clean-nav-inner,
+  html body #navbar.clean-navbar.open > .clean-nav-inner {
+    grid-template-columns: 1fr !important;
+  }
+}
+

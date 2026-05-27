@@ -9046,3 +9046,103 @@
   }
 })();
 
+
+/* =====================================================
+   FINAL DOUBLE-RENDER CLEANUP
+   - Keeps one top navbar, one main calculator box, one abacus, one result panel per page
+   - Prevents older delayed render guards from showing duplicate boxes
+===================================================== */
+(function () {
+  "use strict";
+
+  function keepFirst(selector) {
+    const nodes = Array.prototype.slice.call(document.querySelectorAll(selector));
+    nodes.slice(1).forEach(function (node) {
+      node.remove();
+    });
+  }
+
+  function dedupeResult(selector, preferredId) {
+    const panels = Array.prototype.slice.call(document.querySelectorAll(selector)).filter(function (el) {
+      return el && !el.closest("#calculatorReportPage") && !el.closest("#globalSimpleReportPage") && !el.closest("#extraCalculatorReportPage");
+    });
+
+    if (panels.length <= 1) return;
+
+    const preferred = preferredId ? document.getElementById(preferredId) : null;
+    const keep = preferred && panels.indexOf(preferred) !== -1 ? preferred : panels[panels.length - 1];
+
+    panels.forEach(function (panel) {
+      if (panel !== keep) panel.remove();
+    });
+  }
+
+  function cleanupDoubleRender() {
+    keepFirst("#navbar");
+    keepFirst("main.grouped-calculator-home");
+    keepFirst("#liveAbacus");
+    keepFirst("#liveAbacusValueText");
+    keepFirst("#liveAbacusReset");
+
+    // Keep only one information panel per calculator page.
+    keepFirst("main > .pc-what-slot");
+    keepFirst("main > .extra-what-slot");
+
+    // Keep only one side group bar per calculator page.
+    const sidebars = Array.prototype.slice.call(document.querySelectorAll("main > .old-calculator-groupbar, main > .extra-side-box, main > .extra-related-box, main > .loan-history-box"));
+    sidebars.slice(1).forEach(function (node) {
+      if (!node.classList.contains("old-calculator-groupbar") && !node.classList.contains("extra-side-box") && !node.classList.contains("extra-related-box")) return;
+      node.remove();
+    });
+
+    dedupeResult(".age-clean-result, .age-point-output, #ageResult", "ageExternalOutput");
+    dedupeResult(".bmi-clean-result, .bmi-box-output, #bmiResult", "bmiReportOutput");
+    dedupeResult(".loan-clean-result, .mortgage-modern-result-panel, #loanResult", "loanExternalOutput");
+    dedupeResult(".personalLoan-clean-result, #personalLoanResult", "personalLoanExternalOutput");
+    dedupeResult(".discount-clean-result, #discountResult", "discountReportOutput");
+    dedupeResult(".percentage-clean-result, #percentageResult", "percentageReportOutput");
+    dedupeResult(".compound-clean-result, #compoundResult", "compoundReportOutput");
+
+    const nav = document.getElementById("navbar");
+    if (nav) {
+      nav.classList.remove("open");
+      nav.classList.add("clean-navbar");
+    }
+
+    const menu = document.getElementById("menuIcon");
+    if (menu) menu.remove();
+
+    document.body.classList.remove("menu-scrolled");
+    document.documentElement.classList.remove("menu-scrolled");
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", cleanupDoubleRender);
+  } else {
+    cleanupDoubleRender();
+  }
+
+  setTimeout(cleanupDoubleRender, 80);
+  setTimeout(cleanupDoubleRender, 450);
+  setTimeout(cleanupDoubleRender, 1200);
+  setTimeout(cleanupDoubleRender, 2600);
+
+  document.addEventListener("input", function () {
+    setTimeout(cleanupDoubleRender, 2100);
+    setTimeout(cleanupDoubleRender, 2600);
+  }, true);
+
+  document.addEventListener("change", function () {
+    setTimeout(cleanupDoubleRender, 2100);
+    setTimeout(cleanupDoubleRender, 2600);
+  }, true);
+
+  const observer = new MutationObserver(function () {
+    setTimeout(cleanupDoubleRender, 50);
+  });
+
+  if (document.body) {
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+})();
+
