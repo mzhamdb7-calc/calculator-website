@@ -6307,3 +6307,75 @@ body.loan-page .calculator .early-settlement-toggle {
   }
 }
 
+
+/* =====================================================
+   MORTGAGE ONLY: Full width after escaping old grid
+===================================================== */
+body.mortgage-page .calculator > .mortgage-two-column-input-layout,
+body.loan-page .calculator > .mortgage-two-column-input-layout {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: 22px !important;
+  align-items: start !important;
+  margin: 18px 0 22px !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body.mortgage-page .calculator > .mortgage-input-grid:empty,
+body.loan-page .calculator > .mortgage-input-grid:empty {
+  display: none !important;
+}
+
+body.mortgage-page .mortgage-left-input-column,
+body.mortgage-page .mortgage-right-input-column,
+body.loan-page .mortgage-left-input-column,
+body.loan-page .mortgage-right-input-column {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 20px !important;
+  box-sizing: border-box !important;
+}
+
+body.mortgage-page .mortgage-left-input-column > *,
+body.mortgage-page .mortgage-right-input-column > *,
+body.loan-page .mortgage-left-input-column > *,
+body.loan-page .mortgage-right-input-column > * {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+
+body.mortgage-page .mortgage-input-box label,
+body.loan-page .mortgage-input-box label {
+  text-align: left !important;
+  white-space: normal !important;
+  overflow-wrap: break-word !important;
+}
+
+body.mortgage-page .mortgage-input-box input,
+body.mortgage-page .mortgage-input-box select,
+body.loan-page .mortgage-input-box input,
+body.loan-page .mortgage-input-box select {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 850px) {
+  body.mortgage-page .calculator > .mortgage-two-column-input-layout,
+  body.loan-page .calculator > .mortgage-two-column-input-layout {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+}
+

@@ -5820,3 +5820,90 @@
   }
 })();
 
+
+/* =====================================================
+   MORTGAGE ONLY: Escape old input grid wrapper
+   - Fixes squeezed/narrow mortgage input boxes
+   - The previous layout wrapper was being inserted inside the old grid,
+     so it only occupied one narrow grid column.
+===================================================== */
+(function () {
+  "use strict";
+
+  function isMortgagePage() {
+    const title = String(document.querySelector("h1")?.textContent || "").toLowerCase();
+    const path = window.location.pathname.toLowerCase();
+
+    return (
+      path.includes("mortgage") ||
+      title.includes("mortgage") ||
+      !!document.querySelector(".mortgage-input-grid") ||
+      !!document.querySelector(".mortgage-two-column-input-layout")
+    );
+  }
+
+  function fixMortgageGridWrapper() {
+    if (!isMortgagePage()) return;
+
+    document.body.classList.add("mortgage-page", "loan-page");
+
+    const layout = document.querySelector(".mortgage-two-column-input-layout");
+    const oldGrid = document.querySelector(".mortgage-input-grid");
+    const calculator = document.querySelector(".calculator");
+
+    if (!layout || !oldGrid || !calculator) return;
+
+    /*
+      If the new layout is inside the old .mortgage-input-grid,
+      the old grid squeezes it into one column. Move it outside.
+    */
+    if (oldGrid.contains(layout)) {
+      oldGrid.insertAdjacentElement("beforebegin", layout);
+    }
+
+    /*
+      After the boxes are moved, the old grid should be empty/unused.
+      Hide it so it cannot reserve space or affect widths.
+    */
+    if (!oldGrid.querySelector(".mortgage-input-box")) {
+      oldGrid.style.setProperty("display", "none", "important");
+      oldGrid.setAttribute("aria-hidden", "true");
+    }
+
+    layout.style.setProperty("width", "100%", "important");
+    layout.style.setProperty("max-width", "100%", "important");
+    layout.style.setProperty("box-sizing", "border-box", "important");
+
+    document
+      .querySelectorAll(
+        ".mortgage-left-input-column, .mortgage-right-input-column, " +
+        ".mortgage-left-input-column > *, .mortgage-right-input-column > *"
+      )
+      .forEach(function (el) {
+        el.style.setProperty("width", "100%", "important");
+        el.style.setProperty("max-width", "100%", "important");
+        el.style.setProperty("min-width", "0", "important");
+        el.style.setProperty("box-sizing", "border-box", "important");
+      });
+  }
+
+  function start() {
+    fixMortgageGridWrapper();
+
+    /*
+      Older mortgage organizers run a few delayed passes.
+      Run after them so the wrapper stays outside the old grid.
+    */
+    setTimeout(fixMortgageGridWrapper, 250);
+    setTimeout(fixMortgageGridWrapper, 800);
+    setTimeout(fixMortgageGridWrapper, 1600);
+    setTimeout(fixMortgageGridWrapper, 2600);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+
