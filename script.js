@@ -741,6 +741,7 @@
               '<button type="button" class="age-result-action-btn age-copy-btn">Copy</button>' +
               '<button type="button" class="age-result-action-btn age-save-btn">Save</button>' +
               '<button type="button" class="age-result-action-btn age-share-btn">Share</button>' +
+              '<button type="button" class="age-result-action-btn age-report-btn">Report</button>' +
             '</div>' +
           '</div>' +
         '</div>';
@@ -754,18 +755,24 @@
               '<button type="button" class="bmi-result-action-btn bmi-copy-btn">Copy</button>' +
               '<button type="button" class="bmi-result-action-btn bmi-save-btn">Save</button>' +
               '<button type="button" class="bmi-result-action-btn bmi-share-btn">Share</button>' +
+              '<button type="button" class="bmi-result-action-btn bmi-report-btn">Report</button>' +
             '</div>' +
           '</div>' +
         '</div>';
     } else {
       panel.innerHTML =
         (extraTopHtml || "") +
-        '<div class="loan-output-top">' +
-          '<div class="loan-result-panel">' +
+        '<div class="loan-output-top universal-result-shell">' +
+          '<div class="loan-result-panel universal-result-main-box">' +
             '<h2 class="loan-panel-title">Result</h2>' +
             '<div class="loan-result-body">' + resultHtml + '</div>' +
+            '<div class="universal-result-actions">' +
+              '<button type="button" class="universal-result-action-btn loan-copy-btn">Copy</button>' +
+              '<button type="button" class="universal-result-action-btn loan-save-btn">Save</button>' +
+              '<button type="button" class="universal-result-action-btn loan-share-btn">Share</button>' +
+              '<button type="button" class="universal-result-action-btn loan-report-btn">Report</button>' +
+            '</div>' +
           '</div>' +
-          '<div class="loan-copy-side"><button type="button" class="loan-copy-btn">Copy</button></div>' +
         '</div>';
     }
 
@@ -778,6 +785,7 @@
       const copyBtn = panel.querySelector(".age-copy-btn");
       const saveBtn = panel.querySelector(".age-save-btn");
       const shareBtn = panel.querySelector(".age-share-btn");
+      const reportBtn = panel.querySelector(".age-report-btn");
 
       if (copyBtn) {
         copyBtn.onclick = function () {
@@ -808,11 +816,18 @@
           }
         };
       }
+
+      if (reportBtn) {
+        reportBtn.onclick = function () {
+          openLatestCalculatorReport("age", reportBtn);
+        };
+      }
     } else if (isBmiResult) {
       const bmiText = rowsToPlainText(rows);
       const copyBtn = panel.querySelector(".bmi-copy-btn");
       const saveBtn = panel.querySelector(".bmi-save-btn");
       const shareBtn = panel.querySelector(".bmi-share-btn");
+      const reportBtn = panel.querySelector(".bmi-report-btn");
 
       if (copyBtn) {
         copyBtn.onclick = function () {
@@ -843,11 +858,52 @@
           }
         };
       }
+
+      if (reportBtn) {
+        reportBtn.onclick = function () {
+          openLatestCalculatorReport("bmi", reportBtn);
+        };
+      }
     } else {
+      const resultText = rowsToPlainText(rows);
       const copyBtn = panel.querySelector(".loan-copy-btn");
+      const saveBtn = panel.querySelector(".loan-save-btn");
+      const shareBtn = panel.querySelector(".loan-share-btn");
+      const reportBtn = panel.querySelector(".loan-report-btn");
+
       if (copyBtn) {
         copyBtn.onclick = function () {
           copyTable(panel.querySelector("table"), copyBtn);
+        };
+      }
+
+      if (saveBtn) {
+        saveBtn.onclick = function () {
+          downloadTextFile(type + "-result-" + dateFileStamp() + ".txt", resultText);
+          setButtonState(saveBtn, "Saved!");
+        };
+      }
+
+      if (shareBtn) {
+        shareBtn.onclick = function () {
+          const shareData = {
+            title: "Calculator Result",
+            text: resultText
+          };
+
+          if (navigator.share) {
+            navigator.share(shareData).catch(function () {
+              copyText(resultText, shareBtn);
+            });
+          } else {
+            copyText(resultText, shareBtn);
+          }
+        };
+      }
+
+      if (reportBtn) {
+        reportBtn.onclick = function () {
+          openLatestCalculatorReport(type, reportBtn);
         };
       }
     }
@@ -3046,12 +3102,14 @@
           '<button type="button" class="mortgage-result-action-btn mortgage-result-copy-btn">Copy</button>' +
           '<button type="button" class="mortgage-result-action-btn mortgage-result-save-btn">Save</button>' +
           '<button type="button" class="mortgage-result-action-btn mortgage-result-share-btn">Share</button>' +
+          '<button type="button" class="mortgage-result-action-btn mortgage-result-report-btn">Report</button>' +
         '</div>' +
       '</div>';
 
     const copyBtn = panel.querySelector(".mortgage-result-copy-btn");
     const saveBtn = panel.querySelector(".mortgage-result-save-btn");
     const shareBtn = panel.querySelector(".mortgage-result-share-btn");
+    const reportBtn = panel.querySelector(".mortgage-result-report-btn");
 
     if (copyBtn) {
       copyBtn.onclick = function () {
@@ -3079,6 +3137,12 @@
         } else {
           copyText(text, shareBtn);
         }
+      };
+    }
+
+    if (reportBtn) {
+      reportBtn.onclick = function () {
+        openLatestCalculatorReport("loan", reportBtn);
       };
     }
 
@@ -4620,6 +4684,24 @@
   window.scrollToTop = scrollToTop;
   window.toggleMenu = toggleMenu;
   window.flashButton = flashButton;
+
+
+  function openLatestCalculatorReport(type, button) {
+    if (!isReportType(type)) return false;
+
+    const reports = loadReports(type);
+    const report = reports && reports.length ? reports[reports.length - 1] : null;
+
+    if (!report) {
+      if (button) setButtonState(button, "Calculate first");
+      return false;
+    }
+
+    window.location.href = reportHref(report);
+    return true;
+  }
+
+  window.openLatestCalculatorReport = openLatestCalculatorReport;
 
   window.calculateAge = calculateAge;
   window.calculateBMI = calculateBMI;
@@ -6972,7 +7054,68 @@
   }
 
   function setupDropdowns(nav) {
-    nav.querySelectorAll(".clean-nav-dropdown").forEach(function (dropdown) {
+    const dropdowns = Array.from(nav.querySelectorAll(".clean-nav-dropdown"));
+    const submenus = Array.from(nav.querySelectorAll(".clean-nav-submenu"));
+    let closeTimer = null;
+
+    function clearCloseTimer() {
+      if (closeTimer) {
+        clearTimeout(closeTimer);
+        closeTimer = null;
+      }
+    }
+
+    function setDropdownOpen(dropdown, open) {
+      const button = dropdown.querySelector(".clean-nav-button");
+      dropdown.classList.toggle("is-open", !!open);
+      if (button) button.setAttribute("aria-expanded", open ? "true" : "false");
+
+      if (!open) {
+        dropdown.querySelectorAll(".clean-nav-submenu.is-open").forEach(function (submenu) {
+          submenu.classList.remove("is-open");
+        });
+      }
+    }
+
+    function closeAllDropdownsExcept(except) {
+      dropdowns.forEach(function (dropdown) {
+        if (dropdown !== except) setDropdownOpen(dropdown, false);
+      });
+    }
+
+    function closeSubmenusExcept(submenu) {
+      const parentPanel = submenu ? submenu.closest(".clean-nav-dropdown-panel") : null;
+
+      submenus.forEach(function (item) {
+        if (item === submenu) return;
+
+        /*
+          Close siblings in the same calculator panel when hovering/clicking
+          another category. This stops multiple flyout boxes from staying open.
+        */
+        if (!parentPanel || item.closest(".clean-nav-dropdown-panel") === parentPanel) {
+          item.classList.remove("is-open");
+        }
+      });
+    }
+
+    function openDropdown(dropdown) {
+      clearCloseTimer();
+      closeAllDropdownsExcept(dropdown);
+      setDropdownOpen(dropdown, true);
+    }
+
+    function closeEverything() {
+      dropdowns.forEach(function (dropdown) {
+        setDropdownOpen(dropdown, false);
+      });
+
+      submenus.forEach(function (submenu) {
+        submenu.classList.remove("is-open");
+      });
+    }
+
+    dropdowns.forEach(function (dropdown) {
       const button = dropdown.querySelector(".clean-nav-button");
       if (!button) return;
 
@@ -6981,14 +7124,20 @@
         event.stopPropagation();
 
         const isOpen = dropdown.classList.contains("is-open");
-        closeAllDropdowns(nav);
+        closeAllDropdownsExcept(dropdown);
+        setDropdownOpen(dropdown, !isOpen);
+      });
 
-        dropdown.classList.toggle("is-open", !isOpen);
-        button.setAttribute("aria-expanded", !isOpen ? "true" : "false");
+      dropdown.addEventListener("mouseenter", function () {
+        openDropdown(dropdown);
+      });
+
+      dropdown.addEventListener("focusin", function () {
+        openDropdown(dropdown);
       });
     });
 
-    nav.querySelectorAll(".clean-nav-submenu").forEach(function (submenu) {
+    submenus.forEach(function (submenu) {
       const button = submenu.querySelector(".clean-nav-submenu-button");
       if (!button) return;
 
@@ -6996,20 +7145,44 @@
         event.preventDefault();
         event.stopPropagation();
 
-        nav.querySelectorAll(".clean-nav-submenu.is-open").forEach(function (item) {
-          if (item !== submenu) item.classList.remove("is-open");
-        });
-
-        submenu.classList.toggle("is-open");
+        const isOpen = submenu.classList.contains("is-open");
+        closeSubmenusExcept(submenu);
+        submenu.classList.toggle("is-open", !isOpen);
       });
+
+      submenu.addEventListener("mouseenter", function () {
+        clearCloseTimer();
+        closeSubmenusExcept(submenu);
+        submenu.classList.add("is-open");
+      });
+
+      submenu.addEventListener("focusin", function () {
+        clearCloseTimer();
+        closeSubmenusExcept(submenu);
+        submenu.classList.add("is-open");
+      });
+    });
+
+    nav.addEventListener("mouseenter", clearCloseTimer);
+
+    nav.addEventListener("mouseleave", function () {
+      clearCloseTimer();
+      closeTimer = setTimeout(function () {
+        if (!nav.matches(":hover") && !nav.contains(document.activeElement)) {
+          closeEverything();
+        }
+      }, 450);
     });
 
     document.addEventListener("click", function (event) {
       if (!nav.contains(event.target)) {
-        closeAllDropdowns(nav);
-        nav.querySelectorAll(".clean-nav-submenu.is-open").forEach(function (item) {
-          item.classList.remove("is-open");
-        });
+        closeEverything();
+      }
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closeEverything();
       }
     });
   }
@@ -7845,6 +8018,55 @@
     document.addEventListener("DOMContentLoaded", start);
   } else {
     start();
+  }
+})();
+
+
+/* =====================================================
+   INDEX: Abacus icon toggle
+   - Keeps abacus collapsed into an icon on the main page
+===================================================== */
+(function () {
+  "use strict";
+
+  function setupIndexAbacusToggle() {
+    const button = document.getElementById("indexAbacusToggle");
+    const panel = document.getElementById("indexAbacusPanel");
+
+    if (!button || !panel || button.dataset.ready === "true") return;
+
+    button.dataset.ready = "true";
+
+    function setOpen(open) {
+      panel.hidden = !open;
+      document.body.classList.toggle("index-abacus-open", open);
+      button.setAttribute("aria-expanded", open ? "true" : "false");
+      button.title = open ? "Close abacus" : "Open abacus";
+    }
+
+    button.addEventListener("click", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      setOpen(panel.hidden);
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") setOpen(false);
+    });
+
+    document.addEventListener("click", function (event) {
+      if (panel.hidden) return;
+      if (panel.contains(event.target) || button.contains(event.target)) return;
+      setOpen(false);
+    });
+
+    setOpen(false);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupIndexAbacusToggle);
+  } else {
+    setupIndexAbacusToggle();
   }
 })();
 

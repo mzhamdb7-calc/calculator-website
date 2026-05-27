@@ -10288,3 +10288,641 @@ body.calculator-report-view #calculatorReportPage .mortgage-modern-result-panel 
   }
 }
 
+
+/* =====================================================
+   INDEX: Smaller calculator box + abacus icon popup
+===================================================== */
+body.index-page .grouped-calculator-home {
+  width: min(860px, calc(100vw - 38px)) !important;
+  max-width: 860px !important;
+  position: relative !important;
+  padding-top: 22px !important;
+}
+
+body.index-page .calculator-group-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+}
+
+body.index-page .calculator-category-card {
+  padding: 13px !important;
+}
+
+body.index-page .calculator-category-card h2 {
+  font-size: 21px !important;
+}
+
+body.index-page .calculator-category-card p {
+  font-size: 15px !important;
+  min-height: 32px !important;
+}
+
+body.index-page .calculator-category-links {
+  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)) !important;
+  gap: 8px !important;
+}
+
+body.index-page .calculator-category-links a {
+  min-height: 40px !important;
+  padding: 7px 8px !important;
+  font-size: 15px !important;
+}
+
+body.index-page .index-abacus-toggle {
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  width: 54px !important;
+  height: 54px !important;
+  min-width: 54px !important;
+  min-height: 54px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  background: #fff4b8 !important;
+  color: var(--black, #000) !important;
+  border: 4px solid var(--black, #000) !important;
+  box-shadow: 5px 5px 0 var(--black, #000) !important;
+  font-family: inherit !important;
+  font-size: 28px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  z-index: 20 !important;
+  box-sizing: border-box !important;
+}
+
+body.index-page .index-abacus-toggle:hover,
+body.index-page .index-abacus-toggle[aria-expanded="true"] {
+  background: #d3fff9 !important;
+  transform: translate(1px, 1px) !important;
+  box-shadow: 4px 4px 0 var(--black, #000) !important;
+}
+
+body.index-page .index-abacus-panel[hidden] {
+  display: none !important;
+}
+
+body.index-page .index-abacus-panel {
+  position: fixed !important;
+  top: 92px !important;
+  right: 24px !important;
+  width: min(760px, calc(100vw - 48px)) !important;
+  max-height: calc(100vh - 118px) !important;
+  overflow: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  z-index: 9999998 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+body.index-page .index-abacus-panel .live-abacus-card,
+body.index-page .index-abacus-panel .interactive-abacus-card {
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+body.index-page.index-abacus-open .index-abacus-toggle {
+  position: fixed !important;
+  top: 26px !important;
+  right: 26px !important;
+  z-index: 9999999 !important;
+}
+
+@media (max-width: 850px) {
+  body.index-page .grouped-calculator-home {
+    width: min(94vw, 560px) !important;
+    max-width: 560px !important;
+    padding-top: 68px !important;
+  }
+
+  body.index-page .calculator-group-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.index-page .index-abacus-toggle {
+    top: 12px !important;
+    right: 12px !important;
+  }
+
+  body.index-page .index-abacus-panel {
+    top: 82px !important;
+    right: 12px !important;
+    width: calc(100vw - 24px) !important;
+    max-height: calc(100vh - 100px) !important;
+  }
+}
+
+
+/* =====================================================
+   OLD CALCULATORS: new alignment + report actions
+===================================================== */
+@media (min-width: 851px) {
+  main.old-calculator-layout {
+    width: min(1120px, calc(100vw - 40px)) !important;
+    max-width: 1120px !important;
+    margin: 24px auto !important;
+    display: grid !important;
+    grid-template-columns: minmax(220px, 260px) minmax(0, 820px) !important;
+    gap: 22px !important;
+    align-items: start !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+  }
+
+  main.old-calculator-layout > .calculator {
+    width: 100% !important;
+    max-width: 820px !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  main.old-calculator-layout > .loan-style-output-panel,
+  main.old-calculator-layout > .calculator-clean-result,
+  .loan-style-output-panel.calculator-clean-result {
+    grid-column: 2 !important;
+    width: 100% !important;
+    max-width: 820px !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  main.old-calculator-layout > .old-calculator-groupbar,
+  main.old-calculator-layout > .extra-side-box {
+    grid-column: 1 !important;
+    grid-row: 1 / span 2 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+}
+
+@media (max-width: 850px) {
+  main.old-calculator-layout {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    width: min(94vw, 620px) !important;
+    max-width: 620px !important;
+    margin: 18px auto !important;
+    gap: 16px !important;
+  }
+
+  main.old-calculator-layout > .calculator {
+    width: 100% !important;
+    max-width: 100% !important;
+    order: 1 !important;
+  }
+
+  main.old-calculator-layout > .old-calculator-groupbar,
+  main.old-calculator-layout > .extra-side-box {
+    width: 100% !important;
+    order: 3 !important;
+  }
+
+  main.old-calculator-layout > .loan-style-output-panel,
+  main.old-calculator-layout > .calculator-clean-result {
+    width: 100% !important;
+    order: 2 !important;
+  }
+}
+
+/* Bottom action rows: Copy / Save / Share / Report */
+.age-result-actions,
+.bmi-result-actions,
+.universal-result-actions,
+.mortgage-result-actions,
+.mortgage-result-actions-final {
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+  margin: 18px 0 0 !important;
+  padding-top: 14px !important;
+  border-top: 4px solid var(--black, #000) !important;
+  box-sizing: border-box !important;
+}
+
+.age-result-action-btn,
+.bmi-result-action-btn,
+.universal-result-action-btn,
+.mortgage-result-action-btn {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  min-height: 46px !important;
+  margin: 0 !important;
+  padding: 9px 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #fff4b8 !important;
+  color: var(--black, #000) !important;
+  border: 4px solid var(--black, #000) !important;
+  box-shadow: 4px 4px 0 var(--black, #000) !important;
+  font-family: inherit !important;
+  font-weight: bold !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+}
+
+.age-report-btn,
+.bmi-report-btn,
+.loan-report-btn,
+.mortgage-result-report-btn {
+  background: #d3fff9 !important;
+}
+
+@media (max-width: 850px) {
+  .age-result-actions,
+  .bmi-result-actions,
+  .universal-result-actions,
+  .mortgage-result-actions,
+  .mortgage-result-actions-final {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* =====================================================
+   SIDE MENU CLEAN: remove artifact icons and make flyouts left
+===================================================== */
+@media (min-width: 851px) {
+  html body #navbar.clean-navbar.open {
+    width: 290px !important;
+    min-width: 290px !important;
+    max-width: 290px !important;
+    overflow: visible !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-inner {
+    width: 290px !important;
+    min-width: 290px !important;
+    max-width: 290px !important;
+    grid-template-columns: 1fr !important;
+    overflow: visible !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-link::after,
+  html body #navbar.clean-navbar.open .clean-chat-link::after,
+  html body #navbar.clean-navbar.open .clean-nav-link[href="index.html"]::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-button::after {
+    content: "◀" !important;
+    display: inline-block !important;
+    margin-left: 8px !important;
+    font-size: 18px !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-dropdown:hover > .clean-nav-button::after,
+  html body #navbar.clean-navbar.open .clean-nav-dropdown:focus-within > .clean-nav-button::after,
+  html body #navbar.clean-navbar.open .clean-nav-dropdown.is-open > .clean-nav-button::after {
+    content: "▶" !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-link,
+  html body #navbar.clean-navbar.open .clean-nav-button {
+    width: 100% !important;
+    min-height: 52px !important;
+    padding: 8px 12px !important;
+    font-size: 18px !important;
+    line-height: 1.15 !important;
+    justify-content: center !important;
+    text-align: center !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    border-right: none !important;
+    border-bottom: 4px solid var(--black, #000) !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-search {
+    width: 100% !important;
+    min-height: 52px !important;
+    grid-template-columns: minmax(0, 1fr) 50px !important;
+    overflow: visible !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-search-input {
+    display: block !important;
+    min-width: 0 !important;
+    height: 52px !important;
+    min-height: 52px !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-search-button {
+    width: 50px !important;
+    min-width: 50px !important;
+    border-left: 4px solid var(--black, #000) !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-dropdown > .clean-nav-dropdown-panel {
+    position: absolute !important;
+    top: 0 !important;
+    right: calc(100% + 8px) !important;
+    left: auto !important;
+    width: 255px !important;
+    min-width: 255px !important;
+    max-width: 255px !important;
+    display: none !important;
+    border: 4px solid var(--black, #000) !important;
+    box-shadow: 6px 6px 0 var(--black, #000) !important;
+    z-index: 999999999 !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-dropdown:hover > .clean-nav-dropdown-panel,
+  html body #navbar.clean-navbar.open .clean-nav-dropdown:focus-within > .clean-nav-dropdown-panel,
+  html body #navbar.clean-navbar.open .clean-nav-dropdown.is-open > .clean-nav-dropdown-panel {
+    display: grid !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-submenu > .clean-nav-submenu-panel {
+    position: absolute !important;
+    top: 0 !important;
+    right: calc(100% + 8px) !important;
+    left: auto !important;
+    width: 245px !important;
+    min-width: 245px !important;
+    max-width: 245px !important;
+    display: none !important;
+    border: 4px solid var(--black, #000) !important;
+    box-shadow: 6px 6px 0 var(--black, #000) !important;
+    z-index: 999999999 !important;
+    max-height: min(72vh, 480px) !important;
+    overflow-y: auto !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-submenu:hover > .clean-nav-submenu-panel,
+  html body #navbar.clean-navbar.open .clean-nav-submenu:focus-within > .clean-nav-submenu-panel,
+  html body #navbar.clean-navbar.open .clean-nav-submenu.is-open > .clean-nav-submenu-panel {
+    display: grid !important;
+  }
+}
+
+
+/* =====================================================
+   MENU RELIABLE CLICK / HOVER FINAL
+   - Click once opens, second click closes
+   - Hovering another item closes the previous item
+   - Wider bridge area so flyouts are easier to reach
+   - Side menu main items and group items fly left
+===================================================== */
+
+/* Top dropdown: no hover gap between button and panel */
+html body #navbar.clean-navbar:not(.open) .clean-nav-dropdown > .clean-nav-dropdown-panel {
+  top: calc(100% - 2px) !important;
+  display: none !important;
+  pointer-events: auto !important;
+  z-index: 999999999 !important;
+}
+
+html body #navbar.clean-navbar:not(.open) .clean-nav-dropdown:hover > .clean-nav-dropdown-panel,
+html body #navbar.clean-navbar:not(.open) .clean-nav-dropdown:focus-within > .clean-nav-dropdown-panel,
+html body #navbar.clean-navbar:not(.open) .clean-nav-dropdown.is-open > .clean-nav-dropdown-panel {
+  display: grid !important;
+}
+
+/* Top group flyouts: open to right with overlap, not a gap */
+html body #navbar.clean-navbar:not(.open) .clean-nav-submenu > .clean-nav-submenu-panel {
+  left: calc(100% - 2px) !important;
+  right: auto !important;
+  top: -4px !important;
+  display: none !important;
+  pointer-events: auto !important;
+  z-index: 999999999 !important;
+}
+
+html body #navbar.clean-navbar:not(.open) .clean-nav-submenu:hover > .clean-nav-submenu-panel,
+html body #navbar.clean-navbar:not(.open) .clean-nav-submenu:focus-within > .clean-nav-submenu-panel,
+html body #navbar.clean-navbar:not(.open) .clean-nav-submenu.is-open > .clean-nav-submenu-panel {
+  display: grid !important;
+}
+
+/* Invisible hover/click bridge for top submenus */
+html body #navbar.clean-navbar:not(.open) .clean-nav-submenu > .clean-nav-submenu-panel::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: -14px !important;
+  width: 16px !important;
+  height: 100% !important;
+  background: transparent !important;
+}
+
+/* When one submenu is active, make its button obvious */
+.clean-nav-dropdown.is-open > .clean-nav-button,
+.clean-nav-submenu.is-open > .clean-nav-submenu-button {
+  background: #d3fff9 !important;
+}
+
+/* Side menu readable size and no compact artifact state while open */
+@media (min-width: 851px) {
+  html body #navbar.clean-navbar.open,
+  html body.menu-scrolled #navbar.clean-navbar.open {
+    width: 300px !important;
+    min-width: 300px !important;
+    max-width: 300px !important;
+    overflow: visible !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-inner,
+  html body.menu-scrolled #navbar.clean-navbar.open .clean-nav-inner {
+    width: 300px !important;
+    min-width: 300px !important;
+    max-width: 300px !important;
+    grid-template-columns: 1fr !important;
+    overflow: visible !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-link::after,
+  html body #navbar.clean-navbar.open .clean-chat-link::after,
+  html body #navbar.clean-navbar.open .clean-nav-link[href="index.html"]::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-link,
+  html body #navbar.clean-navbar.open .clean-nav-button {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 54px !important;
+    height: auto !important;
+    padding: 9px 13px !important;
+    font-size: 18px !important;
+    line-height: 1.15 !important;
+    justify-content: center !important;
+    text-align: center !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    overflow: visible !important;
+    border-right: none !important;
+    border-bottom: 4px solid var(--black, #000) !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-search {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 54px !important;
+    min-height: 54px !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 52px !important;
+    overflow: visible !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-search-input {
+    display: block !important;
+    height: 54px !important;
+    min-height: 54px !important;
+    min-width: 0 !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-search-button {
+    width: 52px !important;
+    min-width: 52px !important;
+    height: 54px !important;
+    min-height: 54px !important;
+    border-left: 4px solid var(--black, #000) !important;
+  }
+
+  /* Side menu calculator/info panels fly LEFT; no downward expansion */
+  html body #navbar.clean-navbar.open .clean-nav-dropdown {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-dropdown > .clean-nav-dropdown-panel,
+  html body.menu-scrolled #navbar.clean-navbar.open .clean-nav-dropdown > .clean-nav-dropdown-panel,
+  html body #navbar.clean-navbar.open:hover .clean-nav-dropdown > .clean-nav-dropdown-panel,
+  html body #navbar.clean-navbar.open:focus-within .clean-nav-dropdown > .clean-nav-dropdown-panel {
+    position: absolute !important;
+    top: -4px !important;
+    right: calc(100% - 2px) !important;
+    left: auto !important;
+    width: 270px !important;
+    min-width: 270px !important;
+    max-width: 270px !important;
+    display: none !important;
+    grid-template-columns: 1fr !important;
+    background: var(--white, #fff) !important;
+    border: 4px solid var(--black, #000) !important;
+    box-shadow: 6px 6px 0 var(--black, #000) !important;
+    z-index: 999999999 !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+    pointer-events: auto !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-dropdown:hover > .clean-nav-dropdown-panel,
+  html body #navbar.clean-navbar.open .clean-nav-dropdown:focus-within > .clean-nav-dropdown-panel,
+  html body #navbar.clean-navbar.open .clean-nav-dropdown.is-open > .clean-nav-dropdown-panel,
+  html body.menu-scrolled #navbar.clean-navbar.open .clean-nav-dropdown:hover > .clean-nav-dropdown-panel,
+  html body.menu-scrolled #navbar.clean-navbar.open .clean-nav-dropdown:focus-within > .clean-nav-dropdown-panel,
+  html body.menu-scrolled #navbar.clean-navbar.open .clean-nav-dropdown.is-open > .clean-nav-dropdown-panel {
+    display: grid !important;
+  }
+
+  /* Invisible bridge between side menu and main flyout */
+  html body #navbar.clean-navbar.open .clean-nav-dropdown > .clean-nav-dropdown-panel::after {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    right: -14px !important;
+    width: 16px !important;
+    height: 100% !important;
+    background: transparent !important;
+  }
+
+  /* Side menu group panels fly further LEFT */
+  html body #navbar.clean-navbar.open .clean-nav-submenu {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-submenu > .clean-nav-submenu-panel,
+  html body.menu-scrolled #navbar.clean-navbar.open .clean-nav-submenu > .clean-nav-submenu-panel,
+  html body #navbar.clean-navbar.open:hover .clean-nav-submenu > .clean-nav-submenu-panel,
+  html body #navbar.clean-navbar.open:focus-within .clean-nav-submenu > .clean-nav-submenu-panel {
+    position: absolute !important;
+    top: -4px !important;
+    right: calc(100% - 2px) !important;
+    left: auto !important;
+    width: 260px !important;
+    min-width: 260px !important;
+    max-width: 260px !important;
+    display: none !important;
+    grid-template-columns: 1fr !important;
+    background: var(--white, #fff) !important;
+    border: 4px solid var(--black, #000) !important;
+    box-shadow: 6px 6px 0 var(--black, #000) !important;
+    z-index: 999999999 !important;
+    overflow-y: auto !important;
+    max-height: min(72vh, 500px) !important;
+    box-sizing: border-box !important;
+    pointer-events: auto !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-submenu:hover > .clean-nav-submenu-panel,
+  html body #navbar.clean-navbar.open .clean-nav-submenu:focus-within > .clean-nav-submenu-panel,
+  html body #navbar.clean-navbar.open .clean-nav-submenu.is-open > .clean-nav-submenu-panel {
+    display: grid !important;
+  }
+
+  /* Invisible bridge between calculator flyout and group flyout */
+  html body #navbar.clean-navbar.open .clean-nav-submenu > .clean-nav-submenu-panel::after {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    right: -14px !important;
+    width: 16px !important;
+    height: 100% !important;
+    background: transparent !important;
+  }
+
+  /* Side arrows: left closed, right opened */
+  html body #navbar.clean-navbar.open .clean-nav-button::after {
+    content: "◀" !important;
+    display: inline-block !important;
+    margin-left: 8px !important;
+    font-size: 18px !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-dropdown:hover > .clean-nav-button::after,
+  html body #navbar.clean-navbar.open .clean-nav-dropdown:focus-within > .clean-nav-button::after,
+  html body #navbar.clean-navbar.open .clean-nav-dropdown.is-open > .clean-nav-button::after {
+    content: "▶" !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-submenu-button span[aria-hidden="true"] {
+    transform: rotate(180deg) !important;
+  }
+
+  html body #navbar.clean-navbar.open .clean-nav-submenu:hover > .clean-nav-submenu-button span[aria-hidden="true"],
+  html body #navbar.clean-navbar.open .clean-nav-submenu:focus-within > .clean-nav-submenu-button span[aria-hidden="true"],
+  html body #navbar.clean-navbar.open .clean-nav-submenu.is-open > .clean-nav-submenu-button span[aria-hidden="true"] {
+    transform: rotate(0deg) !important;
+  }
+
+  /* Search result flyout left with bridge */
+  html body #navbar.clean-navbar.open .clean-nav-search-results {
+    position: absolute !important;
+    top: -4px !important;
+    right: calc(100% - 2px) !important;
+    left: auto !important;
+    width: 270px !important;
+    min-width: 270px !important;
+    max-width: 270px !important;
+    z-index: 999999999 !important;
+  }
+}
+

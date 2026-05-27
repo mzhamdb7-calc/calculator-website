@@ -94,6 +94,8 @@
   <!-- Main Content -->
   <main class="calculator-box grouped-calculator-home">
 
+    <button type="button" id="indexAbacusToggle" class="index-abacus-toggle" aria-expanded="false" aria-controls="indexAbacusPanel" title="Open abacus">🧮</button>
+
     <h1>Calculator</h1>
 
     <div class="calculator-group-grid">
@@ -159,7 +161,7 @@
   </main>
 
   <!-- Interactive Abacus -->
-  <section class="live-abacus-section interactive-abacus-section" aria-label="Interactive abacus">
+  <section id="indexAbacusPanel" class="live-abacus-section interactive-abacus-section index-abacus-panel" aria-label="Interactive abacus" hidden>
     <div class="live-abacus-card interactive-abacus-card">
       <h2>Interactive Abacus</h2>
       <p class="live-abacus-subtitle">Click or drag the beads to play around with the abacus.</p>
