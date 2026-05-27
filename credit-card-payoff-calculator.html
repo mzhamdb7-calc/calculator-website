@@ -1,46 +1,100 @@
-<!-- CHATGPT_EXTRA_CALCULATORS_20260528 -->
+<!-- CHATGPT_EXTRA_CALCULATORS_DESIGN_ALIGN_20260528 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+
   <title>Credit Card Payoff Calculator</title>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Estimate credit card payoff time and interest.">
+
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=extra_calculators_20260528">
-  <link rel="stylesheet" href="pc.css?v=extra_calculators_20260528" media="screen and (min-width: 851px)">
-  <link rel="stylesheet" href="phone.css?v=extra_calculators_20260528" media="screen and (max-width: 850px)">
+  <link rel="stylesheet" href="style.css?v=extra_design_align_20260528">
+  <link rel="stylesheet" href="pc.css?v=extra_design_align_20260528" media="screen and (min-width: 851px)">
+  <link rel="stylesheet" href="phone.css?v=extra_design_align_20260528" media="screen and (max-width: 850px)">
   <link rel="icon" href="favicon.ico">
 </head>
+
 <body class="extra-calculator-page creditCardPayoff-page" data-page="creditCardPayoff">
 
-  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">↑</button>
-  <button id="menuIcon" type="button" onclick="toggleMenu()" aria-label="Open menu">MENU</button>
+
+  <!-- Go Up Button -->
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
+    ↑
+  </button>
+
+  <!-- MENU Button shown after scroll -->
+  <button id="menuIcon" type="button" onclick="toggleMenu()" aria-label="Open menu">
+    MENU
+  </button>
+
+  <!-- Navbar -->
   <nav id="navbar">
     <a href="index.html">home</a>
     <a href="basic-calculator.html">calculator</a>
     <a href="about.html">info</a>
   </nav>
 
-  <main class="loan-calculator-container extra-calculator-container">
-    <section class="calculator extra-calculator-box">
-      <h1>Credit Card Payoff Calculator</h1>
-      <p class="subtitle">See how long it takes to clear a card balance.</p>
-      
-      <div class="extra-input-grid">
-        <label for="ccBalance">Card balance</label>
-<input type="number" id="ccBalance" placeholder="Example: 5000" inputmode="decimal">
-<label for="ccApr">APR (%)</label>
-<input type="number" id="ccApr" placeholder="Example: 18" inputmode="decimal">
-<label for="ccPayment">Monthly payment</label>
-<input type="number" id="ccPayment" placeholder="Example: 300" inputmode="decimal">
+
+  <main class="loan-calculator-container extra-calculator-container extra-calculator-layout">
+
+    <section class="loan-history-box extra-side-box">
+      <div class="loan-history-top">
+        <h3>Loans &amp; debt</h3>
       </div>
-      <button type="button" onclick="calculateCreditCardPayoffExtra()" class="main-btn">calculate payoff</button>
-      <section id="extraCalcResult" class="extra-result-box" hidden></section>
+
+      <div class="extra-side-links">
+          <a href="mortgage-calculator.html">mortgage calculator</a>
+          <a href="personal-loan-calculator.html">personal loan</a>
+          <a href="loan-comparison-calculator.html">loan comparison</a>
+          <a href="debt-payoff-calculator.html">debt payoff</a>
+          <a href="credit-card-payoff-calculator.html" class="current-extra-link">credit card payoff</a>
+          <a href="credit-card-interest-calculator.html">credit card interest</a>
+      </div>
     </section>
+
+    <section class="calculator extra-calculator-box">
+
+      <h1>Credit Card Payoff Calculator</h1>
+
+      <p class="subtitle">
+        See how long it takes to clear a card balance.
+      </p>
+
+      
+
+      <div class="extra-input-card">
+        <div class="extra-input-card-title">Input details</div>
+
+        <div class="extra-input-grid">
+          <div class="extra-input-field">
+            <label for="ccBalance">Card balance</label>
+            <input type="number" id="ccBalance" placeholder="Example: 5000" inputmode="decimal">
+          </div>
+          <div class="extra-input-field">
+            <label for="ccApr">APR (%)</label>
+            <input type="number" id="ccApr" placeholder="Example: 18" inputmode="decimal">
+          </div>
+          <div class="extra-input-field">
+            <label for="ccPayment">Monthly payment</label>
+            <input type="number" id="ccPayment" placeholder="Example: 300" inputmode="decimal">
+          </div>
+        </div>
+      </div>
+
+      <button type="button" onclick="calculateCreditCardPayoffExtra()" class="main-btn extra-main-btn">
+        calculate payoff
+      </button>
+
+      <section id="extraCalcResult" class="extra-result-box" hidden></section>
+
+    </section>
+
   </main>
-  <script src="script.js?v=extra_calculators_20260528"></script>
-  <script src="pc.js?v=extra_calculators_20260528"></script>
-  <script src="phone.js?v=extra_calculators_20260528"></script>
+
+  <script src="script.js?v=extra_design_align_20260528"></script>
+  <script src="pc.js?v=extra_design_align_20260528"></script>
+  <script src="phone.js?v=extra_design_align_20260528"></script>
 </body>
 </html>

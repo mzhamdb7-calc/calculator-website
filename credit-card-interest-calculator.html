@@ -1,48 +1,104 @@
-<!-- CHATGPT_EXTRA_CALCULATORS_20260528 -->
+<!-- CHATGPT_EXTRA_CALCULATORS_DESIGN_ALIGN_20260528 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+
   <title>Credit Card Interest Calculator</title>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Estimate credit card interest for a period.">
+
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=extra_calculators_20260528">
-  <link rel="stylesheet" href="pc.css?v=extra_calculators_20260528" media="screen and (min-width: 851px)">
-  <link rel="stylesheet" href="phone.css?v=extra_calculators_20260528" media="screen and (max-width: 850px)">
+  <link rel="stylesheet" href="style.css?v=extra_design_align_20260528">
+  <link rel="stylesheet" href="pc.css?v=extra_design_align_20260528" media="screen and (min-width: 851px)">
+  <link rel="stylesheet" href="phone.css?v=extra_design_align_20260528" media="screen and (max-width: 850px)">
   <link rel="icon" href="favicon.ico">
 </head>
+
 <body class="extra-calculator-page creditCardInterest-page" data-page="creditCardInterest">
 
-  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">↑</button>
-  <button id="menuIcon" type="button" onclick="toggleMenu()" aria-label="Open menu">MENU</button>
+
+  <!-- Go Up Button -->
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
+    ↑
+  </button>
+
+  <!-- MENU Button shown after scroll -->
+  <button id="menuIcon" type="button" onclick="toggleMenu()" aria-label="Open menu">
+    MENU
+  </button>
+
+  <!-- Navbar -->
   <nav id="navbar">
     <a href="index.html">home</a>
     <a href="basic-calculator.html">calculator</a>
     <a href="about.html">info</a>
   </nav>
 
-  <main class="loan-calculator-container extra-calculator-container">
-    <section class="calculator extra-calculator-box">
-      <h1>Credit Card Interest Calculator</h1>
-      <p class="subtitle">Estimate card interest using balance, APR and days.</p>
-      
-      <div class="extra-input-grid">
-        <label for="ccInterestBalance">Balance</label>
-<input type="number" id="ccInterestBalance" placeholder="Example: 3000" inputmode="decimal">
-<label for="ccInterestApr">APR (%)</label>
-<input type="number" id="ccInterestApr" placeholder="Example: 18" inputmode="decimal">
-<label for="ccInterestDays">Days</label>
-<input type="number" id="ccInterestDays" placeholder="Example: 30" inputmode="decimal">
-<label for="ccInterestPayment">Payment before interest</label>
-<input type="number" id="ccInterestPayment" placeholder="Optional" inputmode="decimal">
+
+  <main class="loan-calculator-container extra-calculator-container extra-calculator-layout">
+
+    <section class="loan-history-box extra-side-box">
+      <div class="loan-history-top">
+        <h3>Loans &amp; debt</h3>
       </div>
-      <button type="button" onclick="calculateCreditCardInterestExtra()" class="main-btn">calculate interest</button>
-      <section id="extraCalcResult" class="extra-result-box" hidden></section>
+
+      <div class="extra-side-links">
+          <a href="mortgage-calculator.html">mortgage calculator</a>
+          <a href="personal-loan-calculator.html">personal loan</a>
+          <a href="loan-comparison-calculator.html">loan comparison</a>
+          <a href="debt-payoff-calculator.html">debt payoff</a>
+          <a href="credit-card-payoff-calculator.html">credit card payoff</a>
+          <a href="credit-card-interest-calculator.html" class="current-extra-link">credit card interest</a>
+      </div>
     </section>
+
+    <section class="calculator extra-calculator-box">
+
+      <h1>Credit Card Interest Calculator</h1>
+
+      <p class="subtitle">
+        Estimate card interest using balance, APR and days.
+      </p>
+
+      
+
+      <div class="extra-input-card">
+        <div class="extra-input-card-title">Input details</div>
+
+        <div class="extra-input-grid">
+          <div class="extra-input-field">
+            <label for="ccInterestBalance">Balance</label>
+            <input type="number" id="ccInterestBalance" placeholder="Example: 3000" inputmode="decimal">
+          </div>
+          <div class="extra-input-field">
+            <label for="ccInterestApr">APR (%)</label>
+            <input type="number" id="ccInterestApr" placeholder="Example: 18" inputmode="decimal">
+          </div>
+          <div class="extra-input-field">
+            <label for="ccInterestDays">Days</label>
+            <input type="number" id="ccInterestDays" placeholder="Example: 30" inputmode="decimal">
+          </div>
+          <div class="extra-input-field">
+            <label for="ccInterestPayment">Payment before interest</label>
+            <input type="number" id="ccInterestPayment" placeholder="Optional" inputmode="decimal">
+          </div>
+        </div>
+      </div>
+
+      <button type="button" onclick="calculateCreditCardInterestExtra()" class="main-btn extra-main-btn">
+        calculate interest
+      </button>
+
+      <section id="extraCalcResult" class="extra-result-box" hidden></section>
+
+    </section>
+
   </main>
-  <script src="script.js?v=extra_calculators_20260528"></script>
-  <script src="pc.js?v=extra_calculators_20260528"></script>
-  <script src="phone.js?v=extra_calculators_20260528"></script>
+
+  <script src="script.js?v=extra_design_align_20260528"></script>
+  <script src="pc.js?v=extra_design_align_20260528"></script>
+  <script src="phone.js?v=extra_design_align_20260528"></script>
 </body>
 </html>
