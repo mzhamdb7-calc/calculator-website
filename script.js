@@ -3552,6 +3552,88 @@
     }
   };
 
+
+  function getCalculatorFaqs(type) {
+    const faqs = {
+      basic: [
+        ["Can I paste numbers into the display?", "Yes. You can paste a number or expression into the display, then press Enter or = to calculate."],
+        ["Does it follow normal math order?", "Yes. Brackets and powers are handled before multiplication, division, addition, and subtraction."],
+        ["Can I use square root?", "Yes. Use the square root button or paste a square-root expression supported by the calculator."]
+      ],
+      age: [
+        ["Why is exact age different from normal age?", "Exact age breaks your age into years, months, days, hours, and minutes. Normal age usually counts full completed years only."],
+        ["What does next birthday countdown mean?", "It shows how much time is left until your next birthday or upcoming age."],
+        ["Are famous birthdays and historical events exact?", "They are helpful reference items based on the selected date, but they should be treated as general information."]
+      ],
+      bmi: [
+        ["Is BMI a diagnosis?", "No. BMI is a screening estimate. It does not replace advice from a doctor or health professional."],
+        ["Why add waist-to-height ratio?", "Waist-to-height ratio gives extra context about body fat distribution and possible health risk."],
+        ["What does goal timeline mean?", "It estimates how fast you may need to lose or gain weight based on your target weight and selected time goal."]
+      ],
+      loan: [
+        ["Is this a mortgage approval result?", "No. It is an estimate only. Banks may use credit score, debt commitments, income proof, property type, and other rules."],
+        ["What is included in monthly payment?", "The calculator can include principal, interest, property tax, insurance, other monthly fees, and extra payments when provided."],
+        ["Why do results change when I add extra payment?", "Extra payment can reduce remaining principal faster, which may reduce total interest and shorten the payoff time."]
+      ],
+      personalLoan: [
+        ["Is this the bank’s final monthly payment?", "No. It is an estimate. The real payment may include bank fees, insurance, taxes, or different interest rules."],
+        ["What loan details are needed?", "Loan amount, interest rate, and loan term are the main inputs needed for the estimate."],
+        ["What does total interest mean?", "It is the estimated interest paid over the full loan term if payments follow the schedule."]
+      ],
+      discount: [
+        ["What is final price?", "Final price is the original price minus the discount amount."],
+        ["What is savings?", "Savings is the amount removed from the original price by the discount."],
+        ["Can I use this for sale items?", "Yes. Enter the original price and discount percentage to estimate the sale price."]
+      ],
+      percentage: [
+        ["What does percentage of a number mean?", "It means finding a part of a number based on a value out of 100."],
+        ["Example: what is 20% of 150?", "20% of 150 is 30 because 20 ÷ 100 × 150 = 30."],
+        ["Can I use decimals?", "Yes. Decimal percentages and decimal numbers can be used."]
+      ],
+      compound: [
+        ["What is compound interest?", "Compound interest means interest is added to the balance, then future interest is calculated on the new larger balance."],
+        ["What does compounding frequency mean?", "It means how often interest is added, such as yearly, monthly, or daily."],
+        ["Why is compound interest different from simple interest?", "Simple interest is calculated only on the original principal. Compound interest grows on both principal and accumulated interest."]
+      ]
+    };
+
+    return faqs[type] || [];
+  }
+
+  function makeFaqBox(type) {
+    const items = getCalculatorFaqs(type);
+    const box = document.createElement("section");
+    box.className = "instruction-section instruction-faq-box";
+    box.innerHTML = "<h3>FAQs</h3>";
+
+    if (!items.length) {
+      box.innerHTML += "<p>No FAQs available for this calculator yet.</p>";
+      return box;
+    }
+
+    const list = document.createElement("div");
+    list.className = "calculator-faq-list";
+
+    items.forEach(function (item, index) {
+      const details = document.createElement("details");
+      details.className = "calculator-faq-item";
+      if (index === 0) details.open = true;
+
+      const summary = document.createElement("summary");
+      summary.textContent = item[0];
+
+      const answer = document.createElement("p");
+      answer.textContent = item[1];
+
+      details.appendChild(summary);
+      details.appendChild(answer);
+      list.appendChild(details);
+    });
+
+    box.appendChild(list);
+    return box;
+  }
+
   function makeInfoBox(className, title, text) {
     const box = document.createElement("div");
     box.className = className;
@@ -3585,6 +3667,7 @@
     box.appendChild(makeInfoBox("instruction-section instruction-how-box", "How to use it", data.how));
     box.appendChild(makeInfoBox("instruction-section instruction-formula-box", "Formula used", data.formula));
     box.appendChild(makeInfoBox("instruction-section instruction-example-box", "Example calculation", data.example));
+    box.appendChild(makeFaqBox(type));
 
     const referenceBox = document.createElement("section");
     referenceBox.className = "reference-box";
