@@ -5675,3 +5675,63 @@
   }
 })();
 
+
+/* =====================================================
+   MORTGAGE ONLY: Mark mortgage page for width repair
+===================================================== */
+(function () {
+  "use strict";
+
+  function isMortgagePage() {
+    const title = String(document.querySelector("h1")?.textContent || "").toLowerCase();
+    const path = window.location.pathname.toLowerCase();
+
+    return (
+      path.includes("mortgage") ||
+      title.includes("mortgage") ||
+      !!document.getElementById("loanResult") ||
+      !!document.getElementById("loanHistoryList") ||
+      !!document.querySelector(".mortgage-two-column-input-layout")
+    );
+  }
+
+  function markMortgagePage() {
+    if (!isMortgagePage()) return;
+
+    document.body.classList.add("mortgage-page");
+    document.body.classList.add("loan-page");
+
+    const layout = document.querySelector(".mortgage-two-column-input-layout");
+    if (layout) {
+      layout.style.width = "100%";
+      layout.style.maxWidth = "100%";
+      layout.style.boxSizing = "border-box";
+    }
+
+    document
+      .querySelectorAll(
+        ".mortgage-left-input-column, .mortgage-right-input-column, " +
+        ".mortgage-input-box, .mortgage-home-box, .mortgage-loan-box, " +
+        ".optional-mortgage-costs, .early-settlement-box"
+      )
+      .forEach(function (el) {
+        el.style.width = "100%";
+        el.style.maxWidth = "100%";
+        el.style.boxSizing = "border-box";
+      });
+  }
+
+  function start() {
+    markMortgagePage();
+    setTimeout(markMortgagePage, 200);
+    setTimeout(markMortgagePage, 700);
+    setTimeout(markMortgagePage, 1500);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+
