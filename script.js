@@ -589,7 +589,7 @@
       {
         key: "history",
         title: "Famous birthdays & historical event",
-        match: /famous celebrity|famous sports star|famous historical figure|historical event/i
+        match: /famous person throughout history|famous celebrity|famous sports star|famous historical figure|historical event/i
       },
       {
         key: "space",
@@ -1582,21 +1582,26 @@
 
   function famousBirthdayFallback(month, day) {
     const key = String(month).padStart(2, "0") + "-" + String(day).padStart(2, "0");
+
+    /*
+      Famous people throughout history. These are fallback names used when
+      online birthday data is unavailable or no strong match is found.
+    */
     const list = {
-      "01-01": ["Verne Troyer", "Meryl Davis", "Paul Revere"],
-      "01-08": ["Elvis Presley", "David Silva", "Stephen Hawking"],
-      "01-15": ["Dove Cameron", "Drew Brees", "Martin Luther King Jr."],
-      "02-12": ["Christina Ricci", "Bill Russell", "Abraham Lincoln"],
-      "03-14": ["Billy Crystal", "Stephen Curry", "Albert Einstein"],
-      "04-15": ["Emma Watson", "Seth Rogen", "Leonardo da Vinci"],
-      "05-05": ["Adele", "Tyrone Mings", "Karl Marx"],
-      "06-01": ["Morgan Freeman", "Javier Hernández", "Marilyn Monroe"],
-      "07-24": ["Jennifer Lopez", "Barry Bonds", "Simón Bolívar"],
-      "08-04": ["Barack Obama", "Kurt Busch", "Louis Armstrong"],
-      "09-04": ["Beyoncé", "Damon Wayans", "Darius Milhaud"],
-      "10-28": ["Bill Gates", "Caitlyn Jenner", "Jonas Salk"],
-      "11-30": ["Ben Stiller", "Gary Lineker", "Mark Twain"],
-      "12-25": ["Annie Lennox", "Jairzinho", "Isaac Newton"]
+      "01-01": ["Paul Revere", "E. M. Forster", "J. D. Salinger"],
+      "01-08": ["Stephen Hawking", "Elvis Presley", "Alfred Russel Wallace"],
+      "01-15": ["Martin Luther King Jr.", "Molière", "Nasser al-Din Shah Qajar"],
+      "02-12": ["Abraham Lincoln", "Charles Darwin", "Cotton Mather"],
+      "03-14": ["Albert Einstein", "Georg Philipp Telemann", "Diane Arbus"],
+      "04-15": ["Leonardo da Vinci", "Leonhard Euler", "Henry James"],
+      "05-05": ["Karl Marx", "Søren Kierkegaard", "Nellie Bly"],
+      "06-01": ["Marilyn Monroe", "Brigham Young", "Carl von Clausewitz"],
+      "07-24": ["Simón Bolívar", "Alexandre Dumas", "Amelia Earhart"],
+      "08-04": ["Louis Armstrong", "Percy Bysshe Shelley", "Queen Elizabeth The Queen Mother"],
+      "09-04": ["Darius Milhaud", "Anton Bruckner", "Chateaubriand"],
+      "10-28": ["Jonas Salk", "Desiderius Erasmus", "James Cook"],
+      "11-30": ["Mark Twain", "Jonathan Swift", "Winston Churchill"],
+      "12-25": ["Isaac Newton", "Clara Barton", "Anwar Sadat"]
     };
 
     return list[key] || ["Will be loaded online", "Will be loaded online", "Will be loaded online"];
@@ -1621,13 +1626,18 @@
   function pickFamousBirthdayPeople(items) {
     items = Array.isArray(items) ? items : [];
 
-    function pick(pattern, used) {
+    const famousPattern = /president|king|queen|emperor|caliph|sultan|prime minister|politician|leader|scientist|physicist|chemist|mathematician|philosopher|inventor|writer|poet|artist|composer|historian|scholar|explorer|reformer|activist|revolutionary|general|commander|founder|nobel|architect|astronomer|physician|economist|jurist|theologian|imam|muslim scholar|historical|famous|pioneer|novelist|playwright|educator/i;
+
+    function pick(used) {
       const found = items.find(function (item) {
         const name = extractBirthPersonName(item);
         const year = Number(item && item.year);
+        const desc = famousDescription(item);
+
         if (!name || used.has(name)) return false;
         if (Number.isFinite(year) && year >= 2000) return false;
-        return pattern.test(famousDescription(item));
+
+        return famousPattern.test(desc);
       });
 
       if (!found) return "";
@@ -1638,14 +1648,14 @@
     }
 
     const used = new Set();
-    const celebrity = pick(/actor|actress|singer|musician|rapper|film|television|comedian|model|entertainer|director|producer/i, used);
-    const sports = pick(/football|soccer|basketball|baseball|tennis|athlete|boxer|wrestler|cricketer|golfer|racing|olympic|swimmer|runner|sport/i, used);
-    const historical = pick(/president|king|queen|emperor|prime minister|politician|leader|scientist|physicist|chemist|mathematician|philosopher|inventor|writer|poet|artist|composer|historian|activist|revolutionary/i, used);
+    const person1 = pick(used);
+    const person2 = pick(used);
+    const person3 = pick(used);
 
     return {
-      celebrity: celebrity || "Not found",
-      sports: sports || "Not found",
-      historical: historical || "Not found"
+      celebrity: person1 || "Not found",
+      sports: person2 || "Not found",
+      historical: person3 || "Not found"
     };
   }
 
@@ -1653,9 +1663,9 @@
     const fallback = famousBirthdayFallback(month, day);
 
     return [
-      ["Famous celebrity born this day", fallback[0]],
-      ["Famous sports star born this day", fallback[1]],
-      ["Famous historical figure born this day", fallback[2]]
+      ["Famous person throughout history 1", fallback[0]],
+      ["Famous person throughout history 2", fallback[1]],
+      ["Famous person throughout history 3", fallback[2]]
     ];
   }
 
@@ -1663,29 +1673,28 @@
     const key = String(month).padStart(2, "0") + "-" + String(day).padStart(2, "0");
 
     /*
-      Keep the Age Calculator historical event focused only on:
-      - sports events
-      - technology or science advancement
-      - ancient history / ancient civilizations
+      Age Calculator historical event now focuses only on Islamic events.
     */
     const list = {
-      "01-01": "45 BCE - The Julian calendar came into effect in ancient Rome.",
-      "01-08": "1935 - Elvis Presley was born, later becoming a major modern music icon.",
-      "02-12": "1809 - Abraham Lincoln was born, later shaping modern democratic history.",
-      "03-14": "1794 - Eli Whitney received a patent for the cotton gin, an important industrial technology.",
-      "04-12": "1961 - Yuri Gagarin became the first human to travel into outer space.",
-      "05-05": "2002 - Real Madrid won the UEFA Champions League Final with Zinedine Zidane's famous volley.",
-      "06-06": "1934 - The first All-Star baseball game was played in the United States.",
-      "07-20": "1969 - Apollo 11 landed the first humans on the Moon.",
-      "08-08": "2008 - The Beijing Olympics officially opened in China.",
-      "09-02": "31 BCE - Octavian defeated Mark Antony and Cleopatra at the Battle of Actium in ancient history.",
-      "10-14": "1066 - The Battle of Hastings reshaped medieval English history.",
-      "11-09": "1989 - The fall of the Berlin Wall marked a major turning point in modern history.",
-      "12-17": "1903 - The Wright brothers made the first controlled powered airplane flight.",
-      "12-25": "800 - Charlemagne was crowned Emperor, a major milestone in medieval civilization."
+      "01-01": "630 - The Conquest of Makkah occurred around the 8th year after Hijrah, a major event in Islamic history.",
+      "01-08": "1198 - Ibn Rushd, a major Muslim philosopher and scholar, died in Marrakesh.",
+      "02-10": "1258 - The Siege of Baghdad ended, marking a major turning point in Islamic civilization.",
+      "03-03": "1924 - The Ottoman Caliphate was abolished, ending a major institution in modern Islamic history.",
+      "03-11": "1917 - British forces entered Baghdad during World War I, affecting the modern Muslim world.",
+      "04-02": "1453 - Ottoman Sultan Mehmed II began the final campaign that led to the conquest of Constantinople.",
+      "04-29": "711 - Muslim forces entered Iberia, beginning centuries of Islamic rule in Al-Andalus.",
+      "05-29": "1453 - Constantinople was conquered by the Ottoman Empire under Sultan Mehmed II.",
+      "06-08": "632 - Prophet Muhammad passed away in Madinah according to widely cited historical tradition.",
+      "07-02": "1187 - The Battle of Hattin began, leading to Salahuddin's recovery of Jerusalem.",
+      "07-04": "1187 - Salahuddin defeated the Crusader army at the Battle of Hattin.",
+      "07-15": "1099 - Jerusalem fell to the First Crusade, a major event in Islamic and Crusader history.",
+      "09-23": "622 - The Hijrah to Madinah marks the beginning of the Islamic calendar era.",
+      "10-02": "1187 - Salahuddin recovered Jerusalem after the Battle of Hattin.",
+      "10-29": "1923 - The Republic of Turkey was proclaimed after the Ottoman era.",
+      "12-17": "1273 - Jalal al-Din Rumi, the famous Muslim poet and scholar, died in Konya."
     };
 
-    return list[key] || "No matching sports, technology, or ancient-history event found for this date yet.";
+    return list[key] || "No matching Islamic historical event found for this date yet.";
   }
 
   function isRelevantAgeHistoricalEvent(item) {
@@ -1693,9 +1702,13 @@
     const year = Number(item && item.year);
 
     if (!text) return false;
-    if (Number.isFinite(year) && year >= 2000) return false;
 
-    return /olympic|olympics|world cup|championship|tournament|final|league|grand prix|football|soccer|baseball|basketball|tennis|cricket|athletics|sports|sporting|technology|technological|science|scientific|invention|invented|patent|computer|internet|satellite|space|moon|apollo|airplane|aircraft|flight|telephone|telegraph|radio|electricity|nuclear|steam engine|printing press|industrial|ancient|roman|greek|egypt|egyptian|persian|mesopotamia|mesopotamian|babylon|babylonian|maya|aztec|inca|dynasty|pharaoh|empire|kingdom|civilization|civilisation|battle of actium|charlemagne|hastings/i.test(text);
+    /*
+      Online event filter: Islamic events only.
+      Prefer events related to Islam, Muslim civilization, caliphates, sultanates,
+      Islamic scholars, major Islamic cities, and major Islamic historical eras.
+    */
+    return /islam|islamic|muslim|muhammad|prophet|quran|qur'an|caliph|caliphate|umayyad|abbasid|fatimid|ayyubid|mamluk|ottoman|seljuk|sultan|sultanate|emir|emirate|hijra|hijrah|mecca|makkah|medina|madinah|baghdad|damascus|cairo|cordoba|al-andalus|andalus|jerusalem|salahuddin|saladin|rumi|ibn|al-|imam|mosque|kaaba|ka'aba|hajj|ramadan|sharia|madrasa/i.test(text);
   }
 
   function extractHistoricalEventText(item) {
@@ -1754,9 +1767,9 @@
       .then(function (data) {
         const picked = pickFamousBirthdayPeople(data.births || []);
         const replacements = {
-          "Famous celebrity born this day": picked.celebrity,
-          "Famous sports star born this day": picked.sports,
-          "Famous historical figure born this day": picked.historical
+          "Famous person throughout history 1": picked.celebrity,
+          "Famous person throughout history 2": picked.sports,
+          "Famous person throughout history 3": picked.historical
         };
 
         rows.forEach(function (row) {
@@ -2454,6 +2467,14 @@
     saveCurrentReport("compound", { futureValue: moneyRM(futureValue) });
   }
 
+
+  function localTodayIsoDate() {
+    const now = new Date();
+    return now.getFullYear() + "-" +
+      String(now.getMonth() + 1).padStart(2, "0") + "-" +
+      String(now.getDate()).padStart(2, "0");
+  }
+
   function calculateLoanPayment(principal, annualRate, months) {
     const monthlyRate = annualRate / 100 / 12;
     if (monthlyRate === 0) return principal / months;
@@ -2745,7 +2766,45 @@
       '<div class="mortgage-modern-result-shell">' +
         '<h2 class="loan-panel-title mortgage-modern-result-title">Result</h2>' +
         (resultHtml || "") +
+        '<div class="mortgage-result-actions">' +
+          '<button type="button" class="mortgage-result-action-btn mortgage-result-copy-btn">Copy</button>' +
+          '<button type="button" class="mortgage-result-action-btn mortgage-result-save-btn">Save</button>' +
+          '<button type="button" class="mortgage-result-action-btn mortgage-result-share-btn">Share</button>' +
+        '</div>' +
       '</div>';
+
+    const copyBtn = panel.querySelector(".mortgage-result-copy-btn");
+    const saveBtn = panel.querySelector(".mortgage-result-save-btn");
+    const shareBtn = panel.querySelector(".mortgage-result-share-btn");
+
+    if (copyBtn) {
+      copyBtn.onclick = function () {
+        copyText(cleanText(panel.innerText), copyBtn);
+      };
+    }
+
+    if (saveBtn) {
+      saveBtn.onclick = function () {
+        downloadTextFile("mortgage-result-" + dateFileStamp() + ".txt", cleanText(panel.innerText));
+      };
+    }
+
+    if (shareBtn) {
+      shareBtn.onclick = function () {
+        const text = cleanText(panel.innerText);
+
+        if (navigator.share) {
+          navigator.share({
+            title: "Mortgage result",
+            text: text
+          }).catch(function () {
+            copyText(text, shareBtn);
+          });
+        } else {
+          copyText(text, shareBtn);
+        }
+      };
+    }
 
     panel.hidden = false;
     panel.style.setProperty("display", "block", "important");
@@ -2776,7 +2835,10 @@
     if (!Number.isFinite(months) || months <= 0) return;
 
     const startDateInput = byId("startDate");
-    const startDate = startDateInput && startDateInput.value ? startDateInput.value : "Not provided";
+    if (startDateInput && !startDateInput.value) {
+      startDateInput.value = localTodayIsoDate();
+    }
+    const startDate = startDateInput && startDateInput.value ? startDateInput.value : localTodayIsoDate();
     const taxMonthly = (firstNumber(["propertyTaxYearly"]) || 0) / 12;
     const insuranceMonthly = (firstNumber(["homeInsuranceYearly"]) || 0) / 12;
     const otherMonthly = firstNumber(["otherMonthlyFees", "hoaMonthly"]) || 0;
@@ -3158,7 +3220,7 @@
       {
         title: "Famous birthdays & historical event",
         note: "People and events connected to the same month and day.",
-        match: /famous celebrity|famous sports star|famous historical figure|historical event/i
+        match: /famous person throughout history|famous celebrity|famous sports star|famous historical figure|historical event/i
       },
       {
         title: "Space & moon view",
@@ -4569,8 +4631,11 @@
 
     const form = buildSearchForm();
     const infoDropdown = navbar.querySelector(".about-dropdown");
+    const chatLink = navbar.querySelector(".nav-chat-link");
 
-    if (infoDropdown) {
+    if (chatLink) {
+      chatLink.insertAdjacentElement("afterend", form);
+    } else if (infoDropdown) {
       infoDropdown.insertAdjacentElement("afterend", form);
     } else {
       navbar.appendChild(form);
@@ -6423,5 +6488,50 @@
   } else {
     start();
   }
+})();
+
+
+/* =====================================================
+   MORTGAGE: Auto-fill start date with today's date
+===================================================== */
+(function () {
+  "use strict";
+
+  function todayIso() {
+    const now = new Date();
+    return now.getFullYear() + "-" +
+      String(now.getMonth() + 1).padStart(2, "0") + "-" +
+      String(now.getDate()).padStart(2, "0");
+  }
+
+  function isMortgagePage() {
+    const title = String(document.querySelector("h1")?.textContent || "").toLowerCase();
+    const path = window.location.pathname.toLowerCase();
+
+    return (
+      path.includes("mortgage") ||
+      title.includes("mortgage") ||
+      !!document.getElementById("startDate") ||
+      !!document.querySelector(".mortgage-two-column-input-layout")
+    );
+  }
+
+  function fillStartDate() {
+    if (!isMortgagePage()) return;
+
+    const input = document.getElementById("startDate");
+    if (input && !input.value) {
+      input.value = todayIso();
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", fillStartDate);
+  } else {
+    fillStartDate();
+  }
+
+  setTimeout(fillStartDate, 300);
+  setTimeout(fillStartDate, 1000);
 })();
 
