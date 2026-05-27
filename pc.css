@@ -5794,3 +5794,154 @@ body.mortgage-page #loanCopyButton {
   pointer-events: none !important;
 }
 
+
+/* =====================================================
+   GLOBAL CALCULATOR INPUT SIZING CLEANUP
+   - Makes inputs inside calculator boxes even and neat
+   - Prevents oversized / uneven input widths
+   - Keeps calculator layout responsive
+===================================================== */
+.calculator label,
+.calculator .input-label,
+.calculator .field-label,
+.calculator .bmi-extra-group label,
+.calculator .mortgage-input-box label,
+.calculator .optional-mortgage-content label,
+.calculator .early-settlement-content label {
+  display: block !important;
+  width: 100% !important;
+  margin: 10px 0 6px !important;
+  font-weight: bold !important;
+  line-height: 1.2 !important;
+  box-sizing: border-box !important;
+}
+
+.calculator input,
+.calculator select,
+.calculator textarea,
+.calculator .bmi-extra-group input,
+.calculator .bmi-extra-group select,
+.calculator .mortgage-input-box input,
+.calculator .mortgage-input-box select,
+.calculator .optional-mortgage-content input,
+.calculator .optional-mortgage-content select,
+.calculator .early-settlement-content input,
+.calculator .early-settlement-content select {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  display: block !important;
+  border: 4px solid var(--black) !important;
+  box-shadow: 4px 4px 0 var(--black) !important;
+  background: #fff !important;
+  color: var(--black) !important;
+  font-family: inherit !important;
+  font-weight: bold !important;
+  outline: none !important;
+}
+
+.calculator input:focus,
+.calculator select:focus,
+.calculator textarea:focus {
+  transform: translate(1px, 1px) !important;
+  box-shadow: 3px 3px 0 var(--black) !important;
+}
+
+.calculator textarea {
+  min-height: 90px !important;
+  resize: vertical !important;
+}
+
+.calculator .input-row,
+.calculator .form-row,
+.calculator .field-row,
+.calculator .bmi-time-goal-row,
+.calculator .mortgage-field-row {
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 10px !important;
+  box-sizing: border-box !important;
+}
+
+.calculator .bmi-time-goal-row {
+  grid-template-columns: minmax(0, 1fr) minmax(130px, 0.45fr) !important;
+  align-items: end !important;
+}
+
+.calculator .bmi-time-goal-row input,
+.calculator .bmi-time-goal-row select {
+  margin: 0 !important;
+}
+
+.calculator .bmi-extra-group,
+.calculator .mortgage-input-box,
+.calculator .optional-mortgage-costs,
+.calculator .early-settlement-box,
+.calculator .optional-mortgage-content,
+.calculator .early-settlement-content {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.calculator .bmi-extra-group input,
+.calculator .bmi-extra-group select,
+.calculator .mortgage-input-box input,
+.calculator .mortgage-input-box select {
+  margin-bottom: 8px !important;
+}
+
+@media (min-width: 851px) {
+  .calculator input,
+  .calculator select,
+  .calculator textarea {
+    min-height: 48px !important;
+    padding: 9px 12px !important;
+    font-size: 17px !important;
+  }
+
+  .calculator select {
+    padding-right: 38px !important;
+  }
+
+  .calculator .bmi-extra-grid,
+  .calculator .bmi-input-layout,
+  .calculator .mortgage-two-column-input-layout {
+    gap: 18px !important;
+  }
+
+  .calculator .bmi-extra-group,
+  .calculator .mortgage-input-box,
+  .calculator .optional-mortgage-content,
+  .calculator .early-settlement-content {
+    padding: 14px !important;
+  }
+}
+
+@media (max-width: 850px) {
+  .calculator input,
+  .calculator select,
+  .calculator textarea {
+    min-height: 46px !important;
+    padding: 8px 10px !important;
+    font-size: 16px !important;
+  }
+
+  .calculator select {
+    padding-right: 34px !important;
+  }
+
+  .calculator .bmi-time-goal-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  .calculator .bmi-extra-group,
+  .calculator .mortgage-input-box,
+  .calculator .optional-mortgage-content,
+  .calculator .early-settlement-content {
+    padding: 12px !important;
+  }
+}
+
