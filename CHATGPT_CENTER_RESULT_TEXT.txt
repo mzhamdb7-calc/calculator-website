@@ -1,0 +1,1 @@
+Centered main text, headings, lists, summary cards, and result tables inside all calculator result boxes.

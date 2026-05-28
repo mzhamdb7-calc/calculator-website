@@ -1870,3 +1870,135 @@ body[data-page="basic"] .basic-inline-answer {
     text-align: left !important;
   }
 }
+
+/* CHATGPT FINAL: CENTER ALL RESULT BOX TEXT 20260528
+   Centers the main text inside every calculator result card while keeping
+   the action buttons neat and the result cards full width. */
+.calculator-clean-result,
+.loan-style-output-panel,
+.loan-result-panel,
+.extra-result-box,
+.extra-result-card,
+.age-clean-result,
+.bmi-clean-result,
+.age-result-main-box,
+.bmi-result-main-box,
+.universal-result-main-box,
+.mortgage-modern-result-panel,
+.calculator-report-result,
+.personal-loan-result-card,
+.calculator-report-summary-card {
+  text-align: center !important;
+}
+
+.calculator-clean-result .loan-panel-title,
+.calculator-clean-result .age-result-title,
+.calculator-clean-result .bmi-result-title,
+.calculator-clean-result .mortgage-modern-result-title,
+.loan-style-output-panel .loan-panel-title,
+.extra-result-box .loan-panel-title,
+.extra-result-card .loan-panel-title,
+.calculator-report-result .loan-panel-title,
+.calculator-report-view main > h2,
+.calculator-report-view .calculator-report-result h1,
+.calculator-report-view .calculator-report-result h2,
+.calculator-report-view .calculator-report-result h3 {
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.calculator-clean-result .loan-result-body,
+.calculator-clean-result .age-result-body,
+.calculator-clean-result .bmi-result-body,
+.calculator-clean-result .mortgage-modern-output,
+.loan-style-output-panel .loan-result-body,
+.extra-result-card,
+.extra-result-box,
+.calculator-report-result,
+.age-result-group-grid,
+.bmi-result-group-grid,
+.bmi-highlight-grid,
+.personal-loan-result-summary,
+.calculator-report-summary-boxes {
+  text-align: center !important;
+}
+
+.age-result-group-box,
+.bmi-result-group-box,
+.age-point-result-box,
+.bmi-result-box,
+.bmi-highlight-card,
+.personal-loan-result-card,
+.calculator-report-summary-card {
+  text-align: center !important;
+  justify-items: center !important;
+  align-items: center !important;
+}
+
+.age-result-group-box h3,
+.bmi-result-group-box h3,
+.age-point-result-box h3,
+.bmi-result-box h3,
+.bmi-highlight-label,
+.bmi-highlight-value,
+.calculator-report-summary-card h3,
+.personal-loan-result-card h3 {
+  width: 100% !important;
+  text-align: center !important;
+}
+
+.age-point-result-list,
+.bmi-point-result-list {
+  width: 100% !important;
+  justify-items: center !important;
+  text-align: center !important;
+}
+
+.age-point-result-list li,
+.bmi-point-result-list li {
+  width: 100% !important;
+  text-align: center !important;
+}
+
+.age-point-result-list strong,
+.age-point-result-list span,
+.bmi-point-result-list strong,
+.bmi-point-result-list span {
+  text-align: center !important;
+}
+
+.loan-result-table,
+.extra-result-table,
+.age-report-result-table,
+.universal-loan-result-table {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.loan-result-table th,
+.loan-result-table td,
+.extra-result-table th,
+.extra-result-table td,
+.age-report-result-table th,
+.age-report-result-table td,
+.universal-loan-result-table th,
+.universal-loan-result-table td,
+.mortgage-modern-result-panel table th,
+.mortgage-modern-result-panel table td,
+.calculator-report-result table th,
+.calculator-report-result table td {
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+
+.age-result-actions,
+.bmi-result-actions,
+.universal-result-actions,
+.mortgage-result-actions,
+.extra-result-actions,
+.global-result-actions {
+  text-align: center !important;
+  justify-content: center !important;
+}
+
