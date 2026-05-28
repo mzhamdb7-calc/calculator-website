@@ -1,0 +1,1 @@
+Applied a visibly different modern SaaS redesign with navy/teal/white colors, sharper box layout, stronger CSS overrides, and updated cache-busting versions.

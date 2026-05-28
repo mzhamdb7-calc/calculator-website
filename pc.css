@@ -17726,3 +17726,847 @@ hr {
 }
 /* ===== END CHATGPT MODERN SAAS REDESIGN OPTION ===== */
 
+/* =====================================================
+   CHATGPT VISIBLE SHARP SAAS REDESIGN 20260528
+   Purpose: make the redesign clearly visible, modern, boxy,
+   minimalist, and override older cartoon/pastel styles.
+===================================================== */
+
+:root {
+  --ui-bg: #f4f7fb;
+  --ui-surface: #ffffff;
+  --ui-surface-2: #f8fafc;
+  --ui-text: #111827;
+  --ui-muted: #64748b;
+  --ui-border: #dbe4ee;
+  --ui-border-strong: #cbd5e1;
+  --ui-navy: #0f172a;
+  --ui-navy-2: #111827;
+  --ui-teal: #0f766e;
+  --ui-teal-2: #14b8a6;
+  --ui-blue: #2563eb;
+  --ui-danger: #b91c1c;
+  --ui-radius: 14px;
+  --ui-radius-sm: 10px;
+  --ui-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+  --ui-shadow-sm: 0 8px 22px rgba(15, 23, 42, 0.06);
+}
+
+html {
+  background: var(--ui-bg) !important;
+  scroll-behavior: smooth !important;
+}
+
+body {
+  margin: 0 !important;
+  min-height: 100vh !important;
+  color: var(--ui-text) !important;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  background:
+    linear-gradient(180deg, rgba(15, 118, 110, 0.06), rgba(255, 255, 255, 0) 270px),
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.09), transparent 360px),
+    var(--ui-bg) !important;
+  letter-spacing: -0.01em !important;
+}
+
+body::before,
+body::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Remove old cartoon effects without breaking calculator logic */
+.calculator,
+.calculator-box,
+.age-calculator-container,
+.calculator-container,
+.loan-history-box,
+.extra-side-box,
+.old-calculator-groupbar,
+.about-box,
+.about-card,
+.info-page-box,
+.info-content-card,
+.extra-input-card,
+.instruction-box,
+.reference-box,
+.live-abacus-card,
+.index-category-dropdown,
+.index-category-dropdown-panel,
+.clean-nav-dropdown-panel,
+.clean-nav-submenu-panel,
+.result-box,
+.clean-result-box,
+.modern-result-box,
+.universal-result-card,
+.extra-result-card,
+.age-result-card,
+.bmi-result-card,
+.mortgage-result-card {
+  transform: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+/* Top navigation: premium dark bar */
+#navbar.clean-navbar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 9999 !important;
+  width: 100% !important;
+  background: linear-gradient(135deg, #0b1220, #0f172a 56%, #0f2f2b) !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(20, 184, 166, 0.28) !important;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.22) !important;
+  padding: 0 !important;
+}
+
+#navbar.clean-navbar .clean-nav-inner {
+  width: min(1180px, calc(100vw - 32px)) !important;
+  margin: 0 auto !important;
+  min-height: 66px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#navbar.clean-navbar .clean-nav-link,
+#navbar.clean-navbar .clean-nav-button,
+#navbar.clean-navbar .clean-nav-panel-row,
+#navbar.clean-navbar .clean-nav-submenu-button {
+  border-radius: 9px !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: #e5f3f0 !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  letter-spacing: .02em !important;
+  text-transform: capitalize !important;
+  min-height: 42px !important;
+  padding: 0 14px !important;
+  box-shadow: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  cursor: pointer !important;
+}
+
+#navbar.clean-navbar .clean-nav-link:hover,
+#navbar.clean-navbar .clean-nav-button:hover,
+#navbar.clean-navbar .clean-nav-dropdown.is-open > .clean-nav-button,
+#navbar.clean-navbar .clean-nav-dropdown:hover > .clean-nav-button {
+  background: rgba(20, 184, 166, 0.13) !important;
+  border-color: rgba(94, 234, 212, 0.22) !important;
+  color: #ffffff !important;
+}
+
+#navbar.clean-navbar .clean-nav-dropdown-panel,
+#navbar.clean-navbar .clean-nav-submenu-panel {
+  background: #ffffff !important;
+  color: var(--ui-text) !important;
+  border: 1px solid var(--ui-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.18) !important;
+  padding: 10px !important;
+  overflow: visible !important;
+}
+
+#navbar.clean-navbar .clean-nav-dropdown-panel a,
+#navbar.clean-navbar .clean-nav-submenu-panel a,
+#navbar.clean-navbar .clean-nav-panel-row,
+#navbar.clean-navbar .clean-nav-submenu-button {
+  color: var(--ui-text) !important;
+  background: transparent !important;
+  border-radius: 8px !important;
+  border: 0 !important;
+  min-height: 38px !important;
+  font-size: 13px !important;
+  font-weight: 650 !important;
+  padding: 9px 10px !important;
+  text-decoration: none !important;
+  justify-content: flex-start !important;
+}
+
+#navbar.clean-navbar .clean-nav-dropdown-panel a:hover,
+#navbar.clean-navbar .clean-nav-submenu-panel a:hover,
+#navbar.clean-navbar .clean-nav-panel-row:hover,
+#navbar.clean-navbar .clean-nav-submenu:hover > .clean-nav-submenu-button,
+#navbar.clean-navbar .clean-nav-submenu.is-open > .clean-nav-submenu-button {
+  background: #ecfdf5 !important;
+  color: var(--ui-teal) !important;
+}
+
+#navbar.clean-navbar .clean-nav-search {
+  margin-left: auto !important;
+  height: 40px !important;
+  min-width: 230px !important;
+  max-width: 300px !important;
+  border: 1px solid rgba(148, 163, 184, 0.24) !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+#navbar.clean-navbar .clean-nav-search-input {
+  color: #ffffff !important;
+  background: transparent !important;
+  border: 0 !important;
+  font-size: 13px !important;
+}
+
+#navbar.clean-navbar .clean-nav-search-input::placeholder { color: rgba(226, 232, 240, .72) !important; }
+#navbar.clean-navbar .clean-nav-search-button { background: var(--ui-teal) !important; color: white !important; border-radius: 0 !important; }
+
+/* Main alignment system */
+main,
+.calculator-container,
+.age-calculator-container,
+.extra-calculator-layout,
+.old-calculator-layout,
+.loan-page main,
+body > .calculator-container,
+body > .age-calculator-container {
+  width: min(1180px, calc(100vw - 32px)) !important;
+  max-width: 1180px !important;
+  margin: 34px auto 56px !important;
+  box-sizing: border-box !important;
+}
+
+.calculator-container.old-calculator-layout,
+.age-calculator-container.old-calculator-layout,
+.extra-calculator-layout,
+.old-calculator-layout {
+  display: grid !important;
+  grid-template-columns: 270px minmax(0, 1fr) !important;
+  align-items: start !important;
+  gap: 26px !important;
+}
+
+.calculator-container.old-calculator-layout > .calculator,
+.age-calculator-container.old-calculator-layout > .calculator,
+.extra-calculator-layout > .calculator,
+.old-calculator-layout > .calculator {
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+/* Main cards: boxy, white, minimal */
+.calculator,
+.calculator-box,
+.about-box,
+.about-card,
+.info-page-box,
+.info-content-card,
+.extra-input-card,
+.instruction-box,
+.reference-box,
+.live-abacus-card,
+.loan-history-box,
+.extra-side-box,
+.old-calculator-groupbar,
+.group-side-box,
+.card,
+.panel {
+  background: var(--ui-surface) !important;
+  border: 1px solid var(--ui-border) !important;
+  border-radius: var(--ui-radius) !important;
+  box-shadow: var(--ui-shadow) !important;
+  outline: none !important;
+}
+
+.calculator,
+.calculator-box,
+.about-box,
+.info-page-box,
+.info-content-card,
+.extra-input-card {
+  padding: 30px !important;
+}
+
+.calculator h1,
+.calculator-box h1,
+.about-box h1,
+.info-page-box h1,
+h1 {
+  color: #0f172a !important;
+  font-weight: 850 !important;
+  font-size: clamp(28px, 3vw, 42px) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.045em !important;
+  margin: 0 0 12px !important;
+}
+
+.calculator h2,
+.calculator-box h2,
+h2 {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.035em !important;
+}
+
+.subtitle,
+.calculator p,
+.calculator-box p,
+.about-box p,
+.info-page-box p,
+.live-abacus-subtitle,
+.muted,
+small {
+  color: var(--ui-muted) !important;
+}
+
+/* Sidebar/group menu */
+.loan-history-box,
+.extra-side-box,
+.old-calculator-groupbar,
+.group-side-box {
+  padding: 20px !important;
+  position: sticky !important;
+  top: 92px !important;
+}
+
+.loan-history-top h2,
+.extra-side-box h2,
+.old-calculator-groupbar h2,
+.group-side-box h2 {
+  margin: 0 0 14px !important;
+  color: #0f172a !important;
+  font-size: 16px !important;
+  letter-spacing: -0.02em !important;
+}
+
+.extra-side-links,
+.group-side-links,
+.loan-history-list {
+  display: grid !important;
+  gap: 8px !important;
+}
+
+.extra-side-links a,
+.group-side-links a,
+.loan-history-list a,
+.current-extra-link,
+.old-calculator-groupbar a {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  min-height: 42px !important;
+  padding: 10px 12px !important;
+  box-sizing: border-box !important;
+  color: #334155 !important;
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 9px !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+
+.extra-side-links a:hover,
+.group-side-links a:hover,
+.loan-history-list a:hover,
+.current-extra-link,
+.extra-side-links a.current-extra-link,
+.group-side-links a.current-extra-link {
+  background: #ecfdf5 !important;
+  color: #0f766e !important;
+  border-color: #99f6e4 !important;
+}
+
+/* Inputs */
+input,
+select,
+textarea,
+.display,
+#display,
+.input-field,
+.form-control {
+  border: 1px solid var(--ui-border-strong) !important;
+  background: #ffffff !important;
+  color: var(--ui-text) !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transition: border-color .18s ease, box-shadow .18s ease, background .18s ease !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.display:focus,
+#display:focus {
+  border-color: var(--ui-teal) !important;
+  box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.14) !important;
+}
+
+label {
+  color: #334155 !important;
+  font-weight: 750 !important;
+  font-size: 13px !important;
+}
+
+/* Buttons */
+button,
+.btn,
+.primary-btn,
+.calculate-btn,
+#calculateBtn,
+.calculate-button,
+.extra-calculate-btn,
+.age-calculate-btn,
+.bmi-calculate-btn,
+.submit-btn {
+  border-radius: 10px !important;
+  border: 1px solid transparent !important;
+  box-shadow: none !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.calculator button,
+.calculator-box button,
+.extra-input-card button,
+button.calculate,
+button[type="submit"],
+.calculate-btn,
+#calculateBtn,
+.extra-calculate-btn,
+.age-calculate-btn,
+.bmi-calculate-btn,
+.primary-btn {
+  background: linear-gradient(135deg, #0f766e, #0d9488) !important;
+  color: #ffffff !important;
+  border-color: rgba(15, 118, 110, 0.18) !important;
+}
+
+.calculator button:hover,
+.calculator-box button:hover,
+.extra-input-card button:hover,
+button[type="submit"]:hover,
+.calculate-btn:hover,
+#calculateBtn:hover,
+.extra-calculate-btn:hover,
+.age-calculate-btn:hover,
+.bmi-calculate-btn:hover,
+.primary-btn:hover {
+  background: linear-gradient(135deg, #115e59, #0f766e) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 12px 22px rgba(15, 118, 110, 0.18) !important;
+}
+
+/* Basic/scientific calculator keypad: clear visual difference */
+.buttons button,
+.basic-grid button,
+.scientific-grid button,
+.calculator-key,
+.keypad button {
+  min-height: 52px !important;
+  border-radius: 10px !important;
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  border: 1px solid #dbe4ee !important;
+  box-shadow: none !important;
+  font-size: 16px !important;
+}
+
+.buttons button:hover,
+.basic-grid button:hover,
+.scientific-grid button:hover,
+.keypad button:hover {
+  background: #ecfdf5 !important;
+  color: #0f766e !important;
+  border-color: #99f6e4 !important;
+}
+
+.buttons button.equal,
+.basic-grid button.equal,
+.equal,
+button.equal,
+.ac-btn,
+.ans-btn,
+.operator,
+.op-btn {
+  background: #0f172a !important;
+  color: #ffffff !important;
+  border-color: #0f172a !important;
+}
+
+.ac-btn { background: #991b1b !important; border-color: #991b1b !important; }
+
+.display-row,
+.input-row,
+.form-row,
+.extra-form-row,
+.age-input-row,
+.bmi-input-row {
+  gap: 14px !important;
+}
+
+/* Results */
+.result-box,
+.clean-result-box,
+.modern-result-box,
+.universal-result-card,
+.extra-result-card,
+.age-result-card,
+.bmi-result-card,
+.mortgage-result-card,
+#resultBox,
+#ageResultBox,
+#bmiResultBox,
+#loanResultBox,
+.result-card {
+  background: linear-gradient(180deg, #ffffff, #f8fffd) !important;
+  border: 1px solid #b7eee5 !important;
+  border-left: 5px solid var(--ui-teal) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--ui-shadow-sm) !important;
+  color: var(--ui-text) !important;
+}
+
+.age-result-actions,
+.bmi-result-actions,
+.extra-result-actions,
+.universal-result-actions,
+.mortgage-result-actions,
+.calculator-report-actions,
+.result-actions,
+.clean-result-actions {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  align-items: stretch !important;
+  width: 100% !important;
+}
+
+.age-result-actions button,
+.bmi-result-actions button,
+.extra-result-actions button,
+.universal-result-actions button,
+.mortgage-result-actions button,
+.calculator-report-actions button,
+.result-actions button,
+.clean-result-actions button {
+  min-width: 0 !important;
+  width: 100% !important;
+  min-height: 38px !important;
+  padding: 8px 8px !important;
+  border-radius: 8px !important;
+  font-size: 12px !important;
+  white-space: nowrap !important;
+}
+
+/* Index page: clearly different dashboard style */
+body.index-page main.calculator-box,
+body.index-page .grouped-calculator-home,
+body.index-page .index-dropdown-calculator-home {
+  width: min(1120px, calc(100vw - 32px)) !important;
+  max-width: 1120px !important;
+  margin: 34px auto 60px !important;
+  padding: 30px !important;
+  display: grid !important;
+  gap: 24px !important;
+  background: #ffffff !important;
+  border: 1px solid var(--ui-border) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--ui-shadow) !important;
+}
+
+body.index-page h1 {
+  max-width: 760px !important;
+}
+
+body.index-page .index-category-dropdown-grid {
+  position: relative !important;
+  z-index: 20 !important;
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  overflow: visible !important;
+}
+
+body.index-page .index-category-dropdown {
+  position: relative !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+body.index-page .index-category-dropdown > summary {
+  list-style: none !important;
+  min-height: 58px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  padding: 12px 14px !important;
+  box-sizing: border-box !important;
+  background: #0f172a !important;
+  color: #ffffff !important;
+  border: 1px solid #0f172a !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+}
+
+body.index-page .index-category-dropdown > summary::-webkit-details-marker { display: none !important; }
+
+body.index-page .index-category-dropdown[open] > summary,
+body.index-page .index-category-dropdown:hover > summary {
+  background: #0f766e !important;
+  border-color: #0f766e !important;
+}
+
+body.index-page .index-category-dropdown-panel {
+  position: absolute !important;
+  top: calc(100% + 10px) !important;
+  left: 0 !important;
+  width: min(360px, calc(100vw - 40px)) !important;
+  max-height: min(420px, calc(100vh - 190px)) !important;
+  overflow: auto !important;
+  z-index: 1000 !important;
+  padding: 12px !important;
+  background: #ffffff !important;
+  border: 1px solid var(--ui-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.18) !important;
+}
+
+body.index-page .calculator-category-links {
+  display: grid !important;
+  gap: 8px !important;
+}
+
+body.index-page .calculator-category-links a {
+  min-height: 42px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 10px 12px !important;
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 9px !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  font-size: 13px !important;
+  font-weight: 750 !important;
+}
+
+body.index-page .calculator-category-links a:hover {
+  background: #ecfdf5 !important;
+  color: #0f766e !important;
+  border-color: #99f6e4 !important;
+}
+
+body.index-page .calculator-category-abacus,
+body.index-page .index-abacus-inside-card {
+  margin-top: 8px !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.live-abacus-card,
+.interactive-abacus-card {
+  padding: 24px !important;
+  background: #f8fafc !important;
+  border: 1px solid #dbe4ee !important;
+}
+
+.live-abacus-value,
+.interactive-abacus-value {
+  background: #ffffff !important;
+  border: 1px solid #dbe4ee !important;
+  border-radius: 10px !important;
+  color: var(--ui-text) !important;
+}
+
+/* Tables and charts */
+table {
+  border-collapse: collapse !important;
+  background: #ffffff !important;
+  border: 1px solid var(--ui-border) !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+
+th {
+  background: #0f172a !important;
+  color: #ffffff !important;
+}
+
+td, th {
+  border: 1px solid #e2e8f0 !important;
+  padding: 10px !important;
+}
+
+/* Scroll top button */
+#scrollTopBtn,
+.scroll-top-btn {
+  background: #0f172a !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  border-radius: 999px !important;
+  box-shadow: 0 12px 30px rgba(15,23,42,.22) !important;
+}
+
+/* Info/static pages */
+body.info-page main,
+body.about-page main,
+body.contact-page main,
+body.privacy-page main,
+body.faqs-page main {
+  width: min(980px, calc(100vw - 32px)) !important;
+  margin: 34px auto 56px !important;
+}
+
+/* Desktop alignment refinements */
+@media (min-width: 851px) {
+  .calculator,
+  .calculator-box {
+    min-height: auto !important;
+  }
+
+  .calculator-container.old-calculator-layout,
+  .age-calculator-container.old-calculator-layout,
+  .extra-calculator-layout,
+  .old-calculator-layout {
+    grid-template-columns: 260px minmax(640px, 1fr) !important;
+  }
+
+  body.index-page .calculator-category-money > .index-category-dropdown-panel,
+  body.index-page .calculator-category-loans > .index-category-dropdown-panel,
+  body.index-page .calculator-category-property > .index-category-dropdown-panel {
+    left: auto !important;
+    right: 0 !important;
+  }
+}
+
+/* Mobile: clean stacked layout */
+@media (max-width: 850px) {
+  #navbar.clean-navbar {
+    position: sticky !important;
+  }
+
+  #navbar.clean-navbar .clean-nav-inner {
+    width: calc(100vw - 20px) !important;
+    min-height: 58px !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    padding: 10px 0 !important;
+  }
+
+  #navbar.clean-navbar .clean-nav-link,
+  #navbar.clean-navbar .clean-nav-button {
+    min-height: 38px !important;
+    padding: 0 11px !important;
+    font-size: 12px !important;
+  }
+
+  #navbar.clean-navbar .clean-nav-search {
+    order: 99 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+  }
+
+  main,
+  .calculator-container,
+  .age-calculator-container,
+  .extra-calculator-layout,
+  .old-calculator-layout,
+  body > .calculator-container,
+  body > .age-calculator-container {
+    width: min(100% - 22px, 720px) !important;
+    margin: 22px auto 42px !important;
+  }
+
+  .calculator-container.old-calculator-layout,
+  .age-calculator-container.old-calculator-layout,
+  .extra-calculator-layout,
+  .old-calculator-layout {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .loan-history-box,
+  .extra-side-box,
+  .old-calculator-groupbar,
+  .group-side-box {
+    position: static !important;
+    padding: 14px !important;
+  }
+
+  .extra-side-links,
+  .group-side-links {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .calculator,
+  .calculator-box,
+  .about-box,
+  .info-page-box,
+  .info-content-card,
+  .extra-input-card {
+    padding: 20px !important;
+  }
+
+  body.index-page main.calculator-box,
+  body.index-page .grouped-calculator-home,
+  body.index-page .index-dropdown-calculator-home {
+    width: min(100% - 22px, 720px) !important;
+    padding: 18px !important;
+  }
+
+  body.index-page .index-category-dropdown-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  body.index-page .index-category-dropdown:nth-child(n) > .index-category-dropdown-panel {
+    left: 0 !important;
+    right: auto !important;
+    width: min(330px, calc(100vw - 42px)) !important;
+    max-width: calc(100vw - 42px) !important;
+  }
+
+  .age-result-actions,
+  .bmi-result-actions,
+  .extra-result-actions,
+  .universal-result-actions,
+  .mortgage-result-actions,
+  .calculator-report-actions,
+  .result-actions,
+  .clean-result-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  body.index-page .index-category-dropdown-grid,
+  .extra-side-links,
+  .group-side-links {
+    grid-template-columns: 1fr !important;
+  }
+
+  .calculator h1,
+  .calculator-box h1,
+  h1 {
+    font-size: 28px !important;
+  }
+}
+/* ===== END CHATGPT VISIBLE SHARP SAAS REDESIGN ===== */
