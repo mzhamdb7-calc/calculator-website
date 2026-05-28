@@ -8887,3 +8887,206 @@
     start();
   }
 })();
+
+/* =====================================================
+   CHATGPT AUTO SCROLL TO RESULT AFTER VALID INPUT 2026-05-28
+   Smoothly moves users to the result box after a calculator
+   has enough input and renders a visible result. Debounced so
+   it does not jump while the user is still typing.
+===================================================== */
+(function () {
+  "use strict";
+
+  const RESULT_SELECTOR = [
+    ".calculator-clean-result",
+    ".loan-style-output-panel",
+    ".extra-result-box",
+    "#universalLoanStyleOutput",
+    "#loanExternalOutput",
+    "#personalLoanExternalOutput",
+    "#ageReportOutput",
+    "#bmiReportOutput",
+    "[id$='ReportOutput']"
+  ].join(", ");
+
+  const IGNORE_ACTION_SELECTOR = [
+    "#calculatorReportPage",
+    ".age-result-actions",
+    ".bmi-result-actions",
+    ".universal-result-actions",
+    ".mortgage-result-actions",
+    ".loan-result-actions",
+    ".report-actions",
+    ".saved-report-actions"
+  ].join(", ");
+
+  let lastInputAt = 0;
+  let actionSequence = 0;
+  let lastScrolledSequence = -1;
+  let pendingTimer = null;
+  let pendingPanel = null;
+
+  function now() {
+    return Date.now ? Date.now() : new Date().getTime();
+  }
+
+  function isCalculatorPage() {
+    return !!document.querySelector(
+      ".calculator, main.pc-calculator-layout, .tool-layout, .old-calculator-layout, " +
+      ".age-calculator-container, .bmi-calculator-container, .loan-calculator-container"
+    );
+  }
+
+  function markUserInput(event) {
+    if (!isCalculatorPage()) return;
+    const target = event && event.target;
+    if (!target || !target.closest) return;
+    if (target.closest(IGNORE_ACTION_SELECTOR)) return;
+
+    const control = target.closest("input, select, textarea, button, .calculator button, .calc-button, .btn, [role='button']");
+    if (!control) return;
+
+    const area = control.closest(".calculator, main.pc-calculator-layout, .tool-layout, form, .main-content, body");
+    if (!area) return;
+
+    lastInputAt = now();
+    actionSequence += 1;
+  }
+
+  function isUsableResultPanel(panel) {
+    if (!panel || panel.nodeType !== 1) return false;
+    if (panel.closest("#calculatorReportPage")) return false;
+    if (panel.hidden) return false;
+
+    const style = window.getComputedStyle(panel);
+    if (style.display === "none" || style.visibility === "hidden" || Number(style.opacity) === 0) return false;
+
+    const rect = panel.getBoundingClientRect();
+    if (rect.width < 40 || rect.height < 40) return false;
+
+    const text = (panel.textContent || "").replace(/\s+/g, " ").trim();
+    return text.length > 8;
+  }
+
+  function getBestPanel(fromNode) {
+    if (fromNode && fromNode.nodeType === 1) {
+      if (fromNode.matches && fromNode.matches(RESULT_SELECTOR) && isUsableResultPanel(fromNode)) {
+        return fromNode;
+      }
+      const nested = fromNode.querySelector && fromNode.querySelector(RESULT_SELECTOR);
+      if (nested && isUsableResultPanel(nested)) return nested;
+    }
+
+    const panels = Array.from(document.querySelectorAll(RESULT_SELECTOR)).filter(isUsableResultPanel);
+    if (!panels.length) return null;
+
+    panels.sort(function (a, b) {
+      const ar = a.getBoundingClientRect();
+      const br = b.getBoundingClientRect();
+      return br.top - ar.top;
+    });
+
+    return panels[0];
+  }
+
+  function isPanelAlreadyComfortablyVisible(panel) {
+    const rect = panel.getBoundingClientRect();
+    const topSafe = 90;
+    const bottomSafe = window.innerHeight - 90;
+    return rect.top >= topSafe && rect.top <= bottomSafe && rect.height > 0;
+  }
+
+  function scrollToPanel(panel) {
+    if (!isUsableResultPanel(panel)) return;
+    if (lastScrolledSequence === actionSequence) return;
+
+    const elapsed = now() - lastInputAt;
+    if (!lastInputAt || elapsed > 9000) return;
+
+    if (isPanelAlreadyComfortablyVisible(panel)) {
+      lastScrolledSequence = actionSequence;
+      return;
+    }
+
+    lastScrolledSequence = actionSequence;
+
+    const rect = panel.getBoundingClientRect();
+    const offset = window.innerWidth <= 850 ? 76 : 96;
+    const targetTop = Math.max(0, window.pageYOffset + rect.top - offset);
+    const smooth = !window.matchMedia || !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    try {
+      window.scrollTo({
+        top: targetTop,
+        behavior: smooth ? "smooth" : "auto"
+      });
+    } catch (error) {
+      window.scrollTo(0, targetTop);
+    }
+  }
+
+  function scheduleAutoScroll(panel) {
+    const bestPanel = getBestPanel(panel);
+    if (!bestPanel) return;
+    if (!lastInputAt || now() - lastInputAt > 9000) return;
+
+    pendingPanel = bestPanel;
+    if (pendingTimer) window.clearTimeout(pendingTimer);
+
+    function waitUntilTypingStops() {
+      const elapsed = now() - lastInputAt;
+      if (elapsed < 650) {
+        pendingTimer = window.setTimeout(waitUntilTypingStops, 650 - elapsed + 40);
+        return;
+      }
+      pendingTimer = null;
+      scrollToPanel(pendingPanel);
+      pendingPanel = null;
+    }
+
+    pendingTimer = window.setTimeout(waitUntilTypingStops, 220);
+  }
+
+  function watchResults() {
+    if (!document.body || document.body.dataset.autoScrollResultReady === "true") return;
+    document.body.dataset.autoScrollResultReady = "true";
+
+    document.addEventListener("input", markUserInput, true);
+    document.addEventListener("change", markUserInput, true);
+    document.addEventListener("click", markUserInput, true);
+
+    new MutationObserver(function (mutations) {
+      let panel = null;
+
+      mutations.forEach(function (mutation) {
+        if (panel) return;
+
+        if (mutation.target && mutation.target.nodeType === 1) {
+          const targetPanel = mutation.target.closest && mutation.target.closest(RESULT_SELECTOR);
+          if (targetPanel && isUsableResultPanel(targetPanel)) {
+            panel = targetPanel;
+            return;
+          }
+        }
+
+        mutation.addedNodes.forEach(function (node) {
+          if (panel || !node || node.nodeType !== 1) return;
+          const candidate = getBestPanel(node);
+          if (candidate) panel = candidate;
+        });
+      });
+
+      if (panel) scheduleAutoScroll(panel);
+    }).observe(document.body, {
+      childList: true,
+      subtree: true,
+      characterData: true
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", watchResults);
+  } else {
+    watchResults();
+  }
+})();

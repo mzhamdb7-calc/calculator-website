@@ -1,0 +1,1 @@
+Added automatic smooth scrolling to the result box after valid calculator input renders a result. The behavior is debounced so it waits until typing stops and avoids scrolling when using result action/report buttons.

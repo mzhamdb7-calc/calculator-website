@@ -2753,3 +2753,12 @@ body.calculator-report-view #calculatorReportPage,
   line-height: 1.35 !important;
   text-align: center !important;
 }
+
+/* Auto-scroll target spacing for result boxes */
+.calculator-clean-result,
+.loan-style-output-panel,
+.extra-result-box,
+.full-width-result-section,
+[id$="ReportOutput"] {
+  scroll-margin-top: 100px;
+}
