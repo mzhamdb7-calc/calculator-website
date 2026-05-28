@@ -210,3 +210,367 @@
 
   .instruction-box { scrollbar-width: thin; }
 }
+
+
+/* =====================================================
+   FINAL READABILITY + SIZING FIX
+   Purpose: lighter elder-friendly colour and stable form sizing.
+   This is intentionally placed last to beat older styling.
+===================================================== */
+:root {
+  --page: #f7f7f2 !important;
+  --page-2: #eef4ef !important;
+  --surface: #fffefa !important;
+  --surface-soft: #fbfcf8 !important;
+  --surface-muted: #f1f6f1 !important;
+  --ink: #263a33 !important;
+  --ink-2: #355149 !important;
+  --muted: #586f67 !important;
+  --muted-2: #74867f !important;
+  --line: #d7e3dc !important;
+  --line-strong: #bdd0c7 !important;
+  --primary: #2f7d68 !important;
+  --primary-dark: #276957 !important;
+  --primary-soft: #edf7f2 !important;
+  --accent: #4f8f7b !important;
+  --accent-soft: #f0f8f4 !important;
+  --shadow-xs: 0 1px 2px rgba(38, 58, 51, .04) !important;
+  --shadow-sm: 0 8px 20px rgba(38, 58, 51, .07) !important;
+  --shadow-md: 0 18px 36px rgba(38, 58, 51, .10) !important;
+}
+
+body {
+  color: var(--ink) !important;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(79, 143, 123, .08), transparent 35%),
+    linear-gradient(180deg, #fbfaf4 0%, #f7f7f2 45%, #eff5f0 100%) !important;
+}
+
+.clean-navbar {
+  color: #263a33 !important;
+  background: rgba(255, 254, 250, .96) !important;
+  border-bottom: 1px solid var(--line) !important;
+  box-shadow: 0 8px 22px rgba(38, 58, 51, .07) !important;
+}
+.clean-nav-link,
+.clean-nav-button,
+.clean-nav-panel-row,
+.clean-nav-submenu-button {
+  color: #355149 !important;
+}
+.clean-nav-link:hover,
+.clean-nav-button:hover,
+.clean-nav-dropdown.is-open > .clean-nav-button,
+.clean-nav-dropdown:hover > .clean-nav-button,
+.clean-nav-link[aria-current="page"],
+.clean-nav-link.current,
+.current-extra-link {
+  color: #ffffff !important;
+  background: #2f7d68 !important;
+  border-color: #2f7d68 !important;
+}
+.clean-nav-inner > .clean-nav-link:first-child::after { color: #263a33 !important; }
+.clean-nav-inner > .clean-nav-link:first-child::before {
+  background: linear-gradient(135deg, #2f7d68, #6fa892) !important;
+}
+.clean-nav-dropdown-panel,
+.clean-nav-submenu-panel,
+.clean-nav-search-results {
+  color: var(--ink) !important;
+  background: #fffefa !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+h1, h2, h3, label, .bmi-extra-title,
+.instruction-main-title,
+.extra-input-card-title,
+.mortgage-input-title,
+.reference-main-title {
+  color: var(--ink) !important;
+}
+
+p,
+.subtitle,
+.instruction-section p,
+.extra-help-panel p,
+.reference-card p {
+  color: var(--muted) !important;
+}
+
+.calculator,
+.calculator-box,
+.bmi-calculator-box,
+.extra-calculator-box,
+.instruction-box,
+.extra-help-panel,
+.loan-history-box,
+.extra-side-box,
+.extra-related-box,
+.about-box,
+.about-card,
+.info-content-card,
+.chat-intro-card,
+.chat-form-card,
+.chat-board-card {
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.extra-input-card,
+.mortgage-input-box,
+.bmi-input-group-box,
+.reference-card,
+.instruction-section,
+.site-faq-item,
+.age-result-group-box,
+.bmi-result-group-box,
+.age-point-result-box,
+.bmi-result-box {
+  background: var(--surface-soft) !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: none !important;
+}
+
+input,
+select,
+textarea,
+.display-row input,
+.calculator input,
+.calculator select,
+.bmi-calculator-box input,
+.bmi-calculator-box select,
+.extra-calculator-box input,
+.extra-calculator-box select {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 50px !important;
+  color: #263a33 !important;
+  background: #ffffff !important;
+  border: 1px solid #c8d8d0 !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+input::placeholder,
+textarea::placeholder { color: #75877f !important; opacity: 1 !important; }
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #2f7d68 !important;
+  box-shadow: 0 0 0 4px rgba(47, 125, 104, .13) !important;
+  outline: none !important;
+}
+
+button,
+.main-calc-btn,
+.calculate-btn,
+.extra-calc-btn,
+.primary-btn,
+.home-primary-link {
+  border-radius: 12px !important;
+}
+
+.buttons button,
+.basic-grid button {
+  color: #263a33 !important;
+  background: #ffffff !important;
+  border: 1px solid #c8d8d0 !important;
+}
+.buttons .equal,
+.basic-grid .equal,
+button[type="submit"],
+.calculate-btn,
+.extra-calc-btn,
+.main-calc-btn {
+  color: #ffffff !important;
+  background: #2f7d68 !important;
+  border-color: #2f7d68 !important;
+}
+.buttons button:hover,
+.basic-grid button:hover,
+button:hover {
+  filter: none !important;
+}
+
+.bmi-title-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 16px !important;
+  align-items: start !important;
+  margin-bottom: 22px !important;
+}
+.bmi-title-row > div:first-child { display: none !important; }
+.bmi-title-row > div:nth-child(2) { min-width: 0 !important; }
+.bmi-title-row h1 {
+  margin-bottom: 8px !important;
+  line-height: 1.05 !important;
+}
+.bmi-title-row .subtitle { margin-bottom: 0 !important; }
+#unitToggleBtn {
+  justify-self: end !important;
+  align-self: start !important;
+  width: auto !important;
+  min-width: 74px !important;
+  min-height: 46px !important;
+  padding: 0 16px !important;
+  color: #276957 !important;
+  background: #edf7f2 !important;
+  border: 1px solid #bdd0c7 !important;
+  border-radius: 999px !important;
+  font-weight: 850 !important;
+  box-shadow: none !important;
+}
+#unitToggleBtn:hover {
+  color: #ffffff !important;
+  background: #2f7d68 !important;
+  border-color: #2f7d68 !important;
+}
+
+.bmi-input-groups {
+  width: 100% !important;
+  align-items: start !important;
+}
+.bmi-input-group-box {
+  min-width: 0 !important;
+  overflow: visible !important;
+}
+.bmi-input-group-box label,
+.bmi-calculator-box label {
+  display: block !important;
+  margin: 14px 0 7px !important;
+  color: #355149 !important;
+  line-height: 1.25 !important;
+  font-size: 1rem !important;
+  font-weight: 800 !important;
+  overflow-wrap: anywhere !important;
+}
+.bmi-input-group-box label:first-of-type { margin-top: 12px !important; }
+.bmi-extra-title {
+  margin-bottom: 12px !important;
+  font-size: 1.05rem !important;
+  line-height: 1.25 !important;
+  font-weight: 850 !important;
+}
+.bmi-time-goal-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: 10px !important;
+}
+.bmi-time-goal-row input,
+.bmi-time-goal-row select { min-width: 0 !important; }
+
+.instruction-box,
+.extra-help-panel {
+  background: #fffefa !important;
+}
+.instruction-section {
+  padding: 20px !important;
+  margin-bottom: 16px !important;
+}
+.instruction-section h3 {
+  color: #276957 !important;
+  font-size: 1.08rem !important;
+}
+
+
+/* =====================================================
+   FINAL DESKTOP SIZING FIX
+===================================================== */
+@media screen and (min-width: 851px) {
+  main,
+  .about-container,
+  .info-page-box,
+  .chat-intro-card,
+  .chat-form-card,
+  .chat-board-card {
+    width: min(1220px, calc(100vw - 56px)) !important;
+  }
+
+  .tool-layout,
+  .old-calculator-layout,
+  .calculator-container,
+  .age-calculator-container,
+  .loan-calculator-container,
+  .percentage-calculator-container,
+  .discount-calculator-container,
+  .compound-calculator-container {
+    width: min(1220px, calc(100vw - 56px)) !important;
+    max-width: 1220px !important;
+    grid-template-columns: minmax(390px, 500px) minmax(0, 1fr) !important;
+    gap: 26px !important;
+  }
+
+  /* BMI has three form groups, so it needs a wider calculator column. */
+  .bmi-calculator-container.tool-layout,
+  .bmi-calculator-container {
+    width: min(1360px, calc(100vw - 56px)) !important;
+    max-width: 1360px !important;
+    grid-template-columns: minmax(680px, 760px) minmax(360px, 1fr) !important;
+    gap: 28px !important;
+    align-items: start !important;
+  }
+  .bmi-calculator-container > .tool-group-nav,
+  .bmi-calculator-container > .loan-history-box,
+  .bmi-calculator-container > .extra-side-box {
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
+    position: static !important;
+  }
+  .bmi-calculator-container > .bmi-calculator-box,
+  .bmi-calculator-container > .calculator {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    padding: 30px !important;
+  }
+  .bmi-calculator-container > .instruction-box,
+  .bmi-calculator-container > .extra-help-panel {
+    grid-column: 2 !important;
+    grid-row: 2 / span 6 !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    position: sticky !important;
+    top: 92px !important;
+    max-height: calc(100vh - 116px) !important;
+    overflow: auto !important;
+  }
+  .bmi-input-groups {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(190px, 1fr)) !important;
+    gap: 18px !important;
+  }
+  .bmi-input-group-box { padding: 20px !important; }
+
+  .extra-side-links a,
+  .clean-nav-link,
+  .clean-nav-button {
+    font-size: 1rem !important;
+  }
+}
+
+@media screen and (min-width: 851px) and (max-width: 1199px) {
+  .bmi-calculator-container.tool-layout,
+  .bmi-calculator-container {
+    width: min(760px, calc(100vw - 44px)) !important;
+    max-width: 760px !important;
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  .bmi-calculator-container > .bmi-calculator-box,
+  .bmi-calculator-container > .calculator,
+  .bmi-calculator-container > .instruction-box,
+  .bmi-calculator-container > .extra-help-panel {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    position: static !important;
+    max-height: none !important;
+  }
+  .bmi-input-groups {
+    grid-template-columns: repeat(2, minmax(240px, 1fr)) !important;
+  }
+  .bmi-optional-box {
+    grid-column: 1 / -1 !important;
+  }
+}
