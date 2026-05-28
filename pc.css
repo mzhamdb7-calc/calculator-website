@@ -2854,3 +2854,330 @@ body[data-page="bmi"] .bmi-highlight-grid {
     min-height: 112px !important;
   }
 }
+
+
+/* =====================================================
+   CHATGPT UPDATE: Clean Review + Wall pages 2026-05-28
+===================================================== */
+.clean-wall-link {
+  background: rgba(37, 99, 235, 0.08) !important;
+  color: #1d4ed8 !important;
+  border-color: rgba(37, 99, 235, 0.18) !important;
+}
+
+.review-page-shell,
+.review-wall-shell {
+  width: min(1080px, calc(100vw - 36px)) !important;
+  max-width: 1080px !important;
+  margin: 28px auto 56px !important;
+  display: grid !important;
+  gap: 22px !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.review-hero-card,
+.clean-review-card,
+.review-empty-wall {
+  background: #ffffff !important;
+  border: 1px solid #dbe7e2 !important;
+  border-radius: 22px !important;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08) !important;
+}
+
+.review-hero-card {
+  padding: clamp(24px, 4vw, 44px) !important;
+  background:
+    linear-gradient(135deg, rgba(234, 247, 241, 0.96), rgba(255, 255, 255, 0.98)) !important;
+  display: grid !important;
+  gap: 12px !important;
+}
+
+.review-kicker {
+  width: fit-content !important;
+  margin: 0 !important;
+  padding: 8px 12px !important;
+  border-radius: 999px !important;
+  background: #e7f5ee !important;
+  color: #176047 !important;
+  font-weight: 900 !important;
+  letter-spacing: .06em !important;
+  text-transform: uppercase !important;
+  font-size: 0.78rem !important;
+}
+
+.review-hero-card h1 {
+  margin: 0 !important;
+  color: #10231d !important;
+  font-size: clamp(2rem, 5vw, 3.6rem) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.04em !important;
+}
+
+.review-hero-card p {
+  max-width: 760px !important;
+  margin: 0 !important;
+  color: #475569 !important;
+  font-size: clamp(1rem, 1.5vw, 1.15rem) !important;
+  line-height: 1.75 !important;
+}
+
+.review-hero-actions,
+.review-form-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+  align-items: center !important;
+  margin-top: 8px !important;
+}
+
+.review-link-button,
+.review-submit-btn,
+.review-form-actions .main-btn,
+.review-wall-toolbar .main-btn {
+  min-height: 48px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 14px !important;
+  padding: 12px 18px !important;
+  font-weight: 900 !important;
+  text-decoration: none !important;
+  border: 1px solid #176047 !important;
+  background: #176047 !important;
+  color: #ffffff !important;
+  box-shadow: 0 12px 24px rgba(23, 96, 71, 0.16) !important;
+  text-transform: none !important;
+}
+
+.review-link-button-light,
+.review-form-actions .secondary-btn,
+.review-wall-toolbar .secondary-btn {
+  background: #ffffff !important;
+  color: #176047 !important;
+  border-color: #c9ddd5 !important;
+  box-shadow: none !important;
+}
+
+.review-link-button:hover,
+.review-submit-btn:hover,
+.review-form-actions .main-btn:hover,
+.review-wall-toolbar .main-btn:hover {
+  transform: translateY(-1px) !important;
+  filter: brightness(0.98) !important;
+}
+
+.clean-review-card {
+  padding: clamp(20px, 3vw, 30px) !important;
+  display: grid !important;
+  gap: 18px !important;
+}
+
+.review-section-title h2,
+.review-wall-toolbar h2 {
+  margin: 0 0 6px !important;
+  color: #10231d !important;
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem) !important;
+  line-height: 1.15 !important;
+}
+
+.review-section-title p,
+.review-wall-toolbar p {
+  margin: 0 !important;
+  color: #64748b !important;
+  line-height: 1.6 !important;
+}
+
+.review-form {
+  display: grid !important;
+  gap: 18px !important;
+}
+
+.review-form-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+}
+
+.review-form label {
+  display: grid !important;
+  gap: 8px !important;
+  color: #10231d !important;
+  font-weight: 850 !important;
+}
+
+.review-form label span {
+  font-size: 0.95rem !important;
+}
+
+.review-form input,
+.review-form select,
+.review-form textarea {
+  width: 100% !important;
+  min-height: 50px !important;
+  border-radius: 14px !important;
+  border: 1px solid #cbded6 !important;
+  background: #fbfffd !important;
+  color: #10231d !important;
+  font-size: 1rem !important;
+  padding: 12px 14px !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.review-form textarea {
+  min-height: 150px !important;
+  resize: vertical !important;
+}
+
+.review-form input:focus,
+.review-form select:focus,
+.review-form textarea:focus {
+  border-color: #176047 !important;
+  box-shadow: 0 0 0 4px rgba(23, 96, 71, 0.12) !important;
+}
+
+.review-status {
+  min-height: 24px !important;
+  margin: 0 !important;
+  color: #176047 !important;
+  font-weight: 850 !important;
+}
+
+.review-preview-list {
+  display: grid !important;
+  gap: 14px !important;
+}
+
+.review-preview-item,
+.wall-review-card {
+  background: #fbfffd !important;
+  border: 1px solid #dbe7e2 !important;
+  border-radius: 18px !important;
+  padding: 18px !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06) !important;
+}
+
+.review-preview-item h3,
+.wall-review-card h2 {
+  margin: 8px 0 8px !important;
+  color: #10231d !important;
+  font-size: 1.15rem !important;
+  line-height: 1.25 !important;
+}
+
+.review-preview-item p,
+.wall-review-card p {
+  margin: 0 !important;
+  color: #475569 !important;
+  line-height: 1.65 !important;
+}
+
+.review-preview-item small,
+.wall-review-card footer,
+.review-empty-state {
+  color: #64748b !important;
+  line-height: 1.5 !important;
+}
+
+.review-stars {
+  color: #b7791f !important;
+  letter-spacing: .06em !important;
+  font-weight: 900 !important;
+  font-size: 1.05rem !important;
+}
+
+.review-wall-toolbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 18px !important;
+}
+
+.review-wall-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+  gap: 18px !important;
+  align-items: start !important;
+}
+
+.wall-review-card {
+  position: relative !important;
+  min-height: 220px !important;
+  display: grid !important;
+  gap: 8px !important;
+  align-content: start !important;
+}
+
+.wall-review-card:nth-child(3n + 1) { background: #fffef7 !important; }
+.wall-review-card:nth-child(3n + 2) { background: #f7fffb !important; }
+.wall-review-card:nth-child(3n + 3) { background: #f8fbff !important; }
+
+.wall-review-pin {
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 50% !important;
+  background: #176047 !important;
+  box-shadow: 0 0 0 5px rgba(23, 96, 71, 0.1) !important;
+  position: absolute !important;
+  top: 14px !important;
+  right: 16px !important;
+}
+
+.wall-review-card footer {
+  display: grid !important;
+  gap: 3px !important;
+  margin-top: 8px !important;
+  border-top: 1px solid #e2ece7 !important;
+  padding-top: 12px !important;
+}
+
+.wall-review-card footer strong {
+  color: #10231d !important;
+}
+
+.review-empty-wall {
+  grid-column: 1 / -1 !important;
+  padding: 30px !important;
+  text-align: center !important;
+  display: grid !important;
+  gap: 12px !important;
+  justify-items: center !important;
+}
+
+.review-empty-wall h2,
+.review-empty-wall p {
+  margin: 0 !important;
+}
+
+@media (max-width: 850px) {
+  .review-page-shell,
+  .review-wall-shell {
+    width: min(100% - 24px, 680px) !important;
+    margin-top: 18px !important;
+    gap: 16px !important;
+  }
+
+  .review-form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .review-wall-toolbar,
+  .review-hero-actions,
+  .review-form-actions {
+    align-items: stretch !important;
+  }
+
+  .review-wall-toolbar {
+    flex-direction: column !important;
+  }
+
+  .review-link-button,
+  .review-submit-btn,
+  .review-form-actions .main-btn,
+  .review-wall-toolbar .main-btn {
+    width: 100% !important;
+  }
+}

@@ -5113,9 +5113,9 @@
     let chatLink = navbar.querySelector(".nav-chat-link");
     if (!chatLink) {
       chatLink = document.createElement("a");
-      chatLink.href = "chatting.html";
+      chatLink.href = "review.html";
       chatLink.className = "nav-chat-link";
-      chatLink.textContent = "chatting";
+      chatLink.textContent = "Review";
     }
 
     let inlineWrap = navbar.querySelector(".nav-chat-search-inline");
@@ -6805,7 +6805,8 @@
           '</div>' +
         '</div>' +
 
-        '<a class="clean-nav-link clean-chat-link" href="chatting.html">Community</a>' +
+        '<a class="clean-nav-link clean-chat-link" href="review.html">Review</a>' +
+        '<a class="clean-nav-link clean-wall-link" href="Wall.html">Wall</a>' +
 
         '<form class="clean-nav-search" role="search" autocomplete="off">' +
           '<label class="clean-nav-search-label" for="cleanCalculatorSearchInput">Search tools</label>' +
@@ -10589,4 +10590,37 @@
   } else {
     start();
   }
+})();
+
+
+/* =====================================================
+   CHATGPT UPDATE: Review + Wall navbar safety fix 2026-05-28
+===================================================== */
+(function () {
+  "use strict";
+
+  function fixReviewWallNav() {
+    document.querySelectorAll('a.clean-chat-link, a.nav-chat-link').forEach(function (link) {
+      link.textContent = "Review";
+      link.setAttribute("href", "review.html");
+    });
+
+    document.querySelectorAll(".clean-nav-inner").forEach(function (inner) {
+      if (inner.querySelector('.clean-wall-link')) return;
+      var reviewLink = inner.querySelector('.clean-chat-link');
+      if (!reviewLink) return;
+      var wallLink = document.createElement("a");
+      wallLink.className = "clean-nav-link clean-wall-link";
+      wallLink.href = "Wall.html";
+      wallLink.textContent = "Wall";
+      reviewLink.insertAdjacentElement("afterend", wallLink);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", fixReviewWallNav);
+  } else {
+    fixReviewWallNav();
+  }
+  setTimeout(fixReviewWallNav, 300);
 })();

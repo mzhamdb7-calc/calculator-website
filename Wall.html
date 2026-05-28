@@ -1,29 +1,20 @@
 <!DOCTYPE html>
-<!--
-  Copyright © 2026 Hamdi. All rights reserved.
-  Do not copy, modify, redistribute, or reuse this project without permission.
--->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-
-  <title>Contact</title>
-
+  <title>Review Wall | Calculator Hub</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Contact page for this free online calculator website.">
-
+  <meta name="description" content="Review wall showing calculator website reviews saved in this browser.">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=review-wall-20260528">
   <link rel="stylesheet" href="pc.css?v=review-wall-20260528" media="screen and (min-width: 851px)">
   <link rel="stylesheet" href="phone.css?v=review-wall-20260528" media="screen and (max-width: 850px)">
-<link rel="icon" href="favicon.ico">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
+<body class="info-page review-wall-page app-redesign" data-page="wall">
 
-<body class="contact-page app-redesign">
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">↑</button>
 
-    <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
-    ↑
-  </button>
   <nav id="navbar" class="clean-navbar">
   <div class="clean-nav-inner">
     <a class="clean-nav-link" href="index.html">Home</a>
@@ -108,48 +99,80 @@
   </div>
 </nav>
 
-    <main class="about-container">
-
-    <section class="about-box">
-
-      <h1>Contact</h1>
-
-      <div class="about-card">
-        <h2>Contact Us</h2>
-
-        <p>
-          Have a question, suggestion, or problem with one of the calculators?
-        </p>
-
-        <p>
-          You can contact us by email:
-        </p>
-
-        <p>
-          <strong>Email:</strong>
-          <a href="mailto:mzhamdb7@gmail.com">mzhamdb7@gmail.com</a>
-        </p>
+  <main class="review-wall-shell info-page-box">
+    <section class="review-hero-card wall-hero-card">
+      <p class="review-kicker">Review wall</p>
+      <h1>What people say</h1>
+      <p>All reviews posted from the Review page are placed here automatically as review cards.</p>
+      <div class="review-hero-actions">
+        <a class="review-link-button" href="review.html">Write a review</a>
+        <a class="review-link-button review-link-button-light" href="index.html">Back to tools</a>
       </div>
-
-      <div class="about-card">
-        <h2>Feedback</h2>
-
-        <p>
-          If a calculator result looks incorrect or a page is not working properly, please include the calculator name and a short description of the issue.
-        </p>
-      </div>
-
-      <div class="about-card">
-        <h2>Website Pages</h2>
-
-        <p>
-          You can also visit the About page or Privacy Policy page from the info menu above.
-        </p>
-      </div>
-
     </section>
 
+    <section class="review-wall-toolbar clean-review-card">
+      <div>
+        <h2>Review board</h2>
+        <p id="reviewWallCount">Loading reviews...</p>
+      </div>
+      <button type="button" id="refreshReviewWall" class="main-btn secondary-btn">Refresh wall</button>
+    </section>
+
+    <section id="reviewWallGrid" class="review-wall-grid" aria-live="polite"></section>
   </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const storageKey = "calculatorUserReviewsV1";
+      const wall = document.getElementById("reviewWallGrid");
+      const count = document.getElementById("reviewWallCount");
+      const refreshBtn = document.getElementById("refreshReviewWall");
+
+      function escapeText(value) {
+        return String(value || "").replace(/[&<>"']/g, function (ch) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch];
+        });
+      }
+
+      function stars(value) {
+        const rating = Math.max(1, Math.min(5, Number(value) || 5));
+        return "★".repeat(rating) + "☆".repeat(5 - rating);
+      }
+
+      function getReviews() {
+        try { return JSON.parse(localStorage.getItem(storageKey) || "[]"); } catch { return []; }
+      }
+
+      function renderWall() {
+        const reviews = getReviews();
+        if (count) count.textContent = reviews.length ? reviews.length + " review" + (reviews.length === 1 ? "" : "s") + " on this wall" : "No reviews yet";
+
+        if (!wall) return;
+        if (!reviews.length) {
+          wall.innerHTML = '<article class="review-empty-wall"><h2>No reviews yet</h2><p>Go to the Review page and post the first review. It will appear here automatically.</p><a class="review-link-button" href="review.html">Write a review</a></article>';
+          return;
+        }
+
+        wall.innerHTML = reviews.map(function (review, index) {
+          return '<article class="wall-review-card" style="--review-delay:' + Math.min(index, 12) + '">' +
+            '<div class="wall-review-pin" aria-hidden="true"></div>' +
+            '<div class="review-stars" aria-label="' + escapeText(review.rating || 5) + ' out of 5 stars">' + stars(review.rating) + '</div>' +
+            '<h2>' + escapeText(review.title || "Helpful review") + '</h2>' +
+            '<p>' + escapeText(review.message || "") + '</p>' +
+            '<footer><strong>' + escapeText(review.name || "Guest") + '</strong><span>' + escapeText(review.time || "") + '</span></footer>' +
+          '</article>';
+        }).join("");
+      }
+
+      if (refreshBtn) refreshBtn.addEventListener("click", renderWall);
+      window.addEventListener("storage", function (event) { if (event.key === storageKey) renderWall(); });
+      renderWall();
+      setInterval(renderWall, 5000);
+    })();
+  </script>
+
   <script src="script.js?v=review-wall-20260528"></script>
   <script src="pc.js?v=review-wall-20260528"></script>
   <script src="phone.js?v=review-wall-20260528"></script>
