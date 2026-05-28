@@ -8593,3 +8593,19 @@ body.index-page .calculator-category-abacus {
 }
 /* ===== END CHATGPT INDEX DROPDOWN OVERLAY FIX ===== */
 
+
+
+/* =====================================================
+   INDEX DROPDOWN CARD TEXT REMOVAL
+   Removes only the description text strip inside index page dropdown panels.
+===================================================== */
+body.index-page .index-category-dropdown > .index-category-dropdown-panel > p {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+body.index-page .index-category-dropdown > .index-category-dropdown-panel .calculator-category-links {
+  padding-top: 0 !important;
+}

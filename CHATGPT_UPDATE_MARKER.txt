@@ -1,1 +1,1 @@
-Updated index category dropdown cards: absolute overlay panels, viewport clamping, no abacus push-down. Version dropdown_overlay_20260528_1
+Updated by ChatGPT: removed index-page dropdown panel description text/box only; calculator links preserved. Version index_dropdown_text_removed_20260528_1.
