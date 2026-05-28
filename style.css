@@ -4345,3 +4345,133 @@ body[data-page="bmi"] .bmi-highlight-grid {
     font-size: 1.18rem;
   }
 }
+
+/* =====================================================
+   CALCULATOR RIGHT-SIDE LAYOUT UPDATE
+   Desktop: guide/reference on the left, calculator on the right.
+   Keeps group navigation above and keeps results as clean full-width sections.
+===================================================== */
+@media screen and (min-width: 1200px) {
+  .tool-layout,
+  .old-calculator-layout,
+  .calculator-container,
+  .age-calculator-container,
+  .bmi-calculator-container,
+  .loan-calculator-container,
+  .percentage-calculator-container,
+  .discount-calculator-container,
+  .compound-calculator-container,
+  .extra-help-layout {
+    width: min(1400px, calc(100vw - 80px)) !important;
+    max-width: 1400px !important;
+    display: grid !important;
+    grid-template-columns: minmax(340px, 0.9fr) minmax(640px, 1.15fr) !important;
+    gap: 28px !important;
+    align-items: start !important;
+  }
+
+  .bmi-calculator-container.tool-layout,
+  .bmi-calculator-container {
+    width: min(1440px, calc(100vw - 80px)) !important;
+    max-width: 1440px !important;
+    grid-template-columns: minmax(340px, 0.82fr) minmax(760px, 1.18fr) !important;
+  }
+
+  .tool-layout > .tool-group-nav,
+  .old-calculator-layout > .tool-group-nav,
+  .calculator-container > .tool-group-nav,
+  .age-calculator-container > .tool-group-nav,
+  .bmi-calculator-container > .tool-group-nav,
+  .loan-calculator-container > .tool-group-nav,
+  .percentage-calculator-container > .tool-group-nav,
+  .discount-calculator-container > .tool-group-nav,
+  .compound-calculator-container > .tool-group-nav,
+  .extra-help-layout > .tool-group-nav,
+  .tool-layout > .loan-history-box,
+  .tool-layout > .extra-side-box,
+  .extra-help-layout > .loan-history-box,
+  .extra-help-layout > .extra-side-box,
+  .extra-help-layout > .extra-related-box {
+    grid-column: 1 / -1 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    position: static !important;
+    top: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .tool-layout > .instruction-box,
+  .old-calculator-layout > .instruction-box,
+  .calculator-container > .instruction-box,
+  .age-calculator-container > .instruction-box,
+  .bmi-calculator-container > .instruction-box,
+  .loan-calculator-container > .instruction-box,
+  .percentage-calculator-container > .instruction-box,
+  .discount-calculator-container > .instruction-box,
+  .compound-calculator-container > .instruction-box,
+  .extra-help-layout > .instruction-box,
+  .tool-layout > .extra-help-panel,
+  .extra-help-layout > .extra-help-panel,
+  .bmi-calculator-container > .extra-help-panel {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    position: static !important;
+    top: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .tool-layout > .calculator,
+  .old-calculator-layout > .calculator,
+  .calculator-container > .calculator,
+  .age-calculator-container > .calculator,
+  .bmi-calculator-container > .calculator,
+  .loan-calculator-container > .calculator,
+  .percentage-calculator-container > .calculator,
+  .discount-calculator-container > .calculator,
+  .compound-calculator-container > .calculator,
+  .extra-help-layout > .calculator,
+  .tool-layout > .calculator-box,
+  .tool-layout > .bmi-calculator-box,
+  .tool-layout > .extra-calculator-box,
+  .extra-help-layout > .calculator-box,
+  .extra-help-layout > .bmi-calculator-box,
+  .extra-help-layout > .extra-calculator-box {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    justify-self: stretch !important;
+  }
+
+  .tool-layout > .calculator-clean-result,
+  .tool-layout > .loan-style-output-panel,
+  .tool-layout > .extra-result-box,
+  .tool-layout > #universalLoanStyleOutput,
+  .tool-layout > #loanExternalOutput,
+  .tool-layout > #personalLoanExternalOutput,
+  .tool-layout > #ageReportOutput,
+  .tool-layout > #bmiReportOutput,
+  .tool-layout > [id$="ReportOutput"],
+  .age-calculator-container > .calculator-clean-result,
+  .bmi-calculator-container > .calculator-clean-result,
+  .calculator-container > .calculator-clean-result,
+  .loan-calculator-container > .calculator-clean-result,
+  .percentage-calculator-container > .calculator-clean-result,
+  .discount-calculator-container > .calculator-clean-result,
+  .compound-calculator-container > .calculator-clean-result,
+  .extra-help-layout > .calculator-clean-result,
+  .extra-help-layout > .loan-style-output-panel,
+  .extra-help-layout > .extra-result-box,
+  .extra-help-layout > [id$="ReportOutput"] {
+    grid-column: 1 / -1 !important;
+    grid-row: 3 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+}
+
