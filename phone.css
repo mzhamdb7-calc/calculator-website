@@ -974,3 +974,406 @@ body {
   }
 }
 
+/* =====================================================
+   FINAL RESULT FULL-WIDTH LAYOUT FIX
+   Added: result_full_width_20260528_1
+   Result panels now sit as their own full-width section
+   below the calculator + guide, instead of being squeezed
+   into the left column beside the help box.
+===================================================== */
+
+:root {
+  --page: #f7faf6 !important;
+  --surface: #ffffff !important;
+  --surface-soft: #fbfdf9 !important;
+  --surface-muted: #eef6ef !important;
+  --ink: #21312c !important;
+  --ink-2: #324840 !important;
+  --muted: #60736b !important;
+  --line: #d7e5dc !important;
+  --line-strong: #bfd3c8 !important;
+  --primary: #3c7d66 !important;
+  --primary-dark: #2f6754 !important;
+  --primary-soft: #edf7f1 !important;
+}
+
+body {
+  background: linear-gradient(180deg, #fbfcf8 0%, #f7faf6 52%, #eef6ef 100%) !important;
+  color: var(--ink) !important;
+}
+
+/* Make the main calculator page feel like one clean workspace. */
+.tool-layout,
+.old-calculator-layout,
+.calculator-container,
+.age-calculator-container,
+.bmi-calculator-container,
+.loan-calculator-container,
+.percentage-calculator-container,
+.discount-calculator-container,
+.compound-calculator-container {
+  align-items: start !important;
+}
+
+.calculator,
+.calculator-box,
+.bmi-calculator-box,
+.extra-calculator-box,
+.instruction-box,
+.extra-help-panel,
+.universal-help-panel,
+.loan-style-output-panel,
+.calculator-clean-result,
+.extra-result-box,
+.loan-result-panel,
+.extra-result-card,
+.age-result-main-box,
+.bmi-result-main-box,
+.universal-result-main-box,
+.mortgage-modern-result-panel {
+  border-color: var(--line) !important;
+  box-shadow: 0 10px 24px rgba(33, 49, 44, .055) !important;
+}
+
+/* Result box must feel intentional and large enough to read. */
+.loan-style-output-panel,
+.calculator-clean-result,
+.extra-result-box,
+#universalLoanStyleOutput,
+#loanExternalOutput,
+#personalLoanExternalOutput,
+#ageReportOutput,
+#bmiReportOutput,
+#salaryReportOutput,
+#taxReportOutput,
+#currencyReportOutput,
+#discountReportOutput,
+#inflationReportOutput,
+#compoundReportOutput,
+#mortgageReportOutput,
+#percentageReportOutput,
+#unitReportOutput,
+#fuelReportOutput,
+#rentalReportOutput,
+#debtReportOutput,
+#creditCardPayoffReportOutput,
+#creditCardInterestReportOutput,
+#loanComparisonReportOutput,
+#personalLoanReportOutput {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.age-result-main-box,
+.bmi-result-main-box,
+.universal-result-main-box,
+.loan-result-panel,
+.extra-result-card,
+.mortgage-modern-result-panel {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: clamp(22px, 2.4vw, 34px) !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+}
+
+.age-result-title,
+.bmi-result-title,
+.loan-panel-title,
+.mortgage-modern-result-title {
+  margin: 0 0 18px !important;
+  color: var(--ink) !important;
+  font-size: clamp(1.35rem, 1.7vw, 1.7rem) !important;
+  line-height: 1.15 !important;
+}
+
+.age-result-group-grid,
+.bmi-result-group-grid,
+.calculator-report-summary-boxes,
+.personal-loan-result-summary {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  gap: 16px !important;
+  width: 100% !important;
+}
+
+.age-result-group-box,
+.bmi-result-group-box,
+.age-point-result-box,
+.bmi-result-box,
+.calculator-report-summary-card,
+.personal-loan-result-card {
+  padding: 18px !important;
+  background: var(--surface-soft) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 16px !important;
+}
+
+.age-result-group-box h3,
+.bmi-result-group-box h3,
+.age-point-result-box h3,
+.bmi-result-box h3 {
+  margin: 0 0 12px !important;
+  color: var(--primary-dark) !important;
+  font-size: 1.05rem !important;
+  line-height: 1.25 !important;
+}
+
+.age-point-result-list,
+.bmi-point-result-list {
+  display: grid !important;
+  gap: 9px !important;
+}
+
+.age-point-result-list li,
+.bmi-point-result-list li,
+.loan-result-table td,
+.extra-result-table td {
+  color: var(--muted) !important;
+  line-height: 1.6 !important;
+  overflow-wrap: anywhere !important;
+}
+
+.age-point-result-list strong,
+.bmi-point-result-list strong,
+.loan-result-table strong,
+.extra-result-table strong {
+  color: var(--ink) !important;
+}
+
+/* Four action buttons stay neat and readable. */
+.age-result-actions,
+.bmi-result-actions,
+.universal-result-actions,
+.mortgage-result-actions,
+.extra-result-actions,
+.global-result-actions {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  width: 100% !important;
+  margin-top: 18px !important;
+}
+
+.age-result-action-btn,
+.bmi-result-action-btn,
+.universal-result-action-btn,
+.mortgage-result-action-btn,
+.extra-result-action-btn,
+.loan-copy-btn,
+.loan-save-btn,
+.loan-share-btn,
+.loan-report-btn {
+  min-height: 46px !important;
+  padding: 10px 12px !important;
+  border-radius: 999px !important;
+  font-size: .95rem !important;
+  font-weight: 800 !important;
+  white-space: nowrap !important;
+}
+
+/* Desktop: form + guide on top, result as a full-width section below both. */
+@media screen and (min-width: 1200px) {
+  main,
+  .clean-nav-inner,
+  .about-container,
+  .info-page-box,
+  .chat-intro-card,
+  .chat-form-card,
+  .chat-board-card {
+    width: min(1420px, calc(100vw - 80px)) !important;
+    max-width: 1420px !important;
+  }
+
+  .tool-layout,
+  .old-calculator-layout,
+  .calculator-container,
+  .age-calculator-container,
+  .bmi-calculator-container,
+  .loan-calculator-container,
+  .percentage-calculator-container,
+  .discount-calculator-container,
+  .compound-calculator-container {
+    width: min(1420px, calc(100vw - 80px)) !important;
+    max-width: 1420px !important;
+    display: grid !important;
+    grid-template-columns: minmax(560px, 700px) minmax(420px, 1fr) !important;
+    grid-template-rows: auto auto auto !important;
+    gap: 26px !important;
+  }
+
+  .bmi-calculator-container.tool-layout,
+  .bmi-calculator-container {
+    grid-template-columns: minmax(700px, 820px) minmax(420px, 1fr) !important;
+  }
+
+  .tool-layout > .tool-group-nav,
+  .old-calculator-layout > .tool-group-nav,
+  .calculator-container > .tool-group-nav,
+  .age-calculator-container > .tool-group-nav,
+  .bmi-calculator-container > .tool-group-nav,
+  .loan-calculator-container > .tool-group-nav,
+  .percentage-calculator-container > .tool-group-nav,
+  .discount-calculator-container > .tool-group-nav,
+  .compound-calculator-container > .tool-group-nav,
+  .tool-layout > .loan-history-box,
+  .tool-layout > .extra-side-box {
+    grid-column: 1 / -1 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    position: static !important;
+  }
+
+  .tool-layout > .calculator,
+  .old-calculator-layout > .calculator,
+  .calculator-container > .calculator,
+  .age-calculator-container > .calculator,
+  .bmi-calculator-container > .calculator,
+  .loan-calculator-container > .calculator,
+  .percentage-calculator-container > .calculator,
+  .discount-calculator-container > .calculator,
+  .compound-calculator-container > .calculator,
+  .tool-layout > .calculator-box,
+  .tool-layout > .bmi-calculator-box,
+  .tool-layout > .extra-calculator-box {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .tool-layout > .instruction-box,
+  .old-calculator-layout > .instruction-box,
+  .calculator-container > .instruction-box,
+  .age-calculator-container > .instruction-box,
+  .bmi-calculator-container > .instruction-box,
+  .loan-calculator-container > .instruction-box,
+  .percentage-calculator-container > .instruction-box,
+  .discount-calculator-container > .instruction-box,
+  .compound-calculator-container > .instruction-box,
+  .tool-layout > .extra-help-panel,
+  .bmi-calculator-container > .extra-help-panel {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    position: static !important;
+    top: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .tool-layout > .calculator-clean-result,
+  .tool-layout > .loan-style-output-panel,
+  .tool-layout > .extra-result-box,
+  .tool-layout > #universalLoanStyleOutput,
+  .tool-layout > #loanExternalOutput,
+  .tool-layout > #personalLoanExternalOutput,
+  .tool-layout > #ageReportOutput,
+  .tool-layout > #bmiReportOutput,
+  .tool-layout > [id$="ReportOutput"],
+  .age-calculator-container > .calculator-clean-result,
+  .bmi-calculator-container > .calculator-clean-result,
+  .calculator-container > .calculator-clean-result,
+  .loan-calculator-container > .calculator-clean-result,
+  .percentage-calculator-container > .calculator-clean-result,
+  .discount-calculator-container > .calculator-clean-result,
+  .compound-calculator-container > .calculator-clean-result {
+    grid-column: 1 / -1 !important;
+    grid-row: 3 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .age-result-group-grid,
+  .bmi-result-group-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Medium screens: no squeezed side-by-side layout. */
+@media screen and (min-width: 851px) and (max-width: 1199px) {
+  main,
+  .clean-nav-inner,
+  .about-container,
+  .info-page-box,
+  .chat-intro-card,
+  .chat-form-card,
+  .chat-board-card {
+    width: min(940px, calc(100vw - 44px)) !important;
+    max-width: 940px !important;
+  }
+
+  .tool-layout,
+  .old-calculator-layout,
+  .calculator-container,
+  .age-calculator-container,
+  .bmi-calculator-container,
+  .loan-calculator-container,
+  .percentage-calculator-container,
+  .discount-calculator-container,
+  .compound-calculator-container,
+  .extra-help-layout {
+    width: min(940px, calc(100vw - 44px)) !important;
+    max-width: 940px !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+  }
+
+  .tool-layout > *,
+  .old-calculator-layout > *,
+  .calculator-container > *,
+  .age-calculator-container > *,
+  .bmi-calculator-container > *,
+  .loan-calculator-container > *,
+  .percentage-calculator-container > *,
+  .discount-calculator-container > *,
+  .compound-calculator-container > * {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    position: static !important;
+    max-height: none !important;
+    overflow: visible !important;
+    width: 100% !important;
+  }
+
+  .age-result-group-grid,
+  .bmi-result-group-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media screen and (max-width: 850px) {
+  .age-result-main-box,
+  .bmi-result-main-box,
+  .universal-result-main-box,
+  .loan-result-panel,
+  .extra-result-card,
+  .mortgage-modern-result-panel {
+    padding: 18px !important;
+    border-radius: 16px !important;
+  }
+
+  .age-result-group-grid,
+  .bmi-result-group-grid,
+  .calculator-report-summary-boxes,
+  .personal-loan-result-summary {
+    grid-template-columns: 1fr !important;
+  }
+
+  .age-result-actions,
+  .bmi-result-actions,
+  .universal-result-actions,
+  .mortgage-result-actions,
+  .extra-result-actions,
+  .global-result-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+}
+

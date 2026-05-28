@@ -8814,3 +8814,76 @@
   }
 })();
 
+
+
+/* =====================================================
+   CHATGPT FINAL RESULT FULL-WIDTH LAYOUT JS 2026-05-28
+   Helps result panels act as a full-width section inside
+   calculator layouts after dynamic rendering.
+===================================================== */
+(function () {
+  "use strict";
+
+  function isResultPanel(el) {
+    return !!(el && el.nodeType === 1 && (
+      el.classList.contains("calculator-clean-result") ||
+      el.classList.contains("loan-style-output-panel") ||
+      el.classList.contains("extra-result-box") ||
+      /ReportOutput$/.test(el.id || "") ||
+      ["universalLoanStyleOutput", "loanExternalOutput", "personalLoanExternalOutput", "ageReportOutput", "bmiReportOutput"].indexOf(el.id) !== -1
+    ));
+  }
+
+  function nearestLayout(el) {
+    if (!el) return null;
+    return el.closest(".tool-layout, .old-calculator-layout, .calculator-container, .age-calculator-container, .bmi-calculator-container, .loan-calculator-container, .percentage-calculator-container, .discount-calculator-container, .compound-calculator-container");
+  }
+
+  function fixResultPlacement() {
+    const panels = Array.from(document.querySelectorAll(
+      ".calculator-clean-result, .loan-style-output-panel, .extra-result-box, " +
+      "#universalLoanStyleOutput, #loanExternalOutput, #personalLoanExternalOutput, " +
+      "#ageReportOutput, #bmiReportOutput, [id$='ReportOutput']"
+    )).filter(isResultPanel);
+
+    panels.forEach(function (panel) {
+      if (panel.closest("#calculatorReportPage")) return;
+      const layout = nearestLayout(panel);
+      if (!layout) return;
+
+      panel.classList.add("full-width-result-section");
+      panel.style.setProperty("grid-column", "1 / -1", "important");
+      panel.style.setProperty("width", "100%", "important");
+      panel.style.setProperty("max-width", "100%", "important");
+    });
+  }
+
+  function start() {
+    fixResultPlacement();
+    [80, 200, 500, 1000, 1800].forEach(function (delay) {
+      window.setTimeout(fixResultPlacement, delay);
+    });
+
+    if (document.body && !document.body.dataset.fullWidthResultLayoutReady) {
+      document.body.dataset.fullWidthResultLayoutReady = "true";
+      new MutationObserver(function (mutations) {
+        let shouldFix = false;
+        mutations.forEach(function (mutation) {
+          mutation.addedNodes.forEach(function (node) {
+            if (!node || node.nodeType !== 1) return;
+            if (isResultPanel(node) || (node.querySelector && node.querySelector(".calculator-clean-result, .loan-style-output-panel, .extra-result-box"))) {
+              shouldFix = true;
+            }
+          });
+        });
+        if (shouldFix) window.setTimeout(fixResultPlacement, 20);
+      }).observe(document.body, { childList: true, subtree: true });
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
