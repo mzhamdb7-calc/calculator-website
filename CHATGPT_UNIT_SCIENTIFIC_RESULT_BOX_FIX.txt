@@ -1,0 +1,1 @@
+Updated Unit Converter and Scientific Calculator to use their own full-width modern result boxes.

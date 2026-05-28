@@ -9192,7 +9192,9 @@
     gajiPenjawatAwam: "extraCalcResult",
     tax: "extraCalcResult",
     currencyConverter: "extraCalcResult",
-    inflation: "extraCalcResult"
+    inflation: "extraCalcResult",
+    scientific: "extraCalcResult",
+    unitConverter: "extraCalcResult"
   };
 
   function $(id) { return document.getElementById(id); }
@@ -9213,6 +9215,8 @@
     if (path.includes("gaji-penjawat-awam-calculator") || bodyPage === "gajipenjawatawam") return "gajiPenjawatAwam";
     if (path.includes("tax-calculator") || bodyPage === "tax") return "tax";
     if (path.includes("currency-converter") || bodyPage === "currencyconverter") return "currencyConverter";
+    if (path.includes("scientific-calculator") || bodyPage === "scientific") return "scientific";
+    if (path.includes("unit-converter-calculator") || bodyPage === "unitconverter") return "unitConverter";
     if (path.includes("discount-calculator") || bodyPage === "discount") return "discount";
     if (path.includes("inflation-calculator") || bodyPage === "inflation") return "inflation";
     return "";
@@ -9911,6 +9915,108 @@
     ]);
   }
 
+
+  const unitConversionFactorsUpgrade = {
+    length: { m: 1, meter: 1, metre: 1, km: 1000, kilometer: 1000, kilometre: 1000, cm: 0.01, centimeter: 0.01, centimetre: 0.01, mm: 0.001, millimeter: 0.001, millimetre: 0.001, mile: 1609.344, mi: 1609.344, yard: 0.9144, yd: 0.9144, foot: 0.3048, feet: 0.3048, ft: 0.3048, inch: 0.0254, inches: 0.0254, in: 0.0254 },
+    weight: { kg: 1, kilogram: 1, g: 0.001, gram: 0.001, lb: 0.45359237, lbs: 0.45359237, pound: 0.45359237, oz: 0.028349523125, ounce: 0.028349523125 },
+    volume: { liter: 1, litre: 1, l: 1, ml: 0.001, milliliter: 0.001, millilitre: 0.001, gallon: 3.785411784, gal: 3.785411784, cup: 0.2365882365 }
+  };
+
+  function normalUnitKey(value) {
+    return String(value || "").trim().toLowerCase().replace(/\./g, "");
+  }
+
+  function convertTemperatureUpgrade(value, from, to) {
+    from = normalUnitKey(from);
+    to = normalUnitKey(to);
+    let c = value;
+
+    if (from === "f" || from === "fahrenheit") c = (value - 32) * 5 / 9;
+    else if (from === "k" || from === "kelvin") c = value - 273.15;
+    else if (from !== "c" && from !== "celsius") return NaN;
+
+    if (to === "f" || to === "fahrenheit") return c * 9 / 5 + 32;
+    if (to === "k" || to === "kelvin") return c + 273.15;
+    if (to === "c" || to === "celsius") return c;
+    return NaN;
+  }
+
+  function calculateScientificOverride() {
+    const expression = valueFromInput("scientificExpression");
+    if (!expression) return;
+
+    const originalExpression = expression;
+    const safeExpression = expression
+      .replace(/\^/g, "**")
+      .replace(/\bsin\s*\(/gi, "Math.sin(")
+      .replace(/\bcos\s*\(/gi, "Math.cos(")
+      .replace(/\btan\s*\(/gi, "Math.tan(")
+      .replace(/\bsqrt\s*\(/gi, "Math.sqrt(")
+      .replace(/\blog\s*\(/gi, "Math.log10(")
+      .replace(/\bln\s*\(/gi, "Math.log(")
+      .replace(/\babs\s*\(/gi, "Math.abs(")
+      .replace(/\bpi\b/gi, "Math.PI")
+      .replace(/\be\b/g, "Math.E");
+
+    const allowed = /^[0-9+\-*/%().,\s*MatPIEhlgocinsqrtab]+$/i;
+    if (!allowed.test(safeExpression)) {
+      showResult("scientific", "Scientific result", [
+        ["Input", originalExpression],
+        ["Result", "Unsupported expression"]
+      ], { note: "Use numbers, +, -, ×, ÷, brackets, powers, sqrt(), sin(), cos(), tan(), log(), ln(), abs(), pi, and e." });
+      return;
+    }
+
+    try {
+      const result = Function('"use strict"; return (' + safeExpression + ');')();
+      if (!Number.isFinite(Number(result))) throw new Error("Result is not finite");
+      showResult("scientific", "Scientific result", [
+        ["Input", originalExpression],
+        ["Result", numberText(Number(result), 10)]
+      ], { note: "Trigonometric functions use radians in this calculator." });
+    } catch (error) {
+      showResult("scientific", "Scientific result", [
+        ["Input", originalExpression],
+        ["Result", "Cannot calculate this expression"]
+      ], { note: "Check brackets, symbols, and supported function names." });
+    }
+  }
+
+  function calculateUnitConverterOverride() {
+    const type = valueFromInput("unitType") || "length";
+    const value = numberFromInput("unitValue");
+    const fromRaw = valueFromInput("unitFrom");
+    const toRaw = valueFromInput("unitTo");
+    const from = normalUnitKey(fromRaw);
+    const to = normalUnitKey(toRaw);
+
+    if (!Number.isFinite(value) || !type || !from || !to) return;
+
+    let result = NaN;
+    if (type === "temperature") {
+      result = convertTemperatureUpgrade(value, from, to);
+    } else {
+      const factors = unitConversionFactorsUpgrade[type] || {};
+      if (Number.isFinite(factors[from]) && Number.isFinite(factors[to]) && factors[to] !== 0) {
+        result = value * factors[from] / factors[to];
+      }
+    }
+
+    if (!Number.isFinite(result)) {
+      showResult("unitConverter", "Unit converter result", [
+        ["Input", numberText(value) + " " + fromRaw],
+        ["Converted", "Unsupported unit"]
+      ], { note: "Try common units like km, m, cm, mile, kg, lb, liter, gallon, c, f, or k." });
+      return;
+    }
+
+    showResult("unitConverter", "Unit converter result", [
+      ["Input", numberText(value) + " " + fromRaw],
+      ["Converted", numberText(result, 6) + " " + toRaw],
+      ["Unit type", type.charAt(0).toUpperCase() + type.slice(1)]
+    ]);
+  }
+
   function installOverrides() {
     window.calculateLoan = calculateMortgage;
     window.calculateMortgage = calculateMortgage;
@@ -9925,6 +10031,8 @@
     window.calculateGajiPenjawatAwamExtra = calculateGajiOverride;
     window.calculateTaxExtra = calculateTaxOverride;
     window.calculateCurrencyConverterExtra = calculateCurrencyOverride;
+    window.calculateScientificExtra = calculateScientificOverride;
+    window.calculateUnitConverterExtra = calculateUnitConverterOverride;
     window.calculateDiscount = calculateDiscountOverride;
     window.calculateInflationExtra = calculateInflationOverride;
 
@@ -9961,6 +10069,8 @@
       gajiPenjawatAwam: calculateGajiOverride,
       tax: calculateTaxOverride,
       currencyConverter: calculateCurrencyOverride,
+      scientific: calculateScientificOverride,
+      unitConverter: calculateUnitConverterOverride,
       discount: calculateDiscountOverride,
       inflation: calculateInflationOverride
     };
