@@ -1778,3 +1778,125 @@ body.calculator-report-view #calculatorReportPage,
 [id$="ReportOutput"] {
   scroll-margin-top: 110px;
 }
+
+
+/* =====================================================
+   BASIC CALCULATOR INLINE PREVIOUS RESULT
+   Removes the separate Basic result box and keeps the
+   previous input/output inside the calculator card.
+===================================================== */
+body.basic-page #universalLoanStyleOutput,
+body[data-page="basic"] #universalLoanStyleOutput,
+body.basic-page .basic-equal-output-panel,
+body[data-page="basic"] .basic-equal-output-panel {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+}
+
+body.basic-page .basic-inline-result,
+body[data-page="basic"] .basic-inline-result {
+  width: 100% !important;
+  margin: 0 0 16px !important;
+  padding: 16px !important;
+  color: #213b33 !important;
+  background: #f6fbf8 !important;
+  border: 1px solid #d7e8df !important;
+  border-radius: 16px !important;
+  box-shadow: none !important;
+}
+
+body.basic-page .basic-inline-header,
+body[data-page="basic"] .basic-inline-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+body.basic-page .basic-inline-kicker,
+body[data-page="basic"] .basic-inline-kicker {
+  display: block !important;
+  color: #315f51 !important;
+  font-size: .88rem !important;
+  font-weight: 850 !important;
+  letter-spacing: .02em !important;
+  text-transform: uppercase !important;
+}
+
+body.basic-page .basic-inline-empty,
+body[data-page="basic"] .basic-inline-empty {
+  margin-top: 8px !important;
+  color: #5d756d !important;
+  font-size: 1rem !important;
+  line-height: 1.45 !important;
+}
+
+body.basic-page .basic-inline-grid,
+body[data-page="basic"] .basic-inline-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(150px, .42fr) !important;
+  gap: 10px !important;
+}
+
+body.basic-page .basic-inline-item,
+body[data-page="basic"] .basic-inline-item {
+  min-width: 0 !important;
+  padding: 12px 14px !important;
+  background: #ffffff !important;
+  border: 1px solid #dfece6 !important;
+  border-radius: 13px !important;
+}
+
+body.basic-page .basic-inline-label,
+body[data-page="basic"] .basic-inline-label {
+  display: block !important;
+  margin-bottom: 6px !important;
+  color: #60776f !important;
+  font-size: .86rem !important;
+  font-weight: 800 !important;
+}
+
+body.basic-page .basic-inline-expression,
+body.basic-page .basic-inline-answer,
+body[data-page="basic"] .basic-inline-expression,
+body[data-page="basic"] .basic-inline-answer {
+  display: block !important;
+  min-width: 0 !important;
+  overflow-wrap: anywhere !important;
+  color: #10231d !important;
+  font-size: 1.18rem !important;
+  font-weight: 850 !important;
+  line-height: 1.25 !important;
+}
+
+body.basic-page .basic-inline-answer,
+body[data-page="basic"] .basic-inline-answer {
+  color: #116149 !important;
+  text-align: right !important;
+}
+
+@media (max-width: 850px) {
+  body.basic-page .basic-inline-result,
+  body[data-page="basic"] .basic-inline-result {
+    padding: 14px !important;
+    margin-bottom: 14px !important;
+    border-radius: 14px !important;
+  }
+
+  body.basic-page .basic-inline-grid,
+  body[data-page="basic"] .basic-inline-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.basic-page .basic-inline-answer,
+  body[data-page="basic"] .basic-inline-answer {
+    text-align: left !important;
+  }
+}

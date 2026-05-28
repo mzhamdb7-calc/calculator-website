@@ -186,6 +186,7 @@
   ===================================================== */
 
   let basicHistory = loadArray("basicEquationHistory");
+  let basicCalculationHistory = loadArray("basicCalculationHistory");
   let lastAnswer = Number(safeGet("lastAnswer", "0")) || 0;
   let lastBasicEquation = "";
 
@@ -297,8 +298,9 @@
     });
   }
 
-  function addBasicEquationHistory(equation) {
+  function addBasicEquationHistory(equation, answer) {
     const value = cleanText(equation);
+    const resultValue = cleanText(answer);
     if (!value || value === "Error") return;
 
     if (basicHistory[basicHistory.length - 1] !== value) {
@@ -307,7 +309,91 @@
       saveArray("basicEquationHistory", basicHistory);
     }
 
+    if (resultValue && resultValue !== "Error") {
+      const latest = basicCalculationHistory[basicCalculationHistory.length - 1] || {};
+      if (latest.expression !== value || latest.result !== resultValue) {
+        basicCalculationHistory.push({
+          expression: value,
+          result: resultValue,
+          createdAt: new Date().toISOString()
+        });
+        basicCalculationHistory = basicCalculationHistory.slice(-MAX_HISTORY_ITEMS);
+        saveArray("basicCalculationHistory", basicCalculationHistory);
+      }
+    }
+
+    renderBasicInlineResult(value, resultValue);
     showHistory();
+  }
+
+  function getBasicInlineResultBox() {
+    if (getPageType() !== "basic") return null;
+
+    let box = byId("basicInlineResult");
+    if (box) return box;
+
+    const calculator = getMainCalculator();
+    if (!calculator) return null;
+
+    const displayRow = $(".display-row", calculator);
+    box = document.createElement("div");
+    box.id = "basicInlineResult";
+    box.className = "basic-inline-result";
+    box.setAttribute("aria-live", "polite");
+
+    if (displayRow) {
+      displayRow.insertAdjacentElement("beforebegin", box);
+    } else {
+      calculator.appendChild(box);
+    }
+
+    return box;
+  }
+
+  function removeBasicExternalResultBox() {
+    const panel = byId("universalLoanStyleOutput");
+    if (!panel) return;
+    panel.hidden = true;
+    panel.innerHTML = "";
+    panel.style.setProperty("display", "none", "important");
+    panel.setAttribute("aria-hidden", "true");
+  }
+
+  function renderBasicInlineResult(expression, answer) {
+    if (getPageType() !== "basic") return;
+
+    const box = getBasicInlineResultBox();
+    if (!box) return;
+
+    basicCalculationHistory = loadArray("basicCalculationHistory");
+    const latest = (expression && answer) ? { expression: expression, result: answer } : (basicCalculationHistory[basicCalculationHistory.length - 1] || null);
+
+    if (!latest || !cleanText(latest.expression) || !cleanText(latest.result)) {
+      box.innerHTML =
+        '<div class="basic-inline-kicker">Previous calculation</div>' +
+        '<div class="basic-inline-empty">Your previous input and answer will appear here after you press =.</div>';
+      box.classList.remove("has-basic-inline-result");
+      removeBasicExternalResultBox();
+      return;
+    }
+
+    box.classList.add("has-basic-inline-result");
+    box.innerHTML =
+      '<div class="basic-inline-header">' +
+        '<span class="basic-inline-kicker">Previous calculation</span>' +
+      '</div>' +
+      '<div class="basic-inline-grid">' +
+        '<div class="basic-inline-item basic-inline-input-item">' +
+          '<span class="basic-inline-label">Input</span>' +
+          '<strong class="basic-inline-expression">' + escapeHtml(latest.expression) + '</strong>' +
+        '</div>' +
+        '<div class="basic-inline-item basic-inline-output-item">' +
+          '<span class="basic-inline-label">Output</span>' +
+          '<strong class="basic-inline-answer">' + escapeHtml(latest.result) + '</strong>' +
+        '</div>' +
+      '</div>';
+
+    removeBasicExternalResultBox();
   }
 
   function calculate() {
@@ -350,7 +436,7 @@
       display.value = String(cleanResult);
       lastAnswer = cleanResult;
       safeSet("lastAnswer", String(lastAnswer));
-      addBasicEquationHistory(lastBasicEquation);
+      addBasicEquationHistory(lastBasicEquation, cleanResult);
       renderBasicAnswer();
     } catch {
       display.value = "Error";
@@ -1027,37 +1113,18 @@
     return '<div class="bmi-result-box">' + highlightHtml + '<div class="bmi-result-group-grid">' + groupHtml + otherHtml + '</div></div>';
   }
 
-    function renderBasicAnswer() {
+  function renderBasicAnswer() {
     if (getPageType() !== "basic") return;
 
     const display = getDisplay();
     const answer = display ? cleanText(display.value) : "";
-    if (!answer || answer === "Error") return;
-
-    const panel = getOrCreateOutputPanel("basic");
-    if (!panel) return;
-
-    panel.className = "loan-style-output-panel basic-equal-output-panel calculator-clean-result";
-    panel.innerHTML =
-      '<div class="loan-output-top">' +
-        '<div class="loan-result-panel">' +
-          '<h2 class="loan-panel-title">Result</h2>' +
-          '<div class="loan-result-body">' +
-            '<div class="basic-equal-result"><span class="basic-equal-symbol">=</span> <span class="basic-equal-answer">' + escapeHtml(answer) + '</span></div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="loan-copy-side"><button type="button" class="loan-copy-btn">Copy</button></div>' +
-      '</div>';
-
-    panel.hidden = false;
-    panel.style.setProperty("display", "block", "important");
-
-    const copyBtn = panel.querySelector(".loan-copy-btn");
-    if (copyBtn) {
-      copyBtn.onclick = function () {
-        copyText(answer, copyBtn);
-      };
+    if (!answer || answer === "Error") {
+      removeBasicExternalResultBox();
+      return;
     }
+
+    renderBasicInlineResult(lastBasicEquation, answer);
+    removeBasicExternalResultBox();
   }
 
   function getInputLabel(input) {
@@ -4684,7 +4751,11 @@
       setBMIUnit("si");
     }
     if (type === "loan") ensureMortgageOptionalSections();
-    if (type === "basic") showHistory();
+    if (type === "basic") {
+      showHistory();
+      renderBasicInlineResult();
+      removeBasicExternalResultBox();
+    }
 
     if (isReportType(type)) {
       hideCalculateButtons();
