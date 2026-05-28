@@ -8277,3 +8277,159 @@ html body .calculator-report-actions {
   }
 }
 
+
+/* =====================================================
+   CHATGPT FINAL RESULT ACTION BUTTON ROW FIX 2026-05-28
+   Copy / Save / Share / Report stay resized in one row
+===================================================== */
+html body .age-result-actions,
+html body .bmi-result-actions,
+html body .universal-result-actions,
+html body .mortgage-result-actions,
+html body .mortgage-result-actions-final,
+html body .mortgage-modern-result-shell .mortgage-result-actions,
+html body .mortgage-modern-result-shell .mortgage-result-actions-final,
+html body .extra-result-actions,
+html body .global-result-actions,
+html body .calculator-report-actions,
+html body .calculator-action-row-fixed {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+  margin: 16px 0 0 !important;
+  padding: 12px 0 0 !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+}
+
+html body .age-result-actions > button,
+html body .bmi-result-actions > button,
+html body .universal-result-actions > button,
+html body .mortgage-result-actions > button,
+html body .mortgage-result-actions-final > button,
+html body .mortgage-modern-result-shell .mortgage-result-actions > button,
+html body .mortgage-modern-result-shell .mortgage-result-actions-final > button,
+html body .extra-result-actions > button,
+html body .global-result-actions > button,
+html body .calculator-report-actions > button,
+html body .calculator-action-row-fixed > button,
+html body .age-result-action-btn,
+html body .bmi-result-action-btn,
+html body .universal-result-action-btn,
+html body .mortgage-result-action-btn,
+html body .extra-result-action-btn,
+html body .global-result-action-btn,
+html body .calculator-report-action-btn {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  min-height: 40px !important;
+  height: 40px !important;
+  margin: 0 !important;
+  padding: 6px 4px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 1 1 0 !important;
+  box-sizing: border-box !important;
+  text-align: center !important;
+  line-height: 1 !important;
+  font-size: clamp(10px, 1.2vw, 14px) !important;
+  font-weight: 800 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+@media (max-width: 850px) {
+  html body .age-result-actions,
+  html body .bmi-result-actions,
+  html body .universal-result-actions,
+  html body .mortgage-result-actions,
+  html body .mortgage-result-actions-final,
+  html body .mortgage-modern-result-shell .mortgage-result-actions,
+  html body .mortgage-modern-result-shell .mortgage-result-actions-final,
+  html body .extra-result-actions,
+  html body .global-result-actions,
+  html body .calculator-report-actions,
+  html body .calculator-action-row-fixed {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 5px !important;
+  }
+
+  html body .age-result-actions > button,
+  html body .bmi-result-actions > button,
+  html body .universal-result-actions > button,
+  html body .mortgage-result-actions > button,
+  html body .mortgage-result-actions-final > button,
+  html body .mortgage-modern-result-shell .mortgage-result-actions > button,
+  html body .mortgage-modern-result-shell .mortgage-result-actions-final > button,
+  html body .extra-result-actions > button,
+  html body .global-result-actions > button,
+  html body .calculator-report-actions > button,
+  html body .calculator-action-row-fixed > button,
+  html body .age-result-action-btn,
+  html body .bmi-result-action-btn,
+  html body .universal-result-action-btn,
+  html body .mortgage-result-action-btn,
+  html body .extra-result-action-btn,
+  html body .global-result-action-btn,
+  html body .calculator-report-action-btn {
+    min-height: 36px !important;
+    height: 36px !important;
+    padding: 5px 2px !important;
+    font-size: clamp(8.5px, 2.15vw, 11px) !important;
+    border-width: 3px !important;
+    box-shadow: 2px 2px 0 var(--black, #000) !important;
+  }
+}
+/* ===== END CHATGPT FINAL RESULT ACTION BUTTON ROW FIX ===== */
+
+/* =====================================================
+   CHATGPT FINAL DOUBLE-RENDER CSS GUARD 2026-05-28
+   Hide old native result placeholders so only the clean result box shows.
+===================================================== */
+.calculator > #result,
+.calculator > #ageResult,
+.calculator > #bmiResult,
+.calculator > #loanResult,
+.calculator > #personalLoanResult,
+.calculator > #discountResult,
+.calculator > #percentageResult,
+.calculator > #compoundResult,
+main > #result,
+main > #ageResult,
+main > #bmiResult,
+main > #loanResult,
+main > #personalLoanResult,
+main > #discountResult,
+main > #percentageResult,
+main > #compoundResult {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+body.calculator-report-view .calculator-clean-result,
+body.calculator-report-view .loan-style-output-panel,
+body.calculator-report-view .mortgage-modern-result-panel,
+body.calculator-report-view .extra-result-box {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+body.calculator-report-view #calculatorReportPage,
+body.calculator-report-view #calculatorReportPage * {
+  visibility: visible !important;
+}
+

@@ -8625,3 +8625,357 @@
   }
 })();
 /* ===== CHATGPT FINAL TOP MENU HOVER CLICK FIX END ===== */
+
+/* =====================================================
+   CHATGPT FINAL RESULT ACTION BUTTON ROW FIX 2026-05-28
+   Keeps Copy / Save / Share / Report aligned after dynamic results render.
+===================================================== */
+(function () {
+  "use strict";
+
+  const ACTION_ROW_SELECTOR = [
+    ".age-result-actions",
+    ".bmi-result-actions",
+    ".universal-result-actions",
+    ".mortgage-result-actions",
+    ".mortgage-result-actions-final",
+    ".extra-result-actions",
+    ".global-result-actions",
+    ".calculator-report-actions"
+  ].join(", ");
+
+  function forceImportant(element, property, value) {
+    if (!element || !element.style) return;
+    element.style.setProperty(property, value, "important");
+  }
+
+  function fixActionRows(root) {
+    const scope = root && root.querySelectorAll ? root : document;
+    const rows = [];
+
+    if (scope.matches && scope.matches(ACTION_ROW_SELECTOR)) {
+      rows.push(scope);
+    }
+
+    scope.querySelectorAll(ACTION_ROW_SELECTOR).forEach(function (row) {
+      rows.push(row);
+    });
+
+    rows.forEach(function (row) {
+      const buttons = Array.from(row.children).filter(function (child) {
+        return child && child.matches && child.matches("button, a");
+      });
+
+      if (!buttons.length) return;
+
+      row.classList.add("calculator-action-row-fixed");
+      row.setAttribute("data-result-actions-fixed", "true");
+
+      forceImportant(row, "width", "100%");
+      forceImportant(row, "max-width", "100%");
+      forceImportant(row, "display", "grid");
+      forceImportant(row, "grid-template-columns", "repeat(" + buttons.length + ", minmax(0, 1fr))");
+      forceImportant(row, "gap", window.matchMedia("(max-width: 850px)").matches ? "5px" : "8px");
+      forceImportant(row, "align-items", "stretch");
+      forceImportant(row, "justify-content", "stretch");
+      forceImportant(row, "box-sizing", "border-box");
+
+      buttons.forEach(function (button) {
+        button.classList.add("calculator-action-button-fixed");
+        forceImportant(button, "width", "100%");
+        forceImportant(button, "min-width", "0");
+        forceImportant(button, "max-width", "100%");
+        forceImportant(button, "height", window.matchMedia("(max-width: 850px)").matches ? "36px" : "40px");
+        forceImportant(button, "min-height", window.matchMedia("(max-width: 850px)").matches ? "36px" : "40px");
+        forceImportant(button, "margin", "0");
+        forceImportant(button, "padding", window.matchMedia("(max-width: 850px)").matches ? "5px 2px" : "6px 4px");
+        forceImportant(button, "display", "inline-flex");
+        forceImportant(button, "align-items", "center");
+        forceImportant(button, "justify-content", "center");
+        forceImportant(button, "box-sizing", "border-box");
+        forceImportant(button, "text-align", "center");
+        forceImportant(button, "line-height", "1");
+        forceImportant(button, "white-space", "nowrap");
+        forceImportant(button, "overflow", "hidden");
+        forceImportant(button, "text-overflow", "ellipsis");
+      });
+    });
+  }
+
+  function startResultActionRowFix() {
+    fixActionRows(document);
+
+    [100, 300, 700, 1200].forEach(function (delay) {
+      setTimeout(function () {
+        fixActionRows(document);
+      }, delay);
+    });
+
+    if (document.body && !document.body.dataset.resultActionRowObserverReady) {
+      document.body.dataset.resultActionRowObserverReady = "true";
+      new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+          mutation.addedNodes.forEach(function (node) {
+            if (node && node.nodeType === 1) {
+              fixActionRows(node);
+            }
+          });
+        });
+      }).observe(document.body, { childList: true, subtree: true });
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startResultActionRowFix);
+  } else {
+    startResultActionRowFix();
+  }
+})();
+
+/* =====================================================
+   CHATGPT FINAL DOUBLE-RENDER GUARD 2026-05-28
+   - Keeps only one visible result box per calculator page
+   - Hides old native result placeholders such as #result / #loanResult
+   - Watches async updates so Age, BMI, loan, mortgage, and extra calculators do not duplicate
+===================================================== */
+(function () {
+  "use strict";
+
+  const NATIVE_RESULT_IDS = [
+    "result",
+    "ageResult",
+    "bmiResult",
+    "loanResult",
+    "personalLoanResult",
+    "discountResult",
+    "percentageResult",
+    "compoundResult"
+  ];
+
+  const RESULT_GROUPS = [
+    {
+      name: "basic",
+      preferredIds: ["universalLoanStyleOutput"],
+      selector: "#universalLoanStyleOutput, .basic-equal-output-panel"
+    },
+    {
+      name: "age",
+      preferredIds: ["ageReportOutput"],
+      selector: "#ageReportOutput, .age-clean-result, .age-point-output, #ageResult"
+    },
+    {
+      name: "bmi",
+      preferredIds: ["bmiReportOutput"],
+      selector: "#bmiReportOutput, .bmi-clean-result, .bmi-box-output, #bmiResult"
+    },
+    {
+      name: "loanMortgage",
+      preferredIds: ["loanExternalOutput"],
+      selector: "#loanExternalOutput, .loan-clean-result, .mortgage-modern-result-panel, #loanResult"
+    },
+    {
+      name: "personalLoan",
+      preferredIds: ["personalLoanExternalOutput"],
+      selector: "#personalLoanExternalOutput, .personalLoan-clean-result, .personal-loan-clean-result, #personalLoanResult"
+    },
+    {
+      name: "discount",
+      preferredIds: ["discountReportOutput"],
+      selector: "#discountReportOutput, .discount-clean-result, #discountResult"
+    },
+    {
+      name: "percentage",
+      preferredIds: ["percentageReportOutput"],
+      selector: "#percentageReportOutput, .percentage-clean-result, #percentageResult"
+    },
+    {
+      name: "compound",
+      preferredIds: ["compoundReportOutput"],
+      selector: "#compoundReportOutput, .compound-clean-result, #compoundResult"
+    },
+    {
+      name: "extra",
+      preferredIds: ["extraCalcResult"],
+      selector: "#extraCalcResult, .extra-result-box"
+    }
+  ];
+
+  function isElement(node) {
+    return !!(node && node.nodeType === 1);
+  }
+
+  function inReportView() {
+    return document.body && (
+      document.body.classList.contains("calculator-report-view") ||
+      !!document.getElementById("calculatorReportPage") ||
+      String(window.location.hash || "").indexOf("#calc-report=") === 0
+    );
+  }
+
+  function hideElement(el) {
+    if (!isElement(el)) return;
+    el.hidden = true;
+    el.style.setProperty("display", "none", "important");
+    el.style.setProperty("visibility", "hidden", "important");
+    el.style.setProperty("opacity", "0", "important");
+    el.setAttribute("aria-hidden", "true");
+  }
+
+  function showElement(el) {
+    if (!isElement(el)) return;
+    el.hidden = false;
+    el.style.setProperty("display", "block", "important");
+    el.style.setProperty("visibility", "visible", "important");
+    el.style.setProperty("opacity", "1", "important");
+    el.removeAttribute("aria-hidden");
+  }
+
+  function isNativeResultPlaceholder(el) {
+    return !!(isElement(el) && el.id && NATIVE_RESULT_IDS.indexOf(el.id) !== -1);
+  }
+
+  function hideNativeResultPlaceholders() {
+    NATIVE_RESULT_IDS.forEach(function (id) {
+      const el = document.getElementById(id);
+      if (!el || el.closest("#calculatorReportPage")) return;
+      hideElement(el);
+    });
+  }
+
+  function uniqueElements(list) {
+    const seen = new Set();
+    return list.filter(function (el) {
+      if (!isElement(el) || seen.has(el)) return false;
+      seen.add(el);
+      return true;
+    });
+  }
+
+  function collectPanels(selector) {
+    return uniqueElements(Array.from(document.querySelectorAll(selector))).filter(function (el) {
+      return !el.closest("#calculatorReportPage");
+    });
+  }
+
+  function preferredPanel(group, panels) {
+    for (let i = 0; i < group.preferredIds.length; i += 1) {
+      const el = document.getElementById(group.preferredIds[i]);
+      if (el && panels.indexOf(el) !== -1) return el;
+    }
+
+    const visiblePanels = panels.filter(function (el) {
+      if (isNativeResultPlaceholder(el)) return false;
+      const style = window.getComputedStyle ? window.getComputedStyle(el) : null;
+      return !style || (style.display !== "none" && style.visibility !== "hidden");
+    });
+
+    return visiblePanels[visiblePanels.length - 1] || panels[panels.length - 1] || null;
+  }
+
+  function cleanupGroup(group) {
+    const panels = collectPanels(group.selector);
+    if (!panels.length) return;
+
+    if (inReportView()) {
+      panels.forEach(hideElement);
+      return;
+    }
+
+    const keep = preferredPanel(group, panels);
+
+    panels.forEach(function (panel) {
+      if (panel === keep) return;
+
+      if (isNativeResultPlaceholder(panel)) {
+        hideElement(panel);
+        return;
+      }
+
+      if (panel.id && group.preferredIds.indexOf(panel.id) === -1) {
+        hideElement(panel);
+        return;
+      }
+
+      panel.remove();
+    });
+
+    if (keep && !isNativeResultPlaceholder(keep)) {
+      showElement(keep);
+    }
+  }
+
+  function cleanupDuplicateResults() {
+    hideNativeResultPlaceholders();
+
+    RESULT_GROUPS.forEach(function (group) {
+      cleanupGroup(group);
+    });
+  }
+
+  function scheduleCleanup() {
+    cleanupDuplicateResults();
+    [50, 150, 350, 750, 1400, 2600].forEach(function (delay) {
+      window.setTimeout(cleanupDuplicateResults, delay);
+    });
+  }
+
+  function start() {
+    if (!document.body || document.body.dataset.finalDoubleRenderGuardReady === "true") return;
+
+    document.body.dataset.finalDoubleRenderGuardReady = "true";
+
+    scheduleCleanup();
+
+    document.addEventListener("input", function (event) {
+      if (event.target && event.target.closest && event.target.closest("#navbar, .clean-nav-search, .site-search")) return;
+      scheduleCleanup();
+    }, true);
+
+    document.addEventListener("change", function (event) {
+      if (event.target && event.target.closest && event.target.closest("#navbar, .clean-nav-search, .site-search")) return;
+      scheduleCleanup();
+    }, true);
+
+    window.addEventListener("hashchange", scheduleCleanup);
+    window.addEventListener("pageshow", scheduleCleanup);
+
+    new MutationObserver(function (mutations) {
+      let shouldCleanup = false;
+
+      mutations.forEach(function (mutation) {
+        mutation.addedNodes.forEach(function (node) {
+          if (!isElement(node)) return;
+          if (
+            node.matches && (
+              node.matches(".calculator-clean-result, .loan-style-output-panel, .extra-result-box") ||
+              node.matches(NATIVE_RESULT_IDS.map(function (id) { return "#" + id; }).join(", "))
+            )
+          ) {
+            shouldCleanup = true;
+          }
+
+          if (
+            node.querySelector && node.querySelector(
+              ".calculator-clean-result, .loan-style-output-panel, .extra-result-box, " +
+              NATIVE_RESULT_IDS.map(function (id) { return "#" + id; }).join(", ")
+            )
+          ) {
+            shouldCleanup = true;
+          }
+        });
+      });
+
+      if (shouldCleanup) {
+        window.clearTimeout(window.__finalResultDedupeTimer);
+        window.__finalResultDedupeTimer = window.setTimeout(cleanupDuplicateResults, 30);
+      }
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+

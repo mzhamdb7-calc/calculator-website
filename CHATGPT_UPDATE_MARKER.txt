@@ -1,1 +1,1 @@
-CHATGPT_AGE_BMI_UPDATE_20260527
+Updated by ChatGPT: final double-render guard for all result boxes.
