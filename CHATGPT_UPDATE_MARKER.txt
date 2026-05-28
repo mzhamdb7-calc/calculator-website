@@ -1,1 +1,1 @@
-Updated by ChatGPT: final double-render guard for all result boxes.
+Updated index category dropdown cards: absolute overlay panels, viewport clamping, no abacus push-down. Version dropdown_overlay_20260528_1

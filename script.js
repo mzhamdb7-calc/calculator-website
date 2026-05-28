@@ -8979,3 +8979,146 @@
   }
 })();
 
+/* =====================================================
+   CHATGPT INDEX DROPDOWN OVERLAY JS 2026-05-28
+   Only one index category dropdown stays open, and panels
+   are clamped inside the visible screen.
+===================================================== */
+(function () {
+  'use strict';
+
+  function setupIndexDropdownOverlay() {
+    var grid = document.querySelector('body.index-page .index-category-dropdown-grid');
+    if (!grid || grid.dataset.indexDropdownOverlayReady === 'true') return;
+
+    var cards = Array.prototype.slice.call(grid.querySelectorAll('details.index-category-dropdown'));
+    if (!cards.length) return;
+
+    grid.dataset.indexDropdownOverlayReady = 'true';
+
+    function getPanel(card) {
+      return card ? card.querySelector(':scope > .index-category-dropdown-panel') : null;
+    }
+
+    function closeCard(card) {
+      if (!card) return;
+      card.open = false;
+      card.classList.remove('is-index-dropdown-open');
+    }
+
+    function closeOthers(activeCard) {
+      cards.forEach(function (card) {
+        if (card !== activeCard) closeCard(card);
+      });
+    }
+
+    function closeAll() {
+      cards.forEach(closeCard);
+    }
+
+    function clampPanel(card) {
+      var panel = getPanel(card);
+      if (!panel || !card.open) return;
+
+      panel.style.maxHeight = '';
+      panel.style.left = '';
+      panel.style.right = '';
+      panel.style.transform = '';
+
+      window.requestAnimationFrame(function () {
+        if (!card.open) return;
+
+        var viewportPadding = 14;
+        var rect = panel.getBoundingClientRect();
+
+        if (rect.right > window.innerWidth - viewportPadding) {
+          panel.style.left = 'auto';
+          panel.style.right = '0';
+          panel.style.transform = 'none';
+        }
+
+        rect = panel.getBoundingClientRect();
+
+        if (rect.left < viewportPadding) {
+          panel.style.left = '0';
+          panel.style.right = 'auto';
+          panel.style.transform = 'none';
+        }
+
+        rect = panel.getBoundingClientRect();
+        var availableHeight = Math.max(180, window.innerHeight - rect.top - viewportPadding);
+        panel.style.maxHeight = Math.min(availableHeight, 520) + 'px';
+      });
+    }
+
+    function openCard(card) {
+      closeOthers(card);
+      card.open = true;
+      card.classList.add('is-index-dropdown-open');
+      clampPanel(card);
+    }
+
+    cards.forEach(function (card) {
+      var summary = card.querySelector(':scope > summary');
+
+      card.addEventListener('toggle', function () {
+        if (card.open) {
+          card.classList.add('is-index-dropdown-open');
+          closeOthers(card);
+          clampPanel(card);
+        } else {
+          card.classList.remove('is-index-dropdown-open');
+        }
+      });
+
+      if (summary) {
+        summary.addEventListener('click', function () {
+          window.setTimeout(function () {
+            if (card.open) {
+              closeOthers(card);
+              clampPanel(card);
+            }
+          }, 0);
+        });
+      }
+
+      card.addEventListener('mouseenter', function () {
+        if (window.matchMedia('(hover: hover)').matches) openCard(card);
+      });
+
+      card.addEventListener('mouseleave', function () {
+        if (!window.matchMedia('(hover: hover)').matches) return;
+        window.setTimeout(function () {
+          if (!card.matches(':hover') && !card.contains(document.activeElement)) closeCard(card);
+        }, 180);
+      });
+    });
+
+    document.addEventListener('click', function (event) {
+      if (!grid.contains(event.target)) closeAll();
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') closeAll();
+    });
+
+    window.addEventListener('resize', function () {
+      cards.forEach(function (card) {
+        if (card.open) clampPanel(card);
+      });
+    });
+  }
+
+  function start() {
+    setupIndexDropdownOverlay();
+    window.setTimeout(setupIndexDropdownOverlay, 250);
+    window.setTimeout(setupIndexDropdownOverlay, 800);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+})();
+
