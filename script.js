@@ -3959,7 +3959,7 @@
       references: [["Mortgage formula", "Investopedia lists the mortgage payment formula using principal, rate, and months.", "https://www.investopedia.com/mortgage-calculator-5084794"]]
     },
     personalLoan: {
-      what: "It estimates personal loan monthly payment, total interest, and total payment using the same cartoon report style as the mortgage calculator.",
+      what: "It estimates personal loan monthly payment, total interest, and total payment using the same clean report style as the mortgage calculator.",
       how: "Enter loan amount, annual interest rate, and loan term in months. The result updates automatically.",
       formula: "Monthly Payment = P × r × (1+r)ⁿ ÷ ((1+r)ⁿ − 1), where n is the personal loan term in months.",
       example: "A 10,000 personal loan at 5% yearly for 60 months gives an estimated monthly payment using the amortization formula.",
@@ -4342,280 +4342,8 @@
   }
 
   function installStyle() {
-    if (byId("cleanCalculatorUnifiedStyle")) return;
-
-    const style = document.createElement("style");
-    style.id = "cleanCalculatorUnifiedStyle";
-    style.textContent = `
-      .calculator-report-history-item {
-        display: grid !important;
-        grid-template-columns: 1fr auto !important;
-        gap: 10px !important;
-        align-items: center !important;
-      }
-
-      .calculator-report-open-link {
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        padding: 6px 10px !important;
-        background: #d3fff9 !important;
-        color: var(--black, #000) !important;
-        border: 3px solid var(--black, #000) !important;
-        box-shadow: 3px 3px 0 var(--black, #000) !important;
-        text-decoration: none !important;
-        font-weight: bold !important;
-        white-space: nowrap !important;
-      }
-
-      .calculator-clean-result,
-      .loan-external-output {
-        width: min(900px, 96vw) !important;
-        margin: 24px auto !important;
-        display: block !important;
-        visibility: visible !important;
-      }
-
-      .calculator-report-page {
-        width: min(1100px, 96vw) !important;
-        margin: 30px auto !important;
-        padding: 18px !important;
-        background: #fff !important;
-        color: var(--black, #000) !important;
-        border: 5px solid var(--black, #000) !important;
-        box-shadow: 8px 8px 0 var(--black, #000) !important;
-        box-sizing: border-box !important;
-      }
-
-      .calculator-report-page h1,
-      .calculator-report-page h2 {
-        text-align: center !important;
-      }
-
-      .calculator-report-card {
-        margin: 18px 0 !important;
-        padding: 14px !important;
-        background: #f8f8f8 !important;
-        border: 4px solid var(--black, #000) !important;
-        box-shadow: 5px 5px 0 var(--black, #000) !important;
-      }
-
-      .calculator-report-page table {
-        width: 100% !important;
-        border-collapse: collapse !important;
-      }
-
-      .calculator-report-page th,
-      .calculator-report-page td {
-        padding: 10px !important;
-        border: 3px solid var(--black, #000) !important;
-        text-align: left !important;
-      }
-
-      .calculator-report-table-scroll,
-      .calculator-report-result {
-        overflow-x: auto !important;
-      }
-
-      .calculator-report-actions {
-        display: grid !important;
-        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-        gap: 14px !important;
-        margin-top: 24px !important;
-        padding-top: 18px !important;
-        border-top: 4px solid var(--black, #000) !important;
-      }
-
-      .calculator-report-action-btn {
-        min-height: 54px !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        padding: 10px 14px !important;
-        color: var(--black, #000) !important;
-        border: 5px solid var(--black, #000) !important;
-        box-shadow: 5px 5px 0 var(--black, #000) !important;
-        font-family: inherit !important;
-        font-size: 18px !important;
-        font-weight: bold !important;
-        text-align: center !important;
-        text-decoration: none !important;
-        cursor: pointer !important;
-      }
-
-      .calculator-report-back-btn { background: #fff4b8 !important; }
-      .calculator-report-copy-btn { background: #ffd3d3 !important; }
-      .calculator-report-save-btn { background: #b8ffb8 !important; }
-      .calculator-report-share-btn { background: #d3fff9 !important; }
-
-      .calculator-report-summary-boxes,
-      .bmi-input-groups,
-      .loan-optional-row {
-        display: grid !important;
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 14px !important;
-        margin: 18px 0 22px !important;
-      }
-
-      .bmi-input-groups,
-      .loan-optional-row {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-      }
-
-      .calculator-report-summary-card,
-      .bmi-measurement-box,
-      .bmi-profile-box {
-        padding: 16px 12px !important;
-        border: 5px solid var(--black, #000) !important;
-        box-shadow: 6px 6px 0 var(--black, #000) !important;
-        text-align: center !important;
-        box-sizing: border-box !important;
-      }
-
-      .bmi-measurement-box { background: #d3fff9 !important; }
-      .bmi-profile-box { background: #fff4b8 !important; }
-      .calculator-report-monthly-card { background: #d3fff9 !important; }
-      .calculator-report-interest-card { background: #fff4b8 !important; }
-      .calculator-report-total-card { background: #b8ffb8 !important; }
-      .calculator-report-summary-label,
-      .bmi-extra-title {
-        font-weight: bold !important;
-        margin-bottom: 8px !important;
-      }
-
-      .calculator-report-summary-value {
-        font-size: 24px !important;
-        font-weight: bold !important;
-        overflow-wrap: break-word !important;
-      }
-
-      .bmi-input-groups label,
-      .bmi-input-groups input,
-      .bmi-input-groups select,
-      .loan-optional-row label,
-      .loan-optional-row input,
-      .loan-optional-row select {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: none !important;
-      }
-
-      .loan-optional-row .optional-mortgage-costs,
-      .loan-optional-row .early-settlement-box {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: none !important;
-        margin: 0 !important;
-        box-sizing: border-box !important;
-      }
-
-      body.calculator-report-view #pcHelpQuestionButton,
-      body.calculator-report-view #pcQuestionOverlayButton,
-      body.calculator-report-view .pc-what-slot,
-      body.calculator-report-view .instruction-box,
-      body.calculator-report-view .instruction-what-box {
-        display: none !important;
-        visibility: hidden !important;
-        pointer-events: none !important;
-      }
-
-      .age-report-flow {
-        display: grid !important;
-        gap: 18px !important;
-        margin: 4px 0 0 !important;
-      }
-
-      .age-report-flow-step {
-        position: relative !important;
-        display: grid !important;
-        grid-template-columns: 58px 1fr !important;
-        gap: 14px !important;
-        align-items: stretch !important;
-      }
-
-      .age-report-flow-step:not(:last-child)::after {
-        content: "↓" !important;
-        position: absolute !important;
-        left: 18px !important;
-        bottom: -19px !important;
-        width: 36px !important;
-        height: 24px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        font-size: 22px !important;
-        font-weight: bold !important;
-        color: var(--black, #000) !important;
-        z-index: 2 !important;
-      }
-
-      .age-report-flow-number {
-        width: 50px !important;
-        height: 50px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        background: #fff4b8 !important;
-        border: 5px solid var(--black, #000) !important;
-        box-shadow: 4px 4px 0 var(--black, #000) !important;
-        font-size: 22px !important;
-        font-weight: bold !important;
-        box-sizing: border-box !important;
-      }
-
-      .age-report-flow-content {
-        min-width: 0 !important;
-        padding: 14px !important;
-        background: #fff !important;
-        border: 4px solid var(--black, #000) !important;
-        box-shadow: 5px 5px 0 var(--black, #000) !important;
-        box-sizing: border-box !important;
-      }
-
-      .age-report-flow-content h3 {
-        margin: 0 0 6px !important;
-        text-align: left !important;
-        font-size: 20px !important;
-        line-height: 1.2 !important;
-      }
-
-      .age-report-flow-content p {
-        margin: 0 0 12px !important;
-        font-weight: bold !important;
-        opacity: 0.85 !important;
-      }
-
-      .age-report-flow-table td:first-child {
-        width: 34% !important;
-        background: #d3fff9 !important;
-        font-weight: bold !important;
-      }
-
-      .age-report-flow-table td:last-child {
-        background: #fff !important;
-      }
-
-      @media (max-width: 850px) {
-        .calculator-report-history-item,
-        .calculator-report-actions,
-        .calculator-report-summary-boxes,
-        .bmi-input-groups,
-        .loan-optional-row {
-          grid-template-columns: 1fr !important;
-        }
-
-        .calculator-report-open-link,
-        .calculator-report-action-btn {
-          width: 100% !important;
-        }
-
-        .calculator-report-action-btn {
-          font-size: 16px !important;
-        }
-      }
-    `;
-
-    document.head.appendChild(style);
+// Modern rebuild: all styling is controlled by style.css, pc.css, and phone.css.
+    return;
   }
 
   function init() {
@@ -4903,9 +4631,9 @@
     form.setAttribute("autocomplete", "off");
 
     form.innerHTML =
-      '<label class="site-search-label" for="calculatorSearchInput">Search calculator</label>' +
+      '<label class="site-search-label" for="calculatorSearchInput">Search tools</label>' +
       '<div class="site-search-inner">' +
-        '<input id="calculatorSearchInput" class="site-search-input" type="search" placeholder="search calculator" aria-label="Search calculator" aria-autocomplete="list" aria-controls="calculatorSearchResults">' +
+        '<input id="calculatorSearchInput" class="site-search-input" type="search" placeholder="Search tools" aria-label="Search tools" aria-autocomplete="list" aria-controls="calculatorSearchResults">' +
         '<button type="submit" class="site-search-submit" aria-label="Open calculator search result">🔍</button>' +
       '</div>' +
       '<ul id="calculatorSearchResults" class="site-search-results" role="listbox" hidden></ul>';
@@ -5484,207 +5212,8 @@
   "use strict";
 
   function installFinalAgeBmiStyle() {
-    if (document.getElementById("finalAgeBmiResultStyle")) return;
-
-    var style = document.createElement("style");
-    style.id = "finalAgeBmiResultStyle";
-    style.textContent = `
-      body.age-page .age-live-countdown {
-        width: 100% !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        text-align: center !important;
-        margin: 10px auto 16px !important;
-      }
-
-      body.age-page .age-live-countdown-line,
-      body.age-page .age-live-countdown-line strong {
-        width: 100% !important;
-        display: block !important;
-        text-align: center !important;
-      }
-
-      body.bmi-page .bmi-input-groups {
-        width: 100% !important;
-        display: grid !important;
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 16px !important;
-        align-items: stretch !important;
-        margin: 16px 0 22px !important;
-        box-sizing: border-box !important;
-      }
-
-      body.bmi-page .bmi-input-group-box,
-      body.bmi-page .bmi-body-box,
-      body.bmi-page .bmi-goal-box,
-      body.bmi-page .bmi-optional-box {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: none !important;
-        height: 100% !important;
-        margin: 0 !important;
-        padding: 16px 12px !important;
-        color: var(--black, #000) !important;
-        border: 5px solid var(--black, #000) !important;
-        box-shadow: 6px 6px 0 var(--black, #000) !important;
-        text-align: center !important;
-        box-sizing: border-box !important;
-      }
-
-      body.bmi-page .bmi-body-box { background: #d3fff9 !important; }
-      body.bmi-page .bmi-goal-box { background: #fff4b8 !important; }
-      body.bmi-page .bmi-optional-box { background: #b8ffb8 !important; }
-
-      body.bmi-page .bmi-input-groups label,
-      body.bmi-page .bmi-input-groups input,
-      body.bmi-page .bmi-input-groups select {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: none !important;
-        display: block !important;
-        box-sizing: border-box !important;
-      }
-
-      body.bmi-page .bmi-input-groups label {
-        margin: 0 0 7px !important;
-        font-weight: bold !important;
-        text-align: center !important;
-      }
-
-      body.bmi-page .bmi-input-groups input,
-      body.bmi-page .bmi-input-groups select {
-        margin: 0 0 14px !important;
-      }
-
-      body.bmi-page .bmi-extra-title {
-        margin: 0 0 12px !important;
-        font-weight: bold !important;
-        text-align: center !important;
-      }
-
-      body.bmi-page .bmi-time-goal-row {
-        width: 100% !important;
-        display: grid !important;
-        grid-template-columns: minmax(0, 1fr) minmax(120px, 0.7fr) !important;
-        gap: 10px !important;
-        align-items: center !important;
-        margin: 0 0 14px !important;
-        box-sizing: border-box !important;
-      }
-
-      body.bmi-page .bmi-time-goal-row input,
-      body.bmi-page .bmi-time-goal-row select {
-        margin: 0 !important;
-        height: 52px !important;
-      }
-
-      body.bmi-page main.bmi-calculator-container > #bmiReportOutput,
-      body.bmi-page main.pc-calculator-layout > #bmiReportOutput {
-        grid-column: 1 / 3 !important;
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        display: block !important;
-        overflow: visible !important;
-        box-sizing: border-box !important;
-      }
-
-      body.bmi-page #bmiReportOutput[hidden] {
-        display: none !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-result-shell {
-        width: 100% !important;
-        display: block !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-result-main-box {
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 18px !important;
-        background: #fff !important;
-        border: 5px solid var(--black, #000) !important;
-        box-shadow: 8px 8px 0 var(--black, #000) !important;
-        box-sizing: border-box !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-result-title {
-        text-align: center !important;
-        margin: 0 0 16px !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-result-group-grid {
-        display: grid !important;
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 14px !important;
-        width: 100% !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-result-group-box {
-        padding: 14px !important;
-        background: #f8f8f8 !important;
-        border: 4px solid var(--black, #000) !important;
-        box-shadow: 5px 5px 0 var(--black, #000) !important;
-        box-sizing: border-box !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-result-group-box h3 {
-        margin: 0 0 10px !important;
-        text-align: center !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-point-result-list {
-        margin: 0 !important;
-        padding-left: 20px !important;
-        text-align: left !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-point-result-list li {
-        margin: 0 0 8px !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-result-actions {
-        display: grid !important;
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 12px !important;
-        margin-top: 18px !important;
-        padding-top: 16px !important;
-        border-top: 4px solid var(--black, #000) !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-result-action-btn {
-        min-height: 52px !important;
-        padding: 10px 14px !important;
-        color: var(--black, #000) !important;
-        border: 4px solid var(--black, #000) !important;
-        box-shadow: 4px 4px 0 var(--black, #000) !important;
-        font-family: inherit !important;
-        font-weight: bold !important;
-        cursor: pointer !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-copy-btn { background: #ffd3d3 !important; }
-      body.bmi-page #bmiReportOutput .bmi-save-btn { background: #b8ffb8 !important; }
-      body.bmi-page #bmiReportOutput .bmi-share-btn { background: #d3fff9 !important; }
-
-      @media (max-width: 850px) {
-        body.bmi-page .bmi-input-groups,
-        body.bmi-page #bmiReportOutput .bmi-result-group-grid,
-        body.bmi-page #bmiReportOutput .bmi-result-actions {
-          grid-template-columns: 1fr !important;
-        }
-
-        body.bmi-page main.bmi-calculator-container > #bmiReportOutput,
-        body.bmi-page main.pc-calculator-layout > #bmiReportOutput {
-          grid-column: auto !important;
-        }
-      }
-    `;
-
-    document.head.appendChild(style);
+// Modern rebuild: all styling is controlled by style.css, pc.css, and phone.css.
+    return;
   }
 
   if (document.readyState === "loading") {
@@ -5698,108 +5227,14 @@
    BMI FINAL REQUEST POLISH
    - Male/Female only select handled in JS above
    - Daily/Weekly/Monthly time goal
-   - Colorful cartoon BMI result cards
+   - Modern BMI result cards
 ===================================================== */
 (function () {
   "use strict";
 
   function installBmiCartoonResultStyle() {
-    if (document.getElementById("bmiCartoonResultFinalStyle")) return;
-
-    const style = document.createElement("style");
-    style.id = "bmiCartoonResultFinalStyle";
-    style.textContent = `
-      body.bmi-page #bmiReportOutput .bmi-result-main-box {
-        background: #fff7df !important;
-        border: 5px solid var(--black, #000) !important;
-        box-shadow: 9px 9px 0 var(--black, #000) !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-highlight-grid {
-        width: 100% !important;
-        display: grid !important;
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 14px !important;
-        margin: 0 0 18px !important;
-        box-sizing: border-box !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-highlight-card {
-        min-width: 0 !important;
-        padding: 16px 12px !important;
-        color: var(--black, #000) !important;
-        border: 5px solid var(--black, #000) !important;
-        box-shadow: 6px 6px 0 var(--black, #000) !important;
-        text-align: center !important;
-        box-sizing: border-box !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-highlight-bmi {
-        background: #d3fff9 !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-highlight-category {
-        background: #fff4b8 !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-highlight-difference {
-        background: #ffd3d3 !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-highlight-label {
-        margin-bottom: 8px !important;
-        font-weight: bold !important;
-        line-height: 1.2 !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-highlight-value {
-        font-size: 24px !important;
-        line-height: 1.15 !important;
-        font-weight: bold !important;
-        overflow-wrap: break-word !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-highlight-value-only .bmi-highlight-value {
-        margin-top: 0 !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-result-group-health {
-        background: #e7f0ff !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-result-group-calorie {
-        background: #ffe4f2 !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-result-group-goal {
-        background: #e6ffd8 !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-result-group-profile {
-        background: #f0e6ff !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-result-group-other {
-        background: #f8f8f8 !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-result-group-box {
-        border-radius: 0 !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-result-actions {
-        background: #fff !important;
-        border-top: 5px solid var(--black, #000) !important;
-      }
-
-      @media (max-width: 850px) {
-        body.bmi-page #bmiReportOutput .bmi-highlight-grid {
-          grid-template-columns: 1fr !important;
-        }
-      }
-    `;
-
-    document.head.appendChild(style);
+// Modern rebuild: all styling is controlled by style.css, pc.css, and phone.css.
+    return;
   }
 
   if (document.readyState === "loading") {
@@ -5819,66 +5254,8 @@
   "use strict";
 
   function installBmiFinalLayoutCleanup() {
-    if (document.getElementById("bmiFinalLayoutCleanupStyle")) return;
-
-    const style = document.createElement("style");
-    style.id = "bmiFinalLayoutCleanupStyle";
-    style.textContent = `
-      body.bmi-page .bmi-input-groups {
-        width: 100% !important;
-        display: grid !important;
-        grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr) !important;
-        grid-template-areas:
-          "body goal"
-          "body optional" !important;
-        gap: 16px !important;
-        align-items: stretch !important;
-      }
-
-      body.bmi-page .bmi-body-box {
-        grid-area: body !important;
-      }
-
-      body.bmi-page .bmi-goal-box {
-        grid-area: goal !important;
-      }
-
-      body.bmi-page .bmi-optional-box {
-        grid-area: optional !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-highlight-grid,
-      body.bmi-page #bmiReportOutput .bmi-highlight-grid-single {
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        max-width: none !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-highlight-value-only .bmi-highlight-label {
-        display: none !important;
-      }
-
-      body.bmi-page #bmiReportOutput .bmi-highlight-category,
-      body.bmi-page #bmiReportOutput .bmi-highlight-difference {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-      }
-
-      @media (max-width: 850px) {
-        body.bmi-page .bmi-input-groups {
-          grid-template-columns: 1fr !important;
-          grid-template-areas:
-            "body"
-            "goal"
-            "optional" !important;
-        }
-      }
-    `;
-
-    document.head.appendChild(style);
+// Modern rebuild: all styling is controlled by style.css, pc.css, and phone.css.
+    return;
   }
 
   if (document.readyState === "loading") {
@@ -6920,7 +6297,7 @@
 
 
 /* =====================================================
-   FULL NAV REBUILD: Clean top menu + clean side/open menu
+   FULL NAV REBUILD: Modern top menu
    - Replaces old navbar contents from scratch
    - Removes old weird gaps / wrapped search / broken chat placement
    - Keeps calculator dropdown, info dropdown, chatting, and search
@@ -6929,31 +6306,31 @@
   "use strict";
 
   const calculators = [
-    { title: "basic", url: "basic-calculator.html" },
-    { title: "scientific", url: "scientific-calculator.html" },
-    { title: "percentage", url: "percentage-calculator.html" },
+    { title: "Basic Calculator", url: "basic-calculator.html" },
+    { title: "Scientific Calculator", url: "scientific-calculator.html" },
+    { title: "Percentage Calculator", url: "percentage-calculator.html" },
     { title: "unit converter", url: "unit-converter-calculator.html" },
 
-    { title: "age", url: "age-calculator.html" },
-    { title: "bmi", url: "bmi-calculator.html" },
+    { title: "Age Calculator", url: "age-calculator.html" },
+    { title: "BMI Calculator", url: "bmi-calculator.html" },
 
-    { title: "salary", url: "salary-calculator.html" },
+    { title: "Salary Calculator", url: "salary-calculator.html" },
     { title: "gaji penjawat awam", url: "gaji-penjawat-awam-calculator.html" },
-    { title: "tax", url: "tax-calculator.html" },
+    { title: "Tax Calculator", url: "tax-calculator.html" },
     { title: "currency converter", url: "currency-converter.html" },
-    { title: "discount", url: "discount-calculator.html" },
-    { title: "inflation", url: "inflation-calculator.html" },
+    { title: "Discount Calculator", url: "discount-calculator.html" },
+    { title: "Inflation Calculator", url: "inflation-calculator.html" },
     { title: "compound interest", url: "compound-interest-calculator.html" },
 
-    { title: "mortgage", url: "mortgage-calculator.html" },
-    { title: "personal loan", url: "personal-loan-calculator.html" },
-    { title: "loan comparison", url: "loan-comparison-calculator.html" },
-    { title: "debt payoff", url: "debt-payoff-calculator.html" },
+    { title: "Mortgage Calculator", url: "mortgage-calculator.html" },
+    { title: "Personal Loan", url: "personal-loan-calculator.html" },
+    { title: "Loan Comparison", url: "loan-comparison-calculator.html" },
+    { title: "Debt Payoff", url: "debt-payoff-calculator.html" },
     { title: "credit card payoff", url: "credit-card-payoff-calculator.html" },
     { title: "credit card interest", url: "credit-card-interest-calculator.html" },
 
-    { title: "rental yield", url: "rental-yield-calculator.html" },
-    { title: "fuel cost", url: "fuel-cost-calculator.html" }
+    { title: "Rental Yield", url: "rental-yield-calculator.html" },
+    { title: "Fuel Cost", url: "fuel-cost-calculator.html" }
   ];
 
   function normalize(text) {
@@ -6971,60 +6348,60 @@
   function buildNavHtml() {
     return (
       '<div class="clean-nav-inner">' +
-        '<a class="clean-nav-link" href="index.html">home</a>' +
+        '<a class="clean-nav-link" href="index.html">Home</a>' +
 
         '<div class="clean-nav-dropdown clean-calculator-dropdown">' +
-          '<button type="button" class="clean-nav-link clean-nav-button" aria-expanded="false">calculator <span aria-hidden="true">▼</span></button>' +
+          '<button type="button" class="clean-nav-link clean-nav-button" aria-expanded="false">Tools <span aria-hidden="true">▼</span></button>' +
           '<div class="clean-nav-dropdown-panel clean-calculator-panel">' +
 
             '<div class="clean-nav-submenu clean-general-submenu">' +
-              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">general tools <span aria-hidden="true">▶</span></button>' +
+              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">General <span aria-hidden="true">▶</span></button>' +
               '<div class="clean-nav-submenu-panel">' +
-                '<a href="basic-calculator.html">basic calculator</a>' +
-                '<a href="scientific-calculator.html">scientific calculator</a>' +
-                '<a href="percentage-calculator.html">percentage calculator</a>' +
-                '<a href="unit-converter-calculator.html">unit converter</a>' +
+                '<a href="basic-calculator.html">Basic Calculator</a>' +
+                '<a href="scientific-calculator.html">Scientific Calculator</a>' +
+                '<a href="percentage-calculator.html">Percentage Calculator</a>' +
+                '<a href="unit-converter-calculator.html">Unit Converter</a>' +
               '</div>' +
             '</div>' +
 
             '<div class="clean-nav-submenu clean-health-submenu">' +
-              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">health & age <span aria-hidden="true">▶</span></button>' +
+              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Health & Age <span aria-hidden="true">▶</span></button>' +
               '<div class="clean-nav-submenu-panel">' +
-                '<a href="age-calculator.html">age calculator</a>' +
-                '<a href="bmi-calculator.html">bmi calculator</a>' +
+                '<a href="age-calculator.html">Age Calculator</a>' +
+                '<a href="bmi-calculator.html">BMI Calculator</a>' +
               '</div>' +
             '</div>' +
 
             '<div class="clean-nav-submenu clean-money-submenu">' +
-              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">money & income <span aria-hidden="true">▶</span></button>' +
+              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Money & Income <span aria-hidden="true">▶</span></button>' +
               '<div class="clean-nav-submenu-panel">' +
-                '<a href="salary-calculator.html">salary calculator</a>' +
-                '<a href="gaji-penjawat-awam-calculator.html">gaji penjawat awam</a>' +
-                '<a href="tax-calculator.html">tax calculator</a>' +
-                '<a href="currency-converter.html">currency converter</a>' +
-                '<a href="discount-calculator.html">discount calculator</a>' +
-                '<a href="inflation-calculator.html">inflation calculator</a>' +
-                '<a href="compound-interest-calculator.html">compound interest</a>' +
+                '<a href="salary-calculator.html">Salary Calculator</a>' +
+                '<a href="gaji-penjawat-awam-calculator.html">Gaji Penjawat Awam</a>' +
+                '<a href="tax-calculator.html">Tax Calculator</a>' +
+                '<a href="currency-converter.html">Currency Converter</a>' +
+                '<a href="discount-calculator.html">Discount Calculator</a>' +
+                '<a href="inflation-calculator.html">Inflation Calculator</a>' +
+                '<a href="compound-interest-calculator.html">Compound Interest</a>' +
               '</div>' +
             '</div>' +
 
             '<div class="clean-nav-submenu clean-loan-submenu">' +
-              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">loans & debt <span aria-hidden="true">▶</span></button>' +
+              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Loans & Debt <span aria-hidden="true">▶</span></button>' +
               '<div class="clean-nav-submenu-panel">' +
-                '<a href="mortgage-calculator.html">mortgage calculator</a>' +
-                '<a href="personal-loan-calculator.html">personal loan</a>' +
-                '<a href="loan-comparison-calculator.html">loan comparison</a>' +
-                '<a href="debt-payoff-calculator.html">debt payoff</a>' +
-                '<a href="credit-card-payoff-calculator.html">credit card payoff</a>' +
-                '<a href="credit-card-interest-calculator.html">credit card interest</a>' +
+                '<a href="mortgage-calculator.html">Mortgage Calculator</a>' +
+                '<a href="personal-loan-calculator.html">Personal Loan</a>' +
+                '<a href="loan-comparison-calculator.html">Loan Comparison</a>' +
+                '<a href="debt-payoff-calculator.html">Debt Payoff</a>' +
+                '<a href="credit-card-payoff-calculator.html">Credit Card Payoff</a>' +
+                '<a href="credit-card-interest-calculator.html">Credit Card Interest</a>' +
               '</div>' +
             '</div>' +
 
             '<div class="clean-nav-submenu clean-property-submenu">' +
-              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">property & travel <span aria-hidden="true">▶</span></button>' +
+              '<button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Property & Travel <span aria-hidden="true">▶</span></button>' +
               '<div class="clean-nav-submenu-panel">' +
-                '<a href="rental-yield-calculator.html">rental yield</a>' +
-                '<a href="fuel-cost-calculator.html">fuel cost</a>' +
+                '<a href="rental-yield-calculator.html">Rental Yield</a>' +
+                '<a href="fuel-cost-calculator.html">Fuel Cost</a>' +
               '</div>' +
             '</div>' +
 
@@ -7032,20 +6409,20 @@
         '</div>' +
 
         '<div class="clean-nav-dropdown clean-info-dropdown">' +
-          '<button type="button" class="clean-nav-link clean-nav-button" aria-expanded="false">info <span aria-hidden="true">▼</span></button>' +
+          '<button type="button" class="clean-nav-link clean-nav-button" aria-expanded="false">Resources <span aria-hidden="true">▼</span></button>' +
           '<div class="clean-nav-dropdown-panel clean-info-panel">' +
-            '<a href="about.html">about</a>' +
+            '<a href="about.html">About</a>' +
             '<a href="FAQS.html">FAQs</a>' +
-            '<a href="privacy-policy.html">privacy policy</a>' +
-            '<a href="contact.html">contact</a>' +
+            '<a href="privacy-policy.html">Privacy Policy</a>' +
+            '<a href="contact.html">Contact</a>' +
           '</div>' +
         '</div>' +
 
-        '<a class="clean-nav-link clean-chat-link" href="chatting.html">chatting</a>' +
+        '<a class="clean-nav-link clean-chat-link" href="chatting.html">Community</a>' +
 
         '<form class="clean-nav-search" role="search" autocomplete="off">' +
-          '<label class="clean-nav-search-label" for="cleanCalculatorSearchInput">Search calculator</label>' +
-          '<input id="cleanCalculatorSearchInput" class="clean-nav-search-input" type="search" placeholder="search calculator" aria-label="Search calculator">' +
+          '<label class="clean-nav-search-label" for="cleanCalculatorSearchInput">Search tools</label>' +
+          '<input id="cleanCalculatorSearchInput" class="clean-nav-search-input" type="search" placeholder="Search tools" aria-label="Search tools">' +
           '<button type="submit" class="clean-nav-search-button" aria-label="Search">🔍</button>' +
           '<ul class="clean-nav-search-results" hidden></ul>' +
         '</form>' +
@@ -8251,7 +7628,7 @@
 
 
 /* =====================================================
-   FINAL LIGHT CLEANUP: no side menu, no loading loop
+   FINAL CLEANUP: no duplicate layout, no loading loop
    - Runs once on page load
    - Removes duplicate nav/main/abacus only once
    - Keeps auto-calculate with 2-second debounce

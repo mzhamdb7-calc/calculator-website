@@ -1,67 +1,29 @@
 /* =====================================================
-   FROM-SCRATCH DESKTOP LAYOUT
+   COMPLETE MODERN REBUILD — desktop layout
 ===================================================== */
 @media screen and (min-width: 851px) {
-  body {
-    padding-left: var(--nav-width);
-  }
-
-  .clean-navbar {
-    position: fixed;
-    top: 0;
+  .clean-nav-dropdown-panel {
+    position: absolute;
+    top: calc(100% + 12px);
     left: 0;
-    bottom: 0;
-    width: var(--nav-width);
-    padding: 18px;
-    overflow-y: auto;
   }
-  .clean-navbar::before {
-    content: "Calculator";
-    display: block;
-    margin: 4px 4px 18px;
-    color: #ffffff;
-    font-size: 1.28rem;
-    font-weight: 950;
-    letter-spacing: -.045em;
-  }
-  .clean-navbar::after {
-    content: "Tools dashboard";
-    display: block;
-    margin: -14px 4px 18px;
-    color: rgba(232,255,250,.55);
-    font-size: .78rem;
-    font-weight: 750;
-    text-transform: uppercase;
-    letter-spacing: .13em;
-  }
-  .clean-nav-inner {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .clean-nav-link,
-  .clean-nav-button { width: 100%; }
-  .clean-nav-dropdown-panel,
+  .clean-info-dropdown .clean-nav-dropdown-panel { right: 0; left: auto; }
+  .clean-nav-submenu { position: relative; }
   .clean-nav-submenu-panel {
-    position: static;
-    width: 100%;
-    margin: 6px 0 8px;
+    position: absolute;
+    top: 0;
+    left: calc(100% + 8px);
+    min-width: 236px;
     padding: 8px;
-    box-shadow: none;
-    border-color: rgba(232,255,250,.11);
-    background: rgba(255,255,255,.94);
   }
-  .clean-nav-submenu-panel { margin-left: 0; }
-  .clean-nav-search { margin-top: 8px; }
-
-  main,
-  .about-container,
-  .info-page-box,
-  .chat-intro-card,
-  .chat-form-card,
-  .chat-board-card {
-    width: min(var(--content-max), calc(100vw - var(--nav-width) - 56px));
+  .clean-calculator-panel {
+    width: 292px;
+    max-height: min(520px, calc(100vh - 92px));
+    overflow: visible;
   }
+  .clean-info-panel { width: 210px; }
 
+  .tool-layout,
   .old-calculator-layout,
   .calculator-container,
   .age-calculator-container,
@@ -70,43 +32,38 @@
   .percentage-calculator-container,
   .discount-calculator-container,
   .compound-calculator-container {
-    display: grid;
-    grid-template-columns: 230px minmax(0, 1fr);
-    align-items: start;
-    gap: 22px;
-    max-width: 1120px;
-  }
-
-  .old-calculator-layout > .extra-side-box,
-  .old-calculator-layout > .loan-history-box {
-    grid-column: 1;
-    position: sticky;
-    top: 24px;
-  }
-  .old-calculator-layout > .calculator,
-  .old-calculator-layout > .bmi-calculator-box,
-  .old-calculator-layout > .extra-calculator-box {
-    grid-column: 2;
-    min-width: 0;
-  }
-  .old-calculator-layout > .calculator-clean-result,
-  .old-calculator-layout > .loan-style-output-panel,
-  .old-calculator-layout > .extra-result-box {
-    grid-column: 2;
+    max-width: 980px;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .extra-help-layout {
-    grid-template-columns: 220px minmax(0, 1fr) 280px;
-    max-width: 1320px;
+    max-width: 1240px;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    column-gap: 22px;
   }
-  .extra-help-layout > .extra-side-box,
-  .extra-help-layout > .loan-history-box { grid-column: 1; grid-row: 1; }
+  .tool-group-nav,
+  .loan-history-box,
+  .extra-side-box,
+  .extra-related-box {
+    grid-column: 1 / -1;
+    order: -10;
+  }
   .extra-help-layout > .calculator,
-  .extra-help-layout > .extra-calculator-box { grid-column: 2; grid-row: 1; }
-  .extra-help-layout > .extra-help-panel { grid-column: 3; grid-row: 1 / span 3; position: sticky; top: 24px; }
+  .extra-help-layout > .extra-calculator-box,
+  .extra-help-layout > .bmi-calculator-box { grid-column: 1; grid-row: 2; }
   .extra-help-layout > .calculator-clean-result,
   .extra-help-layout > .loan-style-output-panel,
-  .extra-help-layout > .extra-result-box { grid-column: 2; }
+  .extra-help-layout > .extra-result-box { grid-column: 1; }
+  .extra-help-layout > .extra-help-panel,
+  .extra-help-layout > .instruction-box {
+    grid-column: 2;
+    grid-row: 2 / span 4;
+    position: sticky;
+    top: 92px;
+    max-height: calc(100vh - 112px);
+    overflow: auto;
+  }
+  .extra-help-layout > .pc-what-slot { display: none !important; }
 
   .extra-input-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .mortgage-input-grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); }
@@ -115,12 +72,8 @@
   .bmi-result-group-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .calculator-report-summary-boxes,
   .personal-loan-result-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-
-  .grouped-calculator-home,
-  .index-dropdown-calculator-home {
-    max-width: 1180px;
-  }
-  .index-category-dropdown-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .home-category-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .home-category-card.featured-card { grid-column: span 2; }
 
   .about-container,
   .info-page-box { max-width: 980px; }

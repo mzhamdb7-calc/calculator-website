@@ -1,22 +1,27 @@
 /* =====================================================
-   FROM-SCRATCH MOBILE LAYOUT
+   COMPLETE MODERN REBUILD — mobile layout
 ===================================================== */
 @media screen and (max-width: 850px) {
-  :root { --radius-lg: 16px; }
-  body { padding: 0 0 24px; }
-
-  .clean-navbar {
-    position: sticky;
-    top: 0;
-    width: 100%;
-    padding: 10px;
-    border-bottom: 1px solid rgba(232,255,250,.12);
-  }
+  body { padding-bottom: 24px; }
+  .clean-navbar { position: sticky; top: 0; }
   .clean-nav-inner {
+    width: min(100% - 20px, 720px);
+    min-height: auto;
+    padding: 10px 0;
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 7px;
     align-items: start;
+  }
+  .clean-nav-inner > .clean-nav-link:first-child {
+    min-width: 0;
+    margin: 0;
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+    min-height: 42px;
+    padding-left: 44px;
+    border-radius: 14px;
+    background: rgba(255,255,255,.06);
   }
   .clean-nav-link,
   .clean-nav-button {
@@ -26,19 +31,22 @@
     gap: 5px;
     font-size: .78rem;
     text-align: center;
+    border-radius: 12px;
   }
   .clean-nav-search {
     grid-column: 1 / -1;
-    margin-top: 3px;
+    width: 100%;
+    margin: 2px 0 0;
   }
-  .clean-nav-search-input { height: 40px; }
+  .clean-nav-search-input { height: 40px; border-radius: 12px; }
+  .clean-nav-search-button { border-radius: 10px; }
   .clean-nav-dropdown { position: static; }
   .clean-nav-dropdown-panel {
     position: absolute;
     left: 10px;
     right: 10px;
     top: calc(100% + 8px);
-    max-height: calc(100vh - 132px);
+    max-height: calc(100vh - 148px);
     padding: 8px;
     overflow: auto;
   }
@@ -59,7 +67,17 @@
     margin-top: 18px;
     margin-bottom: 42px;
   }
+  .home-hero { border-radius: 18px; padding: 26px 20px; }
+  .home-hero h1 { font-size: clamp(2rem, 11vw, 2.55rem); }
+  .home-hero p { font-size: 1rem; }
+  .home-hero-actions { gap: 9px; }
+  .home-primary-link,
+  .home-secondary-link { width: 100%; min-height: 44px; }
+  .home-section-heading { align-items: start; }
+  .home-category-grid { grid-template-columns: 1fr; }
+  .home-category-card { padding: 18px; }
 
+  .tool-layout,
   .old-calculator-layout,
   .calculator-container,
   .age-calculator-container,
@@ -69,18 +87,15 @@
   .discount-calculator-container,
   .compound-calculator-container,
   .extra-help-layout {
-    display: grid;
     grid-template-columns: 1fr;
     gap: 14px;
   }
   .loan-history-box,
-  .extra-side-box {
-    position: static;
-    padding: 12px;
-  }
+  .extra-side-box,
+  .tool-group-nav,
+  .extra-related-box { padding: 12px; }
   .extra-side-links {
-    display: flex;
-    gap: 8px;
+    flex-wrap: nowrap;
     overflow-x: auto;
     padding-bottom: 3px;
     scroll-snap-type: x mandatory;
@@ -91,7 +106,6 @@
     white-space: nowrap;
     scroll-snap-align: start;
   }
-
   .calculator,
   .calculator-box,
   .bmi-calculator-box,
@@ -101,66 +115,46 @@
   .info-content-card,
   .chat-intro-card,
   .chat-form-card,
-  .chat-board-card {
-    padding: 18px;
-  }
-  h1 { font-size: clamp(1.65rem, 9vw, 2.35rem); }
+  .chat-board-card { padding: 18px; }
+  h1 { font-size: clamp(1.7rem, 9vw, 2.35rem); }
   .subtitle { font-size: .96rem; }
-
   .display-row { grid-template-columns: 1fr 64px; }
   .buttons,
   .basic-grid { gap: 8px; }
   .buttons button,
   .basic-grid button { min-height: 50px; font-size: .98rem; }
-
   .extra-input-grid,
   .mortgage-input-grid,
   .bmi-input-groups,
   .age-result-group-grid,
   .bmi-result-group-grid,
   .calculator-report-summary-boxes,
-  .personal-loan-result-summary {
-    grid-template-columns: 1fr;
-  }
+  .personal-loan-result-summary { grid-template-columns: 1fr; }
 
   .extra-help-panel { display: none; }
   .extra-help-panel.is-open,
-  body.extra-help-open .extra-help-panel {
+  body.extra-help-open .extra-help-panel,
+  body.pc-help-overlay-open .extra-help-panel {
     display: block;
     position: fixed;
-    inset: 76px 12px 78px;
-    z-index: 80;
+    inset: 96px 12px 72px;
+    z-index: 100;
     overflow: auto;
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-md);
   }
-  .extra-help-question-button { display: grid; place-items: center; }
-
-  .index-category-dropdown-grid { grid-template-columns: 1fr; }
-  .index-category-dropdown-panel {
-    width: min(100%, calc(100vw - 36px));
-    max-height: min(360px, calc(100vh - 170px));
-  }
-  .index-category-dropdown:nth-child(n) .index-category-dropdown-panel { left: 0; right: auto; }
-  .live-abacus,
-  .interactive-abacus { min-height: 200px; padding: 14px; }
-
+  .extra-help-question-button,
+  #pcHelpQuestionButton,
+  #pcQuestionOverlayButton { display: grid; place-items: center; }
   .age-result-actions,
   .bmi-result-actions,
   .universal-result-actions,
   .mortgage-result-actions,
   .extra-result-actions,
-  .global-result-actions {
-    gap: 6px !important;
-  }
+  .global-result-actions { gap: 6px !important; }
   .age-result-action-btn,
   .bmi-result-action-btn,
   .universal-result-action-btn,
   .mortgage-result-action-btn,
-  .extra-result-action-btn {
-    min-height: 38px;
-    padding: 8px 4px !important;
-    font-size: .74rem !important;
-  }
-
+  .extra-result-action-btn { min-height: 38px; padding: 8px 4px !important; font-size: .74rem !important; }
   #scrollTopBtn { width: 42px; height: 42px; right: 14px; bottom: 18px; }
 }
