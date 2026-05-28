@@ -1,0 +1,1 @@
+Reduced empty space on home category cards, removed featured card spanning, added responsive compact link grid, and updated cache versions.

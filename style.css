@@ -4554,3 +4554,106 @@ body[data-page="bmi"] .bmi-highlight-grid {
     gap: 8px !important;
   }
 }
+
+/* =====================================================
+   CHATGPT HOME CATEGORY CARD COMPACT ARRANGEMENT
+   Reduces empty space and makes index cards cleaner.
+   Version: card-layout-compact-20260528b
+===================================================== */
+
+body .app-home .home-category-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
+  gap: 16px !important;
+  align-items: stretch !important;
+}
+
+body .app-home .home-category-card,
+body .app-home .home-category-card.featured-card {
+  grid-column: auto !important;
+  display: grid !important;
+  grid-template-rows: auto auto auto 1fr !important;
+  align-content: start !important;
+  gap: 10px !important;
+  min-height: 0 !important;
+  padding: 18px !important;
+  border-radius: 18px !important;
+  box-shadow: 0 10px 24px rgba(45, 82, 71, .08) !important;
+}
+
+body .app-home .home-card-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  min-height: 34px !important;
+  margin: 0 !important;
+}
+
+body .app-home .home-card-icon {
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 10px !important;
+  font-size: .9rem !important;
+}
+
+body .app-home .home-category-card h3 {
+  margin: 2px 0 0 !important;
+  font-size: clamp(1.18rem, 1vw + .95rem, 1.45rem) !important;
+  line-height: 1.2 !important;
+}
+
+body .app-home .home-category-card p {
+  margin: 0 !important;
+  max-width: 64ch !important;
+  line-height: 1.45 !important;
+}
+
+body .app-home .home-card-links {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)) !important;
+  gap: 8px !important;
+  margin-top: 4px !important;
+  align-self: start !important;
+}
+
+body .app-home .home-card-links a {
+  min-height: 38px !important;
+  padding: 8px 12px !important;
+  border-radius: 10px !important;
+  font-size: 1rem !important;
+  line-height: 1.25 !important;
+}
+
+@media (min-width: 900px) {
+  body .app-home .home-category-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  body .app-home .home-category-card:nth-child(5):last-child {
+    max-width: calc(50% - 8px) !important;
+  }
+}
+
+@media (min-width: 1220px) {
+  body .app-home .home-category-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+  body .app-home .home-category-card:nth-child(5):last-child {
+    max-width: none !important;
+  }
+}
+
+@media (max-width: 700px) {
+  body .app-home .home-category-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  body .app-home .home-category-card,
+  body .app-home .home-category-card.featured-card {
+    padding: 15px !important;
+    gap: 9px !important;
+  }
+  body .app-home .home-card-links {
+    grid-template-columns: 1fr !important;
+  }
+}
