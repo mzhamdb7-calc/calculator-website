@@ -41,12 +41,10 @@ body {
   min-height: 100vh;
   margin: 0;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 17px;
   color: var(--ink);
-  background:
-    radial-gradient(circle at 10% -10%, rgba(14, 116, 144, .13), transparent 34%),
-    radial-gradient(circle at 92% 10%, rgba(22, 163, 74, .08), transparent 30%),
-    linear-gradient(180deg, #fbfdff 0%, var(--page) 42%, var(--page-2) 100%);
-  letter-spacing: -.012em;
+  background: linear-gradient(180deg, #fbf8f2 0%, var(--bg) 52%, #eef5ef 100%);
+  letter-spacing: 0;
   overflow-x: hidden;
 }
 
@@ -830,3 +828,392 @@ tr:last-child td { border-bottom: 0; }
 #percentageResult,
 #compoundResult { margin: 0; }
 .calculator-report-view main > .calculator-clean-result:not(.calculator-report-result) { display: none !important; }
+
+
+/* =====================================================
+   SENIOR-FRIENDLY READABILITY REFRESH
+   Calmer colour, stronger text, larger controls.
+===================================================== */
+html { font-size: 17px; }
+body { background: linear-gradient(180deg, #fbf8f2 0%, #f7f4ee 48%, #edf5ee 100%) !important; }
+
+:focus-visible {
+  outline: 4px solid rgba(34, 107, 78, .32) !important;
+  outline-offset: 4px !important;
+}
+
+.clean-navbar {
+  color: var(--ink) !important;
+  background: linear-gradient(180deg, var(--nav) 0%, var(--nav-2) 100%) !important;
+  border-color: var(--line) !important;
+  box-shadow: 0 10px 30px rgba(31, 42, 36, .10) !important;
+}
+.clean-nav-link,
+.clean-nav-button,
+.clean-nav-panel-row,
+.clean-nav-submenu-button {
+  color: #203229 !important;
+  background: transparent !important;
+}
+.clean-nav-link,
+.clean-nav-button {
+  min-height: 48px !important;
+  padding: 13px 15px !important;
+  border: 1px solid transparent !important;
+  font-size: 1rem !important;
+}
+.clean-nav-link:hover,
+.clean-nav-button:hover,
+.clean-nav-dropdown.is-open > .clean-nav-button,
+.clean-nav-dropdown:hover > .clean-nav-button {
+  color: #123c2c !important;
+  background: var(--brand-soft) !important;
+  border-color: #b9d8c5 !important;
+}
+.clean-chat-link { border-color: #c7dbcf !important; }
+.clean-nav-dropdown-panel,
+.clean-nav-submenu-panel,
+.clean-nav-search-results,
+.site-search-results {
+  color: var(--ink) !important;
+  background: #fffdfa !important;
+  border-color: var(--line-strong) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+.clean-nav-panel-row,
+.clean-nav-submenu-panel a,
+.clean-info-panel a,
+.clean-calculator-panel > a,
+.clean-nav-submenu-button {
+  min-height: 46px !important;
+  color: #1f3329 !important;
+  font-size: .98rem !important;
+}
+.clean-nav-panel-row:hover,
+.clean-nav-submenu-panel a:hover,
+.clean-info-panel a:hover,
+.clean-calculator-panel > a:hover,
+.clean-nav-submenu.is-open > .clean-nav-submenu-button,
+.clean-nav-submenu:hover > .clean-nav-submenu-button,
+.clean-nav-search-result:hover,
+.site-search-result-btn:hover {
+  color: #123c2c !important;
+  background: var(--brand-soft-2) !important;
+}
+.clean-nav-search-input {
+  height: 48px !important;
+  color: var(--ink) !important;
+  background: #ffffff !important;
+  border: 1px solid var(--line-strong) !important;
+}
+.clean-nav-search-input::placeholder { color: #65776d !important; }
+.clean-nav-search-input:focus {
+  border-color: var(--brand) !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 4px rgba(34, 107, 78, .14) !important;
+}
+.clean-nav-search-button {
+  color: #ffffff !important;
+  background: var(--brand) !important;
+}
+
+h1 {
+  color: #16221d !important;
+  font-size: clamp(2rem, 3vw, 3.15rem) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -.035em !important;
+}
+h2 { color: #1d2c25 !important; line-height: 1.18 !important; }
+h3 { color: #203229 !important; }
+p, li, td, th, label, input, select, textarea, button { font-size: 1rem; }
+.subtitle,
+.extra-page-note,
+.live-abacus-subtitle,
+.about-card p,
+.info-content-card p,
+.instruction-section p,
+.reference-card p,
+.site-faq-item p {
+  color: var(--muted) !important;
+  font-size: 1.03rem !important;
+  line-height: 1.75 !important;
+}
+
+.calculator,
+.calculator-box,
+.bmi-calculator-box,
+.extra-calculator-box,
+.about-box,
+.about-card,
+.info-content-card,
+.info-page-box,
+.chat-intro-card,
+.chat-form-card,
+.chat-board-card,
+.reference-box,
+.reference-card,
+.instruction-box,
+.live-abacus-card,
+.extra-related-box,
+.loan-result-panel,
+.extra-result-card,
+.calculator-report-result,
+.calculator-report-page {
+  background: #fffdfa !important;
+  border-color: var(--line) !important;
+  box-shadow: 0 12px 28px rgba(32, 46, 39, .09) !important;
+}
+.calculator::before,
+.calculator-box::before,
+.extra-calculator-box::before,
+.bmi-calculator-box::before {
+  height: 5px !important;
+  background: linear-gradient(90deg, #226b4e, #6ea88a) !important;
+}
+
+.loan-history-box,
+.extra-side-box {
+  color: var(--ink) !important;
+  background: #fffdfa !important;
+  border-color: var(--line) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+.loan-history-top { border-bottom-color: var(--line) !important; }
+.loan-history-top h3 {
+  color: #315045 !important;
+  font-size: .9rem !important;
+}
+.extra-side-links a {
+  min-height: 46px !important;
+  color: #2c4037 !important;
+  background: #f7faf6 !important;
+  border-color: #d8e4dc !important;
+  font-size: .98rem !important;
+}
+.extra-side-links a:hover,
+.extra-side-links .current-extra-link {
+  color: #ffffff !important;
+  background: var(--brand) !important;
+  border-color: var(--brand) !important;
+}
+
+label {
+  color: #263a31 !important;
+  font-size: .98rem !important;
+  font-weight: 850 !important;
+}
+input,
+select,
+textarea {
+  min-height: 52px !important;
+  padding: 13px 15px !important;
+  color: #16221d !important;
+  background: #ffffff !important;
+  border: 2px solid #c8d8ce !important;
+  border-radius: 12px !important;
+  font-size: 1.04rem !important;
+}
+input::placeholder,
+textarea::placeholder { color: #66786f !important; }
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--brand) !important;
+  box-shadow: 0 0 0 5px rgba(34, 107, 78, .14) !important;
+}
+textarea { line-height: 1.65 !important; }
+
+button,
+.main-btn,
+.secondary-btn,
+.ans-btn,
+.interactive-abacus-reset,
+.optional-mortgage-toggle,
+.early-settlement-toggle,
+.extra-help-question-button,
+#calculateCompoundBtn {
+  min-height: 48px;
+  border-radius: 12px !important;
+}
+.main-btn,
+#calculateCompoundBtn,
+.calculator > button:not(.ans-btn),
+.extra-calculator-box > button,
+.local-chat-actions button:first-child {
+  min-height: 52px !important;
+  color: #ffffff !important;
+  background: var(--brand) !important;
+  border-color: var(--brand) !important;
+  box-shadow: 0 8px 18px rgba(34, 107, 78, .18) !important;
+  font-size: 1.02rem !important;
+}
+.main-btn:hover,
+#calculateCompoundBtn:hover,
+.calculator > button:not(.ans-btn):hover,
+.extra-calculator-box > button:hover,
+.local-chat-actions button:first-child:hover {
+  background: #1b593f !important;
+  border-color: #1b593f !important;
+}
+.secondary-btn,
+.local-chat-actions button,
+.interactive-abacus-reset,
+.ans-btn {
+  color: #1b593f !important;
+  background: #edf6ef !important;
+  border-color: #bfd8c7 !important;
+}
+.secondary-btn:hover,
+.local-chat-actions button:hover,
+.interactive-abacus-reset:hover,
+.ans-btn:hover {
+  color: #123c2c !important;
+  background: #dceee2 !important;
+}
+
+.buttons button,
+.basic-grid button {
+  min-height: 62px !important;
+  color: #17211d !important;
+  background: #fffdfa !important;
+  border: 2px solid #d4dfd7 !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  font-size: 1.15rem !important;
+}
+.buttons button:hover,
+.basic-grid button:hover {
+  color: #123c2c !important;
+  background: #edf6ef !important;
+  border-color: #b9d8c5 !important;
+}
+.buttons .equal,
+.basic-grid .equal {
+  color: #ffffff !important;
+  background: var(--brand) !important;
+  border-color: var(--brand) !important;
+}
+.buttons .ac-btn,
+.basic-grid .ac-btn {
+  color: #8b271f !important;
+  background: #fff5f3 !important;
+  border-color: #efc5bd !important;
+}
+
+.extra-input-card,
+.mortgage-input-box,
+.bmi-input-group-box,
+.reference-card,
+.instruction-section,
+.age-result-group-box,
+.bmi-result-group-box,
+.age-point-result-box,
+.bmi-result-box,
+.local-chat-message,
+.empty-chat-message,
+.site-faq-item {
+  background: #f9fbf7 !important;
+  border-color: #d8e4dc !important;
+}
+.extra-input-card-title,
+.mortgage-input-title,
+.loan-panel-title,
+.age-result-title,
+.bmi-result-title,
+.mortgage-modern-result-title,
+.instruction-main-title,
+.instruction-section h3,
+.site-faq-item h3,
+.age-result-group-box h3,
+.bmi-result-group-box h3 {
+  color: #1f4f3c !important;
+}
+th {
+  color: #1f4f3c !important;
+  background: #e8f2e9 !important;
+  font-size: .9rem !important;
+}
+td { color: #1e2c26 !important; }
+
+.age-result-action-btn,
+.bmi-result-action-btn,
+.universal-result-action-btn,
+.mortgage-result-action-btn,
+.extra-result-action-btn,
+.loan-copy-btn,
+.loan-save-btn,
+.loan-share-btn,
+.loan-report-btn {
+  min-height: 46px !important;
+  color: #1b593f !important;
+  background: #edf6ef !important;
+  border-color: #bfd8c7 !important;
+  font-size: .92rem !important;
+}
+.age-result-action-btn:hover,
+.bmi-result-action-btn:hover,
+.universal-result-action-btn:hover,
+.mortgage-result-action-btn:hover,
+.extra-result-action-btn:hover,
+.loan-copy-btn:hover,
+.loan-save-btn:hover,
+.loan-share-btn:hover,
+.loan-report-btn:hover {
+  color: #ffffff !important;
+  background: var(--brand) !important;
+  border-color: var(--brand) !important;
+}
+
+.index-category-dropdown summary {
+  min-height: 64px !important;
+  color: #203229 !important;
+  background: #fffdfa !important;
+  border: 2px solid #d4dfd7 !important;
+  box-shadow: none !important;
+  font-size: 1.02rem !important;
+}
+.index-category-dropdown summary::after { background: var(--brand) !important; }
+.index-category-dropdown[open] summary {
+  color: #ffffff !important;
+  background: var(--brand) !important;
+  border-color: var(--brand) !important;
+}
+.index-category-dropdown-panel {
+  background: #fffdfa !important;
+  border-color: #b7c8be !important;
+}
+.calculator-category-links a {
+  min-height: 48px !important;
+  color: #1f3329 !important;
+  background: #f8faf6 !important;
+  border-color: #d8e4dc !important;
+  font-size: 1rem !important;
+}
+.calculator-category-links a:hover {
+  color: #123c2c !important;
+  background: #edf6ef !important;
+  border-color: #b9d8c5 !important;
+}
+
+.live-abacus,
+.interactive-abacus {
+  background: #f8faf6 !important;
+  border-color: #d8e4dc !important;
+}
+#liveAbacusValueText,
+#scrollTopBtn {
+  color: #ffffff !important;
+  background: var(--brand) !important;
+}
+.abacus-rod::before { background: #2d3d35 !important; }
+.abacus-separator { background: var(--brand) !important; }
+.abacus-bead { background: linear-gradient(135deg, #7cad90, #226b4e) !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}

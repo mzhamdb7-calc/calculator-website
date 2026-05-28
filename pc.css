@@ -82,3 +82,42 @@
   .chat-form-card,
   .chat-board-card { max-width: 920px; }
 }
+
+
+/* =====================================================
+   SENIOR-FRIENDLY DESKTOP TUNING
+===================================================== */
+@media screen and (min-width: 851px) {
+  body { padding-left: var(--nav-width) !important; }
+  .clean-navbar {
+    border-right: 1px solid var(--line) !important;
+  }
+  .clean-navbar::before {
+    color: #17211d !important;
+    font-size: 1.34rem !important;
+  }
+  .clean-navbar::after {
+    color: #52675c !important;
+    font-size: .82rem !important;
+  }
+  .clean-nav-dropdown-panel,
+  .clean-nav-submenu-panel {
+    border-color: var(--line) !important;
+    background: #fffdfa !important;
+  }
+  .old-calculator-layout,
+  .calculator-container,
+  .age-calculator-container,
+  .bmi-calculator-container,
+  .loan-calculator-container,
+  .percentage-calculator-container,
+  .discount-calculator-container,
+  .compound-calculator-container {
+    grid-template-columns: 250px minmax(0, 1fr) !important;
+    gap: 26px !important;
+  }
+  .extra-help-layout {
+    grid-template-columns: 250px minmax(0, 1fr) 300px !important;
+    gap: 24px !important;
+  }
+}

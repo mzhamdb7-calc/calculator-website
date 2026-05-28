@@ -158,3 +158,59 @@
   .extra-result-action-btn { min-height: 38px; padding: 8px 4px !important; font-size: .74rem !important; }
   #scrollTopBtn { width: 42px; height: 42px; right: 14px; bottom: 18px; }
 }
+
+
+/* =====================================================
+   SENIOR-FRIENDLY MOBILE TUNING
+===================================================== */
+@media screen and (max-width: 850px) {
+  body { padding-bottom: 28px !important; }
+  .clean-navbar {
+    background: #fffdfa !important;
+    border-bottom: 1px solid var(--line) !important;
+  }
+  .clean-nav-inner { gap: 8px !important; }
+  .clean-nav-link,
+  .clean-nav-button {
+    min-height: 44px !important;
+    font-size: .88rem !important;
+    color: #203229 !important;
+    background: #f7faf6 !important;
+    border: 1px solid #d8e4dc !important;
+  }
+  .clean-nav-dropdown-panel {
+    background: #fffdfa !important;
+    border: 1px solid var(--line-strong) !important;
+  }
+  main,
+  .about-container,
+  .info-page-box,
+  .chat-intro-card,
+  .chat-form-card,
+  .chat-board-card {
+    width: min(100% - 20px, 720px) !important;
+  }
+  .calculator,
+  .calculator-box,
+  .bmi-calculator-box,
+  .extra-calculator-box,
+  .about-box,
+  .about-card,
+  .info-content-card,
+  .chat-intro-card,
+  .chat-form-card,
+  .chat-board-card {
+    padding: 20px !important;
+  }
+  .extra-side-links a { min-height: 44px !important; }
+  .buttons button,
+  .basic-grid button { min-height: 58px !important; font-size: 1.1rem !important; }
+  .age-result-actions,
+  .bmi-result-actions,
+  .universal-result-actions,
+  .mortgage-result-actions,
+  .extra-result-actions,
+  .global-result-actions {
+    gap: 7px !important;
+  }
+}
