@@ -1,0 +1,1 @@
+Updated by ChatGPT on 2026-05-28. Applied a minimalist boxy redesign across the website using dark green, black, and white. Removed cartoon visual treatments such as tilted cards, pastel panels, thick offset shadows, and playful button styling while preserving calculator functionality.
