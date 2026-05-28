@@ -1,0 +1,1 @@
+Wall page changed to a blank signature wall. Reviews appear like signed notes on the wall after users submit them from review.html.

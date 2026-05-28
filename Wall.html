@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <title>Review Wall | Calculator Hub</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Review wall showing calculator website reviews saved in this browser.">
+  <meta name="description" content="A clean signature wall showing reviews left by users of the calculator website.">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=review-wall-20260528">
-  <link rel="stylesheet" href="pc.css?v=review-wall-20260528" media="screen and (min-width: 851px)">
-  <link rel="stylesheet" href="phone.css?v=review-wall-20260528" media="screen and (max-width: 850px)">
+  <link rel="stylesheet" href="style.css?v=signature-wall-20260528">
+  <link rel="stylesheet" href="pc.css?v=signature-wall-20260528" media="screen and (min-width: 851px)">
+  <link rel="stylesheet" href="phone.css?v=signature-wall-20260528" media="screen and (max-width: 850px)">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
-<body class="info-page review-wall-page app-redesign" data-page="wall">
+<body class="info-page review-wall-page signature-wall-page app-redesign" data-page="wall">
 
   <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">↑</button>
 
@@ -99,26 +99,15 @@
   </div>
 </nav>
 
-  <main class="review-wall-shell info-page-box">
-    <section class="review-hero-card wall-hero-card">
-      <p class="review-kicker">Review wall</p>
-      <h1>What people say</h1>
-      <p>All reviews posted from the Review page are placed here automatically as review cards.</p>
-      <div class="review-hero-actions">
-        <a class="review-link-button" href="review.html">Write a review</a>
-        <a class="review-link-button review-link-button-light" href="index.html">Back to tools</a>
-      </div>
-    </section>
+  <main class="signature-wall-shell" aria-label="Review signature wall">
+    <div class="signature-wall-topbar" aria-label="Wall actions">
+      <a class="signature-wall-action" href="review.html">Sign the wall</a>
+      <a class="signature-wall-action signature-wall-action-light" href="index.html">Back to tools</a>
+    </div>
 
-    <section class="review-wall-toolbar clean-review-card">
-      <div>
-        <h2>Review board</h2>
-        <p id="reviewWallCount">Loading reviews...</p>
-      </div>
-      <button type="button" id="refreshReviewWall" class="main-btn secondary-btn">Refresh wall</button>
+    <section id="signatureWallCanvas" class="signature-wall-canvas" aria-label="Review wall canvas">
+      <div id="reviewWallGrid" class="signature-wall-grid" aria-live="polite"></div>
     </section>
-
-    <section id="reviewWallGrid" class="review-wall-grid" aria-live="polite"></section>
   </main>
 
   <script>
@@ -127,8 +116,7 @@
 
       const storageKey = "calculatorUserReviewsV1";
       const wall = document.getElementById("reviewWallGrid");
-      const count = document.getElementById("reviewWallCount");
-      const refreshBtn = document.getElementById("refreshReviewWall");
+      const canvas = document.getElementById("signatureWallCanvas");
 
       function escapeText(value) {
         return String(value || "").replace(/[&<>"']/g, function (ch) {
@@ -142,39 +130,68 @@
       }
 
       function getReviews() {
-        try { return JSON.parse(localStorage.getItem(storageKey) || "[]"); } catch { return []; }
+        try {
+          const list = JSON.parse(localStorage.getItem(storageKey) || "[]");
+          return Array.isArray(list) ? list : [];
+        } catch {
+          return [];
+        }
+      }
+
+      function layoutFor(index, count) {
+        const wide = window.matchMedia("(min-width: 1120px)").matches;
+        const tablet = window.matchMedia("(min-width: 760px)").matches;
+        const columns = wide ? 4 : (tablet ? 3 : 1);
+        const row = Math.floor(index / columns);
+        const col = index % columns;
+        const jitterX = ((index * 37) % 9) - 4;
+        const jitterY = ((index * 29) % 34) - 8;
+        const rotate = (((index * 17) % 13) - 6) + "deg";
+        const width = (wide ? 230 : 210) + ((index * 19) % 44);
+        const left = columns === 1 ? 0 : (4 + col * (92 / columns) + jitterX);
+        const top = 38 + (row * 210) + jitterY;
+        return {
+          left: left + "%",
+          top: top + "px",
+          rotate: rotate,
+          width: width + "px",
+          minHeight: Math.max(620, 140 + (Math.ceil(count / columns) * 220)) + "px"
+        };
       }
 
       function renderWall() {
         const reviews = getReviews();
-        if (count) count.textContent = reviews.length ? reviews.length + " review" + (reviews.length === 1 ? "" : "s") + " on this wall" : "No reviews yet";
+        if (!wall || !canvas) return;
 
-        if (!wall) return;
         if (!reviews.length) {
-          wall.innerHTML = '<article class="review-empty-wall"><h2>No reviews yet</h2><p>Go to the Review page and post the first review. It will appear here automatically.</p><a class="review-link-button" href="review.html">Write a review</a></article>';
+          wall.innerHTML = "";
+          canvas.classList.add("is-empty");
+          canvas.style.minHeight = "calc(100vh - 128px)";
           return;
         }
 
+        canvas.classList.remove("is-empty");
+        canvas.style.minHeight = layoutFor(0, reviews.length).minHeight;
         wall.innerHTML = reviews.map(function (review, index) {
-          return '<article class="wall-review-card" style="--review-delay:' + Math.min(index, 12) + '">' +
-            '<div class="wall-review-pin" aria-hidden="true"></div>' +
-            '<div class="review-stars" aria-label="' + escapeText(review.rating || 5) + ' out of 5 stars">' + stars(review.rating) + '</div>' +
-            '<h2>' + escapeText(review.title || "Helpful review") + '</h2>' +
-            '<p>' + escapeText(review.message || "") + '</p>' +
-            '<footer><strong>' + escapeText(review.name || "Guest") + '</strong><span>' + escapeText(review.time || "") + '</span></footer>' +
+          const pos = layoutFor(index, reviews.length);
+          return '<article class="signature-wall-note" style="--note-left:' + pos.left + '; --note-top:' + pos.top + '; --note-rotate:' + pos.rotate + '; --note-width:' + pos.width + ';">' +
+            '<div class="signature-wall-rating" aria-label="' + escapeText(review.rating || 5) + ' out of 5 stars">' + stars(review.rating) + '</div>' +
+            '<p class="signature-wall-message">“' + escapeText(review.message || review.title || "Helpful calculator website") + '”</p>' +
+            '<p class="signature-wall-signed">— ' + escapeText(review.name || "Guest") + '</p>' +
+            '<time class="signature-wall-time">' + escapeText(review.time || "") + '</time>' +
           '</article>';
         }).join("");
       }
 
-      if (refreshBtn) refreshBtn.addEventListener("click", renderWall);
+      window.addEventListener("resize", renderWall);
       window.addEventListener("storage", function (event) { if (event.key === storageKey) renderWall(); });
       renderWall();
       setInterval(renderWall, 5000);
     })();
   </script>
 
-  <script src="script.js?v=review-wall-20260528"></script>
-  <script src="pc.js?v=review-wall-20260528"></script>
-  <script src="phone.js?v=review-wall-20260528"></script>
+  <script src="script.js?v=signature-wall-20260528"></script>
+  <script src="pc.js?v=signature-wall-20260528"></script>
+  <script src="phone.js?v=signature-wall-20260528"></script>
 </body>
 </html>

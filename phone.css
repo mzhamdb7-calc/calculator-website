@@ -3151,3 +3151,183 @@ body[data-page="bmi"] .bmi-highlight-grid {
     width: 100% !important;
   }
 }
+
+
+/* =====================================================
+   SIGNATURE WALL UPDATE — blank wall + signed reviews
+===================================================== */
+.signature-wall-page {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(22, 163, 74, .08), transparent 34%),
+    linear-gradient(180deg, #f8faf7 0%, #f3f6ef 100%) !important;
+}
+.signature-wall-shell {
+  width: min(1380px, calc(100vw - 28px));
+  margin: 22px auto 44px;
+  padding: 0 !important;
+}
+.signature-wall-topbar {
+  min-height: 42px;
+  margin: 0 0 12px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+}
+.signature-wall-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 999px;
+  color: #ffffff;
+  background: #276749;
+  border: 1px solid #276749;
+  box-shadow: 0 8px 18px rgba(39, 103, 73, .14);
+  font-weight: 800;
+  font-size: .95rem;
+}
+.signature-wall-action:hover {
+  background: #1f513a;
+  border-color: #1f513a;
+}
+.signature-wall-action-light {
+  color: #1f2937;
+  background: #ffffff;
+  border-color: #d8e2d6;
+  box-shadow: none;
+}
+.signature-wall-canvas {
+  position: relative;
+  min-height: calc(100vh - 128px);
+  overflow: hidden;
+  border: 1px solid #d9e2d6;
+  border-radius: 4px;
+  background:
+    linear-gradient(90deg, rgba(39, 103, 73, .035) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(39, 103, 73, .028) 1px, transparent 1px),
+    linear-gradient(135deg, #fffdf6 0%, #faf7ec 54%, #f6f0df 100%);
+  background-size: 42px 42px, 42px 42px, auto;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.82),
+    inset 0 26px 70px rgba(39, 103, 73, .05),
+    0 22px 48px rgba(31, 41, 55, .08);
+}
+.signature-wall-canvas.is-empty::before,
+.signature-wall-canvas.is-empty::after {
+  display: none !important;
+  content: none !important;
+}
+.signature-wall-grid {
+  position: absolute;
+  inset: 0;
+}
+.signature-wall-note {
+  position: absolute;
+  left: var(--note-left);
+  top: var(--note-top);
+  width: min(var(--note-width), 88vw);
+  padding: 4px 6px 10px;
+  color: #243126;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  transform: rotate(var(--note-rotate));
+  transform-origin: center;
+}
+.signature-wall-note::after {
+  content: "";
+  display: block;
+  width: 82%;
+  height: 1px;
+  margin-top: 7px;
+  background: linear-gradient(90deg, transparent, rgba(39, 103, 73, .34), transparent);
+}
+.signature-wall-rating {
+  margin-bottom: 6px;
+  color: #b7791f;
+  font-size: .9rem;
+  letter-spacing: .04em;
+}
+.signature-wall-message {
+  margin: 0;
+  color: #1f2937;
+  font-family: "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive;
+  font-size: clamp(1rem, 1.6vw, 1.32rem);
+  line-height: 1.45;
+  font-weight: 650;
+}
+.signature-wall-signed {
+  margin: 8px 0 0;
+  color: #276749;
+  font-family: "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive;
+  font-size: clamp(1.02rem, 1.7vw, 1.42rem);
+  font-weight: 800;
+  line-height: 1.25;
+  text-align: right;
+}
+.signature-wall-time {
+  display: block;
+  margin-top: 4px;
+  color: rgba(36, 49, 38, .56);
+  font-size: .72rem;
+  text-align: right;
+}
+.review-page .review-hero-card,
+.review-page .clean-review-card {
+  border-color: #dbe7d7 !important;
+}
+.review-page .review-submit-btn,
+.review-page .review-link-button:not(.review-link-button-light) {
+  background: #276749 !important;
+  border-color: #276749 !important;
+}
+.review-page .review-submit-btn:hover,
+.review-page .review-link-button:not(.review-link-button-light):hover {
+  background: #1f513a !important;
+  border-color: #1f513a !important;
+}
+
+@media (max-width: 850px) {
+  .signature-wall-shell {
+    width: min(100% - 20px, 680px);
+    margin: 14px auto 26px;
+  }
+  .signature-wall-topbar {
+    justify-content: stretch;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .signature-wall-action {
+    min-height: 46px;
+    padding: 0 10px;
+    font-size: .92rem;
+  }
+  .signature-wall-canvas {
+    min-height: calc(100vh - 142px) !important;
+    overflow: auto;
+  }
+  .signature-wall-grid {
+    position: relative;
+    inset: auto;
+    display: grid;
+    gap: 16px;
+    padding: 18px 16px 28px;
+  }
+  .signature-wall-note {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100% !important;
+    max-width: none;
+    transform: none;
+    padding: 8px 4px 14px;
+  }
+  .signature-wall-message {
+    font-size: 1.08rem;
+  }
+  .signature-wall-signed {
+    font-size: 1.18rem;
+  }
+}

@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Review | Calculator Hub</title>
+  <title>Sign the Wall | Calculator Hub</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Leave a review for the calculator website. Reviews are saved in this browser and shown on the review wall.">
+  <meta name="description" content="Sign the review wall for the calculator website. Your message is saved in this browser and shown on the Wall page.">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=review-wall-20260528">
-  <link rel="stylesheet" href="pc.css?v=review-wall-20260528" media="screen and (min-width: 851px)">
-  <link rel="stylesheet" href="phone.css?v=review-wall-20260528" media="screen and (max-width: 850px)">
+  <link rel="stylesheet" href="style.css?v=signature-wall-20260528">
+  <link rel="stylesheet" href="pc.css?v=signature-wall-20260528" media="screen and (min-width: 851px)">
+  <link rel="stylesheet" href="phone.css?v=signature-wall-20260528" media="screen and (max-width: 850px)">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body class="info-page review-page app-redesign" data-page="review">
@@ -101,19 +101,19 @@
 
   <main class="review-page-shell info-page-box">
     <section class="review-hero-card">
-      <p class="review-kicker">User feedback</p>
-      <h1>Leave a Review</h1>
-      <p>Share what works well, what can be improved, or which calculator helped you. Your review will be saved to the review wall on this browser.</p>
+      <p class="review-kicker">Review signature</p>
+      <h1>Sign the Review Wall</h1>
+      <p>Leave a short review or signature. After you submit, it will appear on the Wall page like a note signed on a wall.</p>
       <div class="review-hero-actions">
-        <a class="review-link-button" href="Wall.html">View review wall</a>
+        <a class="review-link-button" href="Wall.html">View wall</a>
         <a class="review-link-button review-link-button-light" href="index.html">Back to tools</a>
       </div>
     </section>
 
     <section class="review-form-card clean-review-card">
       <div class="review-section-title">
-        <h2>Write your review</h2>
-        <p>Please keep it helpful and clear.</p>
+        <h2>Add your signature</h2>
+        <p>Write a short message that can be displayed on the review wall.</p>
       </div>
 
       <form id="reviewForm" class="review-form">
@@ -136,17 +136,17 @@
         </div>
 
         <label>
-          <span>Review title</span>
+          <span>Short title</span>
           <input id="reviewTitle" name="reviewTitle" type="text" placeholder="Example: Easy to use and clear results" maxlength="80">
         </label>
 
         <label>
-          <span>Your review</span>
-          <textarea id="reviewMessage" name="reviewMessage" rows="6" placeholder="Write your review here..." required></textarea>
+          <span>Your message</span>
+          <textarea id="reviewMessage" name="reviewMessage" rows="6" placeholder="Write your review or wall signature here..." required></textarea>
         </label>
 
         <div class="review-form-actions">
-          <button type="submit" class="main-btn review-submit-btn">Post review</button>
+          <button type="submit" class="main-btn review-submit-btn">Sign the wall</button>
           <button type="button" id="clearReviewsBtn" class="main-btn secondary-btn">Clear my saved reviews</button>
         </div>
 
@@ -156,8 +156,8 @@
 
     <section class="review-preview-card clean-review-card">
       <div class="review-section-title">
-        <h2>Latest reviews</h2>
-        <p>Newest reviews saved in this browser.</p>
+        <h2>Latest signatures</h2>
+        <p>Newest wall signatures saved in this browser.</p>
       </div>
       <div id="latestReviewPreview" class="review-preview-list"></div>
     </section>
@@ -217,7 +217,7 @@
         const reviews = getReviews();
         if (!preview) return;
         if (!reviews.length) {
-          preview.innerHTML = '<p class="review-empty-state">No reviews yet. Be the first to post one.</p>';
+          preview.innerHTML = '<p class="review-empty-state">No signatures yet. Be the first to sign the wall.</p>';
           return;
         }
 
@@ -251,16 +251,16 @@
           saveReviews(reviews);
           form.reset();
           renderPreview();
-          if (status) status.textContent = "Review posted. It is now shown on the Wall page.";
+          if (status) status.textContent = "Signature added. It is now shown on the Wall page.";
         });
       }
 
       if (clearBtn) {
         clearBtn.addEventListener("click", function () {
-          if (!confirm("Clear reviews saved in this browser?")) return;
+          if (!confirm("Clear signatures saved in this browser?")) return;
           localStorage.removeItem(storageKey);
           renderPreview();
-          if (status) status.textContent = "Saved reviews cleared from this browser.";
+          if (status) status.textContent = "Saved signatures cleared from this browser.";
         });
       }
 
@@ -268,8 +268,8 @@
     })();
   </script>
 
-  <script src="script.js?v=review-wall-20260528"></script>
-  <script src="pc.js?v=review-wall-20260528"></script>
-  <script src="phone.js?v=review-wall-20260528"></script>
+  <script src="script.js?v=signature-wall-20260528"></script>
+  <script src="pc.js?v=signature-wall-20260528"></script>
+  <script src="phone.js?v=signature-wall-20260528"></script>
 </body>
 </html>
