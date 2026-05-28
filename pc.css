@@ -14089,3 +14089,1501 @@ hr {
   background: #0b3d2e !important;
 }
 /* ===== END CHATGPT PROFESSIONAL DARK GREEN SKIN ===== */
+
+/* ===== CHATGPT FULL PROFESSIONAL DARK GREEN BLACK WHITE REDESIGN 2026-05-28 =====
+   Full visual + alignment refresh. Uses a dark green / black / white professional system.
+   Calculator IDs and JavaScript hooks are untouched.
+===================================================== */
+:root {
+  --bg: #f5f7f5 !important;
+  --black: #06110d !important;
+  --white: #ffffff !important;
+  --yellow: #ffffff !important;
+  --soft-yellow: #ffffff !important;
+  --pink: #ffffff !important;
+  --blue: #ffffff !important;
+  --green: #063d2c !important;
+  --shadow: 0 20px 48px rgba(6, 17, 13, 0.12) !important;
+  --pro-black: #06110d !important;
+  --pro-green-dark: #03281e !important;
+  --pro-green: #064734 !important;
+  --pro-green-mid: #0b5f43 !important;
+  --pro-green-soft: #edf5f0 !important;
+  --pro-white: #ffffff !important;
+  --pro-bg: #f4f7f5 !important;
+  --pro-bg-2: #ecf2ee !important;
+  --pro-surface: #ffffff !important;
+  --pro-surface-2: #f9fbfa !important;
+  --pro-line: #d8e3dd !important;
+  --pro-line-dark: rgba(255, 255, 255, 0.14) !important;
+  --pro-text: #08140f !important;
+  --pro-muted: #61726a !important;
+  --pro-radius-xl: 28px !important;
+  --pro-radius-lg: 20px !important;
+  --pro-radius-md: 14px !important;
+  --pro-shadow-card: 0 18px 44px rgba(6, 17, 13, 0.10) !important;
+  --pro-shadow-hover: 0 24px 58px rgba(6, 17, 13, 0.16) !important;
+}
+
+html {
+  background: var(--pro-bg) !important;
+  scroll-behavior: smooth !important;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box !important;
+  text-shadow: none !important;
+}
+
+body,
+button,
+input,
+select,
+textarea,
+a,
+summary {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif !important;
+}
+
+body {
+  min-height: 100vh !important;
+  color: var(--pro-text) !important;
+  background:
+    radial-gradient(circle at 8% -12%, rgba(6, 71, 52, 0.16), transparent 34%),
+    radial-gradient(circle at 95% 4%, rgba(3, 40, 30, 0.12), transparent 30%),
+    linear-gradient(180deg, #ffffff 0%, var(--pro-bg) 42%, var(--pro-bg-2) 100%) !important;
+  line-height: 1.55 !important;
+  letter-spacing: -0.005em !important;
+  overflow-x: hidden !important;
+}
+
+body::before,
+body::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* ---------- Professional top navigation ---------- */
+#navbar.clean-navbar,
+.clean-navbar,
+#navbar {
+  position: fixed !important;
+  top: 16px !important;
+  left: 50% !important;
+  right: auto !important;
+  width: min(1180px, calc(100vw - 32px)) !important;
+  min-height: 64px !important;
+  height: auto !important;
+  max-height: none !important;
+  padding: 8px !important;
+  transform: translateX(-50%) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: var(--pro-white) !important;
+  background: linear-gradient(135deg, var(--pro-black) 0%, var(--pro-green-dark) 54%, var(--pro-green) 100%) !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 22px 52px rgba(3, 40, 30, 0.28) !important;
+  overflow: visible !important;
+  z-index: 999999 !important;
+}
+
+#navbar.clean-navbar .clean-nav-inner,
+.clean-navbar .clean-nav-inner {
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 48px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  flex-wrap: nowrap !important;
+}
+
+#navbar.clean-navbar .clean-nav-link,
+#navbar.clean-navbar .clean-nav-button,
+#navbar.clean-navbar .clean-nav-panel-row,
+#navbar.clean-navbar .clean-nav-submenu-button,
+.clean-navbar .clean-nav-link,
+.clean-navbar .clean-nav-button,
+.clean-navbar .clean-nav-panel-row,
+.clean-navbar .clean-nav-submenu-button {
+  width: auto !important;
+  min-width: 0 !important;
+  height: 46px !important;
+  min-height: 46px !important;
+  padding: 0 16px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  color: rgba(255,255,255,0.90) !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 16px !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  font-weight: 750 !important;
+  letter-spacing: 0.01em !important;
+  text-decoration: none !important;
+  text-transform: capitalize !important;
+  transform: none !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+}
+
+#navbar.clean-navbar .clean-nav-link:hover,
+#navbar.clean-navbar .clean-nav-link:focus-visible,
+#navbar.clean-navbar .clean-nav-button:hover,
+#navbar.clean-navbar .clean-nav-button:focus-visible,
+#navbar.clean-navbar .clean-nav-dropdown.is-open > .clean-nav-button,
+#navbar.clean-navbar .clean-nav-dropdown:hover > .clean-nav-button,
+#navbar.clean-navbar .clean-nav-submenu.is-open > .clean-nav-submenu-button,
+#navbar.clean-navbar .clean-nav-submenu-button:hover,
+.clean-navbar .clean-nav-link:hover,
+.clean-navbar .clean-nav-button:hover {
+  color: #ffffff !important;
+  background: rgba(255,255,255,0.12) !important;
+  border-color: rgba(255,255,255,0.18) !important;
+}
+
+#navbar.clean-navbar .clean-chat-link {
+  margin-left: 0 !important;
+}
+
+#navbar.clean-navbar .clean-nav-search,
+.clean-navbar .clean-nav-search {
+  margin-left: auto !important;
+  width: clamp(210px, 26vw, 320px) !important;
+  height: 46px !important;
+  min-height: 46px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 4px 5px 4px 14px !important;
+  background: rgba(255,255,255,0.10) !important;
+  border: 1px solid rgba(255,255,255,0.16) !important;
+  border-radius: 16px !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+#navbar.clean-navbar .clean-nav-search-label {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0,0,0,0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+#navbar.clean-navbar .clean-nav-search-input,
+.clean-navbar .clean-nav-search-input {
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 8px !important;
+  color: #ffffff !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+  outline: none !important;
+}
+
+#navbar.clean-navbar .clean-nav-search-input::placeholder {
+  color: rgba(255,255,255,0.62) !important;
+}
+
+#navbar.clean-navbar .clean-nav-search-button,
+.clean-navbar .clean-nav-search-button {
+  flex: 0 0 36px !important;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  padding: 0 !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+  color: var(--pro-green-dark) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#navbar.clean-navbar .clean-nav-dropdown-panel,
+#navbar.clean-navbar .clean-nav-submenu-panel,
+#navbar.clean-navbar .clean-nav-search-results,
+.clean-navbar .clean-nav-dropdown-panel,
+.clean-navbar .clean-nav-submenu-panel,
+.clean-navbar .clean-nav-search-results {
+  color: var(--pro-text) !important;
+  background: rgba(255,255,255,0.98) !important;
+  border: 1px solid rgba(6,71,52,0.15) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 26px 68px rgba(3,40,30,0.22) !important;
+  backdrop-filter: blur(16px) saturate(135%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(135%) !important;
+  overflow: hidden !important;
+}
+
+#navbar.clean-navbar .clean-nav-dropdown-panel a,
+#navbar.clean-navbar .clean-nav-submenu-panel a,
+#navbar.clean-navbar .clean-nav-panel-row,
+#navbar.clean-navbar .clean-nav-search-result,
+.clean-navbar .clean-nav-dropdown-panel a,
+.clean-navbar .clean-nav-submenu-panel a,
+.clean-navbar .clean-nav-panel-row,
+.clean-navbar .clean-nav-search-result {
+  color: var(--pro-text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  text-align: left !important;
+}
+
+#navbar.clean-navbar .clean-nav-dropdown-panel a:hover,
+#navbar.clean-navbar .clean-nav-submenu-panel a:hover,
+#navbar.clean-navbar .clean-nav-panel-row:hover,
+#navbar.clean-navbar .clean-nav-search-result:hover,
+.clean-navbar .clean-nav-dropdown-panel a:hover,
+.clean-navbar .clean-nav-submenu-panel a:hover,
+.clean-navbar .clean-nav-panel-row:hover,
+.clean-navbar .clean-nav-search-result:hover {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--pro-green-dark), var(--pro-green-mid)) !important;
+}
+
+/* ---------- Consistent page alignment ---------- */
+main.calculator-container,
+main.age-calculator-container,
+main.bmi-calculator-container,
+main.discount-calculator-container,
+main.loan-calculator-container,
+main.percentage-calculator-container,
+main.compound-calculator-container,
+main.compound-interest-container,
+main.extra-calculator-container,
+main.extra-calculator-layout,
+main.old-calculator-layout {
+  width: min(1180px, calc(100vw - 36px)) !important;
+  max-width: 1180px !important;
+  margin: 118px auto 72px !important;
+  padding: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(230px, 280px) minmax(0, 1fr) !important;
+  gap: 24px !important;
+  align-items: start !important;
+  justify-content: center !important;
+}
+
+main.extra-calculator-layout,
+main.extra-help-layout {
+  width: min(1240px, calc(100vw - 36px)) !important;
+  max-width: 1240px !important;
+  grid-template-columns: minmax(230px, 286px) minmax(0, 1fr) !important;
+  grid-auto-rows: auto !important;
+}
+
+main.extra-help-layout > .extra-side-box,
+main.extra-help-layout > .loan-history-box {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+}
+
+main.extra-help-layout > .extra-what-slot {
+  grid-column: 1 !important;
+  grid-row: 2 !important;
+}
+
+main.extra-help-layout > .extra-help-panel,
+main.extra-help-layout > .instruction-box {
+  grid-column: 1 !important;
+  grid-row: 3 !important;
+}
+
+main.extra-help-layout > .extra-calculator-box,
+main.extra-help-layout > .calculator {
+  grid-column: 2 !important;
+  grid-row: 1 / span 3 !important;
+}
+
+main.old-calculator-layout > .old-calculator-groupbar,
+main.old-calculator-layout > .loan-history-box,
+main.old-calculator-layout > .extra-side-box {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+}
+
+main.old-calculator-layout > .calculator,
+main.old-calculator-layout > .bmi-calculator-box {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+}
+
+main.single-calculator-container,
+main.about-container,
+main.calculator-box.info-page-box,
+main.info-page-box,
+main.grouped-calculator-home,
+body.index-page main.calculator-box {
+  width: min(1040px, calc(100vw - 36px)) !important;
+  max-width: 1040px !important;
+  margin: 118px auto 72px !important;
+  padding: clamp(24px, 3vw, 38px) !important;
+}
+
+body.index-page main.calculator-box {
+  width: min(1120px, calc(100vw - 36px)) !important;
+  max-width: 1120px !important;
+}
+
+/* ---------- Professional cards and panels ---------- */
+.calculator,
+.calculator-box,
+.about-box,
+.about-container,
+.info-page-box,
+.chat-board-card,
+.chat-form-card,
+.chat-intro-card,
+.extra-calculator-box,
+.extra-input-card,
+.extra-result-box,
+.instruction-box,
+.instruction-section,
+.reference-box,
+.reference-card,
+.early-settlement-box,
+.mortgage-input-box,
+.mortgage-home-box,
+.mortgage-loan-box,
+.optional-mortgage-costs,
+.loan-style-output-panel,
+.mortgage-modern-result-panel,
+.calculator-clean-result,
+.loan-result-panel,
+.bmi-result-box,
+.age-point-result-box,
+.age-result-group-box,
+.bmi-result-group-box,
+.calculator-report-card,
+.calculator-report-result,
+.calculator-report-summary-card,
+.site-faq-item,
+.live-abacus-card,
+.index-category-dropdown,
+body.index-page .index-category-dropdown {
+  position: relative !important;
+  color: var(--pro-text) !important;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfdfc 100%) !important;
+  border: 1px solid var(--pro-line) !important;
+  border-radius: var(--pro-radius-xl) !important;
+  box-shadow: var(--pro-shadow-card) !important;
+  transform: none !important;
+  overflow: hidden !important;
+}
+
+.calculator,
+.calculator-box,
+.about-box,
+.info-page-box,
+.extra-calculator-box {
+  padding: clamp(24px, 3vw, 38px) !important;
+}
+
+.calculator::before,
+.calculator-box::before,
+.about-box::before,
+.info-page-box::before,
+.extra-calculator-box::before,
+.extra-input-card::before,
+.extra-result-box::before,
+.live-abacus-card::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 5px !important;
+  background: linear-gradient(90deg, var(--pro-black), var(--pro-green-dark), var(--pro-green-mid)) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.calculator:hover,
+.calculator-box:hover,
+.extra-calculator-box:hover,
+.about-box:hover,
+.info-page-box:hover {
+  box-shadow: var(--pro-shadow-hover) !important;
+}
+
+/* ---------- Sidebar / group navigation alignment ---------- */
+.history,
+.age-history-box,
+.bmi-history-box,
+.discount-history-box,
+.loan-history-box,
+.percentage-history-box,
+.extra-side-box,
+.old-calculator-groupbar,
+.group-side-box,
+.extra-related-box {
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: 20px !important;
+  color: #ffffff !important;
+  background: linear-gradient(180deg, var(--pro-black) 0%, var(--pro-green-dark) 100%) !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  border-radius: var(--pro-radius-lg) !important;
+  box-shadow: 0 18px 44px rgba(3,40,30,0.22) !important;
+  transform: none !important;
+  overflow: hidden !important;
+}
+
+@media (min-width: 851px) {
+  .history,
+  .age-history-box,
+  .bmi-history-box,
+  .discount-history-box,
+  .loan-history-box,
+  .percentage-history-box,
+  .extra-side-box,
+  .old-calculator-groupbar,
+  .group-side-box,
+  .extra-related-box,
+  .instruction-box.extra-help-panel {
+    position: sticky !important;
+    top: 104px !important;
+  }
+}
+
+.history-top,
+.age-history-top,
+.bmi-history-top,
+.discount-history-top,
+.loan-history-top,
+.percentage-history-top,
+.extra-related-top,
+.loan-history-box .loan-history-top {
+  margin: 0 0 16px !important;
+  padding-bottom: 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  border-bottom: 1px solid rgba(255,255,255,0.14) !important;
+}
+
+.history h3,
+.age-history-top h3,
+.bmi-history-top h3,
+.discount-history-top h3,
+.loan-history-top h3,
+.percentage-history-top h3,
+.extra-related-top h3,
+.loan-history-box h3,
+.extra-side-box h3 {
+  margin: 0 !important;
+  color: #ffffff !important;
+  font-size: 15px !important;
+  line-height: 1.25 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+}
+
+.extra-side-links,
+.group-side-links,
+.loan-history-box .extra-side-links,
+.old-calculator-groupbar .extra-side-links {
+  display: grid !important;
+  gap: 9px !important;
+}
+
+.extra-side-links a,
+.group-side-links a,
+.old-calculator-groupbar a,
+.loan-history-box a,
+.extra-side-box a,
+.extra-related-box a,
+.history a,
+.history-item {
+  width: 100% !important;
+  min-height: 44px !important;
+  padding: 12px 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  color: rgba(255,255,255,0.86) !important;
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  border-radius: 14px !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+  line-height: 1.25 !important;
+  font-weight: 700 !important;
+  text-align: left !important;
+  text-decoration: none !important;
+  transform: none !important;
+}
+
+.extra-side-links a:hover,
+.group-side-links a:hover,
+.old-calculator-groupbar a:hover,
+.loan-history-box a:hover,
+.extra-side-box a:hover,
+.extra-related-box a:hover,
+.history a:hover,
+.history-item:hover {
+  color: #ffffff !important;
+  background: rgba(255,255,255,0.13) !important;
+  border-color: rgba(255,255,255,0.20) !important;
+  transform: translateY(-1px) !important;
+}
+
+.current-extra-link,
+.current-loan-link,
+.current-group-link,
+.extra-side-links a.current-extra-link,
+.old-calculator-groupbar a.current-extra-link,
+.loan-history-box a.current-extra-link {
+  color: var(--pro-green-dark) !important;
+  background: #ffffff !important;
+  border-color: #ffffff !important;
+  box-shadow: 0 12px 26px rgba(0,0,0,0.14) !important;
+}
+
+/* ---------- Typography ---------- */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.page-title,
+.section-title,
+.calculator h1,
+.calculator-box h1,
+.about-box h1,
+.info-page-box h1,
+.extra-input-card-title,
+.instruction-main-title,
+.reference-main-title {
+  color: var(--pro-text) !important;
+  letter-spacing: -0.035em !important;
+  text-shadow: none !important;
+}
+
+.calculator h1,
+.calculator-box h1,
+.about-box h1,
+.info-page-box h1 {
+  margin: 0 0 10px !important;
+  font-size: clamp(30px, 4vw, 46px) !important;
+  line-height: 1.05 !important;
+  font-weight: 850 !important;
+}
+
+.calculator h1::after,
+.calculator-box h1::after,
+.about-box h1::after,
+.info-page-box h1::after,
+.section-title::after,
+.page-title::after {
+  content: "" !important;
+  display: block !important;
+  width: 74px !important;
+  height: 4px !important;
+  margin: 16px 0 0 !important;
+  border-radius: 999px !important;
+  background: linear-gradient(90deg, var(--pro-green-dark), var(--pro-green-mid)) !important;
+  box-shadow: none !important;
+}
+
+.subtitle,
+.calculator .subtitle,
+.calculator-box .subtitle,
+p,
+li,
+small,
+label,
+.info-content-card p,
+.instruction-section p,
+.reference-card p {
+  color: var(--pro-muted) !important;
+  font-size: 15px !important;
+}
+
+.calculator .subtitle,
+.calculator-box .subtitle {
+  max-width: 680px !important;
+  margin: 0 0 24px !important;
+  font-size: 16px !important;
+}
+
+label,
+.form-label,
+.input-label,
+.extra-input-field label,
+.calculator label {
+  display: block !important;
+  margin: 15px 0 8px !important;
+  color: #18342b !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.03em !important;
+  text-transform: uppercase !important;
+}
+
+/* ---------- Forms and calculator inputs ---------- */
+input,
+select,
+textarea,
+#display,
+.calculator input,
+.calculator select,
+.calculator textarea,
+.extra-input-field input,
+.extra-input-field select,
+.mortgage-input-grid input,
+.mortgage-input-grid select {
+  width: 100% !important;
+  min-height: 50px !important;
+  padding: 0 15px !important;
+  color: var(--pro-text) !important;
+  background: #ffffff !important;
+  border: 1px solid #ccd8d1 !important;
+  border-radius: 15px !important;
+  box-shadow: inset 0 1px 2px rgba(6,17,13,0.04) !important;
+  font-size: 16px !important;
+  font-weight: 650 !important;
+  outline: none !important;
+  transform: none !important;
+}
+
+textarea {
+  min-height: 118px !important;
+  padding-top: 14px !important;
+  resize: vertical !important;
+}
+
+input:hover,
+select:hover,
+textarea:hover,
+#display:hover {
+  border-color: rgba(6,71,52,0.45) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+#display:focus {
+  border-color: var(--pro-green) !important;
+  box-shadow: 0 0 0 4px rgba(6,71,52,0.12), inset 0 1px 2px rgba(6,17,13,0.04) !important;
+}
+
+.display-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 12px !important;
+  align-items: center !important;
+  margin-bottom: 18px !important;
+}
+
+#display {
+  height: 62px !important;
+  min-height: 62px !important;
+  font-size: clamp(22px, 3vw, 34px) !important;
+  font-weight: 800 !important;
+  text-align: right !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f5f8f6 100%) !important;
+}
+
+.extra-input-card,
+.mortgage-input-box,
+.optional-mortgage-costs,
+.early-settlement-box {
+  padding: 22px !important;
+  margin: 22px 0 !important;
+  border-radius: 22px !important;
+}
+
+.extra-input-grid,
+.mortgage-input-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  align-items: end !important;
+}
+
+.extra-input-field {
+  min-width: 0 !important;
+}
+
+/* ---------- Buttons ---------- */
+button,
+.button,
+.btn,
+.main-btn,
+.secondary-btn,
+.calculate-btn,
+.calculator > button,
+.calculator button,
+.calculator-box button,
+input[type="button"],
+input[type="submit"],
+.ans-btn,
+.clear-btn,
+.early-settlement-toggle,
+.optional-mortgage-toggle,
+.interactive-abacus-reset,
+.extra-help-question-button {
+  min-height: 44px !important;
+  padding: 0 18px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--pro-black) 0%, var(--pro-green) 100%) !important;
+  border: 1px solid rgba(6,71,52,0.18) !important;
+  border-radius: 15px !important;
+  box-shadow: 0 12px 26px rgba(3,40,30,0.18) !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.01em !important;
+  text-decoration: none !important;
+  transform: none !important;
+  cursor: pointer !important;
+}
+
+button:hover,
+.button:hover,
+.btn:hover,
+.main-btn:hover,
+.secondary-btn:hover,
+.calculate-btn:hover,
+.calculator > button:hover,
+.calculator button:hover,
+.calculator-box button:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover,
+.ans-btn:hover,
+.clear-btn:hover,
+.early-settlement-toggle:hover,
+.optional-mortgage-toggle:hover,
+.interactive-abacus-reset:hover,
+.extra-help-question-button:hover {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--pro-green-dark) 0%, var(--pro-green-mid) 100%) !important;
+  box-shadow: 0 16px 34px rgba(3,40,30,0.24) !important;
+  transform: translateY(-1px) !important;
+}
+
+button:active,
+.button:active,
+.btn:active,
+.main-btn:active,
+.calculator button:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 8px 18px rgba(3,40,30,0.18) !important;
+}
+
+.buttons,
+.basic-grid,
+.scientific-grid {
+  display: grid !important;
+  gap: 10px !important;
+}
+
+.basic-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.scientific-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+}
+
+.buttons button,
+.basic-grid button,
+.scientific-grid button {
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 54px !important;
+  padding: 0 !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  color: var(--pro-text) !important;
+  border: 1px solid var(--pro-line) !important;
+  box-shadow: 0 8px 18px rgba(6,17,13,0.07) !important;
+  font-size: 18px !important;
+  font-weight: 850 !important;
+}
+
+.buttons button:hover,
+.basic-grid button:hover,
+.scientific-grid button:hover,
+.buttons button.keyboard-active {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--pro-green-dark), var(--pro-green-mid)) !important;
+  border-color: var(--pro-green) !important;
+}
+
+.basic-grid .equal,
+.scientific-grid .equal,
+.equal,
+.main-btn {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--pro-black), var(--pro-green-mid)) !important;
+  border-color: var(--pro-green) !important;
+}
+
+.basic-grid .ac-btn,
+.ac-btn,
+.clear-btn {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #111111, #26312d) !important;
+}
+
+/* ---------- Result panels and action rows ---------- */
+#result,
+#bmiResult,
+#loanResult,
+#discountResult,
+#percentageResult,
+#compoundResult,
+#personalLoanResult,
+#extraCalcResult,
+.calculator-clean-result,
+.loan-style-output-panel,
+.mortgage-modern-result-panel,
+.extra-result-box,
+.loan-result-panel,
+.bmi-result-box,
+.age-point-result-box,
+.calculator-report-page,
+.calculator-report-card,
+.calculator-report-result {
+  border-radius: 24px !important;
+  border: 1px solid rgba(6,71,52,0.16) !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f7faf8 100%) !important;
+  box-shadow: 0 16px 40px rgba(6,17,13,0.10) !important;
+  color: var(--pro-text) !important;
+  transform: none !important;
+}
+
+.calculator-clean-result,
+.loan-style-output-panel,
+.mortgage-modern-result-panel,
+.extra-result-box,
+.loan-result-panel,
+.bmi-result-box,
+.age-point-result-box {
+  margin-top: 24px !important;
+  padding: 22px !important;
+}
+
+.loan-panel-title,
+.age-result-title,
+.bmi-result-title,
+.mortgage-modern-result-title,
+.extra-result-card h3,
+.calculator-report-card h2,
+.calculator-report-result h2 {
+  color: var(--pro-text) !important;
+  font-size: clamp(20px, 2.5vw, 28px) !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.025em !important;
+}
+
+.loan-result-table-scroll,
+.calculator-report-table-scroll,
+.mortgage-advanced-table-scroll,
+.reference-scroll {
+  width: 100% !important;
+  overflow-x: auto !important;
+  border-radius: 18px !important;
+}
+
+table,
+.loan-result-table,
+.extra-result-table,
+.calculator-report-result table,
+.mortgage-advanced-table,
+.age-report-flow-table,
+.bmi-report-flow-table {
+  width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid var(--pro-line) !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+th,
+thead,
+table thead tr,
+table th {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--pro-black), var(--pro-green)) !important;
+  font-weight: 800 !important;
+}
+
+td,
+th {
+  padding: 13px 14px !important;
+  border-color: var(--pro-line) !important;
+  font-size: 14px !important;
+}
+
+tbody tr:nth-child(even) td,
+tr:nth-child(even) td {
+  background: #f7faf8 !important;
+}
+
+.age-result-actions,
+.bmi-result-actions,
+.extra-result-actions,
+.universal-result-actions,
+.mortgage-result-actions,
+.calculator-report-actions,
+.result-actions,
+.clean-result-actions {
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  align-items: stretch !important;
+  margin-top: 18px !important;
+}
+
+.age-result-action-btn,
+.bmi-result-action-btn,
+.extra-result-action-btn,
+.universal-result-action-btn,
+.mortgage-result-action-btn,
+.calculator-report-action-btn,
+.result-action-btn,
+.result-action-button,
+.result-actions button,
+.clean-result-actions button {
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 42px !important;
+  padding: 0 10px !important;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--pro-black), var(--pro-green)) !important;
+  border: 1px solid rgba(6,71,52,0.18) !important;
+  border-radius: 13px !important;
+  box-shadow: 0 9px 20px rgba(3,40,30,0.16) !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  white-space: nowrap !important;
+}
+
+/* ---------- Index / homepage professional alignment ---------- */
+body.index-page main.calculator-box {
+  overflow: visible !important;
+}
+
+body.index-page main.calculator-box > h1 {
+  margin-bottom: 24px !important;
+  text-align: left !important;
+}
+
+body.index-page .index-category-dropdown-grid {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  align-items: start !important;
+  margin-bottom: 28px !important;
+  z-index: 20 !important;
+}
+
+body.index-page .index-category-dropdown {
+  position: relative !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+body.index-page .index-category-dropdown > summary {
+  min-height: 58px !important;
+  padding: 0 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--pro-black), var(--pro-green-dark)) !important;
+  border: 1px solid rgba(6,71,52,0.20) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 12px 26px rgba(3,40,30,0.16) !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+  text-align: center !important;
+  list-style: none !important;
+  cursor: pointer !important;
+}
+
+body.index-page .index-category-dropdown > summary::-webkit-details-marker {
+  display: none !important;
+}
+
+body.index-page .index-category-dropdown > summary::after {
+  content: "⌄" !important;
+  margin-left: 8px !important;
+  font-size: 16px !important;
+  line-height: 1 !important;
+}
+
+body.index-page .index-category-dropdown[open] > summary,
+body.index-page .index-category-dropdown.is-index-dropdown-open > summary,
+body.index-page .index-category-dropdown > summary:hover {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--pro-green-dark), var(--pro-green-mid)) !important;
+}
+
+body.index-page .index-category-dropdown > .index-category-dropdown-panel {
+  position: absolute !important;
+  top: calc(100% + 12px) !important;
+  left: 0 !important;
+  width: min(360px, calc(100vw - 42px)) !important;
+  max-width: calc(100vw - 42px) !important;
+  max-height: min(440px, calc(100vh - 190px)) !important;
+  padding: 12px !important;
+  overflow: auto !important;
+  color: var(--pro-text) !important;
+  background: rgba(255,255,255,0.98) !important;
+  border: 1px solid rgba(6,71,52,0.16) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 28px 70px rgba(3,40,30,0.24) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  z-index: 200 !important;
+}
+
+body.index-page .index-category-dropdown.calculator-category-money > .index-category-dropdown-panel,
+body.index-page .index-category-dropdown.calculator-category-loans > .index-category-dropdown-panel,
+body.index-page .index-category-dropdown.calculator-category-property > .index-category-dropdown-panel {
+  right: 0 !important;
+  left: auto !important;
+}
+
+body.index-page .calculator-category-links {
+  display: grid !important;
+  gap: 9px !important;
+}
+
+body.index-page .calculator-category-links a {
+  min-height: 44px !important;
+  padding: 12px 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  color: var(--pro-text) !important;
+  background: #ffffff !important;
+  border: 1px solid var(--pro-line) !important;
+  border-radius: 13px !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+  font-weight: 750 !important;
+  text-decoration: none !important;
+}
+
+body.index-page .calculator-category-links a:hover,
+body.index-page .calculator-category-links a:focus-visible {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--pro-black), var(--pro-green)) !important;
+}
+
+body.index-page .calculator-category-abacus,
+body.index-page .index-abacus-inside-card {
+  position: relative !important;
+  z-index: 1 !important;
+  margin-top: 12px !important;
+  overflow: hidden !important;
+}
+
+.live-abacus-card,
+.interactive-abacus-card {
+  padding: clamp(22px, 3vw, 32px) !important;
+}
+
+.live-abacus-card h2 {
+  color: var(--pro-text) !important;
+  font-size: clamp(24px, 3vw, 34px) !important;
+  letter-spacing: -0.03em !important;
+}
+
+.live-abacus-value,
+.interactive-abacus-value {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 14px !important;
+  background: #f7faf8 !important;
+  border: 1px solid var(--pro-line) !important;
+  border-radius: 18px !important;
+}
+
+.live-abacus,
+.interactive-abacus {
+  border-radius: 22px !important;
+  border: 1px solid var(--pro-line) !important;
+  background: linear-gradient(180deg, #ffffff, #f7faf8) !important;
+}
+
+/* ---------- Info, FAQ, chat and content pages ---------- */
+.about-container,
+.info-page-box,
+.contact-page .about-container,
+.privacy-page .about-container {
+  background: linear-gradient(180deg, #ffffff 0%, #fbfdfc 100%) !important;
+  border: 1px solid var(--pro-line) !important;
+  border-radius: var(--pro-radius-xl) !important;
+  box-shadow: var(--pro-shadow-card) !important;
+  overflow: hidden !important;
+}
+
+.about-card,
+.info-content-card,
+.site-faq-item,
+.chat-intro-card,
+.chat-board-card,
+.chat-form-card {
+  padding: 20px !important;
+  background: #ffffff !important;
+  border: 1px solid var(--pro-line) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 12px 30px rgba(6,17,13,0.07) !important;
+}
+
+.site-faq-list {
+  display: grid !important;
+  gap: 14px !important;
+}
+
+.site-faq-item summary,
+.calculator-faq-item summary,
+.extra-help-question-button {
+  color: var(--pro-text) !important;
+  font-weight: 850 !important;
+}
+
+/* ---------- Floating controls ---------- */
+#scrollTopBtn,
+#resizeNavigator button,
+#handToggleBtn,
+.scroll-top {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  padding: 0 !important;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--pro-black), var(--pro-green)) !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 14px 32px rgba(3,40,30,0.24) !important;
+}
+
+/* ---------- Mobile alignment ---------- */
+@media (max-width: 850px) {
+  #navbar.clean-navbar,
+  .clean-navbar,
+  #navbar {
+    top: 10px !important;
+    width: calc(100vw - 20px) !important;
+    padding: 8px !important;
+    border-radius: 20px !important;
+  }
+
+  #navbar.clean-navbar .clean-nav-inner,
+  .clean-navbar .clean-nav-inner {
+    flex-wrap: wrap !important;
+    gap: 7px !important;
+  }
+
+  #navbar.clean-navbar .clean-nav-link,
+  #navbar.clean-navbar .clean-nav-button,
+  .clean-navbar .clean-nav-link,
+  .clean-navbar .clean-nav-button {
+    flex: 1 1 auto !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    padding: 0 10px !important;
+    font-size: 13px !important;
+  }
+
+  #navbar.clean-navbar .clean-nav-search,
+  .clean-navbar .clean-nav-search {
+    order: 10 !important;
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+
+  #navbar.clean-navbar .clean-nav-dropdown-panel,
+  #navbar.clean-navbar .clean-nav-submenu-panel,
+  #navbar.clean-navbar .clean-nav-search-results {
+    max-width: calc(100vw - 30px) !important;
+  }
+
+  main.calculator-container,
+  main.age-calculator-container,
+  main.bmi-calculator-container,
+  main.discount-calculator-container,
+  main.loan-calculator-container,
+  main.percentage-calculator-container,
+  main.compound-calculator-container,
+  main.compound-interest-container,
+  main.extra-calculator-container,
+  main.extra-calculator-layout,
+  main.old-calculator-layout,
+  main.extra-help-layout,
+  main.single-calculator-container,
+  main.about-container,
+  main.calculator-box.info-page-box,
+  main.info-page-box,
+  main.grouped-calculator-home,
+  body.index-page main.calculator-box {
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px) !important;
+    margin: 142px auto 48px !important;
+    padding: 0 !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  main.about-container,
+  main.calculator-box.info-page-box,
+  main.info-page-box,
+  main.grouped-calculator-home,
+  body.index-page main.calculator-box {
+    padding: 22px !important;
+  }
+
+  main.extra-help-layout > .extra-side-box,
+  main.extra-help-layout > .loan-history-box,
+  main.extra-help-layout > .extra-what-slot,
+  main.extra-help-layout > .extra-help-panel,
+  main.extra-help-layout > .instruction-box,
+  main.extra-help-layout > .extra-calculator-box,
+  main.extra-help-layout > .calculator,
+  main.old-calculator-layout > .old-calculator-groupbar,
+  main.old-calculator-layout > .loan-history-box,
+  main.old-calculator-layout > .extra-side-box,
+  main.old-calculator-layout > .calculator,
+  main.old-calculator-layout > .bmi-calculator-box {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+
+  .history,
+  .age-history-box,
+  .bmi-history-box,
+  .discount-history-box,
+  .loan-history-box,
+  .percentage-history-box,
+  .extra-side-box,
+  .old-calculator-groupbar,
+  .group-side-box,
+  .extra-related-box,
+  .instruction-box.extra-help-panel {
+    position: relative !important;
+    top: auto !important;
+    padding: 16px !important;
+    border-radius: 20px !important;
+  }
+
+  .extra-side-links,
+  .group-side-links,
+  .loan-history-box .extra-side-links,
+  .old-calculator-groupbar .extra-side-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .extra-side-links a,
+  .old-calculator-groupbar a,
+  .loan-history-box a,
+  .extra-side-box a {
+    min-height: 40px !important;
+    padding: 10px 11px !important;
+    font-size: 12.5px !important;
+  }
+
+  .calculator,
+  .calculator-box,
+  .about-box,
+  .info-page-box,
+  .extra-calculator-box {
+    padding: 22px !important;
+    border-radius: 24px !important;
+  }
+
+  .calculator h1,
+  .calculator-box h1,
+  .about-box h1,
+  .info-page-box h1 {
+    font-size: clamp(28px, 9vw, 38px) !important;
+  }
+
+  .extra-input-grid,
+  .mortgage-input-grid,
+  .display-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  .basic-grid {
+    gap: 8px !important;
+  }
+
+  .scientific-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .buttons button,
+  .basic-grid button,
+  .scientific-grid button {
+    min-height: 50px !important;
+    font-size: 16px !important;
+  }
+
+  .age-result-actions,
+  .bmi-result-actions,
+  .extra-result-actions,
+  .universal-result-actions,
+  .mortgage-result-actions,
+  .calculator-report-actions,
+  .result-actions,
+  .clean-result-actions {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+  }
+
+  .age-result-action-btn,
+  .bmi-result-action-btn,
+  .extra-result-action-btn,
+  .universal-result-action-btn,
+  .mortgage-result-action-btn,
+  .calculator-report-action-btn,
+  .result-action-btn,
+  .result-action-button,
+  .result-actions button,
+  .clean-result-actions button {
+    min-height: 38px !important;
+    padding: 0 6px !important;
+    font-size: 11px !important;
+  }
+
+  body.index-page .index-category-dropdown-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  body.index-page .index-category-dropdown > summary {
+    min-height: 50px !important;
+    font-size: 13px !important;
+  }
+
+  body.index-page .index-category-dropdown > .index-category-dropdown-panel,
+  body.index-page .index-category-dropdown.calculator-category-money > .index-category-dropdown-panel,
+  body.index-page .index-category-dropdown.calculator-category-loans > .index-category-dropdown-panel,
+  body.index-page .index-category-dropdown.calculator-category-property > .index-category-dropdown-panel {
+    left: 0 !important;
+    right: auto !important;
+    width: min(330px, calc(100vw - 34px)) !important;
+    max-width: calc(100vw - 34px) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  main.calculator-container,
+  main.age-calculator-container,
+  main.bmi-calculator-container,
+  main.discount-calculator-container,
+  main.loan-calculator-container,
+  main.percentage-calculator-container,
+  main.compound-calculator-container,
+  main.compound-interest-container,
+  main.extra-calculator-container,
+  main.extra-calculator-layout,
+  main.old-calculator-layout,
+  main.extra-help-layout,
+  main.single-calculator-container,
+  main.about-container,
+  main.calculator-box.info-page-box,
+  main.info-page-box,
+  main.grouped-calculator-home,
+  body.index-page main.calculator-box {
+    width: calc(100vw - 16px) !important;
+    max-width: calc(100vw - 16px) !important;
+  }
+
+  .extra-side-links,
+  .group-side-links,
+  .loan-history-box .extra-side-links,
+  .old-calculator-groupbar .extra-side-links,
+  body.index-page .index-category-dropdown-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .age-result-actions,
+  .bmi-result-actions,
+  .extra-result-actions,
+  .universal-result-actions,
+  .mortgage-result-actions,
+  .calculator-report-actions,
+  .result-actions,
+  .clean-result-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 11px !important;
+  height: 11px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: #eef3ef !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--pro-black), var(--pro-green)) !important;
+  border-radius: 999px !important;
+  border: 2px solid #eef3ef !important;
+}
+
+::selection {
+  color: #ffffff !important;
+  background: var(--pro-green) !important;
+}
+/* ===== END CHATGPT FULL PROFESSIONAL DARK GREEN BLACK WHITE REDESIGN ===== */

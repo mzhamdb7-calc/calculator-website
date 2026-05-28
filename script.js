@@ -3891,7 +3891,7 @@
     const html =
       '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
       '<title>Calculator Report</title>' +
-      '<style>body{background:#dfeeff;font-family:Comic Sans MS,Comic Neue,cursive,sans-serif;padding:24px;color:#000}.report{max-width:1100px;margin:0 auto;padding:18px;background:#fff;border:5px solid #000;box-shadow:8px 8px 0 #000}table{width:100%;border-collapse:collapse}td,th{border:3px solid #000;padding:10px}h1,h2{text-align:center}</style>' +
+      '<style>body{background:#f4f7f5;font-family:Inter,Segoe UI,Arial,sans-serif;padding:24px;color:#08140f}.report{max-width:1100px;margin:0 auto;padding:24px;background:#fff;border:1px solid #d8e3dd;border-radius:24px;box-shadow:0 18px 44px rgba(6,17,13,.12)}table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid #d8e3dd;border-radius:16px;overflow:hidden}td,th{border-bottom:1px solid #d8e3dd;padding:12px}th{background:#03281e;color:#fff}h1,h2{text-align:center;color:#06110d}</style>' +
       '</head><body><div class="report">' + section.innerHTML + '</div></body></html>';
 
     const blob = new Blob([html], { type: "text/html;charset=utf-8" });
