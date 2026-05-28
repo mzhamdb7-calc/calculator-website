@@ -1015,34 +1015,37 @@
       });
     }
 
-    function makeHighlight(pattern, title, className) {
-      const row = findRow(pattern);
+    const bmiRow = findRow(/^BMI$/i);
+    const categoryRow = findRow(/^BMI category$/i);
+    const differenceRow = findRow(/^Difference to healthy range$/i);
+
+    function makeSummaryCard(row, fallbackLabel, className) {
       if (!row) return "";
 
       return (
-        '<section class="bmi-highlight-card ' + className + '">' +
-          '<div class="bmi-highlight-label">' + escapeHtml(title) + '</div>' +
-          '<div class="bmi-highlight-value">' + escapeHtml(rowValue(row)) + '</div>' +
+        '<section class="bmi-summary-card ' + className + '">' +
+          '<div class="bmi-summary-card-label">' + escapeHtml(fallbackLabel || rowLabel(row)) + '</div>' +
+          '<div class="bmi-summary-card-value">' + escapeHtml(rowValue(row)) + '</div>' +
         '</section>'
       );
     }
 
-    function makeHighlightValueOnly(pattern, className) {
-      const row = findRow(pattern);
-      if (!row) return "";
+    const bmiValue = bmiRow ? rowValue(bmiRow) : "";
+    const categoryValue = categoryRow ? rowValue(categoryRow) : "";
 
-      return (
-        '<section class="bmi-highlight-card bmi-highlight-value-only ' + className + '">' +
-          '<div class="bmi-highlight-value">' + escapeHtml(rowValue(row)) + '</div>' +
-        '</section>'
-      );
-    }
+    const mainResultText = bmiValue
+      ? ('<div class="bmi-main-result-text">' +
+          '<span class="bmi-main-result-label">Your BMI result</span>' +
+          '<strong>' + escapeHtml(bmiValue) + '</strong>' +
+          (categoryValue ? '<small>' + escapeHtml(categoryValue) + '</small>' : '') +
+        '</div>')
+      : "";
 
-    const highlightHtml =
-      '<div class="bmi-highlight-grid">' +
-        makeHighlight(/^BMI$/i, "BMI", "bmi-highlight-bmi") +
-        makeHighlightValueOnly(/^BMI category$/i, "bmi-highlight-category") +
-        makeHighlightValueOnly(/^Difference to healthy range$/i, "bmi-highlight-difference") +
+    const summaryHtml =
+      '<div class="bmi-summary-card-grid" aria-label="BMI result summary">' +
+        makeSummaryCard(bmiRow, "BMI", "bmi-summary-bmi") +
+        makeSummaryCard(categoryRow, "BMI Category", "bmi-summary-category") +
+        makeSummaryCard(differenceRow, "Difference to healthy range", "bmi-summary-difference") +
       '</div>';
 
     const highlightPatterns = [/^BMI$/i, /^BMI category$/i, /^Difference to healthy range$/i];
@@ -1110,7 +1113,7 @@
 
     const otherHtml = otherRows.length ? makeGroup({ key: "other", title: "Other details" }, otherRows) : "";
 
-    return '<div class="bmi-result-box">' + highlightHtml + '<div class="bmi-result-group-grid">' + groupHtml + otherHtml + '</div></div>';
+    return '<div class="bmi-result-box bmi-result-box-card-form">' + mainResultText + summaryHtml + '<div class="bmi-result-group-grid">' + groupHtml + otherHtml + '</div></div>';
   }
 
   function renderBasicAnswer() {

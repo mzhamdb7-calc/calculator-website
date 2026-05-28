@@ -2728,3 +2728,129 @@ body.calculator-report-view .table-report-page {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* =====================================================
+   CHATGPT UPDATE: BMI 3 SUMMARY ITEMS IN BOX FORM
+   Keeps the main BMI result text centered at the top and
+   places BMI, category, and healthy-range difference in
+   three clear cards below it.
+===================================================== */
+body.bmi-page .bmi-result-box-card-form,
+body[data-page="bmi"] .bmi-result-box-card-form {
+  width: 100% !important;
+  display: grid !important;
+  gap: 18px !important;
+  text-align: center !important;
+}
+
+body.bmi-page .bmi-main-result-text,
+body[data-page="bmi"] .bmi-main-result-text {
+  width: min(100%, 760px) !important;
+  margin: 0 auto !important;
+  padding: clamp(18px, 3vw, 28px) !important;
+  border: 1px solid #cfe5da !important;
+  border-radius: 18px !important;
+  background: linear-gradient(180deg, #f7fffb 0%, #edf8f2 100%) !important;
+  color: #113d33 !important;
+  box-shadow: 0 12px 26px rgba(20, 83, 69, 0.08) !important;
+  display: grid !important;
+  justify-items: center !important;
+  gap: 8px !important;
+}
+
+body.bmi-page .bmi-main-result-label,
+body[data-page="bmi"] .bmi-main-result-label {
+  color: #527467 !important;
+  font-size: 0.95rem !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+body.bmi-page .bmi-main-result-text strong,
+body[data-page="bmi"] .bmi-main-result-text strong {
+  color: #0f3f35 !important;
+  font-size: clamp(2.4rem, 7vw, 4.4rem) !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+}
+
+body.bmi-page .bmi-main-result-text small,
+body[data-page="bmi"] .bmi-main-result-text small {
+  color: #1f5f4f !important;
+  font-size: clamp(1.1rem, 2.5vw, 1.45rem) !important;
+  font-weight: 900 !important;
+}
+
+body.bmi-page .bmi-summary-card-grid,
+body[data-page="bmi"] .bmi-summary-card-grid {
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  margin: 0 !important;
+  align-items: stretch !important;
+}
+
+body.bmi-page .bmi-summary-card,
+body[data-page="bmi"] .bmi-summary-card {
+  min-height: 132px !important;
+  padding: 18px 16px !important;
+  border: 1px solid #d7e8df !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  box-shadow: 0 10px 22px rgba(27, 59, 49, 0.07) !important;
+  display: grid !important;
+  align-content: center !important;
+  justify-items: center !important;
+  gap: 10px !important;
+  text-align: center !important;
+}
+
+body.bmi-page .bmi-summary-card-label,
+body[data-page="bmi"] .bmi-summary-card-label {
+  width: 100% !important;
+  color: #59766c !important;
+  font-size: 0.94rem !important;
+  font-weight: 850 !important;
+  line-height: 1.25 !important;
+}
+
+body.bmi-page .bmi-summary-card-value,
+body[data-page="bmi"] .bmi-summary-card-value {
+  width: 100% !important;
+  color: #143d34 !important;
+  font-size: clamp(1.15rem, 2.4vw, 1.55rem) !important;
+  font-weight: 950 !important;
+  line-height: 1.22 !important;
+  overflow-wrap: anywhere !important;
+}
+
+body.bmi-page .bmi-summary-bmi .bmi-summary-card-value,
+body[data-page="bmi"] .bmi-summary-bmi .bmi-summary-card-value {
+  font-size: clamp(1.7rem, 4vw, 2.4rem) !important;
+}
+
+body.bmi-page .bmi-summary-difference .bmi-summary-card-value,
+body[data-page="bmi"] .bmi-summary-difference .bmi-summary-card-value {
+  font-size: clamp(1rem, 2vw, 1.24rem) !important;
+}
+
+/* Hide older BMI highlight card layout if an old cached render appears. */
+body.bmi-page .bmi-highlight-grid,
+body[data-page="bmi"] .bmi-highlight-grid {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  body.bmi-page .bmi-summary-card-grid,
+  body[data-page="bmi"] .bmi-summary-card-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.bmi-page .bmi-summary-card,
+  body[data-page="bmi"] .bmi-summary-card {
+    min-height: 112px !important;
+  }
+}

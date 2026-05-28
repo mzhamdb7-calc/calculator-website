@@ -1,0 +1,1 @@
+BMI result updated: main result text stays centered at top; BMI, category, and healthy-range difference now appear as three separate cards below it.
