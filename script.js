@@ -849,10 +849,10 @@
         '</div>';
     } else {
       panel.innerHTML =
-        (extraTopHtml || "") +
         '<div class="loan-output-top universal-result-shell">' +
           '<div class="loan-result-panel universal-result-main-box">' +
             '<h2 class="loan-panel-title">Result</h2>' +
+            (extraTopHtml ? '<div class="universal-result-summary-wrap">' + extraTopHtml + '</div>' : '') +
             '<div class="loan-result-body">' + resultHtml + '</div>' +
             '<div class="universal-result-actions">' +
               '<button type="button" class="universal-result-action-btn loan-copy-btn">Copy</button>' +
@@ -3542,13 +3542,13 @@
           '<div class="calculator-report-summary-label">Monthly payment</div>' +
           '<div class="calculator-report-summary-value">' + moneyRM(monthlyPayment) + '</div>' +
         '</div>' +
-        '<div class="calculator-report-summary-card calculator-report-interest-card">' +
-          '<div class="calculator-report-summary-label">Total interest</div>' +
-          '<div class="calculator-report-summary-value">' + moneyRM(totalInterest) + '</div>' +
-        '</div>' +
         '<div class="calculator-report-summary-card calculator-report-total-card">' +
           '<div class="calculator-report-summary-label">Total payment</div>' +
           '<div class="calculator-report-summary-value">' + moneyRM(totalPayment) + '</div>' +
+        '</div>' +
+        '<div class="calculator-report-summary-card calculator-report-interest-card">' +
+          '<div class="calculator-report-summary-label">Total interest</div>' +
+          '<div class="calculator-report-summary-value">' + moneyRM(totalInterest) + '</div>' +
         '</div>' +
       '</div>';
 
@@ -9164,5 +9164,838 @@
     document.addEventListener("DOMContentLoaded", watchResults);
   } else {
     watchResults();
+  }
+})();
+
+
+/* =====================================================
+   FINAL FINANCE RESULT REBUILD
+   - Fixes mortgage result output
+   - Makes each finance result a proper own result box
+   - Adds graph comparison for loan comparison and debt payoff
+   - Keeps action buttons inside the result box
+===================================================== */
+(function () {
+  "use strict";
+
+  const RESULT_BOX_ID_BY_PAGE = {
+    loan: "loanExternalOutput",
+    personalLoan: "personalLoanExternalOutput",
+    discount: "discountReportOutput",
+    loanComparison: "extraCalcResult",
+    debtPayoff: "extraCalcResult",
+    creditCardPayoff: "extraCalcResult",
+    creditCardInterest: "extraCalcResult",
+    rentalYield: "extraCalcResult",
+    fuelCost: "extraCalcResult",
+    salary: "extraCalcResult",
+    gajiPenjawatAwam: "extraCalcResult",
+    tax: "extraCalcResult",
+    currencyConverter: "extraCalcResult",
+    inflation: "extraCalcResult"
+  };
+
+  function $(id) { return document.getElementById(id); }
+
+  function pageType() {
+    const path = String(location.pathname || "").toLowerCase();
+    const bodyPage = document.body ? String(document.body.dataset.page || "").toLowerCase() : "";
+
+    if (path.includes("mortgage-calculator") || bodyPage === "loan") return "loan";
+    if (path.includes("personal-loan-calculator") || bodyPage === "personal-loan") return "personalLoan";
+    if (path.includes("loan-comparison-calculator") || bodyPage === "loancomparison") return "loanComparison";
+    if (path.includes("debt-payoff-calculator") || bodyPage === "debtpayoff") return "debtPayoff";
+    if (path.includes("credit-card-payoff-calculator") || bodyPage === "creditcardpayoff") return "creditCardPayoff";
+    if (path.includes("credit-card-interest-calculator") || bodyPage === "creditcardinterest") return "creditCardInterest";
+    if (path.includes("rental-yield-calculator") || bodyPage === "rentalyield") return "rentalYield";
+    if (path.includes("fuel-cost-calculator") || bodyPage === "fuelcost") return "fuelCost";
+    if (path.includes("salary-calculator") || bodyPage === "salary") return "salary";
+    if (path.includes("gaji-penjawat-awam-calculator") || bodyPage === "gajipenjawatawam") return "gajiPenjawatAwam";
+    if (path.includes("tax-calculator") || bodyPage === "tax") return "tax";
+    if (path.includes("currency-converter") || bodyPage === "currencyconverter") return "currencyConverter";
+    if (path.includes("discount-calculator") || bodyPage === "discount") return "discount";
+    if (path.includes("inflation-calculator") || bodyPage === "inflation") return "inflation";
+    return "";
+  }
+
+  function numberFromInput(id) {
+    const input = $(id);
+    if (!input) return NaN;
+    const raw = String(input.value || "").replace(/,/g, "").trim();
+    return raw === "" ? NaN : Number(raw);
+  }
+
+  function valueFromInput(id) {
+    const input = $(id);
+    return input ? String(input.value || "").trim() : "";
+  }
+
+  function firstNumber(ids) {
+    for (const id of ids) {
+      const n = numberFromInput(id);
+      if (Number.isFinite(n)) return n;
+    }
+    return NaN;
+  }
+
+  function firstInput(ids) {
+    for (const id of ids) {
+      const input = $(id);
+      if (input) return input;
+    }
+    return null;
+  }
+
+  function escapeHtml(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function money(value, prefix) {
+    if (!Number.isFinite(value)) return "-";
+    return (prefix || "RM") + " " + value.toLocaleString("en-MY", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function numberText(value, digits) {
+    if (!Number.isFinite(value)) return "-";
+    return value.toLocaleString("en-MY", { maximumFractionDigits: digits == null ? 2 : digits });
+  }
+
+  function loanPayment(principal, annualRate, months) {
+    if (!Number.isFinite(principal) || !Number.isFinite(annualRate) || !Number.isFinite(months) || principal <= 0 || months <= 0) return NaN;
+    const monthlyRate = annualRate / 100 / 12;
+    if (monthlyRate === 0) return principal / months;
+    return principal * monthlyRate / (1 - Math.pow(1 + monthlyRate, -months));
+  }
+
+  function createOrMoveResultBox(type) {
+    const id = RESULT_BOX_ID_BY_PAGE[type] || "extraCalcResult";
+    let box = $(id);
+    const calculator = document.querySelector("main .calculator") || document.querySelector(".calculator");
+
+    if (!box) {
+      box = document.createElement("section");
+      box.id = id;
+      box.hidden = true;
+      if (calculator) calculator.insertAdjacentElement("afterend", box);
+      else document.body.appendChild(box);
+    }
+
+    if (calculator && calculator.contains(box)) {
+      calculator.insertAdjacentElement("afterend", box);
+    }
+
+    box.className = "extra-result-box finance-upgrade-result-box finance-result-own-box " + type + "-finance-result";
+    box.setAttribute("aria-label", "Calculator result");
+    box.hidden = false;
+    box.style.setProperty("display", "block", "important");
+    box.style.setProperty("visibility", "visible", "important");
+    box.style.setProperty("opacity", "1", "important");
+
+    return box;
+  }
+
+  function hideOldNativeBoxes(type) {
+    ["result", "loanResult", "personalLoanResult", "discountResult", "extraCalculatorReportPage"].forEach(function (id) {
+      const el = $(id);
+      if (el && el.id !== RESULT_BOX_ID_BY_PAGE[type]) {
+        el.style.setProperty("display", "none", "important");
+      }
+    });
+
+    document.querySelectorAll(".calculator-report-summary-boxes:not(.finance-result-summary-grid)").forEach(function (el) {
+      if (!el.closest(".finance-upgrade-result-box")) el.style.setProperty("display", "none", "important");
+    });
+  }
+
+  function plainText(title, rows, note) {
+    const lines = [title];
+    (rows || []).forEach(function (row) {
+      lines.push(String(row[0]) + ": " + String(row[1]));
+    });
+    if (note) lines.push("Note: " + note);
+    return lines.join("\n");
+  }
+
+  function setButtonTemp(button, text) {
+    if (!button) return;
+    const old = button.textContent;
+    button.textContent = text;
+    setTimeout(function () { button.textContent = old; }, 1300);
+  }
+
+  function copyText(text, button) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        setButtonTemp(button, "Copied");
+      }).catch(function () {
+        fallbackCopy(text, button);
+      });
+    } else {
+      fallbackCopy(text, button);
+    }
+  }
+
+  function fallbackCopy(text, button) {
+    const area = document.createElement("textarea");
+    area.value = text;
+    area.setAttribute("readonly", "");
+    area.style.position = "fixed";
+    area.style.left = "-9999px";
+    document.body.appendChild(area);
+    area.select();
+    try {
+      document.execCommand("copy");
+      setButtonTemp(button, "Copied");
+    } catch (error) {
+      setButtonTemp(button, "Copy failed");
+    }
+    area.remove();
+  }
+
+  function downloadText(filename, text) {
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(function () { URL.revokeObjectURL(url); link.remove(); }, 0);
+  }
+
+  function openReport(title, rows, note) {
+    const old = $("financeUpgradeReportPage");
+    if (old) old.remove();
+
+    document.body.classList.add("calculator-report-view");
+    document.querySelectorAll("main, .finance-upgrade-result-box").forEach(function (el) {
+      el.style.setProperty("display", "none", "important");
+    });
+
+    const section = document.createElement("section");
+    section.id = "financeUpgradeReportPage";
+    section.className = "calculator-report-page finance-upgrade-report-page";
+    section.innerHTML =
+      '<h1>' + escapeHtml(title) + '</h1>' +
+      '<p class="calculator-report-date"><strong>Generated:</strong> ' + escapeHtml(new Date().toLocaleString()) + '</p>' +
+      '<div class="calculator-report-card finance-report-card">' +
+        '<h2>Result</h2>' +
+        metricGrid(rows) +
+        (note ? '<p class="finance-result-note">' + escapeHtml(note) + '</p>' : '') +
+      '</div>' +
+      '<div class="calculator-report-actions">' +
+        '<button type="button" class="calculator-report-action-btn finance-report-back-btn">Go back</button>' +
+        '<button type="button" class="calculator-report-action-btn finance-report-copy-btn">Copy report</button>' +
+        '<button type="button" class="calculator-report-action-btn finance-report-save-btn">Save report</button>' +
+        '<button type="button" class="calculator-report-action-btn finance-report-share-btn">Share report</button>' +
+      '</div>';
+
+    document.body.appendChild(section);
+    const text = plainText(title, rows, note);
+
+    section.querySelector(".finance-report-back-btn").onclick = function () {
+      section.remove();
+      document.body.classList.remove("calculator-report-view");
+      document.querySelectorAll("main, .finance-upgrade-result-box").forEach(function (el) { el.style.removeProperty("display"); });
+    };
+    section.querySelector(".finance-report-copy-btn").onclick = function (event) { copyText(text, event.currentTarget); };
+    section.querySelector(".finance-report-save-btn").onclick = function (event) { downloadText("calculator-report.txt", text); setButtonTemp(event.currentTarget, "Saved"); };
+    section.querySelector(".finance-report-share-btn").onclick = function (event) {
+      if (navigator.share) navigator.share({ title: title, text: text }).catch(function () { copyText(text, event.currentTarget); });
+      else copyText(text, event.currentTarget);
+    };
+
+    section.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function metricGrid(rows) {
+    return '<div class="finance-result-summary-grid">' +
+      (rows || []).map(function (row) {
+        return '<article class="finance-result-metric-card">' +
+          '<div class="finance-result-metric-label">' + escapeHtml(row[0]) + '</div>' +
+          '<div class="finance-result-metric-value">' + escapeHtml(row[1]) + '</div>' +
+        '</article>';
+      }).join("") +
+    '</div>';
+  }
+
+  function lineGraph(title, series) {
+    series = (series || []).filter(function (item) { return item && Array.isArray(item.points) && item.points.length; });
+    if (!series.length) return "";
+
+    const width = 760;
+    const height = 300;
+    const pad = { left: 70, right: 26, top: 28, bottom: 54 };
+    const chartWidth = width - pad.left - pad.right;
+    const chartHeight = height - pad.top - pad.bottom;
+    const allValues = [];
+    let maxLen = 0;
+
+    series.forEach(function (line) {
+      maxLen = Math.max(maxLen, line.points.length);
+      line.points.forEach(function (point) { allValues.push(Number(point.value) || 0); });
+    });
+
+    const max = Math.max.apply(Math, allValues.concat([1]));
+    const min = Math.min.apply(Math, allValues.concat([0]));
+    const range = Math.max(1, max - min);
+
+    function xAt(index) {
+      if (maxLen <= 1) return pad.left + chartWidth / 2;
+      return pad.left + (index / (maxLen - 1)) * chartWidth;
+    }
+
+    function yAt(value) {
+      return pad.top + chartHeight - ((value - min) / range) * chartHeight;
+    }
+
+    const lines = series.map(function (line, index) {
+      const points = line.points.map(function (point, i) {
+        return xAt(i).toFixed(1) + ',' + yAt(Number(point.value) || 0).toFixed(1);
+      }).join(' ');
+      return '<polyline class="finance-chart-line finance-chart-line-' + index + '" points="' + points + '"></polyline>';
+    }).join("");
+
+    const endLabels = series.map(function (line, index) {
+      const last = line.points[line.points.length - 1];
+      const x = xAt(line.points.length - 1);
+      const y = yAt(Number(last.value) || 0);
+      return '<text class="finance-chart-end-label finance-chart-end-label-' + index + '" x="' + Math.min(width - pad.right, x + 8).toFixed(1) + '" y="' + Math.max(16, y - 4).toFixed(1) + '">' + escapeHtml(line.name) + '</text>';
+    }).join("");
+
+    const legend = series.map(function (line, index) {
+      return '<span class="finance-chart-legend-item finance-chart-legend-' + index + '"><i></i>' + escapeHtml(line.name) + '</span>';
+    }).join("");
+
+    return '<section class="finance-result-graph-card">' +
+      '<div class="finance-result-graph-header"><h3>' + escapeHtml(title) + '</h3><div class="finance-chart-legend">' + legend + '</div></div>' +
+      '<div class="finance-chart-scroll">' +
+        '<svg class="finance-line-chart" viewBox="0 0 ' + width + ' ' + height + '" role="img" aria-label="' + escapeHtml(title) + '">' +
+          '<line class="finance-chart-axis" x1="' + pad.left + '" y1="' + (pad.top + chartHeight) + '" x2="' + (pad.left + chartWidth) + '" y2="' + (pad.top + chartHeight) + '"></line>' +
+          '<line class="finance-chart-axis" x1="' + pad.left + '" y1="' + pad.top + '" x2="' + pad.left + '" y2="' + (pad.top + chartHeight) + '"></line>' +
+          '<text class="finance-chart-y-label" x="' + (pad.left - 8) + '" y="' + (pad.top + 12) + '" text-anchor="end">' + escapeHtml(money(max)) + '</text>' +
+          '<text class="finance-chart-y-label" x="' + (pad.left - 8) + '" y="' + (pad.top + chartHeight) + '" text-anchor="end">' + escapeHtml(money(min)) + '</text>' +
+          '<text class="finance-chart-x-label" x="' + pad.left + '" y="' + (height - 18) + '">Start</text>' +
+          '<text class="finance-chart-x-label" x="' + (pad.left + chartWidth) + '" y="' + (height - 18) + '" text-anchor="end">End</text>' +
+          lines + endLabels +
+        '</svg>' +
+      '</div>' +
+    '</section>';
+  }
+
+  function amortizationPoints(principal, annualRate, months, monthlyPayment, maxPoints) {
+    const rate = annualRate / 100 / 12;
+    let balance = principal;
+    const raw = [{ value: balance }];
+
+    for (let month = 1; month <= months && balance > 0.01 && month < 1200; month += 1) {
+      const interest = balance * rate;
+      if (monthlyPayment <= interest && rate > 0) break;
+      balance = Math.max(0, balance + interest - monthlyPayment);
+      raw.push({ value: balance });
+    }
+
+    maxPoints = maxPoints || 36;
+    if (raw.length <= maxPoints) return raw;
+
+    const sampled = [];
+    for (let i = 0; i < maxPoints; i += 1) {
+      const index = Math.round((i / (maxPoints - 1)) * (raw.length - 1));
+      sampled.push(raw[index]);
+    }
+    return sampled;
+  }
+
+  function showResult(type, title, rows, options) {
+    options = options || {};
+    const box = createOrMoveResultBox(type);
+    const text = plainText(title, rows, options.note);
+
+    hideOldNativeBoxes(type);
+
+    box.innerHTML =
+      '<article class="finance-result-shell">' +
+        '<header class="finance-result-header">' +
+          '<p class="finance-result-eyebrow">Result</p>' +
+          '<h2>' + escapeHtml(title) + '</h2>' +
+        '</header>' +
+        metricGrid(rows) +
+        (options.graphHtml || "") +
+        (options.note ? '<p class="finance-result-note">' + escapeHtml(options.note) + '</p>' : "") +
+        '<div class="finance-result-actions">' +
+          '<button type="button" class="finance-result-action-btn finance-copy-btn">Copy</button>' +
+          '<button type="button" class="finance-result-action-btn finance-save-btn">Save</button>' +
+          '<button type="button" class="finance-result-action-btn finance-share-btn">Share</button>' +
+          '<button type="button" class="finance-result-action-btn finance-report-btn">Report</button>' +
+        '</div>' +
+      '</article>';
+
+    box.querySelector(".finance-copy-btn").onclick = function (event) { copyText(text, event.currentTarget); };
+    box.querySelector(".finance-save-btn").onclick = function (event) { downloadText("calculator-result.txt", text); setButtonTemp(event.currentTarget, "Saved"); };
+    box.querySelector(".finance-share-btn").onclick = function (event) {
+      if (navigator.share) navigator.share({ title: title, text: text }).catch(function () { copyText(text, event.currentTarget); });
+      else copyText(text, event.currentTarget);
+    };
+    box.querySelector(".finance-report-btn").onclick = function () { openReport(title, rows, options.note); };
+
+    if (options.scroll !== false) {
+      setTimeout(function () { box.scrollIntoView({ behavior: "smooth", block: "start" }); }, 80);
+    }
+  }
+
+  function calculateMortgage() {
+    const homePrice = firstNumber(["amount", "loanAmount", "loanPrincipal"]);
+    const downPayment = Math.max(0, firstNumber(["downPayment"]) || 0);
+    const principal = Number.isFinite(homePrice) ? Math.max(0, homePrice - downPayment) : NaN;
+    const annualRate = firstNumber(["interest", "loanRate", "interestRate", "annualRate"]);
+    const termInput = firstInput(["years", "loanYears", "loanTerm", "term"]);
+    const rawTerm = termInput ? Number(String(termInput.value || "").replace(/,/g, "")) : NaN;
+
+    if (!Number.isFinite(homePrice) || !Number.isFinite(principal) || !Number.isFinite(annualRate) || !Number.isFinite(rawTerm) || homePrice <= 0 || principal <= 0 || annualRate < 0 || rawTerm <= 0) return;
+
+    const label = termInput ? String((document.querySelector('label[for="' + termInput.id + '"]') || {}).textContent || "") : "";
+    const months = termInput && (termInput.dataset.termUnit === "months" || /month/i.test(label)) ? Math.round(rawTerm) : Math.round(rawTerm * 12);
+    const principalInterest = loanPayment(principal, annualRate, months);
+    const propertyTax = (numberFromInput("propertyTaxYearly") || 0) / 12;
+    const insurance = (numberFromInput("homeInsuranceYearly") || 0) / 12;
+    const otherFees = numberFromInput("otherMonthlyFees") || 0;
+    const extra = numberFromInput("extraMonthlyPayment") || 0;
+    const totalMonthly = principalInterest + propertyTax + insurance + otherFees + extra;
+    const totalPrincipalInterest = principalInterest * months;
+    const totalInterest = totalPrincipalInterest - principal;
+    const downPercent = homePrice > 0 ? downPayment / homePrice * 100 : 0;
+    const income = numberFromInput("incomeMonthly");
+    const incomeRatio = Number.isFinite(income) && income > 0 ? totalMonthly / income * 100 : NaN;
+
+    const rows = [
+      ["Estimated monthly payment", money(totalMonthly)],
+      ["Principal + interest", money(principalInterest)],
+      ["Loan amount", money(principal)],
+      ["Home price", money(homePrice)],
+      ["Down payment", money(downPayment) + " (" + downPercent.toFixed(1) + "%)"],
+      ["Total interest", money(totalInterest)],
+      ["Total principal + interest", money(totalPrincipalInterest)],
+      ["Loan term", months + " months"],
+      ["Payment / income", Number.isFinite(incomeRatio) ? incomeRatio.toFixed(1) + "%" : "Add income to calculate"]
+    ];
+
+    const graph = lineGraph("Mortgage balance over time", [{
+      name: "Balance",
+      points: amortizationPoints(principal, annualRate, months, principalInterest + extra, 40)
+    }]);
+
+    showResult("loan", "Mortgage result", rows, { graphHtml: graph });
+  }
+
+  function calculatePersonalLoanOverride() {
+    const amount = firstNumber(["personalLoanAmount", "amount", "loanAmount", "loanPrincipal"]);
+    const annualRate = firstNumber(["personalLoanRate", "interest", "loanRate", "interestRate", "annualRate"]);
+    const termInput = firstInput(["personalLoanYears", "years", "loanYears", "loanTerm", "term"]);
+    const rawTerm = termInput ? Number(String(termInput.value || "").replace(/,/g, "")) : NaN;
+    if (!Number.isFinite(amount) || !Number.isFinite(annualRate) || !Number.isFinite(rawTerm) || amount <= 0 || annualRate < 0 || rawTerm <= 0) return;
+
+    const label = termInput ? String((document.querySelector('label[for="' + termInput.id + '"]') || {}).textContent || "") : "";
+    const months = termInput && (termInput.dataset.termUnit === "months" || /month/i.test(label)) ? Math.round(rawTerm) : Math.round(rawTerm * 12);
+    const monthlyPayment = loanPayment(amount, annualRate, months);
+    const totalPayment = monthlyPayment * months;
+    const totalInterest = totalPayment - amount;
+
+    showResult("personalLoan", "Personal loan result", [
+      ["Monthly payment", money(monthlyPayment)],
+      ["Total payment", money(totalPayment)],
+      ["Total interest", money(totalInterest)],
+      ["Loan amount", money(amount)],
+      ["Annual interest rate", annualRate.toFixed(2) + "%"],
+      ["Loan term", months + " months"]
+    ]);
+  }
+
+  function calculateLoanComparisonOverride() {
+    const amount = numberFromInput("loanCompareAmount");
+    const rateA = numberFromInput("loanCompareRateA");
+    const termA = numberFromInput("loanCompareTermA");
+    const rateB = numberFromInput("loanCompareRateB");
+    const termB = numberFromInput("loanCompareTermB");
+    if (![amount, rateA, termA, rateB, termB].every(Number.isFinite) || amount <= 0 || termA <= 0 || termB <= 0) return;
+
+    const monthsA = Math.round(termA * 12);
+    const monthsB = Math.round(termB * 12);
+    const payA = loanPayment(amount, rateA, monthsA);
+    const payB = loanPayment(amount, rateB, monthsB);
+    const totalA = payA * monthsA;
+    const totalB = payB * monthsB;
+
+    const graph = lineGraph("Loan balance comparison", [
+      { name: "Loan A", points: amortizationPoints(amount, rateA, monthsA, payA, 42) },
+      { name: "Loan B", points: amortizationPoints(amount, rateB, monthsB, payB, 42) }
+    ]);
+
+    showResult("loanComparison", "Loan comparison result", [
+      ["Loan A monthly payment", money(payA)],
+      ["Loan A total interest", money(totalA - amount)],
+      ["Loan A total paid", money(totalA)],
+      ["Loan B monthly payment", money(payB)],
+      ["Loan B total interest", money(totalB - amount)],
+      ["Loan B total paid", money(totalB)],
+      ["Lower total cost", totalA <= totalB ? "Loan A" : "Loan B"],
+      ["Difference", money(Math.abs(totalA - totalB))]
+    ], { graphHtml: graph });
+  }
+
+  function calculateDebtPayoffOverride() {
+    const debt = numberFromInput("debtTotal");
+    const apr = numberFromInput("debtApr");
+    const payment = numberFromInput("debtPayment");
+    const extra = Number.isFinite(numberFromInput("debtExtra")) ? numberFromInput("debtExtra") : 0;
+    if (![debt, apr, payment].every(Number.isFinite) || debt <= 0 || payment <= 0) return;
+
+    function simulate(pay) {
+      let balance = debt;
+      let interestTotal = 0;
+      let months = 0;
+      const rate = apr / 100 / 12;
+      const points = [{ value: balance }];
+
+      while (balance > 0.01 && months < 1200) {
+        const interest = balance * rate;
+        if (pay <= interest && rate > 0) return { stuck: true, interest: interest, months: months, totalInterest: interestTotal, points: points };
+        interestTotal += interest;
+        balance = Math.max(0, balance + interest - pay);
+        months += 1;
+        points.push({ value: balance });
+      }
+      return { stuck: false, months: months, totalInterest: interestTotal, points: points };
+    }
+
+    const normal = simulate(payment);
+    const faster = simulate(payment + extra);
+
+    if (normal.stuck && faster.stuck) {
+      showResult("debtPayoff", "Debt payoff result", [
+        ["Monthly interest", money(normal.interest)],
+        ["Normal payment", money(payment)],
+        ["With extra payment", money(payment + extra)],
+        ["Status", "Payment is too low to reduce debt"]
+      ]);
+      return;
+    }
+
+    const graph = lineGraph("Debt balance comparison", [
+      { name: "Normal payment", points: samplePoints(normal.points, 42) },
+      { name: extra > 0 ? "With extra payment" : "Same payment", points: samplePoints(faster.points, 42) }
+    ]);
+
+    showResult("debtPayoff", "Debt payoff result", [
+      ["Total debt", money(debt)],
+      ["Normal monthly payment", money(payment)],
+      ["Extra monthly payment", money(extra)],
+      ["Payment used", money(payment + extra)],
+      ["Months to debt free", faster.stuck ? "Payment too low" : faster.months + " months"],
+      ["Years to debt free", faster.stuck ? "Payment too low" : (faster.months / 12).toFixed(1) + " years"],
+      ["Total interest", faster.stuck ? "Payment too low" : money(faster.totalInterest)],
+      ["Time saved", (!normal.stuck && !faster.stuck) ? Math.max(0, normal.months - faster.months) + " months" : "Add extra payment to compare"]
+    ], { graphHtml: graph });
+  }
+
+  function samplePoints(points, maxPoints) {
+    points = Array.isArray(points) ? points : [];
+    if (points.length <= maxPoints) return points;
+    const sampled = [];
+    for (let i = 0; i < maxPoints; i += 1) {
+      sampled.push(points[Math.round((i / (maxPoints - 1)) * (points.length - 1))]);
+    }
+    return sampled;
+  }
+
+  function calculateCreditCardPayoffOverride() {
+    const balance = numberFromInput("ccBalance");
+    const apr = numberFromInput("ccApr");
+    const payment = numberFromInput("ccPayment");
+    if (![balance, apr, payment].every(Number.isFinite) || balance <= 0 || payment <= 0) return;
+
+    let bal = balance;
+    let totalInterest = 0;
+    let months = 0;
+    const monthlyRate = apr / 100 / 12;
+
+    while (bal > 0.01 && months < 1200) {
+      const interest = bal * monthlyRate;
+      if (payment <= interest && monthlyRate > 0) {
+        showResult("creditCardPayoff", "Credit card payoff result", [
+          ["Balance", money(balance)],
+          ["Monthly interest", money(interest)],
+          ["Monthly payment", money(payment)],
+          ["Status", "Payment is too low to reduce the balance"]
+        ], { note: "Increase the monthly payment to pay off the card." });
+        return;
+      }
+      totalInterest += interest;
+      bal = Math.max(0, bal + interest - payment);
+      months += 1;
+    }
+
+    showResult("creditCardPayoff", "Credit card payoff result", [
+      ["Months to pay off", months + " months"],
+      ["Years to pay off", (months / 12).toFixed(1) + " years"],
+      ["Total interest", money(totalInterest)],
+      ["Total paid", money(balance + totalInterest)]
+    ]);
+  }
+
+  function calculateCreditCardInterestOverride() {
+    const balance = numberFromInput("ccInterestBalance");
+    const apr = numberFromInput("ccInterestApr");
+    const days = numberFromInput("ccInterestDays");
+    const payment = Number.isFinite(numberFromInput("ccInterestPayment")) ? numberFromInput("ccInterestPayment") : 0;
+    if (![balance, apr, days].every(Number.isFinite)) return;
+    const afterPayment = Math.max(0, balance - payment);
+    const interest = afterPayment * (apr / 100) * (days / 365);
+
+    showResult("creditCardInterest", "Credit card interest result", [
+      ["Starting balance", money(balance)],
+      ["Payment", money(payment)],
+      ["Balance used", money(afterPayment)],
+      ["APR", apr.toFixed(2) + "%"],
+      ["Days", numberText(days, 0)],
+      ["Estimated interest", money(interest)]
+    ]);
+  }
+
+  function calculateRentalYieldOverride() {
+    const price = numberFromInput("rentalPropertyPrice");
+    const rent = numberFromInput("rentalMonthlyRent");
+    const expenses = Number.isFinite(numberFromInput("rentalAnnualExpenses")) ? numberFromInput("rentalAnnualExpenses") : 0;
+    if (!Number.isFinite(price) || !Number.isFinite(rent) || price <= 0) return;
+    const annualRent = rent * 12;
+    const grossYield = annualRent / price * 100;
+    const netYield = (annualRent - expenses) / price * 100;
+
+    showResult("rentalYield", "Rental yield result", [
+      ["Property price", money(price)],
+      ["Monthly rent", money(rent)],
+      ["Annual rent", money(annualRent)],
+      ["Annual expenses", money(expenses)],
+      ["Gross rental yield", grossYield.toFixed(2) + "%"],
+      ["Net rental yield", netYield.toFixed(2) + "%"]
+    ]);
+  }
+
+  function calculateFuelCostOverride() {
+    const distance = numberFromInput("fuelDistance");
+    const efficiency = numberFromInput("fuelEfficiency");
+    const price = numberFromInput("fuelPrice");
+    const people = Number.isFinite(numberFromInput("fuelPeople")) && numberFromInput("fuelPeople") > 0 ? numberFromInput("fuelPeople") : 1;
+    if (![distance, efficiency, price].every(Number.isFinite) || efficiency <= 0) return;
+    const liters = distance / 100 * efficiency;
+    const total = liters * price;
+
+    showResult("fuelCost", "Fuel cost result", [
+      ["Distance", numberText(distance) + " km"],
+      ["Fuel needed", numberText(liters) + " L"],
+      ["Fuel price", money(price) + " / L"],
+      ["Total fuel cost", money(total)],
+      ["Cost per person", money(total / people)]
+    ]);
+  }
+
+  function calculateSalaryOverride() {
+    const gross = numberFromInput("salaryGross");
+    const epfRate = Number.isFinite(numberFromInput("salaryEpfRate")) ? numberFromInput("salaryEpfRate") : 11;
+    const socso = Number.isFinite(numberFromInput("salarySocso")) ? numberFromInput("salarySocso") : 0;
+    const tax = Number.isFinite(numberFromInput("salaryTax")) ? numberFromInput("salaryTax") : 0;
+    const other = Number.isFinite(numberFromInput("salaryOther")) ? numberFromInput("salaryOther") : 0;
+    if (!Number.isFinite(gross) || gross <= 0) return;
+    const epf = gross * epfRate / 100;
+    const totalDeduct = epf + socso + tax + other;
+    const net = gross - totalDeduct;
+
+    showResult("salary", "Salary result", [
+      ["Gross monthly salary", money(gross)],
+      ["EPF deduction", money(epf)],
+      ["Other deductions", money(totalDeduct - epf)],
+      ["Total deductions", money(totalDeduct)],
+      ["Net monthly salary", money(net)],
+      ["Estimated net yearly", money(net * 12)]
+    ]);
+  }
+
+  function calculateGajiOverride() {
+    const basic = numberFromInput("gajiBasic");
+    const fixed = Number.isFinite(numberFromInput("gajiFixedAllowance")) ? numberFromInput("gajiFixedAllowance") : 0;
+    const cola = Number.isFinite(numberFromInput("gajiCola")) ? numberFromInput("gajiCola") : 0;
+    const other = Number.isFinite(numberFromInput("gajiOtherAllowance")) ? numberFromInput("gajiOtherAllowance") : 0;
+    const deductions = Number.isFinite(numberFromInput("gajiDeductions")) ? numberFromInput("gajiDeductions") : 0;
+    if (!Number.isFinite(basic) || basic <= 0) return;
+    const allowance = fixed + cola + other;
+    const gross = basic + allowance;
+    const net = gross - deductions;
+
+    showResult("gajiPenjawatAwam", "Gaji penjawat awam result", [
+      ["Gaji pokok", money(basic)],
+      ["Jumlah elaun", money(allowance)],
+      ["Gaji kasar", money(gross)],
+      ["Potongan", money(deductions)],
+      ["Anggaran gaji bersih", money(net)]
+    ], { note: "Masukkan nilai elaun dan potongan sendiri mengikut slip gaji anda." });
+  }
+
+  function calculateTaxOverride() {
+    const income = numberFromInput("taxAnnualIncome");
+    const relief = Number.isFinite(numberFromInput("taxRelief")) ? numberFromInput("taxRelief") : 0;
+    const rate = Number.isFinite(numberFromInput("taxRate")) ? numberFromInput("taxRate") : 10;
+    if (!Number.isFinite(income) || income <= 0) return;
+    const taxable = Math.max(0, income - relief);
+    const tax = taxable * rate / 100;
+
+    showResult("tax", "Tax estimator result", [
+      ["Annual income", money(income)],
+      ["Relief / deduction", money(relief)],
+      ["Estimated taxable income", money(taxable)],
+      ["Tax rate used", rate.toFixed(2) + "%"],
+      ["Estimated tax", money(tax)],
+      ["Estimated monthly tax", money(tax / 12)]
+    ], { note: "This is a simple estimator using your entered rate. It is not official tax advice." });
+  }
+
+  function calculateCurrencyOverride() {
+    const amount = numberFromInput("currencyAmount");
+    const from = valueFromInput("currencyFrom").toUpperCase() || "FROM";
+    const to = valueFromInput("currencyTo").toUpperCase() || "TO";
+    const rate = numberFromInput("currencyRate");
+    if (!Number.isFinite(amount) || !Number.isFinite(rate)) return;
+
+    showResult("currencyConverter", "Currency converter result", [
+      ["Amount", numberText(amount) + " " + from],
+      ["Exchange rate", "1 " + from + " = " + numberText(rate, 6) + " " + to],
+      ["Converted amount", numberText(amount * rate, 2) + " " + to]
+    ], { note: "This static GitHub Pages converter uses the exchange rate you enter manually." });
+  }
+
+  function calculateDiscountOverride() {
+    const price = numberFromInput("price");
+    const discount = numberFromInput("discount");
+    if (![price, discount].every(Number.isFinite) || price < 0 || discount < 0) return;
+    const savings = price * discount / 100;
+    const finalPrice = price - savings;
+
+    showResult("discount", "Discount result", [
+      ["Original price", money(price)],
+      ["Discount", discount.toFixed(2) + "%"],
+      ["Savings", money(savings)],
+      ["Final price", money(finalPrice)]
+    ]);
+  }
+
+  function calculateInflationOverride() {
+    const amount = numberFromInput("inflationAmount");
+    const rate = numberFromInput("inflationRate");
+    const years = numberFromInput("inflationYears");
+    if (![amount, rate, years].every(Number.isFinite)) return;
+    const future = amount * Math.pow(1 + rate / 100, years);
+    const buyingPower = amount / Math.pow(1 + rate / 100, years);
+
+    showResult("inflation", "Inflation result", [
+      ["Today amount", money(amount)],
+      ["Inflation rate", rate.toFixed(2) + "%"],
+      ["Years", numberText(years)],
+      ["Future cost estimate", money(future)],
+      ["Today buying power after period", money(buyingPower)]
+    ]);
+  }
+
+  function installOverrides() {
+    window.calculateLoan = calculateMortgage;
+    window.calculateMortgage = calculateMortgage;
+    window.calculatePersonalLoan = calculatePersonalLoanOverride;
+    window.calculateLoanComparisonExtra = calculateLoanComparisonOverride;
+    window.calculateDebtPayoffExtra = calculateDebtPayoffOverride;
+    window.calculateCreditCardPayoffExtra = calculateCreditCardPayoffOverride;
+    window.calculateCreditCardInterestExtra = calculateCreditCardInterestOverride;
+    window.calculateRentalYieldExtra = calculateRentalYieldOverride;
+    window.calculateFuelCostExtra = calculateFuelCostOverride;
+    window.calculateSalaryExtra = calculateSalaryOverride;
+    window.calculateGajiPenjawatAwamExtra = calculateGajiOverride;
+    window.calculateTaxExtra = calculateTaxOverride;
+    window.calculateCurrencyConverterExtra = calculateCurrencyOverride;
+    window.calculateDiscount = calculateDiscountOverride;
+    window.calculateInflationExtra = calculateInflationOverride;
+
+    const fuelPrice = $("fuelPrice");
+    if (fuelPrice) {
+      fuelPrice.setAttribute("step", "0.01");
+      fuelPrice.setAttribute("inputmode", "decimal");
+      fuelPrice.style.setProperty("width", "100%", "important");
+      fuelPrice.style.setProperty("min-width", "0", "important");
+    }
+
+    const type = pageType();
+    if (RESULT_BOX_ID_BY_PAGE[type]) {
+      setTimeout(function () {
+        const box = $(RESULT_BOX_ID_BY_PAGE[type]);
+        const calculator = document.querySelector("main .calculator") || document.querySelector(".calculator");
+        if (box && calculator && calculator.contains(box)) calculator.insertAdjacentElement("afterend", box);
+      }, 100);
+    }
+  }
+
+  function runCurrentCalculator() {
+    const type = pageType();
+    const map = {
+      loan: calculateMortgage,
+      personalLoan: calculatePersonalLoanOverride,
+      loanComparison: calculateLoanComparisonOverride,
+      debtPayoff: calculateDebtPayoffOverride,
+      creditCardPayoff: calculateCreditCardPayoffOverride,
+      creditCardInterest: calculateCreditCardInterestOverride,
+      rentalYield: calculateRentalYieldOverride,
+      fuelCost: calculateFuelCostOverride,
+      salary: calculateSalaryOverride,
+      gajiPenjawatAwam: calculateGajiOverride,
+      tax: calculateTaxOverride,
+      currencyConverter: calculateCurrencyOverride,
+      discount: calculateDiscountOverride,
+      inflation: calculateInflationOverride
+    };
+    if (map[type]) map[type]();
+  }
+
+  function start() {
+    installOverrides();
+    setTimeout(installOverrides, 300);
+    setTimeout(installOverrides, 1000);
+
+    let timer = null;
+    document.addEventListener("input", function (event) {
+      const target = event.target;
+      if (!target || !target.matches("input, select, textarea")) return;
+      if (target.closest("#navbar, .clean-nav-search, .site-search")) return;
+      const type = pageType();
+      if (!RESULT_BOX_ID_BY_PAGE[type]) return;
+      clearTimeout(timer);
+      timer = setTimeout(runCurrentCalculator, 2050);
+    }, true);
+
+    document.addEventListener("change", function (event) {
+      const target = event.target;
+      if (!target || !target.matches("input, select, textarea")) return;
+      const type = pageType();
+      if (!RESULT_BOX_ID_BY_PAGE[type]) return;
+      clearTimeout(timer);
+      timer = setTimeout(runCurrentCalculator, 2050);
+    }, true);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
   }
 })();
