@@ -1,197 +1,156 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-
-  <title>Fuel Cost Calculator</title>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Estimate trip fuel cost.">
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=size_readability_fix_20260528_2">
-  <link rel="stylesheet" href="pc.css?v=size_readability_fix_20260528_2" media="screen and (min-width: 851px)">
-  <link rel="stylesheet" href="phone.css?v=size_readability_fix_20260528_2" media="screen and (max-width: 850px)">
-  <link rel="icon" href="favicon.ico">
+<meta charset="utf-8"/>
+<title>Fuel Cost Calculator</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Estimate trip fuel cost." name="description"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="style.css?v=help_boxes_all_20260528_1" rel="stylesheet"/>
+<link href="pc.css?v=help_boxes_all_20260528_1" media="screen and (min-width: 851px)" rel="stylesheet"/>
+<link href="phone.css?v=help_boxes_all_20260528_1" media="screen and (max-width: 850px)" rel="stylesheet"/>
+<link href="favicon.ico" rel="icon"/>
 </head>
-
 <body class="extra-calculator-page fuelCost-page app-redesign" data-page="fuelCost">
-
-
-    <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
+<button aria-label="Go to top" id="scrollTopBtn" onclick="scrollToTop()" type="button">
     ↑
   </button>
-  <nav id="navbar" class="clean-navbar">
-  <div class="clean-nav-inner">
-    <a class="clean-nav-link" href="index.html">Home</a>
-
-    <div class="clean-nav-dropdown clean-calculator-dropdown">
-      <button type="button" class="clean-nav-link clean-nav-button" aria-expanded="false">Tools <span aria-hidden="true">▼</span></button>
-      <div class="clean-nav-dropdown-panel clean-calculator-panel">
-
-        <div class="clean-nav-submenu clean-general-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">General <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="basic-calculator.html">Basic Calculator</a>
-            <a href="scientific-calculator.html">Scientific Calculator</a>
-            <a href="percentage-calculator.html">Percentage Calculator</a>
-            <a href="unit-converter-calculator.html">Unit Converter</a>
-          </div>
-        </div>
-
-        <div class="clean-nav-submenu clean-health-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Health & Age <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="age-calculator.html">Age Calculator</a>
-            <a href="bmi-calculator.html">BMI Calculator</a>
-          </div>
-        </div>
-
-        <div class="clean-nav-submenu clean-money-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Money & Income <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="salary-calculator.html">Salary Calculator</a>
-            <a href="gaji-penjawat-awam-calculator.html">Gaji Penjawat Awam</a>
-            <a href="tax-calculator.html">Tax Calculator</a>
-            <a href="currency-converter.html">Currency Converter</a>
-            <a href="discount-calculator.html">Discount Calculator</a>
-            <a href="inflation-calculator.html">Inflation Calculator</a>
-            <a href="compound-interest-calculator.html">Compound Interest</a>
-          </div>
-        </div>
-
-        <div class="clean-nav-submenu clean-loan-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Loans & Debt <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="mortgage-calculator.html">Mortgage Calculator</a>
-            <a href="personal-loan-calculator.html">Personal Loan</a>
-            <a href="loan-comparison-calculator.html">Loan Comparison</a>
-            <a href="debt-payoff-calculator.html">Debt Payoff</a>
-            <a href="credit-card-payoff-calculator.html">Credit Card Payoff</a>
-            <a href="credit-card-interest-calculator.html">Credit Card Interest</a>
-          </div>
-        </div>
-
-        <div class="clean-nav-submenu clean-property-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Property & Travel <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="rental-yield-calculator.html">Rental Yield</a>
-            <a href="fuel-cost-calculator.html">Fuel Cost</a>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="clean-nav-dropdown clean-info-dropdown">
-      <button type="button" class="clean-nav-link clean-nav-button" aria-expanded="false">Resources <span aria-hidden="true">▼</span></button>
-      <div class="clean-nav-dropdown-panel clean-info-panel">
-        <a href="about.html">About</a>
-        <a href="FAQS.html">FAQs</a>
-        <a href="privacy-policy.html">Privacy Policy</a>
-        <a href="contact.html">Contact</a>
-      </div>
-    </div>
-
-    <a class="clean-nav-link clean-chat-link" href="chatting.html">Community</a>
-
-    <form class="clean-nav-search" role="search" autocomplete="off">
-      <label class="clean-nav-search-label" for="cleanCalculatorSearchInput">Search tools</label>
-      <input id="cleanCalculatorSearchInput" class="clean-nav-search-input" type="search" placeholder="Search tools" aria-label="Search tools">
-      <button type="submit" class="clean-nav-search-button" aria-label="Search">🔍</button>
-      <ul class="clean-nav-search-results" hidden></ul>
-    </form>
-  </div>
+<nav class="clean-navbar" id="navbar">
+<div class="clean-nav-inner">
+<a class="clean-nav-link" href="index.html">Home</a>
+<div class="clean-nav-dropdown clean-calculator-dropdown">
+<button aria-expanded="false" class="clean-nav-link clean-nav-button" type="button">Tools <span aria-hidden="true">▼</span></button>
+<div class="clean-nav-dropdown-panel clean-calculator-panel">
+<div class="clean-nav-submenu clean-general-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">General <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="basic-calculator.html">Basic Calculator</a>
+<a href="scientific-calculator.html">Scientific Calculator</a>
+<a href="percentage-calculator.html">Percentage Calculator</a>
+<a href="unit-converter-calculator.html">Unit Converter</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-health-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Health &amp; Age <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="age-calculator.html">Age Calculator</a>
+<a href="bmi-calculator.html">BMI Calculator</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-money-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Money &amp; Income <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="salary-calculator.html">Salary Calculator</a>
+<a href="gaji-penjawat-awam-calculator.html">Gaji Penjawat Awam</a>
+<a href="tax-calculator.html">Tax Calculator</a>
+<a href="currency-converter.html">Currency Converter</a>
+<a href="discount-calculator.html">Discount Calculator</a>
+<a href="inflation-calculator.html">Inflation Calculator</a>
+<a href="compound-interest-calculator.html">Compound Interest</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-loan-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Loans &amp; Debt <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="mortgage-calculator.html">Mortgage Calculator</a>
+<a href="personal-loan-calculator.html">Personal Loan</a>
+<a href="loan-comparison-calculator.html">Loan Comparison</a>
+<a href="debt-payoff-calculator.html">Debt Payoff</a>
+<a href="credit-card-payoff-calculator.html">Credit Card Payoff</a>
+<a href="credit-card-interest-calculator.html">Credit Card Interest</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-property-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Property &amp; Travel <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="rental-yield-calculator.html">Rental Yield</a>
+<a href="fuel-cost-calculator.html">Fuel Cost</a>
+</div>
+</div>
+</div>
+</div>
+<div class="clean-nav-dropdown clean-info-dropdown">
+<button aria-expanded="false" class="clean-nav-link clean-nav-button" type="button">Resources <span aria-hidden="true">▼</span></button>
+<div class="clean-nav-dropdown-panel clean-info-panel">
+<a href="about.html">About</a>
+<a href="FAQS.html">FAQs</a>
+<a href="privacy-policy.html">Privacy Policy</a>
+<a href="contact.html">Contact</a>
+</div>
+</div>
+<a class="clean-nav-link clean-chat-link" href="chatting.html">Community</a>
+<form autocomplete="off" class="clean-nav-search" role="search">
+<label class="clean-nav-search-label" for="cleanCalculatorSearchInput">Search tools</label>
+<input aria-label="Search tools" class="clean-nav-search-input" id="cleanCalculatorSearchInput" placeholder="Search tools" type="search"/>
+<button aria-label="Search" class="clean-nav-search-button" type="submit">🔍</button>
+<ul class="clean-nav-search-results" hidden=""></ul>
+</form>
+</div>
 </nav>
+<main class="loan-calculator-container extra-calculator-container extra-calculator-layout extra-modern-page extra-help-layout">
 
 
-  <main class="loan-calculator-container extra-calculator-container extra-calculator-layout extra-modern-page extra-help-layout">
 
-    <button type="button" id="pcHelpQuestionButton" class="extra-help-question-button" aria-label="Open calculator help">?</button>
+<section class="extra-related-box extra-side-box tool-group-nav">
+<div class="extra-related-top">
+<h3>Property &amp; travel</h3>
+</div>
+<div class="extra-side-links">
+<a href="rental-yield-calculator.html">Rental Yield</a>
+<a class="current-extra-link" href="fuel-cost-calculator.html">Fuel Cost</a>
+</div>
+</section>
+<section class="calculator extra-calculator-box">
+<h1>Fuel Cost Calculator</h1>
+<p class="subtitle">
+        Calculate trip fuel cost from distance, efficiency and fuel price.
+      </p>
+<div class="extra-input-card">
+<div class="extra-input-card-title">Input details</div>
+<div class="extra-input-grid">
+<div class="extra-input-field">
+<label for="fuelDistance">Distance (km)</label>
+<input id="fuelDistance" inputmode="decimal" placeholder="Example: 250" type="number"/>
+</div>
+<div class="extra-input-field">
+<label for="fuelEfficiency">Fuel efficiency (L/100km)</label>
+<input id="fuelEfficiency" inputmode="decimal" placeholder="Example: 7" type="number"/>
+</div>
+<div class="extra-input-field">
+<label for="fuelPrice">Fuel price per liter</label>
+<input id="fuelPrice" inputmode="decimal" placeholder="Example: 2.05" type="number"/>
+</div>
+<div class="extra-input-field">
+<label for="fuelPeople">People sharing cost</label>
+<input id="fuelPeople" inputmode="decimal" placeholder="Optional" type="number"/>
+</div>
+</div>
+</div>
+<section class="extra-result-box" hidden="" id="extraCalcResult"></section>
+</section>
 
-    <section class="pc-what-slot extra-what-slot">
-      <div class="instruction-section instruction-what-box">
-        <h3>What does this calculator do?</h3>
-        <p>It estimates fuel needed and trip fuel cost.</p>
-      </div>
-    </section>
-
-    <aside class="instruction-box extra-help-panel" aria-label="Instructions and references">
-      <div class="instruction-section instruction-what-box">
-        <h3>What does this calculator do?</h3>
-        <p>It estimates fuel needed and trip fuel cost.</p>
-      </div>
+    <aside aria-label="Calculator guide and references" class="instruction-box universal-help-panel">
+      <section class="instruction-section instruction-what-box"><h3>What does this calculator do?</h3><p>Use this to estimate trip fuel cost from distance, vehicle fuel efficiency, and fuel price.</p></section>
 
       <h2 class="instruction-main-title">Instructions</h2>
 
-      <div class="instruction-section instruction-how-box">
-        <h3>How to use it</h3>
-        <p>Enter distance, fuel efficiency, fuel price, and optional people sharing.</p>
-      </div>
+      <section class="instruction-section instruction-how-box"><h3>How to use it</h3><p>Enter trip distance, fuel consumption/efficiency, and fuel price.</p></section>
 
-      <div class="instruction-section instruction-formula-box">
-        <h3>Formula used</h3>
-        <p>Fuel needed = distance ÷ 100 × L/100km. Cost = fuel needed × price.</p>
-      </div>
+      <section class="instruction-section instruction-formula-box"><h3>Formula used</h3><p>Fuel used = distance ÷ efficiency. Fuel cost = fuel used × fuel price. The exact formula depends on the selected efficiency unit.</p></section>
 
-      <div class="instruction-section instruction-example-box">
-        <h3>Example calculation</h3>
-        <p>250 km at 7 L/100km uses 17.5 L of fuel.</p>
-      </div>
-    </aside>
+      <section class="instruction-section instruction-example-box"><h3>Example calculation</h3><p>A 200 km trip at 10 km/L uses about 20 L. If fuel is RM 2.05/L, cost is about RM 41.</p></section>
 
-
-    <section class="extra-related-box extra-side-box tool-group-nav">
-      <div class="extra-related-top">
-        <h3>Property &amp; travel</h3>
-      </div>
-
-      <div class="extra-side-links">
-          <a href="rental-yield-calculator.html">Rental Yield</a>
-          <a href="fuel-cost-calculator.html" class="current-extra-link">Fuel Cost</a>
-      </div>
-    </section>
-
-    <section class="calculator extra-calculator-box">
-
-      <h1>Fuel Cost Calculator</h1>
-
-      <p class="subtitle">
-        Calculate trip fuel cost from distance, efficiency and fuel price.
-      </p>
-
-      
-
-      <div class="extra-input-card">
-        <div class="extra-input-card-title">Input details</div>
-
-        <div class="extra-input-grid">
-          <div class="extra-input-field">
-            <label for="fuelDistance">Distance (km)</label>
-            <input type="number" id="fuelDistance" placeholder="Example: 250" inputmode="decimal">
-          </div>
-          <div class="extra-input-field">
-            <label for="fuelEfficiency">Fuel efficiency (L/100km)</label>
-            <input type="number" id="fuelEfficiency" placeholder="Example: 7" inputmode="decimal">
-          </div>
-          <div class="extra-input-field">
-            <label for="fuelPrice">Fuel price per liter</label>
-            <input type="number" id="fuelPrice" placeholder="Example: 2.05" inputmode="decimal">
-          </div>
-          <div class="extra-input-field">
-            <label for="fuelPeople">People sharing cost</label>
-            <input type="number" id="fuelPeople" placeholder="Optional" inputmode="decimal">
-          </div>
+      <section aria-label="References" class="reference-box universal-reference-box"><h2 class="reference-main-title">References</h2>
+        <div class="reference-scroll universal-reference-list">
+          <div class="reference-card"><h3>Fuel cost estimate</h3><p>Fuel cost depends on distance, vehicle efficiency, traffic, driving style, and fuel price.</p></div>
+          <div class="reference-card"><h3>General note</h3><p>Actual cost may change with route, tyre pressure, load, road conditions, and fuel-price changes.</p></div>
         </div>
-      </div>
-<section id="extraCalcResult" class="extra-result-box" hidden></section>
-
-    </section>
-
-  </main>
-
-  <script src="script.js?v=size_readability_fix_20260528_2"></script>
-  <script src="pc.js?v=size_readability_fix_20260528_2"></script>
-  <script src="phone.js?v=size_readability_fix_20260528_2"></script>
+      </section>
+    </aside>
+</main>
+<script src="script.js?v=help_boxes_all_20260528_1"></script>
+<script src="pc.js?v=help_boxes_all_20260528_1"></script>
+<script src="phone.js?v=help_boxes_all_20260528_1"></script>
 </body>
 </html>

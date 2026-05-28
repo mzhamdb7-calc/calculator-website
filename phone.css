@@ -544,3 +544,75 @@ button:hover {
   .clean-nav-link,
   .clean-nav-button { font-size: .98rem !important; }
 }
+
+
+/* =====================================================
+   UNIVERSAL CALCULATOR GUIDE BOXES
+   Added: help_boxes_all_20260528_1
+   One consistent area for What / Instructions / References.
+===================================================== */
+.universal-help-panel {
+  display: block !important;
+  position: relative;
+}
+.universal-help-panel .instruction-section {
+  margin-bottom: 14px !important;
+}
+.universal-help-panel .reference-box {
+  margin-top: 16px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.universal-help-panel .reference-main-title {
+  margin: 4px 0 12px !important;
+  color: var(--ink) !important;
+  font-size: .82rem !important;
+  font-weight: 900 !important;
+  letter-spacing: .10em !important;
+  text-transform: uppercase !important;
+}
+.universal-reference-list {
+  display: grid !important;
+  gap: 12px !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+.universal-help-panel .reference-card {
+  padding: 16px !important;
+  background: var(--surface-soft) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 14px !important;
+  box-shadow: none !important;
+}
+.universal-help-panel .reference-card h3 {
+  margin: 0 0 8px !important;
+  color: var(--primary-dark) !important;
+  font-size: 1rem !important;
+  line-height: 1.25 !important;
+}
+.universal-help-panel .reference-card p {
+  margin: 0 !important;
+  color: var(--muted) !important;
+  font-size: .96rem !important;
+  line-height: 1.55 !important;
+}
+.universal-help-panel .reference-card a {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 38px !important;
+  margin-top: 10px !important;
+  padding: 8px 12px !important;
+  color: var(--primary-dark) !important;
+  background: var(--primary-soft) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 999px !important;
+  font-size: .88rem !important;
+  font-weight: 800 !important;
+}
+.universal-help-panel .reference-card a:hover {
+  color: #ffffff !important;
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+}

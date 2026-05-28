@@ -2,24 +2,20 @@
   Copyright © 2026 Hamdi. All rights reserved.
   Do not copy, modify, redistribute, or reuse this project without permission.
 -->
-
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-
-  <title>Compound Interest Calculator</title>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Free compound interest calculator to calculate future value, compound interest earned, and principal amount.">
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=size_readability_fix_20260528_2">
-  <link rel="stylesheet" href="pc.css?v=size_readability_fix_20260528_2" media="screen and (min-width: 851px)">
-  <link rel="stylesheet" href="phone.css?v=size_readability_fix_20260528_2" media="screen and (max-width: 850px)">
-<link rel="icon" href="favicon.ico">
-
-  <script>
+<meta charset="utf-8"/>
+<title>Compound Interest Calculator</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Free compound interest calculator to calculate future value, compound interest earned, and principal amount." name="description"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="style.css?v=help_boxes_all_20260528_1" rel="stylesheet"/>
+<link href="pc.css?v=help_boxes_all_20260528_1" media="screen and (min-width: 851px)" rel="stylesheet"/>
+<link href="phone.css?v=help_boxes_all_20260528_1" media="screen and (max-width: 850px)" rel="stylesheet"/>
+<link href="favicon.ico" rel="icon"/>
+<script>
     if (window.location.pathname.endsWith("/calculator/")) {
       window.location.replace(
         window.location.pathname + "index.html" + window.location.search + window.location.hash
@@ -27,241 +23,150 @@
     }
   </script>
 </head>
-
 <body class="compound-page app-redesign">
-
-    <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
+<button aria-label="Go to top" id="scrollTopBtn" onclick="scrollToTop()" type="button">
     ↑
   </button>
-
-  <!-- MENU Button shown after scroll on PC only -->
-  <nav id="navbar" class="clean-navbar">
-  <div class="clean-nav-inner">
-    <a class="clean-nav-link" href="index.html">Home</a>
-
-    <div class="clean-nav-dropdown clean-calculator-dropdown">
-      <button type="button" class="clean-nav-link clean-nav-button" aria-expanded="false">Tools <span aria-hidden="true">▼</span></button>
-      <div class="clean-nav-dropdown-panel clean-calculator-panel">
-
-        <div class="clean-nav-submenu clean-general-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">General <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="basic-calculator.html">Basic Calculator</a>
-            <a href="scientific-calculator.html">Scientific Calculator</a>
-            <a href="percentage-calculator.html">Percentage Calculator</a>
-            <a href="unit-converter-calculator.html">Unit Converter</a>
-          </div>
-        </div>
-
-        <div class="clean-nav-submenu clean-health-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Health & Age <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="age-calculator.html">Age Calculator</a>
-            <a href="bmi-calculator.html">BMI Calculator</a>
-          </div>
-        </div>
-
-        <div class="clean-nav-submenu clean-money-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Money & Income <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="salary-calculator.html">Salary Calculator</a>
-            <a href="gaji-penjawat-awam-calculator.html">Gaji Penjawat Awam</a>
-            <a href="tax-calculator.html">Tax Calculator</a>
-            <a href="currency-converter.html">Currency Converter</a>
-            <a href="discount-calculator.html">Discount Calculator</a>
-            <a href="inflation-calculator.html">Inflation Calculator</a>
-            <a href="compound-interest-calculator.html">Compound Interest</a>
-          </div>
-        </div>
-
-        <div class="clean-nav-submenu clean-loan-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Loans & Debt <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="mortgage-calculator.html">Mortgage Calculator</a>
-            <a href="personal-loan-calculator.html">Personal Loan</a>
-            <a href="loan-comparison-calculator.html">Loan Comparison</a>
-            <a href="debt-payoff-calculator.html">Debt Payoff</a>
-            <a href="credit-card-payoff-calculator.html">Credit Card Payoff</a>
-            <a href="credit-card-interest-calculator.html">Credit Card Interest</a>
-          </div>
-        </div>
-
-        <div class="clean-nav-submenu clean-property-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Property & Travel <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="rental-yield-calculator.html">Rental Yield</a>
-            <a href="fuel-cost-calculator.html">Fuel Cost</a>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="clean-nav-dropdown clean-info-dropdown">
-      <button type="button" class="clean-nav-link clean-nav-button" aria-expanded="false">Resources <span aria-hidden="true">▼</span></button>
-      <div class="clean-nav-dropdown-panel clean-info-panel">
-        <a href="about.html">About</a>
-        <a href="FAQS.html">FAQs</a>
-        <a href="privacy-policy.html">Privacy Policy</a>
-        <a href="contact.html">Contact</a>
-      </div>
-    </div>
-
-    <a class="clean-nav-link clean-chat-link" href="chatting.html">Community</a>
-
-    <form class="clean-nav-search" role="search" autocomplete="off">
-      <label class="clean-nav-search-label" for="cleanCalculatorSearchInput">Search tools</label>
-      <input id="cleanCalculatorSearchInput" class="clean-nav-search-input" type="search" placeholder="Search tools" aria-label="Search tools">
-      <button type="submit" class="clean-nav-search-button" aria-label="Search">🔍</button>
-      <ul class="clean-nav-search-results" hidden></ul>
-    </form>
-  </div>
+<!-- MENU Button shown after scroll on PC only -->
+<nav class="clean-navbar" id="navbar">
+<div class="clean-nav-inner">
+<a class="clean-nav-link" href="index.html">Home</a>
+<div class="clean-nav-dropdown clean-calculator-dropdown">
+<button aria-expanded="false" class="clean-nav-link clean-nav-button" type="button">Tools <span aria-hidden="true">▼</span></button>
+<div class="clean-nav-dropdown-panel clean-calculator-panel">
+<div class="clean-nav-submenu clean-general-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">General <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="basic-calculator.html">Basic Calculator</a>
+<a href="scientific-calculator.html">Scientific Calculator</a>
+<a href="percentage-calculator.html">Percentage Calculator</a>
+<a href="unit-converter-calculator.html">Unit Converter</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-health-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Health &amp; Age <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="age-calculator.html">Age Calculator</a>
+<a href="bmi-calculator.html">BMI Calculator</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-money-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Money &amp; Income <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="salary-calculator.html">Salary Calculator</a>
+<a href="gaji-penjawat-awam-calculator.html">Gaji Penjawat Awam</a>
+<a href="tax-calculator.html">Tax Calculator</a>
+<a href="currency-converter.html">Currency Converter</a>
+<a href="discount-calculator.html">Discount Calculator</a>
+<a href="inflation-calculator.html">Inflation Calculator</a>
+<a href="compound-interest-calculator.html">Compound Interest</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-loan-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Loans &amp; Debt <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="mortgage-calculator.html">Mortgage Calculator</a>
+<a href="personal-loan-calculator.html">Personal Loan</a>
+<a href="loan-comparison-calculator.html">Loan Comparison</a>
+<a href="debt-payoff-calculator.html">Debt Payoff</a>
+<a href="credit-card-payoff-calculator.html">Credit Card Payoff</a>
+<a href="credit-card-interest-calculator.html">Credit Card Interest</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-property-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Property &amp; Travel <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="rental-yield-calculator.html">Rental Yield</a>
+<a href="fuel-cost-calculator.html">Fuel Cost</a>
+</div>
+</div>
+</div>
+</div>
+<div class="clean-nav-dropdown clean-info-dropdown">
+<button aria-expanded="false" class="clean-nav-link clean-nav-button" type="button">Resources <span aria-hidden="true">▼</span></button>
+<div class="clean-nav-dropdown-panel clean-info-panel">
+<a href="about.html">About</a>
+<a href="FAQS.html">FAQs</a>
+<a href="privacy-policy.html">Privacy Policy</a>
+<a href="contact.html">Contact</a>
+</div>
+</div>
+<a class="clean-nav-link clean-chat-link" href="chatting.html">Community</a>
+<form autocomplete="off" class="clean-nav-search" role="search">
+<label class="clean-nav-search-label" for="cleanCalculatorSearchInput">Search tools</label>
+<input aria-label="Search tools" class="clean-nav-search-input" id="cleanCalculatorSearchInput" placeholder="Search tools" type="search"/>
+<button aria-label="Search" class="clean-nav-search-button" type="submit">🔍</button>
+<ul class="clean-nav-search-results" hidden=""></ul>
+</form>
+</div>
 </nav>
-
-    <main class="compound-calculator-container compound-interest-container has-instructions tool-layout">
-
-    <section class="loan-history-box extra-side-box tool-group-nav">
-      <div class="loan-history-top">
-        <h3>Money &amp; income</h3>
-      </div>
-
-      <div class="extra-side-links">
-        <a href="salary-calculator.html">Salary Calculator</a>
-        <a href="gaji-penjawat-awam-calculator.html">Gaji Penjawat Awam</a>
-        <a href="tax-calculator.html">Tax Calculator</a>
-        <a href="currency-converter.html">Currency Converter</a>
-        <a href="discount-calculator.html">Discount Calculator</a>
-        <a href="inflation-calculator.html">Inflation Calculator</a>
-        <a href="compound-interest-calculator.html" class="current-extra-link">Compound Interest</a>
-      </div>
-    </section>
+<main class="compound-calculator-container compound-interest-container has-instructions tool-layout">
+<section class="loan-history-box extra-side-box tool-group-nav">
+<div class="loan-history-top">
+<h3>Money &amp; income</h3>
+</div>
+<div class="extra-side-links">
+<a href="salary-calculator.html">Salary Calculator</a>
+<a href="gaji-penjawat-awam-calculator.html">Gaji Penjawat Awam</a>
+<a href="tax-calculator.html">Tax Calculator</a>
+<a href="currency-converter.html">Currency Converter</a>
+<a href="discount-calculator.html">Discount Calculator</a>
+<a href="inflation-calculator.html">Inflation Calculator</a>
+<a class="current-extra-link" href="compound-interest-calculator.html">Compound Interest</a>
+</div>
+</section>
 <!-- Calculator -->
-    <section class="calculator" aria-label="Compound Interest Calculator">
-
-      <h1>Compound Interest Calculator</h1>
-
-      <p class="subtitle">
+<section aria-label="Compound Interest Calculator" class="calculator">
+<h1>Compound Interest Calculator</h1>
+<p class="subtitle">
         Calculate future value, compound interest, and principal amount.
       </p>
-
-      <label for="principal">Principal Amount</label>
-      <input
-        type="number"
-        id="principal"
-        inputmode="decimal"
-        min="0"
-        step="0.01"
-        placeholder="Example: 1000"
-      >
-
-      <label for="rate">Annual Interest Rate (%)</label>
-      <input
-        type="number"
-        id="rate"
-        inputmode="decimal"
-        min="0"
-        step="0.01"
-        placeholder="Example: 5"
-      >
-
-      <label for="years">Time in Years</label>
-      <input
-        type="number"
-        id="years"
-        inputmode="decimal"
-        min="0"
-        step="0.01"
-        placeholder="Example: 10"
-      >
-
-      <label for="frequency">Compounding Frequency</label>
-      <select id="frequency">
-        <option value="1">annually</option>
-        <option value="2">semi-annually</option>
-        <option value="4">quarterly</option>
-        <option value="12" selected>monthly</option>
-        <option value="365">daily</option>
-      </select>
-
-      <p class="compound-tip">
+<label for="principal">Principal Amount</label>
+<input id="principal" inputmode="decimal" min="0" placeholder="Example: 1000" step="0.01" type="number"/>
+<label for="rate">Annual Interest Rate (%)</label>
+<input id="rate" inputmode="decimal" min="0" placeholder="Example: 5" step="0.01" type="number"/>
+<label for="years">Time in Years</label>
+<input id="years" inputmode="decimal" min="0" placeholder="Example: 10" step="0.01" type="number"/>
+<label for="frequency">Compounding Frequency</label>
+<select id="frequency">
+<option value="1">annually</option>
+<option value="2">semi-annually</option>
+<option value="4">quarterly</option>
+<option selected="" value="12">monthly</option>
+<option value="365">daily</option>
+</select>
+<p class="compound-tip">
         Tip: choose monthly if the interest is added every month.
       </p>
-
-      <button class="main-btn" type="button" id="calculateCompoundBtn">
+<button class="main-btn" id="calculateCompoundBtn" type="button">
         calculate compound interest
       </button>
+<h2 aria-live="polite" id="compoundResult"></h2>
+</section>
 
-      <h2 id="compoundResult" aria-live="polite"></h2>
-
-    </section>
-
-    <!-- Instructions + References -->
-    <aside class="instruction-box" aria-label="Instructions">
-
-      <div class="instruction-section instruction-what-box">
-        <h3>What does this calculator do?</h3>
-        <p>
-          This calculator helps you estimate how much your money can grow over time when interest is added repeatedly.
-        </p>
-      </div>
+    <aside aria-label="Calculator guide and references" class="instruction-box universal-help-panel">
+      <section class="instruction-section instruction-what-box"><h3>What does this calculator do?</h3><p>Use this to estimate how money grows when interest is added repeatedly over time.</p></section>
 
       <h2 class="instruction-main-title">Instructions</h2>
 
-      <div class="instruction-section instruction-how-box">
-        <h3>How to use it</h3>
-        <p>
-          Enter the principal amount, annual interest rate, time in years, and compounding frequency. Then press calculate compound interest.
-        </p>
-      </div>
+      <section class="instruction-section instruction-how-box"><h3>How to use it</h3><p>Enter principal, annual rate, time, and compounding frequency. Then calculate the future value and interest earned.</p></section>
 
-      <div class="instruction-section instruction-formula-box">
-        <h3>Formula used</h3>
-        <p>
-          A = P(1 + r/n)<sup>nt</sup><br>
-          Compound Interest = A − P
-        </p>
-      </div>
+      <section class="instruction-section instruction-formula-box"><h3>Formula used</h3><p>A = P(1 + r/n)^(nt). Compound interest = A − P.</p></section>
 
-      <div class="instruction-section instruction-example-box">
-        <h3>Example calculation</h3>
-        <p>
-          If P = 1000, r = 5%, t = 10 years, and n = monthly, the future value is about 1,647.01 and the compound interest is about 647.01.
-        </p>
-      </div>
+      <section class="instruction-section instruction-example-box"><h3>Example calculation</h3><p>P = 1000, r = 5%, t = 10 years, n = monthly gives a future value of about 1647.01.</p></section>
 
-      <section class="reference-box" aria-label="References">
-        <h2 class="reference-main-title">References</h2>
-
-        <div class="reference-scroll">
-
-          <div class="reference-card">
-            <h3>Compound interest formula</h3>
-            <p>
-              The standard compound interest formula is A = P(1 + r/n)<sup>nt</sup>.
-            </p>
-            <a href="https://www.investopedia.com/terms/c/compoundinterest.asp" target="_blank" rel="noopener noreferrer">
-              Open source
-            </a>
-          </div>
-
-          <div class="reference-card">
-            <h3>Interest meaning</h3>
-            <p>
-              Compound interest means interest is calculated on the principal and also on previous interest.
-            </p>
-            <a href="https://www.investopedia.com/articles/investing/020614/learn-simple-and-compound-interest.asp" target="_blank" rel="noopener noreferrer">
-              Open source
-            </a>
-          </div>
-
+      <section aria-label="References" class="reference-box universal-reference-box"><h2 class="reference-main-title">References</h2>
+        <div class="reference-scroll universal-reference-list">
+          <div class="reference-card"><h3>Compound interest</h3><p>The standard compound interest formula uses principal, rate, time, and compounding frequency.</p><a href="https://www.investopedia.com/terms/c/compoundinterest.asp" rel="noopener noreferrer" target="_blank">Open source</a></div>
+          <div class="reference-card"><h3>General note</h3><p>Actual investment returns, fees, taxes, and bank rules can change the final result.</p></div>
         </div>
       </section>
-
     </aside>
+<!-- Instructions + References -->
 
-  </main>
-  <script src="script.js?v=size_readability_fix_20260528_2"></script>
-  <script src="pc.js?v=size_readability_fix_20260528_2"></script>
-  <script src="phone.js?v=size_readability_fix_20260528_2"></script>
+</main>
+<script src="script.js?v=help_boxes_all_20260528_1"></script>
+<script src="pc.js?v=help_boxes_all_20260528_1"></script>
+<script src="phone.js?v=help_boxes_all_20260528_1"></script>
 </body>
 </html>

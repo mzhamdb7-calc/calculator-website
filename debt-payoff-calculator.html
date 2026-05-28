@@ -1,201 +1,160 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-
-  <title>Debt Payoff Calculator</title>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Estimate debt payoff time with extra payment.">
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=size_readability_fix_20260528_2">
-  <link rel="stylesheet" href="pc.css?v=size_readability_fix_20260528_2" media="screen and (min-width: 851px)">
-  <link rel="stylesheet" href="phone.css?v=size_readability_fix_20260528_2" media="screen and (max-width: 850px)">
-  <link rel="icon" href="favicon.ico">
+<meta charset="utf-8"/>
+<title>Debt Payoff Calculator</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Estimate debt payoff time with extra payment." name="description"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="style.css?v=help_boxes_all_20260528_1" rel="stylesheet"/>
+<link href="pc.css?v=help_boxes_all_20260528_1" media="screen and (min-width: 851px)" rel="stylesheet"/>
+<link href="phone.css?v=help_boxes_all_20260528_1" media="screen and (max-width: 850px)" rel="stylesheet"/>
+<link href="favicon.ico" rel="icon"/>
 </head>
-
 <body class="extra-calculator-page debtPayoff-page app-redesign" data-page="debtPayoff">
-
-
-    <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
+<button aria-label="Go to top" id="scrollTopBtn" onclick="scrollToTop()" type="button">
     ↑
   </button>
-  <nav id="navbar" class="clean-navbar">
-  <div class="clean-nav-inner">
-    <a class="clean-nav-link" href="index.html">Home</a>
-
-    <div class="clean-nav-dropdown clean-calculator-dropdown">
-      <button type="button" class="clean-nav-link clean-nav-button" aria-expanded="false">Tools <span aria-hidden="true">▼</span></button>
-      <div class="clean-nav-dropdown-panel clean-calculator-panel">
-
-        <div class="clean-nav-submenu clean-general-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">General <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="basic-calculator.html">Basic Calculator</a>
-            <a href="scientific-calculator.html">Scientific Calculator</a>
-            <a href="percentage-calculator.html">Percentage Calculator</a>
-            <a href="unit-converter-calculator.html">Unit Converter</a>
-          </div>
-        </div>
-
-        <div class="clean-nav-submenu clean-health-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Health & Age <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="age-calculator.html">Age Calculator</a>
-            <a href="bmi-calculator.html">BMI Calculator</a>
-          </div>
-        </div>
-
-        <div class="clean-nav-submenu clean-money-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Money & Income <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="salary-calculator.html">Salary Calculator</a>
-            <a href="gaji-penjawat-awam-calculator.html">Gaji Penjawat Awam</a>
-            <a href="tax-calculator.html">Tax Calculator</a>
-            <a href="currency-converter.html">Currency Converter</a>
-            <a href="discount-calculator.html">Discount Calculator</a>
-            <a href="inflation-calculator.html">Inflation Calculator</a>
-            <a href="compound-interest-calculator.html">Compound Interest</a>
-          </div>
-        </div>
-
-        <div class="clean-nav-submenu clean-loan-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Loans & Debt <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="mortgage-calculator.html">Mortgage Calculator</a>
-            <a href="personal-loan-calculator.html">Personal Loan</a>
-            <a href="loan-comparison-calculator.html">Loan Comparison</a>
-            <a href="debt-payoff-calculator.html">Debt Payoff</a>
-            <a href="credit-card-payoff-calculator.html">Credit Card Payoff</a>
-            <a href="credit-card-interest-calculator.html">Credit Card Interest</a>
-          </div>
-        </div>
-
-        <div class="clean-nav-submenu clean-property-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Property & Travel <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="rental-yield-calculator.html">Rental Yield</a>
-            <a href="fuel-cost-calculator.html">Fuel Cost</a>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="clean-nav-dropdown clean-info-dropdown">
-      <button type="button" class="clean-nav-link clean-nav-button" aria-expanded="false">Resources <span aria-hidden="true">▼</span></button>
-      <div class="clean-nav-dropdown-panel clean-info-panel">
-        <a href="about.html">About</a>
-        <a href="FAQS.html">FAQs</a>
-        <a href="privacy-policy.html">Privacy Policy</a>
-        <a href="contact.html">Contact</a>
-      </div>
-    </div>
-
-    <a class="clean-nav-link clean-chat-link" href="chatting.html">Community</a>
-
-    <form class="clean-nav-search" role="search" autocomplete="off">
-      <label class="clean-nav-search-label" for="cleanCalculatorSearchInput">Search tools</label>
-      <input id="cleanCalculatorSearchInput" class="clean-nav-search-input" type="search" placeholder="Search tools" aria-label="Search tools">
-      <button type="submit" class="clean-nav-search-button" aria-label="Search">🔍</button>
-      <ul class="clean-nav-search-results" hidden></ul>
-    </form>
-  </div>
+<nav class="clean-navbar" id="navbar">
+<div class="clean-nav-inner">
+<a class="clean-nav-link" href="index.html">Home</a>
+<div class="clean-nav-dropdown clean-calculator-dropdown">
+<button aria-expanded="false" class="clean-nav-link clean-nav-button" type="button">Tools <span aria-hidden="true">▼</span></button>
+<div class="clean-nav-dropdown-panel clean-calculator-panel">
+<div class="clean-nav-submenu clean-general-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">General <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="basic-calculator.html">Basic Calculator</a>
+<a href="scientific-calculator.html">Scientific Calculator</a>
+<a href="percentage-calculator.html">Percentage Calculator</a>
+<a href="unit-converter-calculator.html">Unit Converter</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-health-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Health &amp; Age <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="age-calculator.html">Age Calculator</a>
+<a href="bmi-calculator.html">BMI Calculator</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-money-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Money &amp; Income <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="salary-calculator.html">Salary Calculator</a>
+<a href="gaji-penjawat-awam-calculator.html">Gaji Penjawat Awam</a>
+<a href="tax-calculator.html">Tax Calculator</a>
+<a href="currency-converter.html">Currency Converter</a>
+<a href="discount-calculator.html">Discount Calculator</a>
+<a href="inflation-calculator.html">Inflation Calculator</a>
+<a href="compound-interest-calculator.html">Compound Interest</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-loan-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Loans &amp; Debt <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="mortgage-calculator.html">Mortgage Calculator</a>
+<a href="personal-loan-calculator.html">Personal Loan</a>
+<a href="loan-comparison-calculator.html">Loan Comparison</a>
+<a href="debt-payoff-calculator.html">Debt Payoff</a>
+<a href="credit-card-payoff-calculator.html">Credit Card Payoff</a>
+<a href="credit-card-interest-calculator.html">Credit Card Interest</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-property-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Property &amp; Travel <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="rental-yield-calculator.html">Rental Yield</a>
+<a href="fuel-cost-calculator.html">Fuel Cost</a>
+</div>
+</div>
+</div>
+</div>
+<div class="clean-nav-dropdown clean-info-dropdown">
+<button aria-expanded="false" class="clean-nav-link clean-nav-button" type="button">Resources <span aria-hidden="true">▼</span></button>
+<div class="clean-nav-dropdown-panel clean-info-panel">
+<a href="about.html">About</a>
+<a href="FAQS.html">FAQs</a>
+<a href="privacy-policy.html">Privacy Policy</a>
+<a href="contact.html">Contact</a>
+</div>
+</div>
+<a class="clean-nav-link clean-chat-link" href="chatting.html">Community</a>
+<form autocomplete="off" class="clean-nav-search" role="search">
+<label class="clean-nav-search-label" for="cleanCalculatorSearchInput">Search tools</label>
+<input aria-label="Search tools" class="clean-nav-search-input" id="cleanCalculatorSearchInput" placeholder="Search tools" type="search"/>
+<button aria-label="Search" class="clean-nav-search-button" type="submit">🔍</button>
+<ul class="clean-nav-search-results" hidden=""></ul>
+</form>
+</div>
 </nav>
+<main class="loan-calculator-container extra-calculator-container extra-calculator-layout extra-modern-page extra-help-layout">
 
 
-  <main class="loan-calculator-container extra-calculator-container extra-calculator-layout extra-modern-page extra-help-layout">
 
-    <button type="button" id="pcHelpQuestionButton" class="extra-help-question-button" aria-label="Open calculator help">?</button>
+<section class="extra-related-box extra-side-box tool-group-nav">
+<div class="extra-related-top">
+<h3>Loans &amp; debt</h3>
+</div>
+<div class="extra-side-links">
+<a href="mortgage-calculator.html">Mortgage Calculator</a>
+<a href="personal-loan-calculator.html">Personal Loan</a>
+<a href="loan-comparison-calculator.html">Loan Comparison</a>
+<a class="current-extra-link" href="debt-payoff-calculator.html">Debt Payoff</a>
+<a href="credit-card-payoff-calculator.html">Credit Card Payoff</a>
+<a href="credit-card-interest-calculator.html">Credit Card Interest</a>
+</div>
+</section>
+<section class="calculator extra-calculator-box">
+<h1>Debt Payoff Calculator</h1>
+<p class="subtitle">
+        Estimate debt-free time using your monthly payment.
+      </p>
+<div class="extra-input-card">
+<div class="extra-input-card-title">Input details</div>
+<div class="extra-input-grid">
+<div class="extra-input-field">
+<label for="debtTotal">Total debt</label>
+<input id="debtTotal" inputmode="decimal" placeholder="Example: 20000" type="number"/>
+</div>
+<div class="extra-input-field">
+<label for="debtApr">Average APR (%)</label>
+<input id="debtApr" inputmode="decimal" placeholder="Example: 12" type="number"/>
+</div>
+<div class="extra-input-field">
+<label for="debtPayment">Normal monthly payment</label>
+<input id="debtPayment" inputmode="decimal" placeholder="Example: 800" type="number"/>
+</div>
+<div class="extra-input-field">
+<label for="debtExtra">Extra monthly payment</label>
+<input id="debtExtra" inputmode="decimal" placeholder="Optional" type="number"/>
+</div>
+</div>
+</div>
+<section class="extra-result-box" hidden="" id="extraCalcResult"></section>
+</section>
 
-    <section class="pc-what-slot extra-what-slot">
-      <div class="instruction-section instruction-what-box">
-        <h3>What does this calculator do?</h3>
-        <p>It estimates how long it may take to become debt-free using normal and extra monthly payments.</p>
-      </div>
-    </section>
-
-    <aside class="instruction-box extra-help-panel" aria-label="Instructions and references">
-      <div class="instruction-section instruction-what-box">
-        <h3>What does this calculator do?</h3>
-        <p>It estimates how long it may take to become debt-free using normal and extra monthly payments.</p>
-      </div>
+    <aside aria-label="Calculator guide and references" class="instruction-box universal-help-panel">
+      <section class="instruction-section instruction-what-box"><h3>What does this calculator do?</h3><p>Use this to estimate how long it may take to pay off a debt and how much interest may be paid.</p></section>
 
       <h2 class="instruction-main-title">Instructions</h2>
 
-      <div class="instruction-section instruction-how-box">
-        <h3>How to use it</h3>
-        <p>Enter total debt, average APR, normal payment, and optional extra payment.</p>
-      </div>
+      <section class="instruction-section instruction-how-box"><h3>How to use it</h3><p>Enter debt balance, interest rate, and monthly payment.</p></section>
 
-      <div class="instruction-section instruction-formula-box">
-        <h3>Formula used</h3>
-        <p>Debt balance grows by monthly interest, then reduces by your payment.</p>
-      </div>
+      <section class="instruction-section instruction-formula-box"><h3>Formula used</h3><p>The calculator estimates repayment by applying interest and subtracting your monthly payment until the balance reaches zero.</p></section>
 
-      <div class="instruction-section instruction-example-box">
-        <h3>Example calculation</h3>
-        <p>Adding extra payment can shorten the payoff time.</p>
-      </div>
-    </aside>
+      <section class="instruction-section instruction-example-box"><h3>Example calculation</h3><p>If your balance is RM 5,000 and you pay RM 500 monthly, the calculator estimates payoff time and interest.</p></section>
 
-
-    <section class="extra-related-box extra-side-box tool-group-nav">
-      <div class="extra-related-top">
-        <h3>Loans &amp; debt</h3>
-      </div>
-
-      <div class="extra-side-links">
-          <a href="mortgage-calculator.html">Mortgage Calculator</a>
-          <a href="personal-loan-calculator.html">Personal Loan</a>
-          <a href="loan-comparison-calculator.html">Loan Comparison</a>
-          <a href="debt-payoff-calculator.html" class="current-extra-link">Debt Payoff</a>
-          <a href="credit-card-payoff-calculator.html">Credit Card Payoff</a>
-          <a href="credit-card-interest-calculator.html">Credit Card Interest</a>
-      </div>
-    </section>
-
-    <section class="calculator extra-calculator-box">
-
-      <h1>Debt Payoff Calculator</h1>
-
-      <p class="subtitle">
-        Estimate debt-free time using your monthly payment.
-      </p>
-
-      
-
-      <div class="extra-input-card">
-        <div class="extra-input-card-title">Input details</div>
-
-        <div class="extra-input-grid">
-          <div class="extra-input-field">
-            <label for="debtTotal">Total debt</label>
-            <input type="number" id="debtTotal" placeholder="Example: 20000" inputmode="decimal">
-          </div>
-          <div class="extra-input-field">
-            <label for="debtApr">Average APR (%)</label>
-            <input type="number" id="debtApr" placeholder="Example: 12" inputmode="decimal">
-          </div>
-          <div class="extra-input-field">
-            <label for="debtPayment">Normal monthly payment</label>
-            <input type="number" id="debtPayment" placeholder="Example: 800" inputmode="decimal">
-          </div>
-          <div class="extra-input-field">
-            <label for="debtExtra">Extra monthly payment</label>
-            <input type="number" id="debtExtra" placeholder="Optional" inputmode="decimal">
-          </div>
+      <section aria-label="References" class="reference-box universal-reference-box"><h2 class="reference-main-title">References</h2>
+        <div class="reference-scroll universal-reference-list">
+          <div class="reference-card"><h3>Debt repayment</h3><p>Debt payoff depends on balance, rate, payment amount, and fees.</p></div>
+          <div class="reference-card"><h3>General note</h3><p>Minimum payments can extend payoff time. Confirm exact repayment details with your lender or card issuer.</p></div>
         </div>
-      </div>
-<section id="extraCalcResult" class="extra-result-box" hidden></section>
-
-    </section>
-
-  </main>
-
-  <script src="script.js?v=size_readability_fix_20260528_2"></script>
-  <script src="pc.js?v=size_readability_fix_20260528_2"></script>
-  <script src="phone.js?v=size_readability_fix_20260528_2"></script>
+      </section>
+    </aside>
+</main>
+<script src="script.js?v=help_boxes_all_20260528_1"></script>
+<script src="pc.js?v=help_boxes_all_20260528_1"></script>
+<script src="phone.js?v=help_boxes_all_20260528_1"></script>
 </body>
 </html>

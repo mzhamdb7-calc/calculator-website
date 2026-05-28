@@ -3930,63 +3930,377 @@
   ===================================================== */
 
   const PAGE_DATA = {
-    basic: {
-      what: "It helps you do quick math calculations like addition, subtraction, multiplication, division, power, and square root.",
-      how: "Enter numbers using the buttons, choose an operator, then press = to get the answer.",
-      formula: "The calculator follows normal math order: brackets first, then powers, multiplication/division, then addition/subtraction.",
-      example: "8 + 2 × 3 = 14 because multiplication is calculated before addition.",
-      references: [["Order of operations", "Purplemath explains the normal order of operations.", "https://www.purplemath.com/modules/orderops.htm"]]
+    "basic": {
+        "what": "Use this for quick everyday maths such as addition, subtraction, multiplication, division, powers, and square root.",
+        "how": "Type or tap the numbers, choose the operator, then press =. Use AC to clear and ← to delete one character.",
+        "formula": "It follows the normal order of operations: brackets and powers first, then multiplication/division, then addition/subtraction.",
+        "example": "8 + 2 × 3 = 14 because multiplication is calculated before addition.",
+        "references": [
+            [
+                "Order of operations",
+                "Standard arithmetic uses a fixed order so calculations are consistent.",
+                "https://www.purplemath.com/modules/orderops.htm"
+            ],
+            [
+                "General note",
+                "For important money, school, or work calculations, recheck the result with your own records."
+            ]
+        ]
     },
-    age: {
-      what: "It calculates exact age, normal age, Asian age, birthday countdown, zodiac signs, retirement countdown, sleep estimate, planet age, days alive, moon cycles, and legal age.",
-      how: "Select your birth date. The result updates automatically.",
-      formula: "Exact age is calculated from birth date to the selected target date using years, months, days, hours, and minutes.",
-      example: "A birth date of 15/01/2000 shows exact age, birthday countdown, zodiac, retirement countdown, planet ages, days alive, and moon cycles.",
-      references: [["Age calculation", "Microsoft shows age calculation using today’s date and a birth date.", "https://support.microsoft.com/en-us/office/calculate-age-113d599f-5fea-448f-a4c3-268927911b37"]]
+    "scientific": {
+        "what": "Use this for advanced maths such as powers, roots, trigonometry, logarithms, brackets, and scientific notation.",
+        "how": "Enter the expression carefully, check brackets, then calculate. Use the clear/delete buttons if you make a mistake.",
+        "formula": "Scientific functions follow standard calculator conventions. Trigonometry uses the selected angle mode when available.",
+        "example": "sqrt(144) gives 12. sin(30°) gives 0.5 when degree mode is used.",
+        "references": [
+            [
+                "Scientific calculator functions",
+                "Use standard math references for trigonometry, logarithms, roots, and powers.",
+                "https://en.wikipedia.org/wiki/Scientific_calculator"
+            ],
+            [
+                "General note",
+                "Make sure you use the correct angle mode for trigonometry questions."
+            ]
+        ]
     },
-    bmi: {
-      what: "It calculates Body Mass Index and waist-to-height ratio. Age and gender are optional details included in the result/report.",
-      how: "Choose SI or US units, enter weight and height, optionally enter waist, age, and gender. The result updates automatically.",
-      formula: "SI: BMI = weight kg ÷ height m². US: BMI = weight lb ÷ height inch² × 703. Waist-to-height ratio = waist ÷ height.",
-      example: "70 kg and 170 cm gives BMI = 24.22. A waist-to-height ratio below 0.5 is marked healthy.",
-      references: [["CDC BMI formula", "CDC lists metric and US customary formulas for calculating BMI.", "https://www.cdc.gov/growth-chart-training/hcp/using-bmi/body-mass-index.html"]]
+    "percentage": {
+        "what": "Use this to find a percentage of a number, such as discounts, marks, commissions, and simple ratios.",
+        "how": "Enter the percentage and the number. The result updates automatically when enough information is entered.",
+        "formula": "Result = percentage ÷ 100 × number.",
+        "example": "20% of 150 = 30.",
+        "references": [
+            [
+                "Percentage meaning",
+                "A percentage means a value expressed out of 100.",
+                "https://en.wikipedia.org/wiki/Percentage"
+            ],
+            [
+                "General note",
+                "For taxes, fees, and financial decisions, confirm the exact percentage rule with the official provider."
+            ]
+        ]
     },
-    loan: {
-      what: "It estimates mortgage monthly payment, interest, total payment, optional monthly home costs, and early settlement balance.",
-      how: "Enter purchase price or mortgage amount, annual interest rate, loan term in months, and optional mortgage costs. The result updates automatically.",
-      formula: "Monthly Payment = P × r × (1+r)ⁿ ÷ ((1+r)ⁿ − 1), where n is the mortgage term in months.",
-      example: "A 300,000 mortgage at 4% yearly for 360 months gives an estimated monthly payment using the amortization formula.",
-      references: [["Mortgage formula", "Investopedia lists the mortgage payment formula using principal, rate, and months.", "https://www.investopedia.com/mortgage-calculator-5084794"]]
+    "unitConverter": {
+        "what": "Use this to convert common units such as length, weight, temperature, area, volume, and speed.",
+        "how": "Choose the unit type, enter the value, choose the starting unit and target unit, then read the converted result.",
+        "formula": "The calculator uses fixed conversion factors between supported units. Temperature conversions also include an offset.",
+        "example": "1 kilometre = 1000 metres. 1 inch = 2.54 centimetres.",
+        "references": [
+            [
+                "Unit conversion",
+                "NIST provides reference information for SI units and conversion factors.",
+                "https://www.nist.gov/pml/owm/metric-si/si-units"
+            ],
+            [
+                "General note",
+                "For medical, engineering, or legal measurements, always confirm the required unit standard."
+            ]
+        ]
     },
-    personalLoan: {
-      what: "It estimates personal loan monthly payment, total interest, and total payment using the same clean report style as the mortgage calculator.",
-      how: "Enter loan amount, annual interest rate, and loan term in months. The result updates automatically.",
-      formula: "Monthly Payment = P × r × (1+r)ⁿ ÷ ((1+r)ⁿ − 1), where n is the personal loan term in months.",
-      example: "A 10,000 personal loan at 5% yearly for 60 months gives an estimated monthly payment using the amortization formula.",
-      references: [["Loan amortization", "Investopedia explains amortized loans and fixed monthly payments.", "https://www.investopedia.com/terms/a/amortized_loan.asp"]]
+    "age": {
+        "what": "Use this to calculate age from a birth date, including years, months, days, birthday countdown, and related age details.",
+        "how": "Enter the birth date. Add a target date if you want age on a specific day instead of today.",
+        "formula": "Age is calculated by comparing the birth date with the target date and counting completed years, months, and days.",
+        "example": "A person born on 15 January 2000 can see exact age, next birthday countdown, and days lived.",
+        "references": [
+            [
+                "Age calculation",
+                "Age is commonly calculated by comparing a date of birth with the current or target date.",
+                "https://support.microsoft.com/en-us/office/calculate-age-113d599f-5fea-448f-a4c3-268927911b37"
+            ],
+            [
+                "General note",
+                "Legal age rules can differ by country, state, or institution. Confirm with the relevant authority."
+            ]
+        ]
     },
-    discount: {
-      what: "It calculates final price after discount and how much money you save.",
-      how: "Enter original price and discount percentage. The result updates automatically.",
-      formula: "Savings = original price × discount ÷ 100. Final price = original price − savings.",
-      example: "If price is 100 and discount is 20%, savings = 20 and final price = 80.",
-      references: [["Discount calculation", "Calculator.net explains percent-off discount calculation.", "https://www.calculator.net/discount-calculator.html"]]
+    "bmi": {
+        "what": "Use this to estimate Body Mass Index and waist-to-height ratio from your height, weight, and optional body details.",
+        "how": "Choose SI or US units, enter weight and height, then optionally add waist, age, gender, activity level, and target weight.",
+        "formula": "SI BMI = weight kg ÷ height m². US BMI = weight lb ÷ height in² × 703. Waist-to-height ratio = waist ÷ height.",
+        "example": "70 kg and 170 cm gives a BMI of about 24.2.",
+        "references": [
+            [
+                "BMI formula",
+                "CDC lists metric and US BMI formulas and explains BMI as a screening measure.",
+                "https://www.cdc.gov/growth-chart-training/hcp/using-bmi/body-mass-index.html"
+            ],
+            [
+                "Health note",
+                "BMI is only a screening estimate and is not a medical diagnosis. Speak with a health professional for personal advice."
+            ]
+        ]
     },
-    percentage: {
-      what: "It calculates a percentage of a number.",
-      how: "Enter percentage value and number. The result updates automatically.",
-      formula: "Result = percentage ÷ 100 × number.",
-      example: "20% of 150 = 30.",
-      references: [["Percentage meaning", "A percentage means a value out of 100.", "https://en.wikipedia.org/wiki/Percentage"]]
+    "salary": {
+        "what": "Use this to estimate gross salary, deductions, net monthly salary, and estimated yearly take-home income.",
+        "how": "Enter gross salary and optional deductions such as EPF, SOCSO, tax, or other monthly deductions.",
+        "formula": "Net salary = gross salary − total deductions.",
+        "example": "If gross salary is RM 5,000 and deductions are RM 800, estimated net salary is RM 4,200.",
+        "references": [
+            [
+                "Salary estimate",
+                "Use your payslip, employment contract, and official deduction rates for accurate salary information."
+            ],
+            [
+                "General note",
+                "This calculator is an estimate only and may not include every allowance, deduction, tax rule, or employer policy."
+            ]
+        ]
     },
-    compound: {
-      what: "It estimates how much money grows when interest is added repeatedly over time.",
-      how: "Enter principal, annual interest rate, years, and compounding frequency. The result updates automatically.",
-      formula: "A = P(1 + r/n)ⁿᵗ. Compound Interest = A − P.",
-      example: "P = 1000, r = 5%, t = 10, n = 12 gives about 1,647.01 future value.",
-      references: [["Compound interest formula", "Investopedia lists the compound interest formula as A = P(1 + r/n)^(nt).", "https://www.investopedia.com/articles/investing/020614/learn-simple-and-compound-interest.asp"]]
+    "gajiPenjawatAwam": {
+        "what": "Use this to estimate Malaysian public-sector salary based on basic pay and common allowance/deduction inputs.",
+        "how": "Enter basic salary, allowances, and deductions. Review the estimated gross and net salary output.",
+        "formula": "Estimated net salary = basic salary + allowances − deductions.",
+        "example": "If salary plus allowances is RM 4,000 and deductions are RM 500, estimated net salary is RM 3,500.",
+        "references": [
+            [
+                "Official salary information",
+                "Refer to official government circulars, JPA information, payslips, and department rules for accurate values.",
+                "https://www.jpa.gov.my/"
+            ],
+            [
+                "General note",
+                "This calculator is only an estimate and does not replace official salary statements."
+            ]
+        ]
+    },
+    "tax": {
+        "what": "Use this to estimate tax from income and deduction inputs.",
+        "how": "Enter annual income and any supported deduction or relief fields. Review the estimated taxable amount and tax output.",
+        "formula": "Estimated tax is calculated from taxable income after supported deductions, using the calculator’s included rate assumptions.",
+        "example": "If income is RM 60,000 and deductions are RM 10,000, the calculator estimates tax from RM 50,000 taxable income.",
+        "references": [
+            [
+                "Official tax rules",
+                "Always confirm current tax rates, reliefs, and filing rules with LHDN or your local tax authority.",
+                "https://www.hasil.gov.my/"
+            ],
+            [
+                "General note",
+                "Tax rules change over time. This calculator is for planning only, not official tax advice."
+            ]
+        ]
+    },
+    "currencyConverter": {
+        "what": "Use this to convert an amount from one currency to another using the exchange rate entered in the form.",
+        "how": "Enter the amount, choose the from/to currencies, and enter or confirm the exchange rate.",
+        "formula": "Converted amount = original amount × exchange rate.",
+        "example": "If RM 100 is converted at a rate of 0.21, the result is 21 in the target currency.",
+        "references": [
+            [
+                "Exchange rates",
+                "Exchange rates change often. Confirm live rates with your bank, payment provider, or central bank.",
+                "https://www.bnm.gov.my/exchange-rates"
+            ],
+            [
+                "General note",
+                "Real conversions may include spread, fees, transfer charges, or card provider rates."
+            ]
+        ]
+    },
+    "discount": {
+        "what": "Use this to calculate the final price after a discount and the amount you save.",
+        "how": "Enter the original price and discount percentage. The result updates automatically.",
+        "formula": "Savings = original price × discount ÷ 100. Final price = original price − savings.",
+        "example": "If the price is 100 and the discount is 20%, savings are 20 and final price is 80.",
+        "references": [
+            [
+                "Discount formula",
+                "A percentage discount removes a percentage of the original price.",
+                "https://www.calculator.net/discount-calculator.html"
+            ],
+            [
+                "General note",
+                "For shopping, check whether tax, shipping, service fee, or voucher conditions apply."
+            ]
+        ]
+    },
+    "inflation": {
+        "what": "Use this to estimate how inflation changes buying power or future cost over time.",
+        "how": "Enter the starting amount, inflation rate, and number of years.",
+        "formula": "Future value = present value × (1 + inflation rate) ^ years.",
+        "example": "RM 1,000 at 3% inflation for 5 years becomes about RM 1,159.",
+        "references": [
+            [
+                "Inflation estimate",
+                "Inflation is usually measured with price indexes and can vary by country and time period.",
+                "https://www.bnm.gov.my/"
+            ],
+            [
+                "General note",
+                "This is a simplified estimate. Real inflation differs by item, location, and year."
+            ]
+        ]
+    },
+    "compound": {
+        "what": "Use this to estimate how money grows when interest is added repeatedly over time.",
+        "how": "Enter principal, annual rate, time, and compounding frequency. Then calculate the future value and interest earned.",
+        "formula": "A = P(1 + r/n)^(nt). Compound interest = A − P.",
+        "example": "P = 1000, r = 5%, t = 10 years, n = monthly gives a future value of about 1647.01.",
+        "references": [
+            [
+                "Compound interest",
+                "The standard compound interest formula uses principal, rate, time, and compounding frequency.",
+                "https://www.investopedia.com/terms/c/compoundinterest.asp"
+            ],
+            [
+                "General note",
+                "Actual investment returns, fees, taxes, and bank rules can change the final result."
+            ]
+        ]
+    },
+    "loan": {
+        "what": "Use this to estimate home loan monthly payment, total interest, total payment, and optional home ownership costs.",
+        "how": "Enter property/loan amount, interest rate, term, and any optional taxes, insurance, fees, extra payment, or settlement details.",
+        "formula": "Monthly payment = P × r × (1+r)^n ÷ ((1+r)^n − 1), where r is monthly interest rate and n is number of monthly payments.",
+        "example": "A RM 300,000 mortgage at 4% yearly for 360 months gives an estimated monthly payment using the amortization formula.",
+        "references": [
+            [
+                "Mortgage formula",
+                "Mortgage estimates normally use loan amount, interest rate, and loan term.",
+                "https://www.investopedia.com/mortgage-calculator-5084794"
+            ],
+            [
+                "General note",
+                "Real mortgage offers depend on bank approval, fees, insurance, legal cost, and property rules."
+            ]
+        ]
+    },
+    "personalLoan": {
+        "what": "Use this to estimate personal loan monthly instalment, total interest, and total repayment.",
+        "how": "Enter loan amount, annual interest rate, and loan term in months.",
+        "formula": "Monthly payment = P × r × (1+r)^n ÷ ((1+r)^n − 1), where r is monthly interest rate and n is number of payments.",
+        "example": "A RM 10,000 loan at 5% yearly for 60 months gives an estimated monthly payment using the amortization formula.",
+        "references": [
+            [
+                "Amortized loan",
+                "Many fixed-payment loans are estimated with an amortization formula.",
+                "https://www.investopedia.com/terms/a/amortized_loan.asp"
+            ],
+            [
+                "General note",
+                "The bank’s actual repayment may include fees, insurance, stamp duty, or different rate rules."
+            ]
+        ]
+    },
+    "loanComparison": {
+        "what": "Use this to compare two loan options side by side and see which one may cost less overall.",
+        "how": "Enter the shared loan amount, then enter rate and term details for option A and option B.",
+        "formula": "Each loan option uses the amortized payment formula, then compares monthly payment and total interest.",
+        "example": "Compare a 5-year loan at 6% with a 7-year loan at 5.5% to see the payment and interest difference.",
+        "references": [
+            [
+                "Loan comparison",
+                "Loan cost depends on rate, term, principal, fees, and payment schedule."
+            ],
+            [
+                "General note",
+                "Always compare effective interest rate, fees, penalties, insurance, and total repayment from the lender."
+            ]
+        ]
+    },
+    "debtPayoff": {
+        "what": "Use this to estimate how long it may take to pay off a debt and how much interest may be paid.",
+        "how": "Enter debt balance, interest rate, and monthly payment.",
+        "formula": "The calculator estimates repayment by applying interest and subtracting your monthly payment until the balance reaches zero.",
+        "example": "If your balance is RM 5,000 and you pay RM 500 monthly, the calculator estimates payoff time and interest.",
+        "references": [
+            [
+                "Debt repayment",
+                "Debt payoff depends on balance, rate, payment amount, and fees."
+            ],
+            [
+                "General note",
+                "Minimum payments can extend payoff time. Confirm exact repayment details with your lender or card issuer."
+            ]
+        ]
+    },
+    "creditCardPayoff": {
+        "what": "Use this to estimate how long it may take to pay off a credit-card balance.",
+        "how": "Enter card balance, APR, and planned monthly payment.",
+        "formula": "The calculator applies monthly interest from APR, subtracts your payment, and estimates the months to payoff.",
+        "example": "A RM 3,000 balance at 18% APR with RM 300 monthly payment estimates payoff time and interest.",
+        "references": [
+            [
+                "Credit card payoff",
+                "APR, balance, fees, and payment amount affect credit-card payoff time."
+            ],
+            [
+                "General note",
+                "Actual card interest can differ because of billing cycles, late fees, cash advances, and minimum payment rules."
+            ]
+        ]
+    },
+    "creditCardInterest": {
+        "what": "Use this to estimate credit-card interest for a balance over a selected number of days.",
+        "how": "Enter card balance, APR, and the number of days interest is charged.",
+        "formula": "Estimated interest = balance × APR ÷ 100 × days ÷ 365.",
+        "example": "RM 2,000 at 18% APR for 30 days gives about RM 29.59 interest.",
+        "references": [
+            [
+                "Credit card interest",
+                "Card interest can use daily periodic rates and billing-cycle rules."
+            ],
+            [
+                "General note",
+                "Check your card statement or issuer terms for the exact interest method, grace period, and fees."
+            ]
+        ]
+    },
+    "rentalYield": {
+        "what": "Use this to estimate rental yield from property price and rent.",
+        "how": "Enter property price, monthly rent, and optional annual costs if available.",
+        "formula": "Gross rental yield = yearly rent ÷ property price × 100. Net yield also subtracts supported costs.",
+        "example": "RM 2,000 monthly rent is RM 24,000 yearly. If property price is RM 500,000, gross yield is 4.8%.",
+        "references": [
+            [
+                "Rental yield",
+                "Rental yield compares annual rent with property price."
+            ],
+            [
+                "General note",
+                "Real returns may include vacancy, maintenance, assessment, management fee, tax, insurance, and financing cost."
+            ]
+        ]
+    },
+    "fuelCost": {
+        "what": "Use this to estimate trip fuel cost from distance, vehicle fuel efficiency, and fuel price.",
+        "how": "Enter trip distance, fuel consumption/efficiency, and fuel price.",
+        "formula": "Fuel used = distance ÷ efficiency. Fuel cost = fuel used × fuel price. The exact formula depends on the selected efficiency unit.",
+        "example": "A 200 km trip at 10 km/L uses about 20 L. If fuel is RM 2.05/L, cost is about RM 41.",
+        "references": [
+            [
+                "Fuel cost estimate",
+                "Fuel cost depends on distance, vehicle efficiency, traffic, driving style, and fuel price."
+            ],
+            [
+                "General note",
+                "Actual cost may change with route, tyre pressure, load, road conditions, and fuel-price changes."
+            ]
+        ]
     }
-  };
+};
+
+  function getHelpPageType() {
+    const path = pathText();
+    const bodyPage = (document.body && document.body.dataset ? String(document.body.dataset.page || '').toLowerCase() : '');
+    if (path.includes('credit-card-interest-calculator') || bodyPage === 'creditcardinterest') return 'creditCardInterest';
+    if (path.includes('credit-card-payoff-calculator') || bodyPage === 'creditcardpayoff') return 'creditCardPayoff';
+    if (path.includes('loan-comparison-calculator') || bodyPage === 'loancomparison') return 'loanComparison';
+    if (path.includes('debt-payoff-calculator') || bodyPage === 'debtpayoff') return 'debtPayoff';
+    if (path.includes('personal-loan-calculator') || bodyPage === 'personal-loan') return 'personalLoan';
+    if (path.includes('gaji-penjawat-awam-calculator') || bodyPage === 'gajipenjawatawam') return 'gajiPenjawatAwam';
+    if (path.includes('currency-converter') || bodyPage === 'currencyconverter') return 'currencyConverter';
+    if (path.includes('unit-converter-calculator') || bodyPage === 'unitconverter') return 'unitConverter';
+    if (path.includes('rental-yield-calculator') || bodyPage === 'rentalyield') return 'rentalYield';
+    if (path.includes('fuel-cost-calculator') || bodyPage === 'fuelcost') return 'fuelCost';
+    if (path.includes('salary-calculator') || bodyPage === 'salary') return 'salary';
+    if (path.includes('scientific-calculator') || bodyPage === 'scientific') return 'scientific';
+    if (path.includes('tax-calculator') || bodyPage === 'tax') return 'tax';
+    if (path.includes('inflation-calculator') || bodyPage === 'inflation') return 'inflation';
+    return getPageType();
+  }
 
 
   function getCalculatorFaqs(type) {
@@ -4078,19 +4392,20 @@
   }
 
   function buildInstructionLayout() {
-    const type = getPageType();
+    const type = getHelpPageType();
     const data = PAGE_DATA[type];
     const main = $("main");
 
     if (!main || !data || !$(".calculator", main) || main.classList.contains("calculator-box")) return;
+    if ($$(":scope > .universal-help-panel", main).length) return;
 
     main.classList.add("has-instructions");
-    $$(":scope > .instruction-box, :scope > .pc-what-slot", main).forEach(function (element) {
+    $$(":scope > .instruction-box, :scope > .pc-what-slot, :scope > .extra-help-question-button", main).forEach(function (element) {
       element.remove();
     });
 
     const box = document.createElement("aside");
-    box.className = "instruction-box";
+    box.className = "instruction-box universal-help-panel";
     box.setAttribute("aria-label", "Instructions and references");
 
     box.appendChild(makeInfoBox("instruction-section instruction-what-box", "What does this calculator do?", data.what));
