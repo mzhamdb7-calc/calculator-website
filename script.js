@@ -1,3 +1,4 @@
+/* CHATGPT_REPORT_TABLE_FORM_20260528 */
 /* CHATGPT_2_SECOND_AUTO_CALCULATE_DELAY_20260528 */
 /* CHATGPT_FINAL_UPDATE_20260526_SEARCH_SQRT_MORTGAGE_RENAME calculator-search site-search √ */
 /* CHATGPT_CACHE_BUST_20260526 */
@@ -7495,6 +7496,61 @@
     area.remove();
   }
 
+  function extraTableRows(rows) {
+    return (rows || []).map(function (row) {
+      return '<tr><th>' + escapeHtml(extraVisibleLabel(row[0])) + '</th><td>' + escapeHtml(row[1]) + '</td></tr>';
+    }).join("");
+  }
+
+  function extraCssSafe(value) {
+    return String(value || "").replace(/[^a-zA-Z0-9_-]/g, "\\$&");
+  }
+
+  function extraFieldLabel(input) {
+    if (!input) return "Input";
+    let label = null;
+    if (input.id) label = document.querySelector('label[for="' + extraCssSafe(input.id) + '"]');
+    if (!label && input.closest) label = input.closest("label");
+    if (label) return cleanText(label.textContent).replace(/[:*]+$/g, "") || input.name || input.id || "Input";
+    return input.getAttribute("aria-label") || input.placeholder || input.name || input.id || "Input";
+  }
+
+  function extraInputRowsForReport() {
+    const root = document.querySelector(".extra-calculator-box") || document.querySelector(".calculator") || document;
+    const used = new Set();
+    return Array.from(root.querySelectorAll("input, select, textarea")).filter(function (input) {
+      const type = String(input.type || "").toLowerCase();
+      if (["button", "submit", "reset", "hidden"].includes(type)) return false;
+      if (input.disabled) return false;
+      if (input.offsetParent === null && type !== "radio" && type !== "checkbox") return false;
+      const key = input.id || input.name;
+      if (key && used.has(key)) return false;
+      if (key) used.add(key);
+      if (type === "checkbox" || type === "radio") return input.checked;
+      return String(input.value || "").trim() !== "" || input.tagName === "SELECT";
+    }).map(function (input) {
+      const type = String(input.type || "").toLowerCase();
+      let value = "";
+      if (input.tagName === "SELECT") {
+        value = input.options && input.selectedIndex >= 0 ? input.options[input.selectedIndex].text : input.value;
+      } else if (type === "checkbox" || type === "radio") {
+        value = input.checked ? (input.value || "Selected") : "Not selected";
+      } else {
+        value = input.value;
+      }
+      return [extraFieldLabel(input), value || "-"];
+    });
+  }
+
+  function extraReportTable(title, rows) {
+    return '<div class="calculator-report-table-scroll extra-report-table-scroll">' +
+      '<table class="calculator-report-data-table extra-report-data-table">' +
+        '<thead><tr><th>Item</th><th>Value</th></tr></thead>' +
+        '<tbody>' + extraTableRows(rows || []) + '</tbody>' +
+      '</table>' +
+    '</div>';
+  }
+
   function extraOpenReport(title, rows, note) {
     const old = document.getElementById("extraCalculatorReportPage");
     if (old) old.remove();
@@ -7507,14 +7563,21 @@
 
     const section = document.createElement("section");
     section.id = "extraCalculatorReportPage";
-    section.className = "calculator-report-page mortgage-fast-report-page extra-calculator-report-page";
+    section.className = "calculator-report-page mortgage-fast-report-page extra-calculator-report-page table-report-page";
+
+    const inputRows = extraInputRowsForReport();
 
     section.innerHTML =
-      '<h1>' + title + '</h1>' +
-      '<p class="calculator-report-date"><strong>Generated:</strong> ' + new Date().toLocaleString() + '</p>' +
-      '<div class="calculator-report-card">' +
-        table(title, rows) +
-        (note ? '<p class="extra-result-note">' + note + '</p>' : '') +
+      '<h1>' + escapeHtml(extraVisibleTitle(title)) + '</h1>' +
+      '<p class="calculator-report-date"><strong>Generated:</strong> ' + escapeHtml(new Date().toLocaleString()) + '</p>' +
+      '<div class="calculator-report-card extra-report-input-card">' +
+        '<h2>Inputs</h2>' +
+        extraReportTable("Inputs", inputRows.length ? inputRows : [["Input", "No input saved"]]) +
+      '</div>' +
+      '<div class="calculator-report-card extra-report-result-card">' +
+        '<h2>Results</h2>' +
+        extraReportTable(title, rows) +
+        (note ? '<p class="extra-result-note">' + escapeHtml(note) + '</p>' : '') +
       '</div>' +
       '<div class="calculator-report-actions">' +
         '<button type="button" class="calculator-report-action-btn extra-report-back-btn">Go back</button>' +
@@ -7525,7 +7588,7 @@
 
     document.body.appendChild(section);
 
-    const text = extraPlainText(title, rows, note);
+    const text = extraPlainText(title, inputRows.concat(rows || []), note);
 
     const back = section.querySelector(".extra-report-back-btn");
     const copy = section.querySelector(".extra-report-copy-btn");
@@ -9393,7 +9456,60 @@
     setTimeout(function () { URL.revokeObjectURL(url); link.remove(); }, 0);
   }
 
-  function openReport(title, rows, note) {
+  function fieldLabel(input) {
+    if (!input) return "Input";
+    let label = null;
+    if (input.id) {
+      try { label = document.querySelector('label[for="' + input.id.replace(/[^a-zA-Z0-9_-]/g, "\\$&") + '"]'); }
+      catch (error) { label = null; }
+    }
+    if (!label && input.closest) label = input.closest("label");
+    if (label) return String(label.textContent || "").replace(/\s+/g, " ").replace(/[:*]+$/g, "").trim() || input.name || input.id || "Input";
+    return input.getAttribute("aria-label") || input.placeholder || input.name || input.id || "Input";
+  }
+
+  function inputRowsForReport() {
+    const root = document.querySelector("main .calculator") || document.querySelector(".calculator") || document.querySelector(".extra-calculator-box") || document;
+    const used = new Set();
+
+    return Array.from(root.querySelectorAll("input, select, textarea")).filter(function (input) {
+      const type = String(input.type || "").toLowerCase();
+      if (["button", "submit", "reset", "hidden"].includes(type)) return false;
+      if (input.disabled) return false;
+      if (input.id === "display") return false;
+      const key = input.id || input.name;
+      if (key && used.has(key)) return false;
+      if (key) used.add(key);
+      if (type === "checkbox" || type === "radio") return input.checked;
+      if (input.tagName === "SELECT") return true;
+      return String(input.value || "").trim() !== "";
+    }).map(function (input) {
+      const type = String(input.type || "").toLowerCase();
+      let value = "";
+      if (input.tagName === "SELECT") value = input.options && input.selectedIndex >= 0 ? input.options[input.selectedIndex].text : input.value;
+      else if (type === "checkbox" || type === "radio") value = input.checked ? (input.value || "Selected") : "Not selected";
+      else value = input.value;
+      return [fieldLabel(input), value || "-"];
+    });
+  }
+
+  function reportTableRows(rows) {
+    return (rows || []).map(function (row) {
+      return '<tr><th>' + escapeHtml(visibleResultLabel(row[0])) + '</th><td>' + escapeHtml(row[1]) + '</td></tr>';
+    }).join("");
+  }
+
+  function reportTable(rows, emptyMessage) {
+    const data = (rows && rows.length) ? rows : [["Details", emptyMessage || "No data available"]];
+    return '<div class="calculator-report-table-scroll finance-report-table-scroll">' +
+      '<table class="calculator-report-data-table finance-report-data-table">' +
+        '<thead><tr><th>Item</th><th>Value</th></tr></thead>' +
+        '<tbody>' + reportTableRows(data) + '</tbody>' +
+      '</table>' +
+    '</div>';
+  }
+
+  function openReport(title, rows, note, graphHtml) {
     const old = $("financeUpgradeReportPage");
     if (old) old.remove();
 
@@ -9402,14 +9518,21 @@
       el.style.setProperty("display", "none", "important");
     });
 
+    const inputRows = inputRowsForReport();
     const section = document.createElement("section");
     section.id = "financeUpgradeReportPage";
-    section.className = "calculator-report-page finance-upgrade-report-page";
+    section.className = "calculator-report-page finance-upgrade-report-page table-report-page";
     section.innerHTML =
       '<h1>' + escapeHtml(visibleResultTitle(title)) + '</h1>' +
       '<p class="calculator-report-date"><strong>Generated:</strong> ' + escapeHtml(new Date().toLocaleString()) + '</p>' +
-      '<div class="calculator-report-card finance-report-card">' +
-        metricGrid(rows) +
+      '<div class="calculator-report-card finance-report-card finance-report-input-card">' +
+        '<h2>Inputs</h2>' +
+        reportTable(inputRows, "No input saved") +
+      '</div>' +
+      '<div class="calculator-report-card finance-report-card finance-report-result-card">' +
+        '<h2>Results</h2>' +
+        reportTable(rows, "No result available") +
+        (graphHtml ? '<div class="finance-report-graph-wrap">' + graphHtml + '</div>' : '') +
         (note ? '<p class="finance-result-note">' + escapeHtml(note) + '</p>' : '') +
       '</div>' +
       '<div class="calculator-report-actions">' +
@@ -9420,7 +9543,7 @@
       '</div>';
 
     document.body.appendChild(section);
-    const text = plainText(title, rows, note);
+    const text = "Inputs\n" + plainText("Inputs", inputRows, "") + "\n\nResults\n" + plainText(title, rows, note);
 
     section.querySelector(".finance-report-back-btn").onclick = function () {
       section.remove();
@@ -9564,7 +9687,7 @@
       if (navigator.share) navigator.share({ title: visibleResultTitle(title), text: text }).catch(function () { copyText(text, event.currentTarget); });
       else copyText(text, event.currentTarget);
     };
-    box.querySelector(".finance-report-btn").onclick = function () { openReport(visibleResultTitle(title), rows, options.note); };
+    box.querySelector(".finance-report-btn").onclick = function () { openReport(visibleResultTitle(title), rows, options.note, options.graphHtml || ""); };
 
     if (options.scroll !== false) {
       setTimeout(function () { box.scrollIntoView({ behavior: "smooth", block: "start" }); }, 80);

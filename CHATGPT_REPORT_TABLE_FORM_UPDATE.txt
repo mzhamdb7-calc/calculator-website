@@ -1,0 +1,1 @@
+Updated report pages for salary, tax, gaji penjawat awam, currency, discount, inflation, personal loan, loan comparison, debt payoff, credit card payoff, credit card interest, rental yield, and fuel cost to use clear input/result tables.
