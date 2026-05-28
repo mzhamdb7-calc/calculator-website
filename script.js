@@ -1,3 +1,4 @@
+/* CHATGPT_2_SECOND_AUTO_CALCULATE_DELAY_20260528 */
 /* CHATGPT_FINAL_UPDATE_20260526_SEARCH_SQRT_MORTGAGE_RENAME calculator-search site-search √ */
 /* CHATGPT_CACHE_BUST_20260526 */
 /*
@@ -13,6 +14,7 @@
   const REPORT_TYPES = ["age", "bmi", "loan", "personalLoan", "discount", "percentage", "compound"];
   let autoTimer = null;
   let autoRunning = false;
+  const AUTO_CALCULATE_DELAY_MS = 2000;
 
   function $(selector, root) {
     return (root || document).querySelector(selector);
@@ -4548,7 +4550,7 @@
           autoRunning = false;
         }, 120);
       }
-    }, 2000);
+    }, AUTO_CALCULATE_DELAY_MS);
   }
 
   function isCalculateButton(button) {
@@ -7955,7 +7957,8 @@
     document.addEventListener("change", function (event) {
       if (!event.target.closest(".extra-calculator-box")) return;
       clearTimeout(timer);
-      timer = setTimeout(fn, 400);
+      /* Keep selects/dropdowns consistent with typing: wait 2 seconds before auto-calculating. */
+      timer = setTimeout(fn, 2000);
     }, true);
   }
 
@@ -8151,6 +8154,8 @@
     if (fn && typeof window[fn] === "function") window[fn]();
   }
 
+  const FINAL_AUTO_CALCULATE_DELAY_MS = 2000;
+
   function setupDebounce() {
     let timer = null;
 
@@ -8165,7 +8170,7 @@
       clearTimeout(timer);
       timer = setTimeout(function () {
         if (canCalc(type)) callCalc(type);
-      }, 2000);
+      }, FINAL_AUTO_CALCULATE_DELAY_MS);
     }, true);
 
     document.addEventListener("change", function (event) {
@@ -8179,7 +8184,7 @@
       clearTimeout(timer);
       timer = setTimeout(function () {
         if (canCalc(type)) callCalc(type);
-      }, 2000);
+      }, FINAL_AUTO_CALCULATE_DELAY_MS);
     }, true);
   }
 
@@ -9106,8 +9111,8 @@
 
     function waitUntilTypingStops() {
       const elapsed = now() - lastInputAt;
-      if (elapsed < 650) {
-        pendingTimer = window.setTimeout(waitUntilTypingStops, 650 - elapsed + 40);
+      if (elapsed < 2000) {
+        pendingTimer = window.setTimeout(waitUntilTypingStops, 2000 - elapsed + 40);
         return;
       }
       pendingTimer = null;
@@ -9115,7 +9120,7 @@
       pendingPanel = null;
     }
 
-    pendingTimer = window.setTimeout(waitUntilTypingStops, 220);
+    pendingTimer = window.setTimeout(waitUntilTypingStops, 260);
   }
 
   function watchResults() {
