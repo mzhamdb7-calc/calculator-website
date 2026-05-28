@@ -3016,3 +3016,191 @@ body[data-page="basic"] .basic-inline-answer {
   justify-content: center !important;
 }
 
+/* =====================================================
+   CHATGPT UPDATE: visible arrows for every dropdown
+   Makes nav dropdowns, submenu dropdowns, FAQ details,
+   optional calculator panels, and select boxes clearly visible.
+===================================================== */
+
+/* Top navigation dropdown arrows */
+#navbar.clean-navbar .clean-nav-button,
+#navbar.clean-navbar .clean-nav-submenu-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+}
+
+#navbar.clean-navbar .clean-nav-button > span[aria-hidden="true"],
+#navbar.clean-navbar .clean-nav-submenu-button > span[aria-hidden="true"] {
+  flex: 0 0 auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 24px !important;
+  height: 24px !important;
+  margin-left: 4px !important;
+  color: #0f5132 !important;
+  background: #dff7ea !important;
+  border: 1px solid #a9e7c2 !important;
+  border-radius: 999px !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  opacity: 1 !important;
+  transition: transform .18s ease, background .18s ease, border-color .18s ease !important;
+}
+
+#navbar.clean-navbar .clean-nav-dropdown:hover > .clean-nav-button > span[aria-hidden="true"],
+#navbar.clean-navbar .clean-nav-dropdown.is-open > .clean-nav-button > span[aria-hidden="true"],
+#navbar.clean-navbar .clean-nav-dropdown:focus-within > .clean-nav-button > span[aria-hidden="true"] {
+  background: #c8f2da !important;
+  border-color: #74d99b !important;
+  transform: rotate(180deg) !important;
+}
+
+#navbar.clean-navbar .clean-nav-submenu:hover > .clean-nav-submenu-button > span[aria-hidden="true"],
+#navbar.clean-navbar .clean-nav-submenu.is-open > .clean-nav-submenu-button > span[aria-hidden="true"],
+#navbar.clean-navbar .clean-nav-submenu:focus-within > .clean-nav-submenu-button > span[aria-hidden="true"] {
+  background: #c8f2da !important;
+  border-color: #74d99b !important;
+  transform: rotate(90deg) !important;
+}
+
+/* Normal form dropdown/select arrows */
+select,
+.calculator select,
+.bmi-calculator-box select,
+.extra-calculator-box select,
+.mortgage-calculator-box select,
+.compound-calculator-box select,
+.local-chat-form select {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  padding-right: 48px !important;
+  background-color: #ffffff !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M7 10l5 5 5-5' stroke='%230f5132' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 14px center !important;
+  background-size: 22px 22px !important;
+  cursor: pointer !important;
+}
+
+select:hover,
+.calculator select:hover,
+.bmi-calculator-box select:hover,
+.extra-calculator-box select:hover,
+.mortgage-calculator-box select:hover,
+.compound-calculator-box select:hover,
+.local-chat-form select:hover {
+  border-color: #74b88b !important;
+}
+
+/* FAQ/details dropdown arrows */
+details > summary,
+.site-faq-item summary {
+  list-style: none !important;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+  padding-right: 48px !important;
+  cursor: pointer !important;
+}
+
+details > summary::-webkit-details-marker,
+.site-faq-item summary::-webkit-details-marker {
+  display: none !important;
+}
+
+details > summary::after,
+.site-faq-item summary::after {
+  content: "⌄" !important;
+  position: absolute !important;
+  top: 50% !important;
+  right: 14px !important;
+  width: 28px !important;
+  height: 28px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #0f5132 !important;
+  background: #dff7ea !important;
+  border: 1px solid #a9e7c2 !important;
+  border-radius: 999px !important;
+  font-size: 20px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  transform: translateY(-50%) rotate(0deg) !important;
+  transition: transform .18s ease, background .18s ease, border-color .18s ease !important;
+}
+
+details[open] > summary::after,
+.site-faq-item[open] summary::after {
+  background: #c8f2da !important;
+  border-color: #74d99b !important;
+  transform: translateY(-50%) rotate(180deg) !important;
+}
+
+/* Calculator expandable section arrows, for example mortgage optional panels */
+.optional-mortgage-toggle,
+.early-settlement-toggle,
+.extra-help-question-button,
+button[aria-expanded="false"]:not(.clean-nav-button):not(.clean-nav-submenu-button),
+button[aria-expanded="true"]:not(.clean-nav-button):not(.clean-nav-submenu-button) {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+}
+
+.optional-mortgage-toggle::after,
+.early-settlement-toggle::after,
+.extra-help-question-button::after,
+button[aria-expanded="false"]:not(.clean-nav-button):not(.clean-nav-submenu-button)::after,
+button[aria-expanded="true"]:not(.clean-nav-button):not(.clean-nav-submenu-button)::after {
+  content: "⌄" !important;
+  flex: 0 0 auto !important;
+  width: 24px !important;
+  height: 24px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #0f5132 !important;
+  background: #dff7ea !important;
+  border: 1px solid #a9e7c2 !important;
+  border-radius: 999px !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  transform: rotate(0deg) !important;
+  transition: transform .18s ease, background .18s ease, border-color .18s ease !important;
+}
+
+.optional-mortgage-toggle[aria-expanded="true"]::after,
+.early-settlement-toggle[aria-expanded="true"]::after,
+.extra-help-question-button[aria-expanded="true"]::after,
+button[aria-expanded="true"]:not(.clean-nav-button):not(.clean-nav-submenu-button)::after {
+  background: #c8f2da !important;
+  border-color: #74d99b !important;
+  transform: rotate(180deg) !important;
+}
+
+@media (max-width: 720px) {
+  #navbar.clean-navbar .clean-nav-button > span[aria-hidden="true"],
+  #navbar.clean-navbar .clean-nav-submenu-button > span[aria-hidden="true"],
+  .optional-mortgage-toggle::after,
+  .early-settlement-toggle::after,
+  .extra-help-question-button::after,
+  button[aria-expanded="false"]:not(.clean-nav-button):not(.clean-nav-submenu-button)::after,
+  button[aria-expanded="true"]:not(.clean-nav-button):not(.clean-nav-submenu-button)::after {
+    width: 26px !important;
+    height: 26px !important;
+  }
+
+  details > summary,
+  .site-faq-item summary {
+    padding-right: 52px !important;
+  }
+}
