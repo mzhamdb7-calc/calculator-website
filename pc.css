@@ -13572,3 +13572,520 @@ hr {
   background: #00a85b !important;
 }
 /* ===== END CHATGPT GREEN TECH STYLE SKIN ===== */
+
+/* ===== CHATGPT PROFESSIONAL DARK GREEN SKIN 2026-05-28 =====
+   Visual refresh only: colors, typography, borders, shadows.
+   Existing calculator layout, box alignment, widths and structure remain unchanged.
+===================================================== */
+:root {
+  --bg: #f5f8f5 !important;
+  --black: #12231b !important;
+  --white: #ffffff !important;
+  --yellow: #dceee3 !important;
+  --soft-yellow: #eef6f0 !important;
+  --pink: #f2f7f3 !important;
+  --blue: #edf5f0 !important;
+  --green: #0f5132 !important;
+  --tech-green: #0f5132 !important;
+  --tech-green-dark: #0b3d2e !important;
+  --tech-green-soft: #eef6f0 !important;
+  --tech-ink: #12231b !important;
+  --tech-muted: #5a6d61 !important;
+  --tech-line: rgba(15, 81, 50, 0.18) !important;
+  --shadow: 0 18px 40px rgba(18, 35, 27, 0.10) !important;
+  --pro-green: #0b3d2e !important;
+  --pro-green-2: #0f5132 !important;
+  --pro-green-3: #16633f !important;
+  --pro-accent: #1f7a55 !important;
+  --pro-bg: #f5f8f5 !important;
+  --pro-surface: #ffffff !important;
+  --pro-surface-2: #f9fbf8 !important;
+  --pro-soft: #eef6f0 !important;
+  --pro-line: #d7e2da !important;
+  --pro-text: #12231b !important;
+  --pro-muted: #5a6d61 !important;
+}
+
+html {
+  scroll-behavior: smooth !important;
+}
+
+*,
+*::before,
+*::after {
+  text-shadow: none !important;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif !important;
+}
+
+body {
+  color: var(--pro-text) !important;
+  background:
+    radial-gradient(circle at 10% -10%, rgba(15, 81, 50, 0.10) 0, transparent 36%),
+    linear-gradient(180deg, #f8fbf8 0%, #eef5f0 100%) !important;
+}
+
+body::before {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+}
+
+#navbar.clean-navbar,
+.clean-navbar,
+#navbar {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #082f24 0%, #0b3d2e 58%, #0f5132 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  box-shadow: 0 18px 42px rgba(8, 47, 36, 0.24) !important;
+}
+
+.clean-nav-brand,
+.logo,
+.site-title,
+.clean-nav-logo,
+.clean-nav-brand a {
+  color: #ffffff !important;
+  letter-spacing: -0.02em !important;
+}
+
+.clean-nav-button,
+.clean-nav-link,
+.clean-nav-submenu-button,
+.clean-nav-panel-row,
+#navbar a,
+#navbar button {
+  color: rgba(255, 255, 255, 0.92) !important;
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.clean-nav-button:hover,
+.clean-nav-button:focus-visible,
+.clean-nav-dropdown.is-open > .clean-nav-button,
+.clean-nav-dropdown:hover > .clean-nav-button,
+.clean-nav-link:hover,
+.clean-nav-link:focus-visible,
+.clean-nav-submenu-button:hover,
+.clean-nav-submenu.is-open > .clean-nav-submenu-button {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.22) !important;
+}
+
+.clean-nav-dropdown-panel,
+.clean-nav-submenu-panel,
+.clean-nav-search-results,
+.search-results,
+.suggestions,
+.autocomplete-list {
+  color: var(--pro-text) !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  border: 1px solid rgba(15, 81, 50, 0.18) !important;
+  box-shadow: 0 24px 55px rgba(8, 47, 36, 0.18) !important;
+  backdrop-filter: blur(14px) saturate(130%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(130%) !important;
+}
+
+.clean-nav-dropdown-panel::before,
+.clean-nav-submenu-panel::before {
+  background: linear-gradient(90deg, #0b3d2e, #1f7a55, rgba(31, 122, 85, 0)) !important;
+}
+
+.clean-nav-dropdown-panel h3,
+.clean-nav-dropdown-panel h4,
+.clean-nav-submenu-panel h3,
+.clean-nav-submenu-panel h4,
+.clean-nav-panel-title {
+  color: var(--pro-green) !important;
+}
+
+.clean-nav-dropdown-panel a,
+.clean-nav-submenu-panel a,
+.clean-nav-panel-row,
+.clean-nav-search-results li,
+.search-results li,
+.suggestions li,
+.autocomplete-list li {
+  color: var(--pro-text) !important;
+  background: transparent !important;
+  border-color: rgba(15, 81, 50, 0.10) !important;
+}
+
+.clean-nav-dropdown-panel a:hover,
+.clean-nav-submenu-panel a:hover,
+.clean-nav-panel-row:hover,
+.clean-nav-search-results li:hover,
+.search-results li:hover,
+.suggestions li:hover,
+.autocomplete-list li:hover {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #0b3d2e 0%, #16633f 100%) !important;
+}
+
+.header,
+.hero,
+.page-header,
+.title-section,
+.calculator-title-section {
+  color: var(--pro-text) !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.page-title,
+.section-title,
+.calculator-title,
+.calculator h1,
+.calculator h2,
+.calculator-box h1,
+.calculator-box h2,
+.about-box h1,
+.info-page-box h1 {
+  color: var(--pro-green) !important;
+  letter-spacing: -0.025em !important;
+  text-shadow: none !important;
+}
+
+h1::after,
+.section-title::after,
+.page-title::after,
+.calculator-title::after,
+.about-box h1::after,
+.info-page-box h1::after {
+  background: linear-gradient(90deg, #0b3d2e, rgba(11, 61, 46, 0)) !important;
+}
+
+p,
+label,
+li,
+span,
+small,
+.calculator p,
+.calculator-box p,
+.about-box p,
+.info-page-box p,
+.loan-history-box p,
+.extra-side-box p {
+  color: var(--pro-muted) !important;
+}
+
+label,
+.form-label,
+.input-label {
+  color: var(--pro-green) !important;
+  font-weight: 700 !important;
+}
+
+.main-content,
+.container,
+.content,
+.card,
+.box,
+.panel,
+.calculator,
+.calculator-box,
+.clean-calculator-card,
+.main-calculator-box,
+.old-calculator-box,
+.group-side-box,
+.old-calculator-groupbar,
+.extra-side-box,
+.loan-history-box,
+.about-box,
+.info-page-box,
+.faq-box,
+.contact-box,
+.policy-box,
+.index-category-dropdown,
+body.index-page .index-category-dropdown {
+  color: var(--pro-text) !important;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfdfb 100%) !important;
+  border-color: var(--pro-line) !important;
+  box-shadow: 0 16px 36px rgba(18, 35, 27, 0.09) !important;
+}
+
+.calculator-box::before,
+.clean-calculator-card::before,
+.main-calculator-box::before,
+.old-calculator-box::before,
+.about-box::before,
+.info-page-box::before,
+.card::before,
+.box::before,
+.panel::before {
+  background: linear-gradient(90deg, rgba(11, 61, 46, 0.85), rgba(31, 122, 85, 0.35), transparent) !important;
+}
+
+input,
+select,
+textarea,
+.input,
+.form-control,
+.clean-input,
+.calculator input,
+.calculator select,
+.calculator textarea,
+.calculator-box input,
+.calculator-box select,
+.calculator-box textarea {
+  color: var(--pro-text) !important;
+  background: #ffffff !important;
+  border-color: #cbd9cf !important;
+  box-shadow: inset 0 1px 2px rgba(18, 35, 27, 0.04) !important;
+  outline: none !important;
+}
+
+input:hover,
+select:hover,
+textarea:hover,
+.input:hover,
+.form-control:hover,
+.clean-input:hover {
+  border-color: rgba(15, 81, 50, 0.42) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.input:focus,
+.form-control:focus,
+.clean-input:focus {
+  border-color: #0f5132 !important;
+  box-shadow: 0 0 0 4px rgba(15, 81, 50, 0.12), inset 0 1px 2px rgba(18, 35, 27, 0.04) !important;
+}
+
+button,
+.button,
+.btn,
+.calculate-btn,
+.calculator button,
+.calculator-box button,
+input[type="button"],
+input[type="submit"],
+.result-action-button,
+.result-actions button,
+.clean-result-actions button,
+.report-btn,
+.copy-btn,
+.save-btn,
+.share-btn {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #0b3d2e 0%, #0f5132 100%) !important;
+  border-color: rgba(8, 47, 36, 0.20) !important;
+  box-shadow: 0 10px 22px rgba(8, 47, 36, 0.18) !important;
+}
+
+button:hover,
+.button:hover,
+.btn:hover,
+.calculate-btn:hover,
+.calculator button:hover,
+.calculator-box button:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover,
+.result-action-button:hover,
+.result-actions button:hover,
+.clean-result-actions button:hover,
+.report-btn:hover,
+.copy-btn:hover,
+.save-btn:hover,
+.share-btn:hover {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #06402e 0%, #16633f 100%) !important;
+  border-color: rgba(8, 47, 36, 0.28) !important;
+  box-shadow: 0 14px 28px rgba(8, 47, 36, 0.22) !important;
+}
+
+button:active,
+.button:active,
+.btn:active,
+.calculate-btn:active {
+  box-shadow: 0 7px 16px rgba(8, 47, 36, 0.18) !important;
+}
+
+a:not(.clean-nav-link):not(.clean-nav-button):not(.clean-nav-panel-row) {
+  color: #0f5132 !important;
+}
+
+a:not(.clean-nav-link):not(.clean-nav-button):not(.clean-nav-panel-row):hover {
+  color: #06402e !important;
+}
+
+.old-calculator-groupbar a,
+.loan-history-box a,
+.extra-side-box a,
+.group-side-box a,
+.current-extra-link,
+.current-loan-link,
+.current-group-link,
+.category-card,
+.calculator-card,
+.tool-card,
+.link-card {
+  color: var(--pro-text) !important;
+  background: #ffffff !important;
+  border-color: var(--pro-line) !important;
+  box-shadow: 0 10px 24px rgba(18, 35, 27, 0.07) !important;
+}
+
+.old-calculator-groupbar a:hover,
+.loan-history-box a:hover,
+.extra-side-box a:hover,
+.group-side-box a:hover,
+.current-extra-link,
+.current-loan-link,
+.current-group-link,
+.category-card:hover,
+.calculator-card:hover,
+.tool-card:hover,
+.link-card:hover {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #0b3d2e 0%, #16633f 100%) !important;
+  border-color: rgba(11, 61, 46, 0.35) !important;
+  box-shadow: 0 16px 32px rgba(8, 47, 36, 0.18) !important;
+}
+
+.calculator-clean-result,
+.loan-style-output-panel,
+.mortgage-modern-result-panel,
+.extra-result-box,
+.result-box,
+.result,
+.output,
+.summary-box,
+.total-box,
+#calculatorReportPage {
+  color: var(--pro-text) !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f6faf7 100%) !important;
+  border-color: rgba(15, 81, 50, 0.20) !important;
+  box-shadow: 0 16px 36px rgba(18, 35, 27, 0.10) !important;
+}
+
+.calculator-clean-result h3,
+.loan-style-output-panel h3,
+.mortgage-modern-result-panel h3,
+.extra-result-box h3,
+.result-box h3,
+.result h3,
+.output h3 {
+  color: var(--pro-green) !important;
+}
+
+.calculator-clean-result strong,
+.loan-style-output-panel strong,
+.mortgage-modern-result-panel strong,
+.extra-result-box strong,
+.result-box strong,
+.result strong,
+.output strong,
+.total,
+.total-amount,
+.highlight,
+.result-value {
+  color: #0f5132 !important;
+}
+
+table,
+.table,
+.history-table {
+  color: var(--pro-text) !important;
+  background: #ffffff !important;
+  border-color: var(--pro-line) !important;
+  box-shadow: 0 14px 30px rgba(18, 35, 27, 0.08) !important;
+}
+
+th,
+thead,
+table thead tr {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #0b3d2e 0%, #0f5132 100%) !important;
+}
+
+td,
+th {
+  border-color: rgba(15, 81, 50, 0.14) !important;
+}
+
+tr:nth-child(even) td {
+  background: #f6faf7 !important;
+}
+
+.index-category-dropdown > summary,
+body.index-page .index-category-dropdown > summary {
+  color: var(--pro-green) !important;
+  background: #ffffff !important;
+  border-color: rgba(15, 81, 50, 0.14) !important;
+}
+
+.index-category-dropdown[open] > summary,
+.index-category-dropdown > summary:hover,
+body.index-page .index-category-dropdown.is-index-dropdown-open > summary,
+body.index-page .index-category-dropdown > summary:hover {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #0b3d2e 0%, #16633f 100%) !important;
+}
+
+body.index-page .index-category-dropdown > .index-category-dropdown-panel {
+  color: var(--pro-text) !important;
+  background: #ffffff !important;
+  border-color: rgba(15, 81, 50, 0.18) !important;
+  box-shadow: 0 24px 52px rgba(8, 47, 36, 0.18) !important;
+}
+
+body.index-page .index-category-dropdown > .index-category-dropdown-panel .calculator-category-links a {
+  color: var(--pro-text) !important;
+  background: #ffffff !important;
+  border-color: var(--pro-line) !important;
+}
+
+body.index-page .index-category-dropdown > .index-category-dropdown-panel .calculator-category-links a:hover,
+body.index-page .index-category-dropdown > .index-category-dropdown-panel .calculator-category-links a:focus-visible {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #0b3d2e 0%, #16633f 100%) !important;
+}
+
+.badge,
+.tag,
+.pill,
+.label-pill,
+.status-pill {
+  color: #0b3d2e !important;
+  background: #e7f1eb !important;
+  border-color: rgba(15, 81, 50, 0.18) !important;
+}
+
+hr {
+  border-color: rgba(15, 81, 50, 0.16) !important;
+}
+
+::-webkit-scrollbar {
+  width: 11px !important;
+  height: 11px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: #eef6f0 !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #0b3d2e, #16633f) !important;
+  border-radius: 999px !important;
+  border: 2px solid #eef6f0 !important;
+}
+
+::selection {
+  color: #ffffff !important;
+  background: #0b3d2e !important;
+}
+/* ===== END CHATGPT PROFESSIONAL DARK GREEN SKIN ===== */
