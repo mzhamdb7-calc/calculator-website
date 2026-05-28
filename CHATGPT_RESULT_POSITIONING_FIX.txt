@@ -1,0 +1,1 @@
+Fixed result panel sizing/positioning. Wider calculator/result column on desktop, single column on medium screens, and calmer readability colors. Version: result_position_fix_20260528_1
