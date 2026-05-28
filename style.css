@@ -43,7 +43,7 @@ body {
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 17px;
   color: var(--ink);
-  background: linear-gradient(180deg, #fbf8f2 0%, var(--bg) 52%, #eef5ef 100%);
+  background: linear-gradient(180deg, #f7faf8 0%, #f3f7f4 52%, #eef5f0 100%);
   letter-spacing: 0;
   overflow-x: hidden;
 }
@@ -831,114 +831,172 @@ tr:last-child td { border-bottom: 0; }
 
 
 /* =====================================================
-   SENIOR-FRIENDLY READABILITY REFRESH
-   Calmer colour, stronger text, larger controls.
+   EASY-READ ALIGNMENT REFRESH
+   Softer colours + clearer desktop columns.
 ===================================================== */
-html { font-size: 17px; }
-body { background: linear-gradient(180deg, #fbf8f2 0%, #f7f4ee 48%, #edf5ee 100%) !important; }
-
-:focus-visible {
-  outline: 4px solid rgba(34, 107, 78, .32) !important;
-  outline-offset: 4px !important;
+:root {
+  color-scheme: light;
+  --page: #f5f7f4;
+  --page-2: #eef4f0;
+  --bg: #f5f7f4;
+  --surface: #ffffff;
+  --surface-soft: #f9fbf9;
+  --surface-muted: #eef5f1;
+  --ink: #27352f;
+  --ink-2: #354a42;
+  --muted: #5e7168;
+  --muted-2: #71867b;
+  --line: #dbe6df;
+  --line-strong: #c7d8cf;
+  --nav: #ffffff;
+  --nav-2: #ffffff;
+  --primary: #3a8b79;
+  --primary-dark: #2d6f61;
+  --primary-soft: #edf7f4;
+  --accent: #4f9d7d;
+  --accent-soft: #f0f8f3;
+  --brand: #3a8b79;
+  --brand-soft: #edf7f4;
+  --brand-soft-2: #f4faf7;
+  --danger: #b94437;
+  --warning: #b97423;
+  --radius: 16px;
+  --radius-sm: 12px;
+  --radius-xs: 10px;
+  --shadow-xs: 0 1px 2px rgba(39, 53, 47, .05);
+  --shadow-sm: 0 8px 22px rgba(39, 53, 47, .07);
+  --shadow-md: 0 14px 34px rgba(39, 53, 47, .09);
+  --shadow-lg: 0 20px 46px rgba(39, 53, 47, .12);
+  --content: 1180px;
+  --ease: 160ms ease;
 }
 
+html { font-size: 16px; }
+body {
+  color: var(--ink) !important;
+  background: linear-gradient(180deg, #fbfcfa 0%, #f4f8f5 45%, #eef5f0 100%) !important;
+  font-size: 16px !important;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(58, 139, 121, .30) !important;
+  outline-offset: 3px !important;
+}
+
+/* Light, readable top navigation */
 .clean-navbar {
   color: var(--ink) !important;
-  background: linear-gradient(180deg, var(--nav) 0%, var(--nav-2) 100%) !important;
-  border-color: var(--line) !important;
-  box-shadow: 0 10px 30px rgba(31, 42, 36, .10) !important;
+  background: rgba(255, 255, 255, .96) !important;
+  border-bottom: 1px solid var(--line) !important;
+  box-shadow: 0 8px 24px rgba(39, 53, 47, .08) !important;
+  backdrop-filter: blur(14px);
+}
+.clean-nav-inner > .clean-nav-link:first-child {
+  color: var(--ink) !important;
+}
+.clean-nav-inner > .clean-nav-link:first-child::before {
+  background: linear-gradient(135deg, #6bb59f, #3a8b79) !important;
+}
+.clean-nav-inner > .clean-nav-link:first-child::after {
+  color: var(--ink) !important;
 }
 .clean-nav-link,
 .clean-nav-button,
 .clean-nav-panel-row,
 .clean-nav-submenu-button {
-  color: #203229 !important;
+  color: var(--ink-2) !important;
   background: transparent !important;
 }
 .clean-nav-link,
 .clean-nav-button {
-  min-height: 48px !important;
-  padding: 13px 15px !important;
+  min-height: 42px !important;
+  padding: 10px 13px !important;
   border: 1px solid transparent !important;
-  font-size: 1rem !important;
+  border-radius: 999px !important;
+  font-size: .94rem !important;
 }
 .clean-nav-link:hover,
 .clean-nav-button:hover,
 .clean-nav-dropdown.is-open > .clean-nav-button,
-.clean-nav-dropdown:hover > .clean-nav-button {
-  color: #123c2c !important;
+.clean-nav-dropdown:hover > .clean-nav-button,
+.clean-chat-link:hover {
+  color: #245b50 !important;
   background: var(--brand-soft) !important;
-  border-color: #b9d8c5 !important;
+  border-color: #c4ddd4 !important;
 }
-.clean-chat-link { border-color: #c7dbcf !important; }
+.clean-chat-link { border-color: var(--line) !important; }
 .clean-nav-dropdown-panel,
 .clean-nav-submenu-panel,
 .clean-nav-search-results,
 .site-search-results {
   color: var(--ink) !important;
-  background: #fffdfa !important;
-  border-color: var(--line-strong) !important;
+  background: #ffffff !important;
+  border: 1px solid var(--line) !important;
   box-shadow: var(--shadow-lg) !important;
 }
 .clean-nav-panel-row,
 .clean-nav-submenu-panel a,
 .clean-info-panel a,
 .clean-calculator-panel > a,
-.clean-nav-submenu-button {
-  min-height: 46px !important;
-  color: #1f3329 !important;
-  font-size: .98rem !important;
+.clean-nav-search-result,
+.site-search-result-btn {
+  color: var(--ink-2) !important;
+  min-height: 42px !important;
+  font-size: .94rem !important;
 }
 .clean-nav-panel-row:hover,
 .clean-nav-submenu-panel a:hover,
 .clean-info-panel a:hover,
 .clean-calculator-panel > a:hover,
-.clean-nav-submenu.is-open > .clean-nav-submenu-button,
-.clean-nav-submenu:hover > .clean-nav-submenu-button,
 .clean-nav-search-result:hover,
-.site-search-result-btn:hover {
-  color: #123c2c !important;
-  background: var(--brand-soft-2) !important;
+.site-search-result-btn:hover,
+.clean-nav-submenu.is-open > .clean-nav-submenu-button,
+.clean-nav-submenu:hover > .clean-nav-submenu-button {
+  color: #245b50 !important;
+  background: var(--brand-soft) !important;
 }
 .clean-nav-search-input {
-  height: 48px !important;
   color: var(--ink) !important;
   background: #ffffff !important;
   border: 1px solid var(--line-strong) !important;
 }
-.clean-nav-search-input::placeholder { color: #65776d !important; }
+.clean-nav-search-input::placeholder { color: #71867b !important; }
 .clean-nav-search-input:focus {
   border-color: var(--brand) !important;
-  background: #ffffff !important;
-  box-shadow: 0 0 0 4px rgba(34, 107, 78, .14) !important;
+  box-shadow: 0 0 0 4px rgba(58, 139, 121, .13) !important;
 }
-.clean-nav-search-button {
-  color: #ffffff !important;
-  background: var(--brand) !important;
-}
+.clean-nav-search-button { background: var(--brand) !important; color: #fff !important; }
 
+/* Better type scale: readable, not too heavy/dark */
 h1 {
-  color: #16221d !important;
-  font-size: clamp(2rem, 3vw, 3.15rem) !important;
-  line-height: 1.08 !important;
+  color: #2f453d !important;
+  font-size: clamp(2rem, 3vw, 2.75rem) !important;
+  line-height: 1.12 !important;
   letter-spacing: -.035em !important;
+  font-weight: 780 !important;
 }
-h2 { color: #1d2c25 !important; line-height: 1.18 !important; }
-h3 { color: #203229 !important; }
+.calculator h1,
+.calculator-box h1,
+.bmi-calculator-box h1,
+.extra-calculator-box h1 {
+  font-size: clamp(2rem, 3.2vw, 2.85rem) !important;
+  max-width: 10ch;
+}
+h2 { color: #345148 !important; letter-spacing: -.025em !important; }
+h3 { color: #365349 !important; }
 p, li, td, th, label, input, select, textarea, button { font-size: 1rem; }
 .subtitle,
 .extra-page-note,
-.live-abacus-subtitle,
 .about-card p,
 .info-content-card p,
 .instruction-section p,
 .reference-card p,
 .site-faq-item p {
   color: var(--muted) !important;
-  font-size: 1.03rem !important;
-  line-height: 1.75 !important;
+  line-height: 1.65 !important;
 }
 
+/* Softer card system */
 .calculator,
 .calculator-box,
 .bmi-calculator-box,
@@ -955,137 +1013,159 @@ p, li, td, th, label, input, select, textarea, button { font-size: 1rem; }
 .instruction-box,
 .live-abacus-card,
 .extra-related-box,
+.loan-history-box,
+.extra-side-box,
 .loan-result-panel,
 .extra-result-card,
 .calculator-report-result,
 .calculator-report-page {
-  background: #fffdfa !important;
-  border-color: var(--line) !important;
-  box-shadow: 0 12px 28px rgba(32, 46, 39, .09) !important;
+  color: var(--ink) !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 18px !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+.calculator,
+.calculator-box,
+.bmi-calculator-box,
+.extra-calculator-box {
+  padding: clamp(24px, 3vw, 36px) !important;
 }
 .calculator::before,
 .calculator-box::before,
 .extra-calculator-box::before,
-.bmi-calculator-box::before {
-  height: 5px !important;
-  background: linear-gradient(90deg, #226b4e, #6ea88a) !important;
-}
+.bmi-calculator-box::before,
+.about-box::before,
+.info-content-card::before { display: none !important; }
 
+/* Group navigation: visible active tab, no invisible text */
+.tool-group-nav,
 .loan-history-box,
 .extra-side-box {
-  color: var(--ink) !important;
-  background: #fffdfa !important;
-  border-color: var(--line) !important;
-  box-shadow: var(--shadow-md) !important;
+  padding: 18px !important;
+  background: #ffffff !important;
 }
-.loan-history-top { border-bottom-color: var(--line) !important; }
-.loan-history-top h3 {
-  color: #315045 !important;
-  font-size: .9rem !important;
+.loan-history-top { margin-bottom: 12px !important; border: 0 !important; }
+.loan-history-top h3,
+.extra-related-top h3 {
+  color: #557267 !important;
+  font-size: .78rem !important;
+  font-weight: 850 !important;
+  text-transform: uppercase !important;
+  letter-spacing: .11em !important;
+}
+.extra-side-links {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
 }
 .extra-side-links a {
-  min-height: 46px !important;
-  color: #2c4037 !important;
-  background: #f7faf6 !important;
-  border-color: #d8e4dc !important;
-  font-size: .98rem !important;
+  min-height: 44px !important;
+  padding: 10px 15px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #344d44 !important;
+  background: #f9fbf9 !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 999px !important;
+  font-size: .96rem !important;
+  font-weight: 720 !important;
+  box-shadow: none !important;
 }
-.extra-side-links a:hover,
-.extra-side-links .current-extra-link {
+.extra-side-links a:hover {
+  color: #245b50 !important;
+  background: var(--brand-soft) !important;
+  border-color: #bfdad2 !important;
+}
+.extra-side-links .current-extra-link,
+.extra-side-links a[aria-current="page"] {
   color: #ffffff !important;
   background: var(--brand) !important;
   border-color: var(--brand) !important;
+  box-shadow: 0 8px 18px rgba(58, 139, 121, .20) !important;
 }
 
+/* Forms and calculator buttons */
 label {
-  color: #263a31 !important;
-  font-size: .98rem !important;
-  font-weight: 850 !important;
+  color: #38554c !important;
+  font-size: .95rem !important;
+  font-weight: 760 !important;
 }
 input,
 select,
 textarea {
-  min-height: 52px !important;
-  padding: 13px 15px !important;
-  color: #16221d !important;
+  min-height: 50px !important;
+  padding: 12px 14px !important;
+  color: #26362f !important;
   background: #ffffff !important;
-  border: 2px solid #c8d8ce !important;
+  border: 1.5px solid var(--line-strong) !important;
   border-radius: 12px !important;
-  font-size: 1.04rem !important;
+  font-size: 1rem !important;
+  box-shadow: none !important;
 }
-input::placeholder,
-textarea::placeholder { color: #66786f !important; }
 input:focus,
 select:focus,
 textarea:focus {
   border-color: var(--brand) !important;
-  box-shadow: 0 0 0 5px rgba(34, 107, 78, .14) !important;
+  box-shadow: 0 0 0 4px rgba(58, 139, 121, .12) !important;
 }
-textarea { line-height: 1.65 !important; }
+input::placeholder,
+textarea::placeholder { color: #7a8f84 !important; }
 
-button,
-.main-btn,
-.secondary-btn,
-.ans-btn,
-.interactive-abacus-reset,
-.optional-mortgage-toggle,
-.early-settlement-toggle,
-.extra-help-question-button,
-#calculateCompoundBtn {
-  min-height: 48px;
-  border-radius: 12px !important;
-}
 .main-btn,
 #calculateCompoundBtn,
 .calculator > button:not(.ans-btn),
 .extra-calculator-box > button,
 .local-chat-actions button:first-child {
-  min-height: 52px !important;
+  min-height: 50px !important;
   color: #ffffff !important;
   background: var(--brand) !important;
-  border-color: var(--brand) !important;
-  box-shadow: 0 8px 18px rgba(34, 107, 78, .18) !important;
-  font-size: 1.02rem !important;
+  border: 1px solid var(--brand) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 20px rgba(58, 139, 121, .16) !important;
 }
 .main-btn:hover,
 #calculateCompoundBtn:hover,
 .calculator > button:not(.ans-btn):hover,
 .extra-calculator-box > button:hover,
 .local-chat-actions button:first-child:hover {
-  background: #1b593f !important;
-  border-color: #1b593f !important;
+  background: var(--primary-dark) !important;
+  border-color: var(--primary-dark) !important;
 }
 .secondary-btn,
 .local-chat-actions button,
 .interactive-abacus-reset,
 .ans-btn {
-  color: #1b593f !important;
-  background: #edf6ef !important;
-  border-color: #bfd8c7 !important;
+  color: #245b50 !important;
+  background: var(--brand-soft) !important;
+  border: 1px solid #c4ddd4 !important;
+  border-radius: 12px !important;
 }
 .secondary-btn:hover,
 .local-chat-actions button:hover,
 .interactive-abacus-reset:hover,
-.ans-btn:hover {
-  color: #123c2c !important;
-  background: #dceee2 !important;
-}
+.ans-btn:hover { background: #e2f1ed !important; }
 
+.display-row { grid-template-columns: minmax(0, 1fr) 84px !important; gap: 12px !important; }
+.buttons,
+.basic-grid { gap: 10px !important; }
 .buttons button,
 .basic-grid button {
-  min-height: 62px !important;
-  color: #17211d !important;
-  background: #fffdfa !important;
-  border: 2px solid #d4dfd7 !important;
-  border-radius: 12px !important;
+  min-height: 58px !important;
+  color: #253630 !important;
+  background: #ffffff !important;
+  border: 1.5px solid var(--line) !important;
+  border-radius: 14px !important;
   box-shadow: none !important;
-  font-size: 1.15rem !important;
+  font-size: 1.1rem !important;
+  font-weight: 780 !important;
 }
 .buttons button:hover,
 .basic-grid button:hover {
-  color: #123c2c !important;
-  background: #edf6ef !important;
-  border-color: #b9d8c5 !important;
+  color: #245b50 !important;
+  background: var(--brand-soft) !important;
+  border-color: #bfdad2 !important;
 }
 .buttons .equal,
 .basic-grid .equal {
@@ -1095,46 +1175,60 @@ button,
 }
 .buttons .ac-btn,
 .basic-grid .ac-btn {
-  color: #8b271f !important;
-  background: #fff5f3 !important;
-  border-color: #efc5bd !important;
+  color: #9d3a30 !important;
+  background: #fff8f7 !important;
+  border-color: #efd2cd !important;
 }
 
+/* Instruction panel: compact and easy to read */
+.instruction-box,
+.extra-help-panel,
+.reference-box { padding: 18px !important; }
+.instruction-section,
 .extra-input-card,
 .mortgage-input-box,
 .bmi-input-group-box,
 .reference-card,
-.instruction-section,
+.site-faq-item,
 .age-result-group-box,
 .bmi-result-group-box,
 .age-point-result-box,
-.bmi-result-box,
-.local-chat-message,
-.empty-chat-message,
-.site-faq-item {
-  background: #f9fbf7 !important;
-  border-color: #d8e4dc !important;
+.bmi-result-box {
+  background: #fbfdfb !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 15px !important;
+  box-shadow: none !important;
 }
+.instruction-section { padding: 18px !important; margin-bottom: 14px !important; }
+.instruction-main-title,
 .extra-input-card-title,
 .mortgage-input-title,
-.loan-panel-title,
-.age-result-title,
-.bmi-result-title,
-.mortgage-modern-result-title,
-.instruction-main-title,
+.reference-main-title {
+  color: #42655a !important;
+  font-size: .82rem !important;
+  letter-spacing: .10em !important;
+}
 .instruction-section h3,
 .site-faq-item h3,
 .age-result-group-box h3,
 .bmi-result-group-box h3 {
-  color: #1f4f3c !important;
+  color: #2f6f61 !important;
+  font-size: 1.02rem !important;
 }
-th {
-  color: #1f4f3c !important;
-  background: #e8f2e9 !important;
-  font-size: .9rem !important;
-}
-td { color: #1e2c26 !important; }
+th { color: #365349 !important; background: #edf5f1 !important; }
+td { color: #27352f !important; }
 
+/* Result action row remains readable */
+.age-result-actions,
+.bmi-result-actions,
+.universal-result-actions,
+.mortgage-result-actions,
+.extra-result-actions,
+.global-result-actions {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+}
 .age-result-action-btn,
 .bmi-result-action-btn,
 .universal-result-action-btn,
@@ -1144,11 +1238,12 @@ td { color: #1e2c26 !important; }
 .loan-save-btn,
 .loan-share-btn,
 .loan-report-btn {
-  min-height: 46px !important;
-  color: #1b593f !important;
-  background: #edf6ef !important;
-  border-color: #bfd8c7 !important;
-  font-size: .92rem !important;
+  min-height: 42px !important;
+  color: #245b50 !important;
+  background: var(--brand-soft) !important;
+  border: 1px solid #c4ddd4 !important;
+  border-radius: 11px !important;
+  font-size: .86rem !important;
 }
 .age-result-action-btn:hover,
 .bmi-result-action-btn:hover,
@@ -1164,50 +1259,34 @@ td { color: #1e2c26 !important; }
   border-color: var(--brand) !important;
 }
 
-.index-category-dropdown summary {
-  min-height: 64px !important;
-  color: #203229 !important;
-  background: #fffdfa !important;
-  border: 2px solid #d4dfd7 !important;
-  box-shadow: none !important;
-  font-size: 1.02rem !important;
+/* Home page keeps the new structure but with a gentler hero. */
+.home-hero {
+  color: #27352f !important;
+  background: linear-gradient(135deg, #ffffff 0%, #edf7f4 70%, #deeee9 100%) !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: var(--shadow-sm) !important;
 }
-.index-category-dropdown summary::after { background: var(--brand) !important; }
-.index-category-dropdown[open] summary {
-  color: #ffffff !important;
-  background: var(--brand) !important;
-  border-color: var(--brand) !important;
+.home-hero h1 { color: #2f453d !important; }
+.home-hero p { color: var(--muted) !important; }
+.home-eyebrow {
+  color: #2f6f61 !important;
+  background: #ffffff !important;
+  border-color: var(--line) !important;
 }
-.index-category-dropdown-panel {
-  background: #fffdfa !important;
-  border-color: #b7c8be !important;
-}
+.home-primary-link { color: #ffffff !important; background: var(--brand) !important; }
+.home-secondary-link { color: #245b50 !important; background: #ffffff !important; border-color: #c4ddd4 !important; }
+.home-card-icon { background: var(--brand) !important; }
+.home-card-links a,
 .calculator-category-links a {
-  min-height: 48px !important;
-  color: #1f3329 !important;
-  background: #f8faf6 !important;
-  border-color: #d8e4dc !important;
-  font-size: 1rem !important;
+  color: #344d44 !important;
+  background: #fbfdfb !important;
+  border-color: var(--line) !important;
 }
+.home-card-links a:hover,
 .calculator-category-links a:hover {
-  color: #123c2c !important;
-  background: #edf6ef !important;
-  border-color: #b9d8c5 !important;
+  color: #245b50 !important;
+  background: var(--brand-soft) !important;
 }
-
-.live-abacus,
-.interactive-abacus {
-  background: #f8faf6 !important;
-  border-color: #d8e4dc !important;
-}
-#liveAbacusValueText,
-#scrollTopBtn {
-  color: #ffffff !important;
-  background: var(--brand) !important;
-}
-.abacus-rod::before { background: #2d3d35 !important; }
-.abacus-separator { background: var(--brand) !important; }
-.abacus-bead { background: linear-gradient(135deg, #7cad90, #226b4e) !important; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

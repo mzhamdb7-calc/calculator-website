@@ -1,0 +1,1 @@
+Updated after screenshot feedback: fixed unreadable active group tab, softened dark colours, and widened calculator/instruction desktop alignment while keeping the rebuilt layout.

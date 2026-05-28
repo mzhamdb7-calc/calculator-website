@@ -161,27 +161,30 @@
 
 
 /* =====================================================
-   SENIOR-FRIENDLY MOBILE TUNING
+   EASY-READ MOBILE ALIGNMENT FIX
 ===================================================== */
 @media screen and (max-width: 850px) {
   body { padding-bottom: 28px !important; }
+
   .clean-navbar {
-    background: #fffdfa !important;
+    background: rgba(255, 255, 255, .97) !important;
     border-bottom: 1px solid var(--line) !important;
   }
-  .clean-nav-inner { gap: 8px !important; }
+  .clean-nav-inner { width: min(100% - 20px, 720px) !important; gap: 8px !important; }
+  .clean-nav-inner > .clean-nav-link:first-child { background: #ffffff !important; border: 1px solid var(--line) !important; }
   .clean-nav-link,
   .clean-nav-button {
-    min-height: 44px !important;
-    font-size: .88rem !important;
-    color: #203229 !important;
-    background: #f7faf6 !important;
-    border: 1px solid #d8e4dc !important;
+    min-height: 42px !important;
+    color: #344d44 !important;
+    background: #f9fbf9 !important;
+    border: 1px solid var(--line) !important;
+    font-size: .86rem !important;
   }
   .clean-nav-dropdown-panel {
-    background: #fffdfa !important;
-    border: 1px solid var(--line-strong) !important;
+    background: #ffffff !important;
+    border-color: var(--line) !important;
   }
+
   main,
   .about-container,
   .info-page-box,
@@ -202,15 +205,32 @@
   .chat-board-card {
     padding: 20px !important;
   }
-  .extra-side-links a { min-height: 44px !important; }
+  .calculator h1,
+  .calculator-box h1,
+  .bmi-calculator-box h1,
+  .extra-calculator-box h1 {
+    max-width: none !important;
+    font-size: clamp(1.85rem, 9vw, 2.45rem) !important;
+  }
+  .tool-group-nav,
+  .loan-history-box,
+  .extra-side-box { padding: 14px !important; }
+  .extra-side-links { flex-wrap: nowrap !important; overflow-x: auto !important; padding-bottom: 4px !important; }
+  .extra-side-links a { flex: 0 0 auto !important; min-height: 42px !important; white-space: nowrap !important; }
+
+  .display-row { grid-template-columns: minmax(0, 1fr) 76px !important; }
   .buttons button,
-  .basic-grid button { min-height: 58px !important; font-size: 1.1rem !important; }
+  .basic-grid button { min-height: 56px !important; font-size: 1.05rem !important; }
+
   .age-result-actions,
   .bmi-result-actions,
   .universal-result-actions,
   .mortgage-result-actions,
   .extra-result-actions,
-  .global-result-actions {
-    gap: 7px !important;
-  }
+  .global-result-actions { gap: 7px !important; }
+  .age-result-action-btn,
+  .bmi-result-action-btn,
+  .universal-result-action-btn,
+  .mortgage-result-action-btn,
+  .extra-result-action-btn { min-height: 40px !important; padding: 8px 5px !important; font-size: .78rem !important; }
 }

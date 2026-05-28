@@ -85,26 +85,26 @@
 
 
 /* =====================================================
-   SENIOR-FRIENDLY DESKTOP TUNING
+   EASY-READ DESKTOP ALIGNMENT FIX
 ===================================================== */
 @media screen and (min-width: 851px) {
-  body { padding-left: var(--nav-width) !important; }
-  .clean-navbar {
-    border-right: 1px solid var(--line) !important;
+  body { padding-left: 0 !important; }
+
+  main,
+  .about-container,
+  .info-page-box,
+  .chat-intro-card,
+  .chat-form-card,
+  .chat-board-card {
+    width: min(1180px, calc(100vw - 48px)) !important;
   }
-  .clean-navbar::before {
-    color: #17211d !important;
-    font-size: 1.34rem !important;
+
+  .clean-nav-inner {
+    width: min(1180px, calc(100vw - 48px)) !important;
+    min-height: 66px !important;
   }
-  .clean-navbar::after {
-    color: #52675c !important;
-    font-size: .82rem !important;
-  }
-  .clean-nav-dropdown-panel,
-  .clean-nav-submenu-panel {
-    border-color: var(--line) !important;
-    background: #fffdfa !important;
-  }
+
+  .tool-layout,
   .old-calculator-layout,
   .calculator-container,
   .age-calculator-container,
@@ -113,11 +113,100 @@
   .percentage-calculator-container,
   .discount-calculator-container,
   .compound-calculator-container {
-    grid-template-columns: 250px minmax(0, 1fr) !important;
-    gap: 26px !important;
-  }
-  .extra-help-layout {
-    grid-template-columns: 250px minmax(0, 1fr) 300px !important;
+    max-width: 1180px !important;
+    display: grid !important;
+    grid-template-columns: minmax(360px, 430px) minmax(0, 1fr) !important;
     gap: 24px !important;
+    align-items: start !important;
   }
+
+  .tool-layout > .tool-group-nav,
+  .old-calculator-layout > .tool-group-nav,
+  .calculator-container > .tool-group-nav,
+  .age-calculator-container > .tool-group-nav,
+  .bmi-calculator-container > .tool-group-nav,
+  .loan-calculator-container > .tool-group-nav,
+  .percentage-calculator-container > .tool-group-nav,
+  .discount-calculator-container > .tool-group-nav,
+  .compound-calculator-container > .tool-group-nav,
+  .tool-layout > .loan-history-box,
+  .tool-layout > .extra-side-box {
+    grid-column: 1 / -1 !important;
+    order: -10 !important;
+  }
+
+  .tool-layout > .calculator,
+  .old-calculator-layout > .calculator,
+  .calculator-container > .calculator,
+  .age-calculator-container > .calculator,
+  .bmi-calculator-container > .calculator,
+  .loan-calculator-container > .calculator,
+  .percentage-calculator-container > .calculator,
+  .discount-calculator-container > .calculator,
+  .compound-calculator-container > .calculator,
+  .tool-layout > .calculator-box,
+  .tool-layout > .bmi-calculator-box,
+  .tool-layout > .extra-calculator-box {
+    grid-column: 1 !important;
+    min-width: 0 !important;
+  }
+
+  .tool-layout > .instruction-box,
+  .old-calculator-layout > .instruction-box,
+  .calculator-container > .instruction-box,
+  .age-calculator-container > .instruction-box,
+  .bmi-calculator-container > .instruction-box,
+  .loan-calculator-container > .instruction-box,
+  .percentage-calculator-container > .instruction-box,
+  .discount-calculator-container > .instruction-box,
+  .compound-calculator-container > .instruction-box,
+  .tool-layout > .extra-help-panel {
+    grid-column: 2 !important;
+    grid-row: 2 / span 5 !important;
+    position: sticky !important;
+    top: 90px !important;
+    max-height: calc(100vh - 112px) !important;
+    overflow: auto !important;
+    min-width: 0 !important;
+  }
+
+  .extra-help-layout {
+    max-width: 1180px !important;
+    display: grid !important;
+    grid-template-columns: minmax(230px, 260px) minmax(420px, 1fr) minmax(280px, 330px) !important;
+    gap: 22px !important;
+    align-items: start !important;
+  }
+  .extra-help-layout > .tool-group-nav,
+  .extra-help-layout > .loan-history-box,
+  .extra-help-layout > .extra-side-box,
+  .extra-help-layout > .extra-related-box {
+    grid-column: 1 !important;
+    grid-row: 1 / span 6 !important;
+    position: sticky !important;
+    top: 90px !important;
+  }
+  .extra-help-layout > .calculator,
+  .extra-help-layout > .calculator-box,
+  .extra-help-layout > .bmi-calculator-box,
+  .extra-help-layout > .extra-calculator-box {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+  .extra-help-layout > .calculator-clean-result,
+  .extra-help-layout > .loan-style-output-panel,
+  .extra-help-layout > .extra-result-box {
+    grid-column: 2 !important;
+  }
+  .extra-help-layout > .instruction-box,
+  .extra-help-layout > .extra-help-panel {
+    grid-column: 3 !important;
+    grid-row: 1 / span 6 !important;
+    position: sticky !important;
+    top: 90px !important;
+    max-height: calc(100vh - 112px) !important;
+    overflow: auto !important;
+  }
+
+  .instruction-box { scrollbar-width: thin; }
 }
