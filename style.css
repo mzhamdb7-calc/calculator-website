@@ -4475,3 +4475,82 @@ body[data-page="bmi"] .bmi-highlight-grid {
   }
 }
 
+
+
+/* =====================================================
+   CHATGPT UPDATE: compact top-menu dropdown spacing
+   Reduces empty white space in Tools/Resources dropdowns.
+===================================================== */
+@media screen and (min-width: 851px) {
+  #navbar.clean-navbar .clean-calculator-panel {
+    width: fit-content !important;
+    min-width: 218px !important;
+    max-width: min(260px, calc(100vw - 28px)) !important;
+    padding: 8px !important;
+    overflow: visible !important;
+  }
+
+  #navbar.clean-navbar .clean-info-panel {
+    width: fit-content !important;
+    min-width: 168px !important;
+    max-width: min(230px, calc(100vw - 28px)) !important;
+    padding: 8px !important;
+  }
+
+  #navbar.clean-navbar .clean-nav-submenu {
+    width: auto !important;
+  }
+
+  #navbar.clean-navbar .clean-nav-panel-row,
+  #navbar.clean-navbar .clean-nav-submenu-button,
+  #navbar.clean-navbar .clean-info-panel a,
+  #navbar.clean-navbar .clean-calculator-panel > a {
+    width: 100% !important;
+    min-height: 42px !important;
+    padding: 8px 10px 8px 12px !important;
+    gap: 10px !important;
+    border-radius: 12px !important;
+    justify-content: space-between !important;
+    font-size: .95rem !important;
+  }
+
+  #navbar.clean-navbar .clean-nav-button > span[aria-hidden="true"],
+  #navbar.clean-navbar .clean-nav-submenu-button > span[aria-hidden="true"] {
+    width: 22px !important;
+    height: 22px !important;
+    min-width: 22px !important;
+    margin-left: 4px !important;
+    font-size: 12px !important;
+  }
+
+  #navbar.clean-navbar .clean-nav-submenu-panel {
+    left: calc(100% + 6px) !important;
+    width: max-content !important;
+    min-width: 196px !important;
+    max-width: min(260px, calc(100vw - 28px)) !important;
+    padding: 8px !important;
+  }
+
+  #navbar.clean-navbar .clean-nav-submenu-panel a {
+    min-height: 40px !important;
+    padding: 8px 12px !important;
+    border-radius: 10px !important;
+    font-size: .94rem !important;
+    white-space: nowrap !important;
+  }
+}
+
+@media screen and (max-width: 850px) {
+  #navbar.clean-navbar .clean-nav-dropdown-panel {
+    padding: 8px !important;
+  }
+
+  #navbar.clean-navbar .clean-nav-panel-row,
+  #navbar.clean-navbar .clean-nav-submenu-button,
+  #navbar.clean-navbar .clean-nav-submenu-panel a,
+  #navbar.clean-navbar .clean-info-panel a {
+    min-height: 40px !important;
+    padding: 8px 10px !important;
+    gap: 8px !important;
+  }
+}
