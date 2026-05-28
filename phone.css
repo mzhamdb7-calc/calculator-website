@@ -8609,3 +8609,493 @@ body.index-page .index-category-dropdown > .index-category-dropdown-panel > p {
 body.index-page .index-category-dropdown > .index-category-dropdown-panel .calculator-category-links {
   padding-top: 0 !important;
 }
+
+/* =====================================================
+   CHATGPT GREEN TECH STYLE SKIN 2026-05-28
+   Visual skin only: keeps existing layout, box alignment,
+   grids, widths, and calculator structure intact.
+===================================================== */
+:root {
+  --bg: #f4fff8 !important;
+  --black: #10241b !important;
+  --white: #ffffff !important;
+  --yellow: #b9ffd6 !important;
+  --soft-yellow: #e8fff2 !important;
+  --pink: #e7fff1 !important;
+  --blue: #e8fff7 !important;
+  --green: #00c46a !important;
+  --tech-green: #00c46a !important;
+  --tech-green-dark: #008f4a !important;
+  --tech-green-soft: #e8fff2 !important;
+  --tech-ink: #10241b !important;
+  --tech-muted: #5c7467 !important;
+  --tech-line: rgba(0, 143, 74, 0.18) !important;
+  --shadow: 0 18px 45px rgba(0, 90, 48, 0.14) !important;
+}
+
+html {
+  scroll-behavior: smooth !important;
+}
+
+* {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+}
+
+body {
+  color: var(--tech-ink) !important;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(0, 196, 106, 0.16) 0, transparent 30%),
+    radial-gradient(circle at 88% 8%, rgba(0, 143, 74, 0.12) 0, transparent 28%),
+    linear-gradient(135deg, #f7fffb 0%, #eafff3 48%, #f3fff9 100%) !important;
+}
+
+body::before {
+  content: "" !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+  background-image:
+    linear-gradient(rgba(0, 143, 74, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 143, 74, 0.07) 1px, transparent 1px),
+    radial-gradient(circle, rgba(0, 196, 106, 0.14) 1.2px, transparent 1.4px) !important;
+  background-size: 44px 44px, 44px 44px, 88px 88px !important;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.78), rgba(0,0,0,0.18)) !important;
+}
+
+#navbar.clean-navbar,
+.clean-navbar,
+#navbar {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid rgba(0, 143, 74, 0.26) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 18px 46px rgba(0, 80, 43, 0.18), inset 0 1px 0 rgba(255,255,255,0.9) !important;
+  backdrop-filter: blur(16px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(150%) !important;
+  overflow: visible !important;
+}
+
+.clean-nav-inner {
+  background: transparent !important;
+}
+
+#navbar a,
+#navbar .dropbtn,
+#navbar.clean-navbar .clean-nav-link,
+#navbar.clean-navbar .clean-nav-button,
+.clean-nav-link,
+.clean-nav-button {
+  color: #0b2c1b !important;
+  background: transparent !important;
+  border-color: rgba(0, 143, 74, 0.18) !important;
+  text-shadow: none !important;
+}
+
+#navbar a:hover,
+#navbar .dropbtn:hover,
+#navbar.clean-navbar .clean-nav-link:hover,
+#navbar.clean-navbar .clean-nav-button:hover,
+#navbar.clean-navbar .clean-nav-dropdown.is-open > .clean-nav-button,
+#navbar.clean-navbar .clean-nav-dropdown:hover > .clean-nav-button,
+#navbar.clean-navbar .clean-nav-dropdown:focus-within > .clean-nav-button {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #00c46a 0%, #008f4a 100%) !important;
+}
+
+.clean-nav-dropdown-panel,
+.clean-nav-submenu-panel,
+.dropdown-content {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border: 1px solid rgba(0, 143, 74, 0.24) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 24px 55px rgba(0, 70, 37, 0.20) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  overflow: hidden !important;
+}
+
+.clean-nav-panel-row,
+.clean-nav-submenu-button,
+.clean-nav-submenu-panel a,
+.clean-info-panel a,
+.dropdown-content a,
+.nav-group summary {
+  color: #123321 !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f0fff6 100%) !important;
+  border-color: rgba(0, 143, 74, 0.16) !important;
+  box-shadow: none !important;
+}
+
+.clean-nav-panel-row:hover,
+.clean-nav-submenu-button:hover,
+.clean-nav-submenu.is-open > .clean-nav-submenu-button,
+.clean-nav-submenu-panel a:hover,
+.clean-info-panel a:hover,
+.dropdown-content a:hover,
+.nav-group summary:hover {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #00c46a 0%, #007a40 100%) !important;
+}
+
+.clean-nav-search-input,
+input[type="search"],
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+  color: #0f2b1c !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  border: 1px solid rgba(0, 143, 74, 0.34) !important;
+  border-radius: 14px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 8px 22px rgba(0, 90, 48, 0.08) !important;
+  outline: none !important;
+}
+
+.clean-nav-search-input:focus,
+input[type="search"]:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+select:focus,
+textarea:focus {
+  border-color: #00c46a !important;
+  box-shadow: 0 0 0 4px rgba(0, 196, 106, 0.14), 0 14px 28px rgba(0, 90, 48, 0.12) !important;
+}
+
+.clean-nav-search-button,
+button,
+.button,
+.btn,
+.calculate-btn,
+.calculator button,
+.result-actions button,
+.result-action-btn,
+.copy-btn,
+.save-btn,
+.share-btn,
+.report-btn,
+.calculator-clean-action,
+.extra-result-action,
+.loan-result-action,
+.mortgage-result-action {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #00c46a 0%, #008f4a 100%) !important;
+  border: 1px solid rgba(0, 120, 64, 0.45) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 12px 28px rgba(0, 143, 74, 0.22), inset 0 1px 0 rgba(255,255,255,0.28) !important;
+  text-shadow: none !important;
+}
+
+.clean-nav-search-button:hover,
+button:hover,
+.button:hover,
+.btn:hover,
+.calculate-btn:hover,
+.calculator button:hover,
+.result-actions button:hover,
+.result-action-btn:hover,
+.copy-btn:hover,
+.save-btn:hover,
+.share-btn:hover,
+.report-btn:hover,
+.calculator-clean-action:hover,
+.extra-result-action:hover,
+.loan-result-action:hover,
+.mortgage-result-action:hover {
+  background: linear-gradient(135deg, #09df7b 0%, #007a40 100%) !important;
+  box-shadow: 0 16px 34px rgba(0, 143, 74, 0.30), 0 0 0 4px rgba(0, 196, 106, 0.12) !important;
+}
+
+.calculator,
+.calculator-box,
+.about-box,
+.info-page-box,
+.contact-box,
+.faq-box,
+.loan-history-box,
+.extra-side-box,
+.old-calculator-groupbar,
+.group-side-box,
+.grouped-calculator-home,
+.index-dropdown-calculator-home,
+.index-abacus-inside-card,
+.calculator-category-abacus,
+.age-calculator-container .calculator,
+.bmi-calculator-container .calculator,
+.loan-calculator-container .calculator,
+.calculator-card,
+.card,
+.box,
+.panel,
+.container > section,
+main.calculator-box {
+  color: var(--tech-ink) !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  border: 1px solid rgba(0, 143, 74, 0.22) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 22px 60px rgba(0, 77, 42, 0.13), inset 0 1px 0 rgba(255,255,255,0.92) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+.calculator::before,
+.calculator-box::before,
+.about-box::before,
+.info-page-box::before,
+.loan-history-box::before,
+.extra-side-box::before,
+.old-calculator-groupbar::before,
+.grouped-calculator-home::before,
+.index-dropdown-calculator-home::before,
+.index-abacus-inside-card::before {
+  border-color: rgba(0, 196, 106, 0.32) !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+.title,
+.calculator-title,
+.page-title,
+.about-box h1,
+.info-page-box h1,
+.calculator h1,
+.calculator h2,
+.calculator-box h1,
+.calculator-box h2 {
+  color: #0a2c1a !important;
+  text-shadow: none !important;
+  letter-spacing: -0.03em !important;
+}
+
+h1::after,
+h2::after,
+.calculator h1::after,
+.calculator-box h1::after,
+.about-box h1::after,
+.info-page-box h1::after {
+  background: linear-gradient(90deg, #00c46a, rgba(0, 196, 106, 0)) !important;
+}
+
+p,
+label,
+li,
+span,
+small,
+.calculator p,
+.calculator-box p,
+.about-box p,
+.info-page-box p,
+.loan-history-box p,
+.extra-side-box p {
+  color: #284535 !important;
+  text-shadow: none !important;
+}
+
+label,
+.form-label,
+.input-label {
+  font-weight: 800 !important;
+  color: #113923 !important;
+}
+
+a:not(.clean-nav-link):not(.clean-nav-button):not(.clean-nav-panel-row) {
+  color: #007a40 !important;
+}
+
+a:not(.clean-nav-link):not(.clean-nav-button):not(.clean-nav-panel-row):hover {
+  color: #00a85b !important;
+}
+
+.old-calculator-groupbar a,
+.loan-history-box a,
+.extra-side-box a,
+.group-side-box a,
+.current-extra-link,
+.current-loan-link,
+.current-group-link {
+  border-radius: 14px !important;
+  border: 1px solid rgba(0, 143, 74, 0.18) !important;
+  background: linear-gradient(180deg, #ffffff 0%, #effff5 100%) !important;
+  color: #143820 !important;
+  box-shadow: 0 8px 20px rgba(0, 90, 48, 0.07) !important;
+}
+
+.old-calculator-groupbar a:hover,
+.loan-history-box a:hover,
+.extra-side-box a:hover,
+.group-side-box a:hover,
+.current-extra-link,
+.current-loan-link,
+.current-group-link {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #00c46a 0%, #008f4a 100%) !important;
+  box-shadow: 0 12px 28px rgba(0, 143, 74, 0.20) !important;
+}
+
+.calculator-clean-result,
+.loan-style-output-panel,
+.mortgage-modern-result-panel,
+.extra-result-box,
+.result-box,
+.result,
+.output,
+.summary-box,
+.total-box,
+#calculatorReportPage {
+  color: #0d2d1d !important;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(234,255,243,0.98) 100%) !important;
+  border: 1px solid rgba(0, 143, 74, 0.28) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 18px 46px rgba(0, 77, 42, 0.14), inset 0 1px 0 rgba(255,255,255,0.95) !important;
+}
+
+.calculator-clean-result h3,
+.loan-style-output-panel h3,
+.mortgage-modern-result-panel h3,
+.extra-result-box h3,
+.result-box h3,
+.result h3,
+.output h3 {
+  color: #07381f !important;
+}
+
+.calculator-clean-result strong,
+.loan-style-output-panel strong,
+.mortgage-modern-result-panel strong,
+.extra-result-box strong,
+.result-box strong,
+.result strong,
+.output strong,
+.total,
+.total-amount,
+.highlight,
+.result-value {
+  color: #008f4a !important;
+}
+
+table,
+.table,
+.history-table {
+  background: rgba(255,255,255,0.96) !important;
+  border: 1px solid rgba(0, 143, 74, 0.20) !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+  box-shadow: 0 14px 34px rgba(0, 77, 42, 0.10) !important;
+}
+
+th,
+thead,
+table thead tr {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #00a85b 0%, #007a40 100%) !important;
+}
+
+td,
+th {
+  border-color: rgba(0, 143, 74, 0.16) !important;
+}
+
+tr:nth-child(even) td {
+  background: rgba(232, 255, 242, 0.55) !important;
+}
+
+.index-category-dropdown,
+body.index-page .index-category-dropdown {
+  background: linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(239,255,246,0.96) 100%) !important;
+  border: 1px solid rgba(0, 143, 74, 0.22) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 14px 36px rgba(0, 77, 42, 0.12) !important;
+}
+
+.index-category-dropdown > summary,
+body.index-page .index-category-dropdown > summary {
+  color: #0d3521 !important;
+  background: transparent !important;
+  border-color: rgba(0, 143, 74, 0.16) !important;
+}
+
+.index-category-dropdown[open] > summary,
+.index-category-dropdown > summary:hover,
+body.index-page .index-category-dropdown.is-index-dropdown-open > summary,
+body.index-page .index-category-dropdown > summary:hover {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #00c46a 0%, #008f4a 100%) !important;
+}
+
+body.index-page .index-category-dropdown > .index-category-dropdown-panel {
+  background: rgba(255,255,255,0.99) !important;
+  border: 1px solid rgba(0, 143, 74, 0.24) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 24px 55px rgba(0, 70, 37, 0.20) !important;
+}
+
+body.index-page .index-category-dropdown > .index-category-dropdown-panel .calculator-category-links a {
+  color: #123321 !important;
+  background: linear-gradient(180deg, #ffffff 0%, #effff5 100%) !important;
+  border-color: rgba(0, 143, 74, 0.16) !important;
+}
+
+body.index-page .index-category-dropdown > .index-category-dropdown-panel .calculator-category-links a:hover,
+body.index-page .index-category-dropdown > .index-category-dropdown-panel .calculator-category-links a:focus-visible {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #00c46a 0%, #007a40 100%) !important;
+}
+
+.clean-nav-search-results,
+.search-results,
+.suggestions,
+.autocomplete-list {
+  background: rgba(255,255,255,0.99) !important;
+  border: 1px solid rgba(0, 143, 74, 0.24) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 48px rgba(0, 70, 37, 0.18) !important;
+  overflow: hidden !important;
+}
+
+.clean-nav-search-results li,
+.search-results li,
+.suggestions li,
+.autocomplete-list li {
+  background: transparent !important;
+  border-color: rgba(0, 143, 74, 0.14) !important;
+}
+
+.clean-nav-search-results li:hover,
+.search-results li:hover,
+.suggestions li:hover,
+.autocomplete-list li:hover {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #00c46a 0%, #008f4a 100%) !important;
+}
+
+hr {
+  border-color: rgba(0, 143, 74, 0.20) !important;
+}
+
+::-webkit-scrollbar {
+  width: 11px !important;
+  height: 11px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: #eafff3 !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #00c46a, #008f4a) !important;
+  border-radius: 999px !important;
+  border: 2px solid #eafff3 !important;
+}
+
+::selection {
+  color: #ffffff !important;
+  background: #00a85b !important;
+}
+/* ===== END CHATGPT GREEN TECH STYLE SKIN ===== */
