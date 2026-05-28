@@ -822,7 +822,6 @@
       panel.innerHTML =
         '<div class="loan-output-top age-result-shell">' +
           '<div class="loan-result-panel age-result-main-box">' +
-            '<h2 class="loan-panel-title age-result-title">Result</h2>' +
             (extraTopHtml || "") +
             '<div class="loan-result-body age-result-body">' + resultHtml + '</div>' +
             '<div class="age-result-actions">' +
@@ -837,7 +836,6 @@
       panel.innerHTML =
         '<div class="loan-output-top bmi-result-shell">' +
           '<div class="loan-result-panel bmi-result-main-box">' +
-            '<h2 class="loan-panel-title bmi-result-title">Result</h2>' +
             '<div class="loan-result-body bmi-result-body">' + resultHtml + '</div>' +
             '<div class="bmi-result-actions">' +
               '<button type="button" class="bmi-result-action-btn bmi-copy-btn">Copy</button>' +
@@ -851,7 +849,6 @@
       panel.innerHTML =
         '<div class="loan-output-top universal-result-shell">' +
           '<div class="loan-result-panel universal-result-main-box">' +
-            '<h2 class="loan-panel-title">Result</h2>' +
             (extraTopHtml ? '<div class="universal-result-summary-wrap">' + extraTopHtml + '</div>' : '') +
             '<div class="loan-result-body">' + resultHtml + '</div>' +
             '<div class="universal-result-actions">' +
@@ -2837,7 +2834,7 @@
     const rows = [
       ["Percentage", percentage + "%"],
       ["Number", String(number)],
-      ["Result", money(answer)]
+      ["Answer", money(answer)]
     ];
 
     renderResultPanel("percentage", rows);
@@ -3165,7 +3162,6 @@
     panel.className = "loan-style-output-panel calculator-clean-result loan-clean-result mortgage-modern-result-panel";
     panel.innerHTML =
       '<div class="mortgage-modern-result-shell">' +
-        '<h2 class="loan-panel-title mortgage-modern-result-title">Result</h2>' +
         (resultHtml || "") +
         '<div class="mortgage-result-actions mortgage-result-actions-final" aria-label="Mortgage result actions">' +
           '<button type="button" class="mortgage-result-action-btn mortgage-result-copy-btn">Copy</button>' +
@@ -3901,7 +3897,6 @@
         '<div class="calculator-report-table-scroll"><table><tbody>' + tableRows(report.inputLines) + '</tbody></table></div>' +
       '</div>' +
       '<div class="calculator-report-card">' +
-        '<h2>Result</h2>' +
         '<div class="calculator-report-result">' + reportResultHtml(report) + '</div>' +
       '</div>' +
       '<div class="calculator-report-actions">' +
@@ -7391,13 +7386,25 @@
     return $("extraCalcResult");
   }
 
+  function extraVisibleTitle(title) {
+    return String(title || "")
+      .replace(/\s+calculator\s+result\s*$/i, " calculator")
+      .replace(/\s+result\s*$/i, "")
+      .trim() || "Answer";
+  }
+
+  function extraVisibleLabel(label) {
+    const text = String(label == null ? "" : label);
+    return /^\s*result\s*$/i.test(text) ? "Answer" : text;
+  }
+
   function table(title, rows) {
     return (
       '<div class="extra-result-card">' +
-        '<h2>' + title + '</h2>' +
+        '<h2>' + extraVisibleTitle(title) + '</h2>' +
         '<table class="extra-result-table"><tbody>' +
         rows.map(function (row) {
-          return '<tr><th>' + row[0] + '</th><td>' + row[1] + '</td></tr>';
+          return '<tr><th>' + extraVisibleLabel(row[0]) + '</th><td>' + row[1] + '</td></tr>';
         }).join("") +
         '</tbody></table>' +
       '</div>'
@@ -7405,10 +7412,10 @@
   }
 
   function extraPlainText(title, rows, note) {
-    const lines = [title];
+    const lines = [extraVisibleTitle(title)];
 
     (rows || []).forEach(function (row) {
-      lines.push(row[0] + ": " + row[1]);
+      lines.push(extraVisibleLabel(row[0]) + ": " + row[1]);
     });
 
     if (note) lines.push("Note: " + note);
@@ -7506,7 +7513,6 @@
       '<h1>' + title + '</h1>' +
       '<p class="calculator-report-date"><strong>Generated:</strong> ' + new Date().toLocaleString() + '</p>' +
       '<div class="calculator-report-card">' +
-        '<h2>Result</h2>' +
         table(title, rows) +
         (note ? '<p class="extra-result-note">' + note + '</p>' : '') +
       '</div>' +
@@ -7541,7 +7547,7 @@
     if (share) {
       share.onclick = function () {
         if (navigator.share) {
-          navigator.share({ title: title, text: text }).catch(function () { extraCopyText(text, share); });
+          navigator.share({ title: visibleResultTitle(title), text: text }).catch(function () { extraCopyText(text, share); });
         } else {
           extraCopyText(text, share);
         }
@@ -7563,7 +7569,7 @@
     if (share) {
       share.onclick = function () {
         if (navigator.share) {
-          navigator.share({ title: title, text: text }).catch(function () { extraCopyText(text, share); });
+          navigator.share({ title: visibleResultTitle(title), text: text }).catch(function () { extraCopyText(text, share); });
         } else {
           extraCopyText(text, share);
         }
@@ -7866,7 +7872,7 @@
       const result = Function('"use strict"; return (' + safe + ');')();
       show("Scientific result", [
         ["Expression", expression],
-        ["Result", num(Number(result), 10)]
+        ["Answer", num(Number(result), 10)]
       ]);
     } catch (error) {
       show("Scientific result", [["Error", "Cannot calculate this expression"]]);
@@ -9319,10 +9325,22 @@
     });
   }
 
+  function visibleResultTitle(title) {
+    return String(title || "")
+      .replace(/\s+calculator\s+result\s*$/i, " calculator")
+      .replace(/\s+result\s*$/i, "")
+      .trim() || "Answer";
+  }
+
+  function visibleResultLabel(label) {
+    const text = String(label == null ? "" : label);
+    return /^\s*result\s*$/i.test(text) ? "Answer" : text;
+  }
+
   function plainText(title, rows, note) {
-    const lines = [title];
+    const lines = [visibleResultTitle(title)];
     (rows || []).forEach(function (row) {
-      lines.push(String(row[0]) + ": " + String(row[1]));
+      lines.push(visibleResultLabel(row[0]) + ": " + String(row[1]));
     });
     if (note) lines.push("Note: " + note);
     return lines.join("\n");
@@ -9388,10 +9406,9 @@
     section.id = "financeUpgradeReportPage";
     section.className = "calculator-report-page finance-upgrade-report-page";
     section.innerHTML =
-      '<h1>' + escapeHtml(title) + '</h1>' +
+      '<h1>' + escapeHtml(visibleResultTitle(title)) + '</h1>' +
       '<p class="calculator-report-date"><strong>Generated:</strong> ' + escapeHtml(new Date().toLocaleString()) + '</p>' +
       '<div class="calculator-report-card finance-report-card">' +
-        '<h2>Result</h2>' +
         metricGrid(rows) +
         (note ? '<p class="finance-result-note">' + escapeHtml(note) + '</p>' : '') +
       '</div>' +
@@ -9413,7 +9430,7 @@
     section.querySelector(".finance-report-copy-btn").onclick = function (event) { copyText(text, event.currentTarget); };
     section.querySelector(".finance-report-save-btn").onclick = function (event) { downloadText("calculator-report.txt", text); setButtonTemp(event.currentTarget, "Saved"); };
     section.querySelector(".finance-report-share-btn").onclick = function (event) {
-      if (navigator.share) navigator.share({ title: title, text: text }).catch(function () { copyText(text, event.currentTarget); });
+      if (navigator.share) navigator.share({ title: visibleResultTitle(title), text: text }).catch(function () { copyText(text, event.currentTarget); });
       else copyText(text, event.currentTarget);
     };
 
@@ -9424,7 +9441,7 @@
     return '<div class="finance-result-summary-grid">' +
       (rows || []).map(function (row) {
         return '<article class="finance-result-metric-card">' +
-          '<div class="finance-result-metric-label">' + escapeHtml(row[0]) + '</div>' +
+          '<div class="finance-result-metric-label">' + escapeHtml(visibleResultLabel(row[0])) + '</div>' +
           '<div class="finance-result-metric-value">' + escapeHtml(row[1]) + '</div>' +
         '</article>';
       }).join("") +
@@ -9528,8 +9545,7 @@
     box.innerHTML =
       '<article class="finance-result-shell">' +
         '<header class="finance-result-header">' +
-          '<p class="finance-result-eyebrow">Result</p>' +
-          '<h2>' + escapeHtml(title) + '</h2>' +
+          '<h2>' + escapeHtml(visibleResultTitle(title)) + '</h2>' +
         '</header>' +
         metricGrid(rows) +
         (options.graphHtml || "") +
@@ -9545,10 +9561,10 @@
     box.querySelector(".finance-copy-btn").onclick = function (event) { copyText(text, event.currentTarget); };
     box.querySelector(".finance-save-btn").onclick = function (event) { downloadText("calculator-result.txt", text); setButtonTemp(event.currentTarget, "Saved"); };
     box.querySelector(".finance-share-btn").onclick = function (event) {
-      if (navigator.share) navigator.share({ title: title, text: text }).catch(function () { copyText(text, event.currentTarget); });
+      if (navigator.share) navigator.share({ title: visibleResultTitle(title), text: text }).catch(function () { copyText(text, event.currentTarget); });
       else copyText(text, event.currentTarget);
     };
-    box.querySelector(".finance-report-btn").onclick = function () { openReport(title, rows, options.note); };
+    box.querySelector(".finance-report-btn").onclick = function () { openReport(visibleResultTitle(title), rows, options.note); };
 
     if (options.scroll !== false) {
       setTimeout(function () { box.scrollIntoView({ behavior: "smooth", block: "start" }); }, 80);
@@ -9962,7 +9978,7 @@
     if (!allowed.test(safeExpression)) {
       showResult("scientific", "Scientific result", [
         ["Input", originalExpression],
-        ["Result", "Unsupported expression"]
+        ["Answer", "Unsupported expression"]
       ], { note: "Use numbers, +, -, ×, ÷, brackets, powers, sqrt(), sin(), cos(), tan(), log(), ln(), abs(), pi, and e." });
       return;
     }
@@ -9972,12 +9988,12 @@
       if (!Number.isFinite(Number(result))) throw new Error("Result is not finite");
       showResult("scientific", "Scientific result", [
         ["Input", originalExpression],
-        ["Result", numberText(Number(result), 10)]
+        ["Answer", numberText(Number(result), 10)]
       ], { note: "Trigonometric functions use radians in this calculator." });
     } catch (error) {
       showResult("scientific", "Scientific result", [
         ["Input", originalExpression],
-        ["Result", "Cannot calculate this expression"]
+        ["Answer", "Cannot calculate this expression"]
       ], { note: "Check brackets, symbols, and supported function names." });
     }
   }
@@ -10107,5 +10123,79 @@
     document.addEventListener("DOMContentLoaded", start);
   } else {
     start();
+  }
+})();
+
+
+/* =====================================================
+   CHATGPT FIX: Remove extra generic "Result" text
+   Scope: all calculator live/result boxes and report cards
+===================================================== */
+(function () {
+  "use strict";
+
+  function tidyTitleText(text) {
+    return String(text || "")
+      .replace(/\s+calculator\s+result\s*$/i, " calculator")
+      .replace(/\s+result\s*$/i, "")
+      .trim();
+  }
+
+  function isInsideCalculatorResult(el) {
+    return !!(el && el.closest(
+      ".calculator-clean-result, .loan-style-output-panel, .finance-upgrade-result-box, .extra-result-box, " +
+      ".calculator-report-card, .calculator-report-result, #extraCalcResult, #financeUpgradeReportPage, " +
+      "#extraCalculatorReportPage, #calculatorReportPage"
+    ));
+  }
+
+  function cleanupExtraResultText(root) {
+    root = root || document;
+
+    root.querySelectorAll(".finance-result-eyebrow").forEach(function (el) {
+      if (/^\s*result\s*$/i.test(el.textContent || "")) el.remove();
+    });
+
+    root.querySelectorAll("h1, h2, h3, p, div, span, th").forEach(function (el) {
+      if (!isInsideCalculatorResult(el)) return;
+      const text = (el.textContent || "").trim();
+
+      if (/^result$/i.test(text) && el.children.length === 0) {
+        if (el.matches("th, .finance-result-metric-label")) {
+          el.textContent = "Answer";
+        } else {
+          el.remove();
+        }
+        return;
+      }
+
+      if (/\s+result$/i.test(text) && el.children.length === 0 && el.matches("h1, h2, h3")) {
+        const cleaned = tidyTitleText(text);
+        if (cleaned) el.textContent = cleaned;
+      }
+    });
+  }
+
+  function startCleanup() {
+    cleanupExtraResultText(document);
+    [100, 350, 900, 1800].forEach(function (delay) {
+      setTimeout(function () { cleanupExtraResultText(document); }, delay);
+    });
+
+    if (window.MutationObserver) {
+      new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+          mutation.addedNodes.forEach(function (node) {
+            if (node && node.nodeType === 1) cleanupExtraResultText(node);
+          });
+        });
+      }).observe(document.body, { childList: true, subtree: true });
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startCleanup);
+  } else {
+    startCleanup();
   }
 })();

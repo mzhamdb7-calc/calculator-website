@@ -1,0 +1,2 @@
+Removed duplicate generic Result text from live calculator result boxes and report result cards.
+Calculator titles remain visible, but trailing "result" and standalone "Result" labels are removed or changed to Answer where needed.
