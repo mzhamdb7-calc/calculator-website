@@ -8431,3 +8431,197 @@
   };
 })();
 
+/* ===== CHATGPT FINAL TOP MENU HOVER CLICK FIX START ===== */
+(function () {
+  "use strict";
+
+  function setupFinalTopMenuHoverClick() {
+    const nav = document.querySelector("#navbar.clean-navbar");
+    if (!nav || nav.dataset.finalTopMenuHoverClick === "true") return;
+
+    nav.dataset.finalTopMenuHoverClick = "true";
+
+    function topDropdowns() {
+      return Array.from(nav.querySelectorAll(".clean-nav-dropdown"));
+    }
+
+    function submenus() {
+      return Array.from(nav.querySelectorAll(".clean-nav-submenu"));
+    }
+
+    function directButton(parent, selector) {
+      return parent ? parent.querySelector(":scope > " + selector) : null;
+    }
+
+    function setTopExpanded(dropdown, open) {
+      const button = directButton(dropdown, ".clean-nav-button");
+      if (button) button.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+
+    function setSubExpanded(submenu, open) {
+      const button = directButton(submenu, ".clean-nav-submenu-button");
+      if (button) button.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+
+    function closeSubmenusInside(dropdown) {
+      if (!dropdown) return;
+
+      dropdown.querySelectorAll(".clean-nav-submenu.is-open").forEach(function (submenu) {
+        submenu.classList.remove("is-open");
+        setSubExpanded(submenu, false);
+      });
+    }
+
+    function closeTopDropdown(dropdown) {
+      if (!dropdown) return;
+
+      dropdown.classList.remove("is-open");
+      setTopExpanded(dropdown, false);
+      closeSubmenusInside(dropdown);
+    }
+
+    function closeEverything() {
+      topDropdowns().forEach(closeTopDropdown);
+    }
+
+    function openTopDropdown(dropdown) {
+      if (!dropdown) return;
+
+      topDropdowns().forEach(function (item) {
+        if (item !== dropdown) closeTopDropdown(item);
+      });
+
+      dropdown.classList.add("is-open");
+      setTopExpanded(dropdown, true);
+    }
+
+    function closeOtherSubmenus(currentSubmenu) {
+      const parentPanel = currentSubmenu ? currentSubmenu.closest(".clean-nav-dropdown-panel") : null;
+
+      submenus().forEach(function (submenu) {
+        if (submenu === currentSubmenu) return;
+        if (parentPanel && submenu.closest(".clean-nav-dropdown-panel") !== parentPanel) return;
+
+        submenu.classList.remove("is-open");
+        setSubExpanded(submenu, false);
+      });
+    }
+
+    function openSubmenu(submenu) {
+      if (!submenu) return;
+
+      const topDropdown = submenu.closest(".clean-nav-dropdown");
+      if (topDropdown) openTopDropdown(topDropdown);
+
+      closeOtherSubmenus(submenu);
+      submenu.classList.add("is-open");
+      setSubExpanded(submenu, true);
+    }
+
+    function normalizeSubmenuButtons() {
+      submenus().forEach(function (submenu) {
+        const button = directButton(submenu, ".clean-nav-submenu-button");
+        if (button && !button.hasAttribute("aria-expanded")) {
+          button.setAttribute("aria-expanded", submenu.classList.contains("is-open") ? "true" : "false");
+        }
+      });
+    }
+
+    normalizeSubmenuButtons();
+
+    /* Hover: open the hovered dropdown/submenu and close siblings. */
+    nav.addEventListener("mouseover", function (event) {
+      const submenu = event.target.closest(".clean-nav-submenu");
+      if (submenu && nav.contains(submenu)) {
+        openSubmenu(submenu);
+        return;
+      }
+
+      const dropdown = event.target.closest(".clean-nav-dropdown");
+      if (dropdown && nav.contains(dropdown)) {
+        openTopDropdown(dropdown);
+        return;
+      }
+
+      if (event.target.closest(".clean-nav-link, .clean-nav-search")) {
+        closeEverything();
+      }
+    }, true);
+
+    /* Click: open clicked dropdown/submenu and close any other open one. */
+    nav.addEventListener("click", function (event) {
+      const submenuButton = event.target.closest(".clean-nav-submenu-button");
+      if (submenuButton && nav.contains(submenuButton)) {
+        const submenu = submenuButton.closest(".clean-nav-submenu");
+        if (submenu) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          openSubmenu(submenu);
+          return;
+        }
+      }
+
+      const topButton = event.target.closest(".clean-nav-button");
+      if (topButton && nav.contains(topButton)) {
+        const dropdown = topButton.closest(".clean-nav-dropdown");
+        if (dropdown) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          openTopDropdown(dropdown);
+          return;
+        }
+      }
+
+      if (event.target.closest(".clean-nav-link, .clean-nav-search-input")) {
+        closeEverything();
+      }
+    }, true);
+
+    nav.addEventListener("focusin", function (event) {
+      const submenu = event.target.closest(".clean-nav-submenu");
+      if (submenu && nav.contains(submenu)) {
+        openSubmenu(submenu);
+        return;
+      }
+
+      const dropdown = event.target.closest(".clean-nav-dropdown");
+      if (dropdown && nav.contains(dropdown)) {
+        openTopDropdown(dropdown);
+        return;
+      }
+
+      if (event.target.closest(".clean-nav-link, .clean-nav-search")) {
+        closeEverything();
+      }
+    }, true);
+
+    document.addEventListener("click", function (event) {
+      if (!nav.contains(event.target)) closeEverything();
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") closeEverything();
+    });
+
+    nav.addEventListener("mouseleave", function () {
+      window.setTimeout(function () {
+        if (!nav.matches(":hover") && !nav.contains(document.activeElement)) {
+          closeEverything();
+        }
+      }, 250);
+    });
+  }
+
+  function startFinalTopMenuHoverClick() {
+    setupFinalTopMenuHoverClick();
+    window.setTimeout(setupFinalTopMenuHoverClick, 250);
+    window.setTimeout(setupFinalTopMenuHoverClick, 800);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startFinalTopMenuHoverClick);
+  } else {
+    startFinalTopMenuHoverClick();
+  }
+})();
+/* ===== CHATGPT FINAL TOP MENU HOVER CLICK FIX END ===== */

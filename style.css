@@ -8522,3 +8522,56 @@ html body .calculator-report-actions {
   }
 }
 
+/* ===== CHATGPT FINAL TOP MENU CSS FIX START ===== */
+#navbar.clean-navbar .clean-nav-dropdown-panel {
+  display: none !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+#navbar.clean-navbar .clean-nav-dropdown:hover > .clean-nav-dropdown-panel,
+#navbar.clean-navbar .clean-nav-dropdown:focus-within > .clean-nav-dropdown-panel,
+#navbar.clean-navbar .clean-nav-dropdown.is-open > .clean-nav-dropdown-panel {
+  display: grid !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 9999 !important;
+}
+
+#navbar.clean-navbar .clean-nav-dropdown:hover > .clean-nav-button,
+#navbar.clean-navbar .clean-nav-dropdown:focus-within > .clean-nav-button,
+#navbar.clean-navbar .clean-nav-dropdown.is-open > .clean-nav-button {
+  background: #eafff4 !important;
+  color: #047857 !important;
+}
+
+#navbar.clean-navbar .clean-nav-submenu-panel {
+  display: none !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+#navbar.clean-navbar .clean-nav-submenu:hover > .clean-nav-submenu-panel,
+#navbar.clean-navbar .clean-nav-submenu:focus-within > .clean-nav-submenu-panel,
+#navbar.clean-navbar .clean-nav-submenu.is-open > .clean-nav-submenu-panel {
+  display: grid !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 10000 !important;
+}
+
+#navbar.clean-navbar .clean-nav-submenu:hover > .clean-nav-submenu-button,
+#navbar.clean-navbar .clean-nav-submenu:focus-within > .clean-nav-submenu-button,
+#navbar.clean-navbar .clean-nav-submenu.is-open > .clean-nav-submenu-button {
+  background: #d3fff9 !important;
+  color: #047857 !important;
+}
+
+#navbar.clean-navbar .clean-nav-submenu.is-open > .clean-nav-submenu-button span[aria-hidden="true"] {
+  transform: rotate(90deg) !important;
+}
+/* ===== CHATGPT FINAL TOP MENU CSS FIX END ===== */
