@@ -10322,3 +10322,268 @@
     startCleanup();
   }
 })();
+
+
+/* =====================================================
+   CHATGPT PERCENTAGE RESULT BOX UPGRADE
+   - Makes Percentage Calculator use the newer card result-box form
+   - Keeps the result box as its own section below the calculator
+   - Keeps Copy / Save / Share / Report actions inside the result box
+===================================================== */
+(function () {
+  "use strict";
+
+  function isPercentagePage() {
+    return /percentage-calculator\.html?$/i.test(location.pathname || "") || /percentage-calculator/i.test(location.pathname || "");
+  }
+
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function readNumber(ids) {
+    for (var i = 0; i < ids.length; i += 1) {
+      var input = byId(ids[i]);
+      if (!input) continue;
+      var raw = String(input.value || "").replace(/,/g, "").trim();
+      if (!raw) continue;
+      var number = Number(raw);
+      if (Number.isFinite(number)) return number;
+    }
+    return NaN;
+  }
+
+  function escapeHtml(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function formatNumber(value) {
+    if (!Number.isFinite(value)) return "-";
+    return value.toLocaleString("en-MY", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 4
+    });
+  }
+
+  function resultText(rows) {
+    return rows.map(function (row) {
+      return row[0] + ": " + row[1];
+    }).join("\n");
+  }
+
+  function setButtonTemp(button, text) {
+    if (!button) return;
+    var old = button.textContent;
+    button.textContent = text;
+    setTimeout(function () { button.textContent = old; }, 1400);
+  }
+
+  function fallbackCopy(text, button) {
+    var area = document.createElement("textarea");
+    area.value = text;
+    area.setAttribute("readonly", "readonly");
+    area.style.position = "fixed";
+    area.style.left = "-9999px";
+    document.body.appendChild(area);
+    area.select();
+    try { document.execCommand("copy"); setButtonTemp(button, "Copied"); }
+    catch (error) { setButtonTemp(button, "Copy failed"); }
+    area.remove();
+  }
+
+  function copyText(text, button) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        setButtonTemp(button, "Copied");
+      }).catch(function () {
+        fallbackCopy(text, button);
+      });
+    } else {
+      fallbackCopy(text, button);
+    }
+  }
+
+  function downloadText(filename, text) {
+    var blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(function () {
+      URL.revokeObjectURL(url);
+      link.remove();
+    }, 400);
+  }
+
+  function getResultBox() {
+    var box = byId("percentageReportOutput");
+    var calculator = document.querySelector("main .calculator") || document.querySelector(".calculator");
+
+    if (!box) {
+      box = document.createElement("section");
+      box.id = "percentageReportOutput";
+      box.setAttribute("aria-label", "Percentage calculator result");
+      if (calculator) calculator.insertAdjacentElement("afterend", box);
+      else document.body.appendChild(box);
+    }
+
+    if (calculator && calculator.contains(box)) {
+      calculator.insertAdjacentElement("afterend", box);
+    }
+
+    box.className = "extra-result-box finance-upgrade-result-box finance-result-own-box percentage-finance-result percentage-clean-result";
+    box.hidden = false;
+    box.style.setProperty("display", "block", "important");
+    box.style.setProperty("visibility", "visible", "important");
+    box.style.setProperty("opacity", "1", "important");
+
+    return box;
+  }
+
+  function metricGrid(rows) {
+    return (
+      '<div class="finance-result-summary-grid percentage-result-summary-grid">' +
+        rows.map(function (row) {
+          return (
+            '<article class="finance-result-metric-card percentage-result-card">' +
+              '<div class="finance-result-metric-label">' + escapeHtml(row[0]) + '</div>' +
+              '<div class="finance-result-metric-value">' + escapeHtml(row[1]) + '</div>' +
+            '</article>'
+          );
+        }).join("") +
+      '</div>'
+    );
+  }
+
+  function renderPercentageBox(rows, shouldScroll) {
+    var box = getResultBox();
+    var text = "Percentage Calculator\n" + resultText(rows);
+
+    var native = byId("percentageResult");
+    if (native) {
+      native.textContent = "";
+      native.style.setProperty("display", "none", "important");
+    }
+
+    box.innerHTML =
+      '<article class="finance-result-shell percentage-result-shell">' +
+        '<header class="finance-result-header percentage-result-header">' +
+          '<h2>Percentage calculation</h2>' +
+          '<p>Clear summary of your percentage value.</p>' +
+        '</header>' +
+        metricGrid(rows) +
+        '<div class="finance-result-actions percentage-result-actions">' +
+          '<button type="button" class="finance-result-action-btn percentage-copy-btn">Copy</button>' +
+          '<button type="button" class="finance-result-action-btn percentage-save-btn">Save</button>' +
+          '<button type="button" class="finance-result-action-btn percentage-share-btn">Share</button>' +
+          '<button type="button" class="finance-result-action-btn percentage-report-btn">Report</button>' +
+        '</div>' +
+      '</article>';
+
+    var copy = box.querySelector(".percentage-copy-btn");
+    var save = box.querySelector(".percentage-save-btn");
+    var share = box.querySelector(".percentage-share-btn");
+    var report = box.querySelector(".percentage-report-btn");
+
+    if (copy) copy.onclick = function () { copyText(text, copy); };
+    if (save) save.onclick = function () { downloadText("percentage-result.txt", text); setButtonTemp(save, "Saved"); };
+    if (share) {
+      share.onclick = function () {
+        if (navigator.share) {
+          navigator.share({ title: "Percentage Calculator", text: text }).catch(function () {
+            copyText(text, share);
+          });
+        } else {
+          copyText(text, share);
+        }
+      };
+    }
+    if (report) {
+      report.onclick = function () {
+        if (typeof window.openLatestCalculatorReport === "function") {
+          window.openLatestCalculatorReport("percentage", report);
+        } else {
+          copyText(text, report);
+        }
+      };
+    }
+
+    if (shouldScroll !== false) {
+      setTimeout(function () {
+        if (box && typeof box.scrollIntoView === "function") {
+          box.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 120);
+    }
+  }
+
+  function calculatePercentageNewBox(shouldScroll) {
+    if (!isPercentagePage()) return;
+
+    var percentage = readNumber(["percentage", "percent"]);
+    var number = readNumber(["number", "amount", "value"]);
+    if (!Number.isFinite(percentage) || !Number.isFinite(number)) return;
+
+    var answer = percentage / 100 * number;
+    var rows = [
+      ["Percentage", formatNumber(percentage) + "%"],
+      ["Number", formatNumber(number)],
+      ["Answer", formatNumber(answer)]
+    ];
+
+    renderPercentageBox(rows, shouldScroll);
+  }
+
+  function upgradeExistingPercentageResult() {
+    if (!isPercentagePage()) return;
+
+    var box = byId("percentageReportOutput");
+    if (!box) return;
+    if (box.querySelector(".percentage-result-shell")) return;
+
+    calculatePercentageNewBox(false);
+  }
+
+  function start() {
+    if (!isPercentagePage()) return;
+
+    var oldCalculate = window.calculatePercentage;
+    window.calculatePercentage = function () {
+      if (typeof oldCalculate === "function") oldCalculate.apply(this, arguments);
+      setTimeout(function () { calculatePercentageNewBox(false); }, 20);
+    };
+
+    [80, 350, 900, 2200].forEach(function (delay) {
+      setTimeout(function () { calculatePercentageNewBox(false); upgradeExistingPercentageResult(); }, delay);
+    });
+
+    document.addEventListener("input", function (event) {
+      if (!event.target || !event.target.closest(".calculator")) return;
+      setTimeout(function () { calculatePercentageNewBox(true); }, 2050);
+    }, true);
+
+    document.addEventListener("change", function (event) {
+      if (!event.target || !event.target.closest(".calculator")) return;
+      setTimeout(function () { calculatePercentageNewBox(true); }, 2050);
+    }, true);
+
+    if (window.MutationObserver) {
+      new MutationObserver(function () {
+        setTimeout(upgradeExistingPercentageResult, 30);
+      }).observe(document.body, { childList: true, subtree: true });
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();

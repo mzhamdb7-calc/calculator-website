@@ -2664,3 +2664,37 @@ body.calculator-report-view .table-report-page {
     grid-template-columns: 1fr 1fr !important;
   }
 }
+
+
+/* =====================================================
+   CHATGPT PERCENTAGE RESULT BOX UPGRADE
+===================================================== */
+.percentage-finance-result.finance-result-own-box {
+  grid-column: 1 / -1;
+  width: min(100%, 980px);
+  margin: 18px auto 0 !important;
+}
+
+.percentage-result-shell .finance-result-header {
+  text-align: center;
+}
+
+.percentage-result-shell .finance-result-header p {
+  margin: 6px 0 0;
+  color: #5f6f6b;
+  font-size: 0.98rem;
+}
+
+.percentage-result-summary-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.percentage-result-card {
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  .percentage-result-summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
