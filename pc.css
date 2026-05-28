@@ -1725,3 +1725,47 @@ body.calculator-report-view #calculatorReportPage,
   }
 }
 
+
+
+/* =====================================================
+   CHATGPT FIX: Center Age Calculator result heading/countdown
+   Scope: only the generated Age result box
+===================================================== */
+.age-clean-result .age-result-main-box > .age-result-title,
+.age-point-output .age-result-main-box > .age-result-title,
+.age-clean-result .loan-panel-title.age-result-title {
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-align: center !important;
+}
+
+.age-clean-result .age-live-countdown,
+.age-point-output .age-live-countdown {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  margin: 0 auto 18px !important;
+  padding: 8px 10px !important;
+  text-align: center !important;
+}
+
+.age-clean-result .age-live-countdown-line,
+.age-point-output .age-live-countdown-line {
+  display: block !important;
+  width: 100% !important;
+  text-align: center !important;
+}
+
+.age-clean-result [data-age-countdown-line],
+.age-point-output [data-age-countdown-line] {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  color: var(--ink, #10231f) !important;
+  font-size: clamp(1.05rem, 2vw, 1.35rem) !important;
+  font-weight: 850 !important;
+  line-height: 1.35 !important;
+  text-align: center !important;
+}

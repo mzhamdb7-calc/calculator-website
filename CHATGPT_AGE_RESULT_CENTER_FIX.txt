@@ -1,0 +1,1 @@
+Centered the Age Calculator result heading and live countdown/summary number text inside the generated age result box.
