@@ -314,7 +314,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 <style>
-/* BASIC CALCULATOR ONLY: desktop uses empty space with keypad + display side by side */
+/* BASIC CALCULATOR ONLY: desktop uses empty space with display left + keypad right */
 @media (min-width: 900px) {
   body[data-page="basic"] .calculator.basic-best-card {
     max-width: 980px !important;
@@ -322,10 +322,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
   body[data-page="basic"] .basic-clean-calculator {
     display: grid !important;
-    grid-template-columns: minmax(340px, 430px) minmax(360px, 1fr) !important;
+    grid-template-columns: minmax(360px, 1fr) minmax(340px, 430px) !important;
     grid-template-areas:
-      "keypad display"
-      "keypad note" !important;
+      "display keypad"
+      "note keypad" !important;
     gap: 18px !important;
     align-items: start !important;
     margin-top: 22px !important;
