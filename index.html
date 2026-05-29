@@ -119,45 +119,6 @@
         <a class="home-primary-link" href="basic-calculator.html">Open Basic Calculator</a>
         <a class="home-secondary-link" href="mortgage-calculator.html">Try Mortgage Calculator</a>
       </div>
-      <aside class="home-mini-abacus" aria-label="Mini interactive abacus">
-        <div class="home-mini-abacus-header">
-          <h2 class="home-mini-abacus-title">Mini Abacus</h2>
-          <output class="home-mini-abacus-total" id="miniAbacusTotal" aria-live="polite">0</output>
-        </div>
-        <div class="home-mini-abacus-frame" id="miniAbacusFrame">
-          <div class="home-mini-abacus-row" data-place="100">
-            <span class="home-mini-abacus-place">100s</span>
-            <div class="home-mini-abacus-rail">
-              <button type="button" class="home-mini-abacus-bead" aria-label="Add 100"></button>
-              <button type="button" class="home-mini-abacus-bead" aria-label="Add 100"></button>
-              <button type="button" class="home-mini-abacus-bead" aria-label="Add 100"></button>
-              <button type="button" class="home-mini-abacus-bead" aria-label="Add 100"></button>
-              <button type="button" class="home-mini-abacus-bead" aria-label="Add 100"></button>
-            </div>
-          </div>
-          <div class="home-mini-abacus-row" data-place="10">
-            <span class="home-mini-abacus-place">10s</span>
-            <div class="home-mini-abacus-rail">
-              <button type="button" class="home-mini-abacus-bead" aria-label="Add 10"></button>
-              <button type="button" class="home-mini-abacus-bead" aria-label="Add 10"></button>
-              <button type="button" class="home-mini-abacus-bead" aria-label="Add 10"></button>
-              <button type="button" class="home-mini-abacus-bead" aria-label="Add 10"></button>
-              <button type="button" class="home-mini-abacus-bead" aria-label="Add 10"></button>
-            </div>
-          </div>
-          <div class="home-mini-abacus-row" data-place="1">
-            <span class="home-mini-abacus-place">1s</span>
-            <div class="home-mini-abacus-rail">
-              <button type="button" class="home-mini-abacus-bead" aria-label="Add 1"></button>
-              <button type="button" class="home-mini-abacus-bead" aria-label="Add 1"></button>
-              <button type="button" class="home-mini-abacus-bead" aria-label="Add 1"></button>
-              <button type="button" class="home-mini-abacus-bead" aria-label="Add 1"></button>
-              <button type="button" class="home-mini-abacus-bead" aria-label="Add 1"></button>
-            </div>
-          </div>
-        </div>
-        <p class="home-mini-abacus-help">Tap beads to move them and build a number.</p>
-      </aside>
     </section>
 
     <section class="home-section-heading" aria-labelledby="toolCategoriesTitle">
@@ -234,32 +195,5 @@
 <script src="script.js?v=card-layout-compact-20260528b" defer></script>
   <script src="pc.js?v=card-layout-compact-20260528b" defer></script>
 <script src="phone.js?v=card-layout-compact-20260528b" defer></script>
-
-<script>
-(function(){
-  function initMiniAbacus(){
-    var frame=document.getElementById('miniAbacusFrame');
-    var total=document.getElementById('miniAbacusTotal');
-    if(!frame||!total) return;
-    function update(){
-      var sum=0;
-      frame.querySelectorAll('.home-mini-abacus-row').forEach(function(row){
-        var place=Number(row.getAttribute('data-place')||0);
-        sum += row.querySelectorAll('.home-mini-abacus-bead.is-on').length * place;
-      });
-      total.textContent=String(sum);
-    }
-    frame.querySelectorAll('.home-mini-abacus-bead').forEach(function(bead){
-      bead.addEventListener('click',function(){
-        bead.classList.toggle('is-on');
-        bead.setAttribute('aria-pressed', bead.classList.contains('is-on') ? 'true' : 'false');
-        update();
-      });
-    });
-    update();
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initMiniAbacus); else initMiniAbacus();
-})();
-</script>
 </body>
 </html>
