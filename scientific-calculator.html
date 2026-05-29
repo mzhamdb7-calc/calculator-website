@@ -265,5 +265,47 @@
 }
 </style>
 
+
+<style id="chatgpt-remove-scientific-result-box">
+/* Hide/remove scientific calculator result boxes completely */
+body.scientific-page #extraCalcResult,
+body.scientific-page #universalLoanStyleOutput,
+body.scientific-page .extra-result-box,
+body.scientific-page .calculator-result,
+body.scientific-page .result-box,
+body[data-page="scientific"] #extraCalcResult,
+body[data-page="scientific"] #universalLoanStyleOutput,
+body[data-page="scientific"] .extra-result-box,
+body[data-page="scientific"] .calculator-result,
+body[data-page="scientific"] .result-box {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+}
+</style>
+<script id="chatgpt-remove-scientific-result-box-js">
+(function () {
+  function removeScientificResultBoxes() {
+    if (!document.body || (document.body.dataset.page !== 'scientific' && !location.pathname.includes('scientific-calculator'))) return;
+    document.querySelectorAll('#extraCalcResult, #universalLoanStyleOutput, .extra-result-box, .calculator-result, .result-box').forEach(function (box) {
+      box.hidden = true;
+      box.innerHTML = '';
+      box.style.setProperty('display', 'none', 'important');
+      box.style.setProperty('height', '0', 'important');
+      box.style.setProperty('margin', '0', 'important');
+      box.style.setProperty('padding', '0', 'important');
+    });
+  }
+  document.addEventListener('DOMContentLoaded', removeScientificResultBoxes);
+  document.addEventListener('click', function () { setTimeout(removeScientificResultBoxes, 20); }, true);
+  setInterval(removeScientificResultBoxes, 500);
+})();
+</script>
+
 </body>
 </html>
