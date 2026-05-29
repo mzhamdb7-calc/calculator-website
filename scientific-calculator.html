@@ -109,16 +109,61 @@
 <p class="subtitle">
         Use sin(), cos(), tan(), sqrt(), log(), ln(), pi and ^.
       </p>
-<div class="extra-input-card">
+<div class="scientific-classic-panel">
+<div class="extra-input-card scientific-expression-card">
 <div class="extra-input-card-title">Input details</div>
 <div class="extra-input-grid">
 <div class="extra-input-field">
 <label for="scientificExpression">Expression</label>
-<input id="scientificExpression" placeholder="Example: sqrt(144)+sin(pi/2)" type="text"/>
+<div class="scientific-input-line">
+<input id="scientificExpression" placeholder="Example: sin(x), x^2, sqrt(x), or sqrt(144)+sin(pi/2)" type="text"/>
+<button class="scientific-focus-btn" onclick="focusScientificInput()" type="button">Input</button>
 </div>
 </div>
 </div>
-<section class="extra-result-box" hidden="" id="extraCalcResult"></section>
+</div>
+<div class="scientific-keypad" aria-label="Scientific calculator buttons">
+<button onclick="appendScientific('sin(')" type="button">sin</button>
+<button onclick="appendScientific('cos(')" type="button">cos</button>
+<button onclick="appendScientific('tan(')" type="button">tan</button>
+<button onclick="appendScientific('sqrt(')" type="button">√</button>
+<button onclick="appendScientific('log(')" type="button">log</button>
+<button onclick="appendScientific('ln(')" type="button">ln</button>
+<button onclick="appendScientific('pi')" type="button">π</button>
+<button onclick="appendScientific('^')" type="button">xʸ</button>
+<button onclick="appendScientific('(')" type="button">(</button>
+<button onclick="appendScientific(')')" type="button">)</button>
+<button onclick="appendScientific('x')" type="button">x</button>
+<button onclick="appendScientific('/')" type="button">÷</button>
+<button onclick="appendScientific('7')" type="button">7</button>
+<button onclick="appendScientific('8')" type="button">8</button>
+<button onclick="appendScientific('9')" type="button">9</button>
+<button onclick="appendScientific('*')" type="button">×</button>
+<button onclick="appendScientific('4')" type="button">4</button>
+<button onclick="appendScientific('5')" type="button">5</button>
+<button onclick="appendScientific('6')" type="button">6</button>
+<button onclick="appendScientific('-')" type="button">−</button>
+<button onclick="appendScientific('1')" type="button">1</button>
+<button onclick="appendScientific('2')" type="button">2</button>
+<button onclick="appendScientific('3')" type="button">3</button>
+<button onclick="appendScientific('+')" type="button">+</button>
+<button class="scientific-clear-btn" onclick="clearScientificInput()" type="button">AC</button>
+<button onclick="appendScientific('0')" type="button">0</button>
+<button onclick="appendScientific('.')" type="button">.</button>
+<button class="scientific-equal-btn" onclick="calculateScientificExtra()" type="button">Graph</button>
+</div>
+</div>
+<section class="scientific-live-graph-card" id="scientificLiveGraphCard" aria-label="Live graph preview">
+<div class="scientific-graph-head">
+<div>
+<h2>Live Graph</h2>
+<p>Type an expression using <strong>x</strong>, for example <code>sin(x)</code>, <code>x^2</code>, <code>sqrt(x)</code>, or <code>log(x)</code>.</p>
+</div>
+<span class="scientific-graph-range">x: -10 to 10</span>
+</div>
+<canvas id="scientificGraphCanvas" width="720" height="420" aria-label="Scientific calculator live graph"></canvas>
+<p class="scientific-graph-status" id="scientificGraphStatus">Enter an expression to draw the graph.</p>
+</section>
 </section>
 
     <aside aria-label="Calculator guide and references" class="instruction-box universal-help-panel">

@@ -1,0 +1,9 @@
+Scientific Calculator Input Button Update
+
+Updated scientific-calculator.html:
+- Added clickable input keypad buttons for numbers, operators, brackets, and functions.
+- Added DEL, CLEAR, and CALCULATE buttons.
+- Added Enter key support to calculate the scientific expression.
+- Added responsive styling for desktop and phone screens.
+
+No other calculator logic was intentionally changed.
