@@ -322,8 +322,9 @@ body[data-page="basic"] #display::placeholder {
 }
 
 
-/* Targeted fix: Age/BMI result boxes below calculator form */
-.age-bmi-result-below{
+/* Targeted fix: Age/BMI/Percentage result boxes below calculator form */
+.age-bmi-result-below,
+.percentage-result-below{
   display:block !important;
   width:100% !important;
   min-height:96px !important;
@@ -333,14 +334,16 @@ body[data-page="basic"] #display::placeholder {
   border-radius:var(--radius) !important;
   box-shadow:var(--shadow-sm) !important;
 }
-.age-bmi-result-below h2{
+.age-bmi-result-below h2,
+.percentage-result-below h2{
   margin:0 !important;
   color:var(--ink) !important;
   font-size:clamp(1.05rem,1.5vw,1.55rem) !important;
   line-height:1.35 !important;
   letter-spacing:-.02em !important;
 }
-.age-bmi-result-below h2:empty::before{
+.age-bmi-result-below h2:empty::before,
+.percentage-result-below h2:empty::before{
   content:"Result will appear here";
   color:var(--muted) !important;
   font-size:1rem !important;
@@ -348,7 +351,8 @@ body[data-page="basic"] #display::placeholder {
 }
 @media (min-width:901px){
   body.app-redesign main.age-calculator-container.tool-layout,
-  body.app-redesign main.bmi-calculator-container.tool-layout{
+  body.app-redesign main.bmi-calculator-container.tool-layout,
+  body.app-redesign main.percentage-calculator-container.tool-layout{
     display:grid !important;
     grid-template-columns:minmax(230px,280px) minmax(0,1fr) !important;
     grid-template-rows:auto auto auto !important;
@@ -356,7 +360,8 @@ body[data-page="basic"] #display::placeholder {
     align-items:start !important;
   }
   body.app-redesign main.age-calculator-container.tool-layout > .tool-group-nav,
-  body.app-redesign main.bmi-calculator-container.tool-layout > .tool-group-nav{
+  body.app-redesign main.bmi-calculator-container.tool-layout > .tool-group-nav,
+  body.app-redesign main.percentage-calculator-container.tool-layout > .tool-group-nav{
     grid-column:1 !important;
     grid-row:1 / span 3 !important;
   }
@@ -366,21 +371,29 @@ body[data-page="basic"] #display::placeholder {
     grid-column:2 !important;
     grid-row:1 !important;
   }
+  body.app-redesign main.percentage-calculator-container.tool-layout > .calculator{
+    grid-column:2 !important;
+    grid-row:1 !important;
+  }
   body.app-redesign main.age-calculator-container.tool-layout > .age-bmi-result-below,
-  body.app-redesign main.bmi-calculator-container.tool-layout > .age-bmi-result-below{
+  body.app-redesign main.bmi-calculator-container.tool-layout > .age-bmi-result-below,
+.percentage-result-below{
     grid-column:2 !important;
     grid-row:2 !important;
   }
   body.app-redesign main.age-calculator-container.tool-layout > .instruction-box,
   body.app-redesign main.age-calculator-container.tool-layout > .universal-help-panel,
   body.app-redesign main.bmi-calculator-container.tool-layout > .instruction-box,
-  body.app-redesign main.bmi-calculator-container.tool-layout > .universal-help-panel{
+  body.app-redesign main.bmi-calculator-container.tool-layout > .universal-help-panel,
+  body.app-redesign main.percentage-calculator-container.tool-layout > .instruction-box,
+  body.app-redesign main.percentage-calculator-container.tool-layout > .universal-help-panel{
     grid-column:2 !important;
     grid-row:3 !important;
   }
 }
 @media (max-width:900px){
-  .age-bmi-result-below{
+  .age-bmi-result-below,
+.percentage-result-below{
     margin:0 0 16px !important;
   }
 }
