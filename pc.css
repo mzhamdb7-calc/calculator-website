@@ -491,3 +491,29 @@
     max-height: none !important;
   }
 }
+
+
+/* FIX scientific calculator layout */
+@media screen and (min-width:851px){
+body[data-page="scientific"] .scientific-workspace,
+body[data-page="scientific"] .scientific-main-layout{
+display:flex!important;
+flex-direction:column!important;
+}
+body[data-page="scientific"] .scientific-live-graph-card{
+order:1!important;
+width:100%!important;
+max-width:none!important;
+}
+body[data-page="scientific"] .scientific-classic-panel{
+order:2!important;
+display:grid!important;
+grid-template-columns:1fr 1fr!important;
+gap:20px!important;
+align-items:start!important;
+}
+body[data-page="scientific"] .scientific-keypad,
+body[data-page="scientific"] .scientific-buttons-grid{
+grid-column:2!important;
+}
+}
