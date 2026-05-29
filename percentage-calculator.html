@@ -102,30 +102,51 @@
 <a href="unit-converter-calculator.html">Unit Converter</a>
 </div>
 </section>
-<section class="calculator">
+<section class="calculator percentage-type-calculator">
 <h1>Percentage Calculator</h1>
 <p class="subtitle">
-        Calculate percentage values quickly.
+        Choose a calculation type, enter Input A and Input B, and the result updates automatically.
       </p>
-<label for="percent">Percentage (%):</label>
-<input id="percent" placeholder="Example: 20" type="number"/>
-<label for="number">Of number:</label>
-<input id="number" placeholder="Example: 150" type="number"/>
+<div class="percentage-type-box" aria-label="Percentage calculation type">
+  <span class="percentage-type-label">Calculation type</span>
+  <div class="percentage-type-buttons" role="group" aria-label="Calculation type buttons">
+    <button class="percentage-type-btn active" type="button" data-type="of">1. What is A% of B</button>
+    <button class="percentage-type-btn" type="button" data-type="iswhat">2. A is what % of B</button>
+    <button class="percentage-type-btn" type="button" data-type="increase">3. Percentage increase</button>
+    <button class="percentage-type-btn" type="button" data-type="decrease">4. Percentage decrease</button>
+    <button class="percentage-type-btn" type="button" data-type="difference">5. Percentage difference</button>
+    <button class="percentage-type-btn" type="button" data-type="discount">6. Discount calculator</button>
+    <button class="percentage-type-btn" type="button" data-type="salary">7. Salary increment</button>
+  </div>
+</div>
+<div class="percentage-input-grid">
+  <div class="percentage-input-item">
+    <label id="percentageLabelA" for="percentageInputA">Input A</label>
+    <input id="percentageInputA" placeholder="Example: 20" type="number" step="any" inputmode="decimal"/>
+  </div>
+  <div class="percentage-input-item">
+    <label id="percentageLabelB" for="percentageInputB">Input B</label>
+    <input id="percentageInputB" placeholder="Example: 150" type="number" step="any" inputmode="decimal"/>
+  </div>
+</div>
+<p class="percentage-helper" id="percentageHelper">Example: A = 20, B = 150 gives 20% of 150.</p>
 </section>
 <section class="age-bmi-result-below percentage-result-below" aria-live="polite">
+  <div class="percentage-result-kicker">Result</div>
   <h2 id="percentageResult"></h2>
+  <p class="percentage-result-formula" id="percentageFormula"></p>
 </section>
 
     <aside aria-label="Calculator guide and references" class="instruction-box universal-help-panel">
-      <section class="instruction-section instruction-what-box"><h3>What does this calculator do?</h3><p>Use this to find a percentage of a number, such as discounts, marks, commissions, and simple ratios.</p></section>
+      <section class="instruction-section instruction-what-box"><h3>What does this calculator do?</h3><p>Use this to calculate common percentage questions, discount values, percentage change, salary increment, and percentage difference.</p></section>
 
       <h2 class="instruction-main-title">Instructions</h2>
 
-      <section class="instruction-section instruction-how-box"><h3>How to use it</h3><p>Enter the percentage and the number. The result updates automatically when enough information is entered.</p></section>
+      <section class="instruction-section instruction-how-box"><h3>How to use it</h3><p>Choose the calculation type, then enter Input A and Input B. The labels change based on the selected mode, and the result updates automatically.</p></section>
 
-      <section class="instruction-section instruction-formula-box"><h3>Formula used</h3><p>Result = percentage ÷ 100 × number.</p></section>
+      <section class="instruction-section instruction-formula-box"><h3>Formula used</h3><p>The formula changes based on the selected mode. For example, A% of B = A ÷ 100 × B, and percentage change = (B − A) ÷ A × 100.</p></section>
 
-      <section class="instruction-section instruction-example-box"><h3>Example calculation</h3><p>20% of 150 = 30.</p></section>
+      <section class="instruction-section instruction-example-box"><h3>Example calculation</h3><p>Example: 20% of 150 = 30. If salary is 3000 and increment is 5%, new salary is 3150.</p></section>
 
       <section aria-label="References" class="reference-box universal-reference-box"><h2 class="reference-main-title">References</h2>
         <div class="reference-scroll universal-reference-list">
@@ -135,6 +156,105 @@
       </section>
     </aside>
 </main>
+
+<style>
+.percentage-type-calculator .subtitle{max-width:760px!important}
+.percentage-type-box{margin:22px 0 18px!important;padding:16px!important;border:1px solid var(--line)!important;border-radius:18px!important;background:linear-gradient(180deg,#f8fffb,#eef8f3)!important}
+.percentage-type-label{display:block;margin-bottom:10px;color:var(--primary-dark);font-weight:900;text-transform:uppercase;letter-spacing:.08em;font-size:.82rem}
+.percentage-type-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.percentage-type-btn{min-height:48px;padding:10px 12px;border:1px solid var(--line-strong);border-radius:14px;background:#fff;color:var(--ink);font-weight:800;text-align:left;cursor:pointer;transition:transform .15s ease,background .15s ease,color .15s ease,box-shadow .15s ease}
+.percentage-type-btn:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(16,35,29,.08)}
+.percentage-type-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 12px 25px rgba(47,125,104,.22)}
+.percentage-input-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:12px}
+.percentage-input-item{min-width:0}.percentage-input-item label{display:block;margin-bottom:8px;font-weight:900;color:var(--ink)}
+.percentage-input-item input{width:100%;box-sizing:border-box}.percentage-helper{margin:14px 0 0;color:var(--muted);line-height:1.45;font-weight:650}.percentage-result-kicker{margin-bottom:6px;color:var(--primary-dark);font-weight:900;text-transform:uppercase;letter-spacing:.08em;font-size:.82rem}.percentage-result-formula{margin:8px 0 0;color:var(--muted);line-height:1.45;font-weight:650}
+@media(max-width:760px){.percentage-type-buttons,.percentage-input-grid{grid-template-columns:1fr}.percentage-type-btn{text-align:left}}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const buttons = Array.from(document.querySelectorAll('.percentage-type-btn'));
+  const inputA = document.getElementById('percentageInputA');
+  const inputB = document.getElementById('percentageInputB');
+  const labelA = document.getElementById('percentageLabelA');
+  const labelB = document.getElementById('percentageLabelB');
+  const helper = document.getElementById('percentageHelper');
+  const result = document.getElementById('percentageResult');
+  const formula = document.getElementById('percentageFormula');
+  if (!buttons.length || !inputA || !inputB || !result) return;
+
+  const modes = {
+    of: { a: 'Input A: Percentage (%)', b: 'Input B: Number', pa: 'Example: 20', pb: 'Example: 150', help: 'Find A% of B. Example: 20% of 150 = 30.' },
+    iswhat: { a: 'Input A: Part value', b: 'Input B: Total value', pa: 'Example: 30', pb: 'Example: 150', help: 'Find what percentage A is of B. Example: 30 is 20% of 150.' },
+    increase: { a: 'Input A: Original value', b: 'Input B: New value', pa: 'Example: 100', pb: 'Example: 125', help: 'Find percentage increase from A to B.' },
+    decrease: { a: 'Input A: Original value', b: 'Input B: New value', pa: 'Example: 100', pb: 'Example: 80', help: 'Find percentage decrease from A to B.' },
+    difference: { a: 'Input A: First value', b: 'Input B: Second value', pa: 'Example: 80', pb: 'Example: 100', help: 'Find percentage difference between A and B.' },
+    discount: { a: 'Input A: Original price', b: 'Input B: Discount (%)', pa: 'Example: 100', pb: 'Example: 20', help: 'Find discount amount and final price.' },
+    salary: { a: 'Input A: Current salary', b: 'Input B: Increment (%)', pa: 'Example: 3000', pb: 'Example: 5', help: 'Find increment amount and new salary.' }
+  };
+  let currentType = 'of';
+  const fmt = n => Number.isFinite(n) ? Number(n.toFixed(8)).toLocaleString('en-MY') : '-';
+  const money = n => Number.isFinite(n) ? 'RM ' + Number(n.toFixed(2)).toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-';
+  const val = el => {
+    const n = Number(String(el.value || '').replace(/,/g, '').trim());
+    return Number.isFinite(n) ? n : NaN;
+  };
+  function setMode(type) {
+    currentType = type;
+    buttons.forEach(btn => btn.classList.toggle('active', btn.dataset.type === type));
+    const m = modes[type];
+    labelA.textContent = m.a;
+    labelB.textContent = m.b;
+    inputA.placeholder = m.pa;
+    inputB.placeholder = m.pb;
+    helper.textContent = m.help;
+    calculate();
+  }
+  function calculate() {
+    const a = val(inputA), b = val(inputB);
+    if (!Number.isFinite(a) || !Number.isFinite(b)) {
+      result.textContent = '';
+      if (formula) formula.textContent = 'Enter Input A and Input B to see the result.';
+      return;
+    }
+    let text = '', detail = '';
+    if (currentType === 'of') {
+      const ans = a / 100 * b;
+      text = `${fmt(a)}% of ${fmt(b)} = ${fmt(ans)}`;
+      detail = `Formula: ${fmt(a)} ÷ 100 × ${fmt(b)} = ${fmt(ans)}`;
+    } else if (currentType === 'iswhat') {
+      if (b === 0) { text = 'Cannot divide by zero'; detail = 'Input B must not be 0.'; }
+      else { const ans = a / b * 100; text = `${fmt(a)} is ${fmt(ans)}% of ${fmt(b)}`; detail = `Formula: ${fmt(a)} ÷ ${fmt(b)} × 100 = ${fmt(ans)}%`; }
+    } else if (currentType === 'increase') {
+      if (a === 0) { text = 'Cannot divide by zero'; detail = 'Input A must not be 0.'; }
+      else { const ans = (b - a) / a * 100; text = `Increase = ${fmt(ans)}%`; detail = `Change: ${fmt(b - a)}. Formula: (${fmt(b)} − ${fmt(a)}) ÷ ${fmt(a)} × 100`; }
+    } else if (currentType === 'decrease') {
+      if (a === 0) { text = 'Cannot divide by zero'; detail = 'Input A must not be 0.'; }
+      else { const ans = (a - b) / a * 100; text = `Decrease = ${fmt(ans)}%`; detail = `Change: ${fmt(a - b)}. Formula: (${fmt(a)} − ${fmt(b)}) ÷ ${fmt(a)} × 100`; }
+    } else if (currentType === 'difference') {
+      const avg = (Math.abs(a) + Math.abs(b)) / 2;
+      if (avg === 0) { text = 'Cannot calculate difference'; detail = 'Both values cannot be 0.'; }
+      else { const ans = Math.abs(a - b) / avg * 100; text = `Percentage difference = ${fmt(ans)}%`; detail = `Formula: |${fmt(a)} − ${fmt(b)}| ÷ average × 100`; }
+    } else if (currentType === 'discount') {
+      const discount = a * b / 100;
+      const finalPrice = a - discount;
+      text = `Final price = ${fmt(finalPrice)}`;
+      detail = `Discount saved: ${fmt(discount)} (${fmt(b)}% of ${fmt(a)}).`;
+    } else if (currentType === 'salary') {
+      const increase = a * b / 100;
+      const newSalary = a + increase;
+      text = `New salary = ${money(newSalary)}`;
+      detail = `Increment amount: ${money(increase)} (${fmt(b)}% of ${money(a)}).`;
+    }
+    result.textContent = text;
+    if (formula) formula.textContent = detail;
+  }
+  buttons.forEach(btn => btn.addEventListener('click', () => setMode(btn.dataset.type)));
+  inputA.addEventListener('input', calculate);
+  inputB.addEventListener('input', calculate);
+  setMode('of');
+});
+</script>
+
 <script src="script.js?v=card-layout-compact-20260528b" defer></script>
 <script src="pc.js?v=card-layout-compact-20260528b" defer></script>
 <script src="phone.js?v=card-layout-compact-20260528b" defer></script>
