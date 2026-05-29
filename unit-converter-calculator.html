@@ -11,6 +11,24 @@
 <link href="pc.css?v=card-layout-compact-20260528b" media="screen and (min-width: 851px)" rel="stylesheet"/>
 <link href="phone.css?v=card-layout-compact-20260528b" media="screen and (max-width: 850px)" rel="stylesheet"/>
 <link href="favicon.ico" rel="icon"/>
+
+<style>
+body[data-page="unitConverter"] .unit-converter-upgrade-card{display:grid;gap:16px}
+body[data-page="unitConverter"] .unit-type-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+body[data-page="unitConverter"] .unit-type-btn,
+body[data-page="unitConverter"] .unit-button-list button{min-height:44px;border-radius:12px;border:1px solid #c8d8d0;background:#fff;color:#263a33;font-weight:800;cursor:pointer;box-shadow:0 6px 14px rgba(38,58,51,.05)}
+body[data-page="unitConverter"] .unit-type-btn:hover,
+body[data-page="unitConverter"] .unit-button-list button:hover{border-color:#2f7d68;background:#f0f8f4}
+body[data-page="unitConverter"] .unit-type-btn.is-active,
+body[data-page="unitConverter"] .unit-button-list button.is-active{background:#2f7d68;color:#fff;border-color:#2f7d68}
+body[data-page="unitConverter"] .unit-value-field{max-width:420px}
+body[data-page="unitConverter"] .unit-picker-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+body[data-page="unitConverter"] .unit-picker-panel{padding:14px;border:1px solid #d7e3dc;border-radius:16px;background:#fbfcf8}
+body[data-page="unitConverter"] .unit-picker-panel h3{margin:0 0 10px;font-size:1rem}
+body[data-page="unitConverter"] .unit-button-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+body[data-page="unitConverter"] .unit-result-note{margin-top:10px;color:#586f67;font-size:.95rem}
+@media (max-width:650px){body[data-page="unitConverter"] .unit-type-buttons,body[data-page="unitConverter"] .unit-picker-grid{grid-template-columns:1fr}body[data-page="unitConverter"] .unit-button-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
 </head>
 <body class="extra-calculator-page unitConverter-page app-redesign" data-page="unitConverter">
 <button aria-label="Go to top" id="scrollTopBtn" onclick="scrollToTop()" type="button">
@@ -105,28 +123,32 @@
         Choose a unit type and convert between units.
       </p>
 <p class="extra-page-note">Examples: length km to mile, weight kg to lb, volume liter to gallon, temperature c to f.</p>
-<div class="extra-input-card">
+<div class="extra-input-card unit-converter-upgrade-card">
 <div class="extra-input-card-title">Input details</div>
-<div class="extra-input-grid">
-<div class="extra-input-field">
-<label for="unitType">Unit type</label>
-<select id="unitType"><option value="length">Length</option>
-<option value="weight">Weight</option>
-<option value="volume">Volume</option>
-<option value="temperature">Temperature</option></select>
+<input id="unitType" type="hidden" value="length"/>
+<input id="unitFrom" type="hidden" value="m"/>
+<input id="unitTo" type="hidden" value="km"/>
+<div class="unit-type-buttons" aria-label="Unit converter type">
+<button class="unit-type-btn is-active" type="button" data-unit-type="length">Length</button>
+<button class="unit-type-btn" type="button" data-unit-type="weight">Weight</button>
+<button class="unit-type-btn" type="button" data-unit-type="temperature">Temperature</button>
+<button class="unit-type-btn" type="button" data-unit-type="area">Area</button>
+<button class="unit-type-btn" type="button" data-unit-type="volume">Volume</button>
+<button class="unit-type-btn" type="button" data-unit-type="speed">Speed</button>
 </div>
-<div class="extra-input-field">
+<div class="extra-input-field unit-value-field">
 <label for="unitValue">Value</label>
 <input id="unitValue" inputmode="decimal" placeholder="Example: 100" type="number"/>
 </div>
-<div class="extra-input-field">
-<label for="unitFrom">From unit</label>
-<input id="unitFrom" placeholder="Example: km, kg, liter, c" type="text"/>
-</div>
-<div class="extra-input-field">
-<label for="unitTo">To unit</label>
-<input id="unitTo" placeholder="Example: mile, lb, gallon, f" type="text"/>
-</div>
+<div class="unit-picker-grid">
+<section class="unit-picker-panel">
+<h3>From</h3>
+<div class="unit-button-list" id="unitFromButtons" aria-label="From unit buttons"></div>
+</section>
+<section class="unit-picker-panel">
+<h3>To</h3>
+<div class="unit-button-list" id="unitToButtons" aria-label="To unit buttons"></div>
+</section>
 </div>
 </div>
 <section class="extra-result-box" id="extraCalcResult"><div class="calc-side-placeholder"><strong>Result preview</strong><span>Enter values to see the calculation here.</span></div></section>
@@ -154,5 +176,147 @@
 <script src="script.js?v=card-layout-compact-20260528b" defer></script>
 <script src="pc.js?v=card-layout-compact-20260528b" defer></script>
 <script src="phone.js?v=card-layout-compact-20260528b" defer></script>
+
+<script>
+(function(){
+  'use strict';
+  if(!/unit-converter-calculator\.html?$/i.test(location.pathname)) return;
+
+  const unitSets = {
+    length: [
+      ['m','Meter'], ['km','Kilometer'], ['cm','Centimeter'], ['mm','Millimeter'],
+      ['mile','Mile'], ['yard','Yard'], ['ft','Foot'], ['inch','Inch']
+    ],
+    weight: [
+      ['kg','Kilogram'], ['g','Gram'], ['mg','Milligram'], ['lb','Pound'],
+      ['oz','Ounce'], ['tonne','Tonne']
+    ],
+    temperature: [
+      ['c','Celsius'], ['f','Fahrenheit'], ['k','Kelvin']
+    ],
+    area: [
+      ['m2','Square meter'], ['km2','Square kilometer'], ['cm2','Square centimeter'],
+      ['ft2','Square foot'], ['in2','Square inch'], ['acre','Acre'], ['hectare','Hectare']
+    ],
+    volume: [
+      ['l','Liter'], ['ml','Milliliter'], ['m3','Cubic meter'], ['cm3','Cubic centimeter'],
+      ['gallon','Gallon'], ['cup','Cup'], ['pint','Pint']
+    ],
+    speed: [
+      ['mps','Meter/sec'], ['kmh','Kilometer/hour'], ['mph','Mile/hour'],
+      ['knot','Knot'], ['fps','Foot/sec']
+    ]
+  };
+
+  const factors = {
+    length: {m:1,km:1000,cm:0.01,mm:0.001,mile:1609.344,yard:0.9144,ft:0.3048,inch:0.0254},
+    weight: {kg:1,g:0.001,mg:0.000001,lb:0.45359237,oz:0.028349523125,tonne:1000},
+    area: {m2:1,km2:1000000,cm2:0.0001,ft2:0.09290304,in2:0.00064516,acre:4046.8564224,hectare:10000},
+    volume: {l:1,ml:0.001,m3:1000,cm3:0.001,gallon:3.785411784,cup:0.2365882365,pint:0.473176473},
+    speed: {mps:1,kmh:0.2777777778,mph:0.44704,knot:0.5144444444,fps:0.3048}
+  };
+
+  const defaults = {
+    length:['m','km'], weight:['kg','lb'], temperature:['c','f'],
+    area:['m2','ft2'], volume:['l','gallon'], speed:['kmh','mph']
+  };
+
+  function id(name){ return document.getElementById(name); }
+  function activeType(){ return id('unitType') ? id('unitType').value || 'length' : 'length'; }
+  function labelFor(type, key){
+    const found = (unitSets[type] || []).find(item => item[0] === key);
+    return found ? found[1] : key;
+  }
+  function format(value){
+    if(!Number.isFinite(value)) return '-';
+    return Number(value.toPrecision(12)).toLocaleString('en-MY', {maximumFractionDigits:8});
+  }
+  function convertTemp(value, from, to){
+    let c;
+    if(from === 'c') c = value;
+    else if(from === 'f') c = (value - 32) * 5 / 9;
+    else if(from === 'k') c = value - 273.15;
+    else return NaN;
+    if(to === 'c') return c;
+    if(to === 'f') return c * 9 / 5 + 32;
+    if(to === 'k') return c + 273.15;
+    return NaN;
+  }
+  function renderResult(value, result, type, from, to){
+    const box = id('extraCalcResult');
+    if(!box) return;
+    box.hidden = false;
+    box.style.display = 'block';
+    box.innerHTML = '<article class="finance-result-shell">' +
+      '<header class="finance-result-header"><h2>Unit conversion</h2><p>Converted value updates automatically.</p></header>' +
+      '<div class="finance-result-summary-grid">' +
+      '<article class="finance-result-metric-card"><div class="finance-result-metric-label">Value</div><div class="finance-result-metric-value">' + format(value) + ' ' + labelFor(type, from) + '</div></article>' +
+      '<article class="finance-result-metric-card"><div class="finance-result-metric-label">Converted</div><div class="finance-result-metric-value">' + format(result) + ' ' + labelFor(type, to) + '</div></article>' +
+      '<article class="finance-result-metric-card"><div class="finance-result-metric-label">Type</div><div class="finance-result-metric-value">' + type.charAt(0).toUpperCase() + type.slice(1) + '</div></article>' +
+      '</div></article>';
+  }
+  function calculate(){
+    const type = activeType();
+    const valueInput = id('unitValue');
+    const value = Number(String(valueInput && valueInput.value || '').replace(/,/g,'').trim());
+    const from = id('unitFrom') ? id('unitFrom').value : '';
+    const to = id('unitTo') ? id('unitTo').value : '';
+    if(!Number.isFinite(value)) return;
+    let result = NaN;
+    if(type === 'temperature') result = convertTemp(value, from, to);
+    else if(factors[type] && Number.isFinite(factors[type][from]) && Number.isFinite(factors[type][to])) {
+      result = value * factors[type][from] / factors[type][to];
+    }
+    if(Number.isFinite(result)) renderResult(value, result, type, from, to);
+  }
+  function renderUnitButtons(which){
+    const type = activeType();
+    const holder = id(which === 'from' ? 'unitFromButtons' : 'unitToButtons');
+    const input = id(which === 'from' ? 'unitFrom' : 'unitTo');
+    if(!holder || !input) return;
+    holder.innerHTML = '';
+    (unitSets[type] || []).forEach(([key, label]) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = label;
+      btn.dataset.unitValue = key;
+      if(input.value === key) btn.classList.add('is-active');
+      btn.addEventListener('click', () => {
+        input.value = key;
+        holder.querySelectorAll('button').forEach(b => b.classList.remove('is-active'));
+        btn.classList.add('is-active');
+        input.dispatchEvent(new Event('change', {bubbles:true}));
+        calculate();
+      });
+      holder.appendChild(btn);
+    });
+  }
+  function setType(type){
+    if(!unitSets[type]) return;
+    id('unitType').value = type;
+    const pair = defaults[type];
+    id('unitFrom').value = pair[0];
+    id('unitTo').value = pair[1];
+    document.querySelectorAll('.unit-type-btn').forEach(btn => btn.classList.toggle('is-active', btn.dataset.unitType === type));
+    renderUnitButtons('from');
+    renderUnitButtons('to');
+    id('unitType').dispatchEvent(new Event('change', {bubbles:true}));
+    calculate();
+  }
+  function init(){
+    document.querySelectorAll('.unit-type-btn').forEach(btn => btn.addEventListener('click', () => setType(btn.dataset.unitType)));
+    const valueInput = id('unitValue');
+    if(valueInput){
+      valueInput.addEventListener('input', calculate);
+      valueInput.addEventListener('change', calculate);
+    }
+    window.calculateUnitConverterExtra = calculate;
+    setType(activeType());
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+  setTimeout(function(){ window.calculateUnitConverterExtra = calculate; }, 400);
+})();
+</script>
 </body>
 </html>
