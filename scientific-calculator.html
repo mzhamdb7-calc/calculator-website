@@ -745,6 +745,284 @@ body.scientific-page .scientific-classic-panel {
 }
 </style>
 
+
+<style id="chatgpt-scientific-multi-graph-types-css">
+body.scientific-page .graph-type-hint {
+  margin: 8px 0 0 !important;
+  color: #60776f !important;
+  font-size: 0.9rem !important;
+  line-height: 1.45 !important;
+}
+body.scientific-page #scientificGraphCanvas {
+  cursor: crosshair !important;
+}
+</style>
+<script id="chatgpt-scientific-multi-graph-types-js">
+(function(){
+  'use strict';
+
+  function byId(id){ return document.getElementById(id); }
+  function isFiniteNumber(n){ return typeof n === 'number' && Number.isFinite(n); }
+
+  function addHint(){
+    var card = document.querySelector('.scientific-expression-card');
+    if (!card || document.getElementById('scientificGraphTypeHint')) return;
+    var hint = document.createElement('p');
+    hint.id = 'scientificGraphTypeHint';
+    hint.className = 'graph-type-hint';
+    hint.innerHTML = 'Graph types: <code>sin(x)</code>, <code>y=x^2</code>, <code>x=2</code>, multiple with <code>;</code>, polar <code>r=2sin(3t)</code>, parametric <code>x=cos(t); y=sin(t)</code>.';
+    card.appendChild(hint);
+  }
+
+  function splitTopLevel(str){
+    var parts = [], start = 0, depth = 0;
+    for (var i=0;i<str.length;i++){
+      var ch=str[i];
+      if (ch==='(') depth++;
+      else if (ch===')') depth=Math.max(0,depth-1);
+      else if ((ch===';' || ch==='\n') && depth===0){
+        var part=str.slice(start,i).trim();
+        if(part) parts.push(part);
+        start=i+1;
+      }
+    }
+    var last=str.slice(start).trim();
+    if(last) parts.push(last);
+    return parts;
+  }
+
+  function normalizeExpression(expr){
+    var s=String(expr||'').trim();
+    s=s.replace(/[−–—]/g,'-').replace(/[×]/g,'*').replace(/[÷]/g,'/').replace(/[π]/g,'pi').replace(/[√]/g,'sqrt');
+    s=s.replace(/\s+/g,'');
+    s=s.replace(/(\d+|\)|pi|e|tau|phi)(?=(x|t|theta|pi|tau|phi|e|sin|cos|tan|asin|acos|atan|sinh|cosh|tanh|sqrt|cbrt|log|ln|exp|abs|floor|ceil|round|min|max|root|pow|sign|\())/gi,'$1*');
+    s=s.replace(/(x|t|theta|pi|tau|phi|e|\))(?=(\d+))/gi,'$1*');
+    s=s.replace(/\^/g,'**');
+    s=s.replace(/(\d+(?:\.\d+)?|\([^()]*\)|[a-zA-Z_][a-zA-Z0-9_]*)(!)/g,'fact($1)');
+    return s;
+  }
+
+  function jsExpression(expr, variableName){
+    var s=normalizeExpression(expr);
+    if (!/^[0-9a-zA-Z_+\-*/%.(),=<>!|&?:*\s]+$/.test(s)) throw new Error('Unsupported character');
+    var names={
+      sin:'Math.sin', cos:'Math.cos', tan:'Math.tan', asin:'Math.asin', acos:'Math.acos', atan:'Math.atan',
+      sinh:'Math.sinh', cosh:'Math.cosh', tanh:'Math.tanh', sqrt:'Math.sqrt', cbrt:'Math.cbrt',
+      log:'Math.log10', ln:'Math.log', exp:'Math.exp', abs:'Math.abs', floor:'Math.floor', ceil:'Math.ceil',
+      round:'Math.round', min:'Math.min', max:'Math.max', pow:'Math.pow', sign:'Math.sign'
+    };
+    s=s.replace(/\b(root)\s*\(/gi,'nthRoot(');
+    Object.keys(names).forEach(function(name){
+      var re=new RegExp('\\b'+name+'\\s*\\(','gi');
+      s=s.replace(re,names[name]+'(');
+    });
+    s=s.replace(/\bpi\b/gi,'Math.PI').replace(/\btau\b/gi,'(2*Math.PI)').replace(/\bphi\b/gi,'((1+Math.sqrt(5))/2)');
+    s=s.replace(/\be\b/g,'Math.E').replace(/\bln2\b/gi,'Math.LN2').replace(/\bln10\b/gi,'Math.LN10');
+    if(variableName==='t'){
+      s=s.replace(/\btheta\b/gi,'t').replace(/\bx\b/g,'t');
+    } else {
+      s=s.replace(/\btheta\b/gi,'x').replace(/\bt\b/g,'x');
+    }
+    return s;
+  }
+
+  function makeFunction(expr, variableName){
+    var body=jsExpression(expr, variableName || 'x');
+    return new Function(variableName || 'x','fact','nthRoot','var y = '+body+'; return Number.isFinite(y) ? y : NaN;');
+  }
+
+  function fact(n){
+    n = Number(n);
+    if(!Number.isFinite(n) || n < 0 || Math.floor(n)!==n || n>170) return NaN;
+    var r=1; for(var i=2;i<=n;i++) r*=i; return r;
+  }
+  function nthRoot(a,n){
+    a=Number(a); n=Number(n);
+    if(!Number.isFinite(a)||!Number.isFinite(n)||n===0) return NaN;
+    if(a<0 && Math.round(n)%2===1) return -Math.pow(-a,1/n);
+    return Math.pow(a,1/n);
+  }
+
+  function setupCanvas(canvas){
+    var rect=canvas.getBoundingClientRect();
+    var dpr=window.devicePixelRatio || 1;
+    var w=Math.max(420, Math.floor(rect.width || 720));
+    var h=Math.max(300, Math.floor(w*0.52));
+    canvas.width=Math.floor(w*dpr); canvas.height=Math.floor(h*dpr);
+    canvas.style.height=h+'px';
+    var ctx=canvas.getContext('2d');
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    return {ctx:ctx,w:w,h:h};
+  }
+
+  function getRange(){
+    var min=Number((byId('graphXMin')||{}).value), max=Number((byId('graphXMax')||{}).value);
+    if(!Number.isFinite(min)) min=-10;
+    if(!Number.isFinite(max)) max=10;
+    if(min===max) { min-=10; max+=10; }
+    if(min>max){ var t=min; min=max; max=t; }
+    return {min:min,max:max};
+  }
+
+  function drawGrid(ctx,w,h,xMin,xMax,yMin,yMax){
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle='#f8fafc'; ctx.fillRect(0,0,w,h);
+    function sx(x){ return (x-xMin)/(xMax-xMin)*w; }
+    function sy(y){ return h-(y-yMin)/(yMax-yMin)*h; }
+    ctx.lineWidth=1;
+    ctx.strokeStyle='#e5e7eb';
+    for(var i=0;i<=10;i++){
+      var x=i*w/10, y=i*h/10;
+      ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke();
+    }
+    ctx.strokeStyle='#94a3b8'; ctx.lineWidth=1.25;
+    if(xMin<=0 && xMax>=0){ var zx=sx(0); ctx.beginPath(); ctx.moveTo(zx,0); ctx.lineTo(zx,h); ctx.stroke(); }
+    if(yMin<=0 && yMax>=0){ var zy=sy(0); ctx.beginPath(); ctx.moveTo(0,zy); ctx.lineTo(w,zy); ctx.stroke(); }
+    ctx.fillStyle='#64748b'; ctx.font='12px system-ui, sans-serif';
+    ctx.fillText('x', w-16, sy(0)-6 || h-8);
+    ctx.fillText('y', (xMin<=0&&xMax>=0?sx(0)+6:8), 14);
+    return {sx:sx,sy:sy};
+  }
+
+  function sampleCartesian(fn,xMin,xMax){
+    var pts=[];
+    var steps=900;
+    for(var i=0;i<=steps;i++){
+      var x=xMin+(xMax-xMin)*i/steps;
+      var y=fn(x,fact,nthRoot);
+      pts.push({x:x,y:y,ok:isFiniteNumber(y) && Math.abs(y)<1e6});
+    }
+    return pts;
+  }
+
+  function sampleParametric(fx,fy,tMin,tMax){
+    var pts=[];
+    var steps=1000;
+    for(var i=0;i<=steps;i++){
+      var t=tMin+(tMax-tMin)*i/steps;
+      var x=fx(t,fact,nthRoot), y=fy(t,fact,nthRoot);
+      pts.push({x:x,y:y,ok:isFiniteNumber(x)&&isFiniteNumber(y)&&Math.abs(x)<1e6&&Math.abs(y)<1e6});
+    }
+    return pts;
+  }
+
+  function yRangeFromPoints(series){
+    var ys=[];
+    series.forEach(function(pts){ pts.forEach(function(p){ if(p.ok) ys.push(p.y); }); });
+    if(!ys.length) return {min:-10,max:10};
+    ys.sort(function(a,b){return a-b;});
+    var lo=ys[Math.floor(ys.length*0.03)], hi=ys[Math.floor(ys.length*0.97)];
+    if(!isFiniteNumber(lo)||!isFiniteNumber(hi)||lo===hi){ lo=-10; hi=10; }
+    var pad=(hi-lo)*0.15 || 5;
+    return {min:lo-pad,max:hi+pad};
+  }
+
+  function drawSeries(ctx,map,pts,color){
+    ctx.strokeStyle=color; ctx.lineWidth=2.4; ctx.beginPath();
+    var drawing=false, last=null;
+    pts.forEach(function(p){
+      if(!p.ok){ drawing=false; last=null; return; }
+      var px=map.sx(p.x), py=map.sy(p.y);
+      if(last && Math.abs(py-last.y)>260){ drawing=false; }
+      if(!drawing){ ctx.moveTo(px,py); drawing=true; } else { ctx.lineTo(px,py); }
+      last={x:px,y:py};
+    });
+    ctx.stroke();
+  }
+
+  function parseGraphInput(raw){
+    var parts=splitTopLevel(raw);
+    var result={series:[], type:'cartesian'};
+    if(!parts.length) return result;
+
+    var xPart=null,yPart=null;
+    parts.forEach(function(p){
+      if(/^x\s*=/.test(p)) xPart=p.replace(/^x\s*=/,'');
+      if(/^y\s*=/.test(p)) yPart=p.replace(/^y\s*=/,'');
+    });
+    if(xPart && yPart){
+      result.type='parametric';
+      result.fx=makeFunction(xPart,'t');
+      result.fy=makeFunction(yPart,'t');
+      return result;
+    }
+
+    parts.forEach(function(p){
+      var part=p.trim();
+      if(/^r\s*=/.test(part)){
+        result.type='mixed';
+        result.series.push({kind:'polar', expr:part.replace(/^r\s*=/,'')});
+      } else if(/^x\s*=/.test(part)){
+        result.type='mixed';
+        result.series.push({kind:'vertical', x:Number(part.replace(/^x\s*=/,''))});
+      } else {
+        part=part.replace(/^y\s*=/,'');
+        result.series.push({kind:'cartesian', expr:part});
+      }
+    });
+    return result;
+  }
+
+  function drawScientificGraph(){
+    var canvas=byId('scientificGraphCanvas'), input=byId('scientificExpression'), status=byId('scientificGraphStatus');
+    if(!canvas||!input) return;
+    var raw=input.value.trim();
+    var setup=setupCanvas(canvas), ctx=setup.ctx, w=setup.w, h=setup.h;
+    var range=getRange(), xMin=range.min, xMax=range.max;
+    if(!raw){
+      var map=drawGrid(ctx,w,h,xMin,xMax,-10,10);
+      ctx.fillStyle='#64748b'; ctx.font='15px system-ui, sans-serif'; ctx.textAlign='center';
+      ctx.fillText('Enter an expression to draw the graph', w/2, h/2);
+      if(status) status.textContent='Enter an expression to draw the graph.';
+      return;
+    }
+    try{
+      var parsed=parseGraphInput(raw);
+      var series=[];
+      if(parsed.type==='parametric'){
+        series.push(sampleParametric(parsed.fx,parsed.fy,0,2*Math.PI));
+      } else {
+        parsed.series.forEach(function(s){
+          if(s.kind==='cartesian') series.push(sampleCartesian(makeFunction(s.expr,'x'),xMin,xMax));
+          else if(s.kind==='polar'){
+            var fr=makeFunction(s.expr,'t');
+            series.push(sampleParametric(function(t){var r=fr(t,fact,nthRoot); return r*Math.cos(t);}, function(t){var r=fr(t,fact,nthRoot); return r*Math.sin(t);}, 0, 2*Math.PI));
+          } else if(s.kind==='vertical' && isFiniteNumber(s.x)){
+            series.push([{x:s.x,y:-1e3,ok:true},{x:s.x,y:1e3,ok:true}]);
+          }
+        });
+      }
+      var yr=yRangeFromPoints(series), map=drawGrid(ctx,w,h,xMin,xMax,yr.min,yr.max);
+      var colors=['#0f766e','#2563eb','#c2410c','#7c3aed','#be123c','#15803d'];
+      series.forEach(function(pts,i){ drawSeries(ctx,map,pts,colors[i%colors.length]); });
+      if(status) status.textContent='Drawing: Cartesian, multi-line, vertical, polar, and parametric expressions are supported.';
+    } catch(err){
+      drawGrid(ctx,w,h,xMin,xMax,-10,10);
+      ctx.fillStyle='#b42318'; ctx.font='14px system-ui, sans-serif'; ctx.textAlign='center';
+      ctx.fillText('Cannot draw this expression. Check brackets and syntax.', w/2, h/2);
+      if(status) status.textContent='Cannot draw this expression. Try sin(x), y=x^2, x=2, r=2sin(3t), or x=cos(t); y=sin(t).';
+    }
+  }
+
+  window.drawScientificGraph = drawScientificGraph;
+  window.calculateScientificExtra = drawScientificGraph;
+
+  document.addEventListener('DOMContentLoaded', function(){
+    addHint();
+    var input=byId('scientificExpression');
+    var min=byId('graphXMin'), max=byId('graphXMax');
+    if(input){ input.addEventListener('input', drawScientificGraph); input.addEventListener('change', drawScientificGraph); }
+    if(min) min.addEventListener('input', drawScientificGraph);
+    if(max) max.addEventListener('input', drawScientificGraph);
+    document.querySelectorAll('.scientific-keypad button').forEach(function(btn){
+      btn.addEventListener('click', function(){ setTimeout(drawScientificGraph, 0); });
+    });
+    setTimeout(drawScientificGraph, 80);
+  });
+  window.addEventListener('resize', function(){ clearTimeout(window.__sciGraphResize); window.__sciGraphResize=setTimeout(drawScientificGraph,120); });
+})();
+</script>
 </body>
 </html>
 
