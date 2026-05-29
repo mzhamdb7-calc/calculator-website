@@ -112,29 +112,16 @@
 <p class="subtitle">
         A clean everyday calculator for addition, subtraction, multiplication, division, percentage, brackets, square root, and powers.
       </p>
-<div class="basic-best-workspace">
-<div class="basic-best-left">
-<div class="basic-display-card">
+<div class="basic-clean-calculator">
+<div class="basic-display-card basic-clean-display-card">
 <label class="basic-display-label" for="display">Enter calculation</label>
-<div class="display-row basic-best-display-row">
-<input aria-label="Calculator display" autocomplete="off" id="display" inputmode="decimal" placeholder="Example: 8 + 2 × 3" spellcheck="false" type="text"/>
-<button class="ans-btn" onclick="add('Ans')" title="Use previous answer" type="button">ANS</button>
+<input aria-label="Calculator display" autocomplete="off" id="display" inputmode="decimal" placeholder="0" spellcheck="false" type="text"/>
 </div>
-<div aria-live="polite" class="basic-inline-result" id="basicInlineResult">
-<div class="basic-inline-kicker">Answer</div>
-<div class="basic-inline-empty">Your input and answer will appear here after you press =.</div>
-</div>
-</div>
-<div class="basic-quick-row" aria-label="Quick function buttons">
-<button onclick="addFunction('sqrt')" type="button">√</button>
-<button onclick="addPower()" type="button">xʸ</button>
-<button onclick="add('(')" type="button">(</button>
-<button onclick="add(')')" type="button">)</button>
-</div>
-<p class="basic-keyboard-note">Tip: you can also type with your keyboard. Press Enter to calculate, Backspace to delete, and Esc to clear.</p>
-</div>
-<div class="basic-best-right">
-<div class="buttons basic-grid basic-best-grid" aria-label="Basic calculator keypad">
+<div class="buttons basic-grid basic-clean-grid" aria-label="Basic calculator keypad">
+<button class="basic-function" onclick="addFunction('sqrt')" type="button">√</button>
+<button class="basic-function" onclick="addPower()" type="button">xʸ</button>
+<button class="basic-function" onclick="add('(')" type="button">(</button>
+<button class="basic-function" onclick="add(')')" type="button">)</button>
 <button class="ac-btn" onclick="clearDisplay()" type="button">AC</button>
 <button onclick="removeLast()" type="button">DEL</button>
 <button onclick="add('%')" type="button">%</button>
@@ -151,12 +138,12 @@
 <button onclick="add('2')" type="button">2</button>
 <button onclick="add('3')" type="button">3</button>
 <button onclick="add('+')" type="button">+</button>
-<button class="zero-btn" onclick="add('0')" type="button">0</button>
+<button onclick="add('0')" type="button">0</button>
 <button onclick="add('.')" type="button">.</button>
-<button onclick="add('00')" type="button">00</button>
+<button onclick="add('Ans')" title="Use previous answer" type="button">ANS</button>
 <button class="equal" onclick="calculate()" type="button">=</button>
 </div>
-</div>
+<p class="basic-keyboard-note">Tip: you can also type with your keyboard. Press Enter to calculate, Backspace to delete, and Esc to clear.</p>
 </div>
 </section>
 
@@ -184,5 +171,17 @@
 <script src="script.js?v=card-layout-compact-20260528b" defer></script>
 <script src="pc.js?v=card-layout-compact-20260528b" defer></script>
 <script src="phone.js?v=card-layout-compact-20260528b" defer></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const removePreviousInputBox = () => {
+    const box = document.getElementById('basicInlineResult');
+    if (box) box.remove();
+    document.querySelectorAll('.basic-inline-result').forEach(function (el) { el.remove(); });
+  };
+  removePreviousInputBox();
+  new MutationObserver(removePreviousInputBox).observe(document.body, { childList: true, subtree: true });
+});
+</script>
 </body>
 </html>
