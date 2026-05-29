@@ -123,3 +123,105 @@
 @media screen and (min-width:851px) and (max-width:1120px){
   body[data-page="scientific"] .scientific-workspace{grid-template-columns:1fr!important;}
 }
+
+/* ChatGPT update: scientific-style side-by-side orientation for all calculator pages */
+@media screen and (min-width: 851px) {
+  body.extra-calculator-page:not(.scientific-page) .extra-help-layout {
+    max-width: min(1500px, calc(100vw - 48px)) !important;
+    grid-template-columns: minmax(210px, 240px) minmax(720px, 1fr) minmax(260px, 310px) !important;
+    gap: 22px !important;
+  }
+
+  body.extra-calculator-page:not(.scientific-page) .calculator.extra-calculator-box,
+  body.extra-calculator-page:not(.scientific-page) .calculator.bmi-calculator-box,
+  body.extra-calculator-page:not(.scientific-page) .calculator.calculator-box {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 0.88fr) !important;
+    gap: 18px !important;
+    align-items: start !important;
+    overflow: visible !important;
+  }
+
+  body.extra-calculator-page:not(.scientific-page) .calculator.extra-calculator-box > h1,
+  body.extra-calculator-page:not(.scientific-page) .calculator.extra-calculator-box > .subtitle,
+  body.extra-calculator-page:not(.scientific-page) .calculator.extra-calculator-box > p:first-of-type,
+  body.extra-calculator-page:not(.scientific-page) .calculator.bmi-calculator-box > h1,
+  body.extra-calculator-page:not(.scientific-page) .calculator.bmi-calculator-box > .subtitle,
+  body.extra-calculator-page:not(.scientific-page) .calculator.calculator-box > h1,
+  body.extra-calculator-page:not(.scientific-page) .calculator.calculator-box > .subtitle {
+    grid-column: 1 / -1 !important;
+  }
+
+  body.extra-calculator-page:not(.scientific-page) .extra-input-card,
+  body.extra-calculator-page:not(.scientific-page) .mortgage-input-box,
+  body.extra-calculator-page:not(.scientific-page) .bmi-input-group-box,
+  body.extra-calculator-page:not(.scientific-page) .basic-best-workspace {
+    grid-column: 1 !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+  }
+
+  body.extra-calculator-page:not(.scientific-page) .extra-result-box,
+  body.extra-calculator-page:not(.scientific-page) .calculator-clean-result,
+  body.extra-calculator-page:not(.scientific-page) .loan-style-output-panel,
+  body.extra-calculator-page:not(.scientific-page) [id$="ReportOutput"] {
+    grid-column: 2 !important;
+    grid-row: 3 / span 2 !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    position: sticky !important;
+    top: 92px !important;
+    align-self: start !important;
+    max-height: calc(100vh - 112px) !important;
+    overflow: auto !important;
+  }
+
+  body.extra-calculator-page:not(.scientific-page) .extra-input-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.extra-calculator-page:not(.scientific-page) .extra-result-box[hidden],
+  body.extra-calculator-page:not(.scientific-page) .calculator-clean-result[hidden],
+  body.extra-calculator-page:not(.scientific-page) .loan-style-output-panel[hidden] {
+    display: none !important;
+  }
+}
+
+@media screen and (min-width: 851px) and (max-width: 1250px) {
+  body.extra-calculator-page:not(.scientific-page) .extra-help-layout {
+    grid-template-columns: minmax(190px, 220px) minmax(0, 1fr) !important;
+  }
+
+  body.extra-calculator-page:not(.scientific-page) .extra-help-layout > .instruction-box,
+  body.extra-calculator-page:not(.scientific-page) .extra-help-layout > .extra-help-panel {
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
+    position: static !important;
+    max-height: none !important;
+  }
+
+  body.extra-calculator-page:not(.scientific-page) .calculator.extra-calculator-box,
+  body.extra-calculator-page:not(.scientific-page) .calculator.bmi-calculator-box,
+  body.extra-calculator-page:not(.scientific-page) .calculator.calculator-box {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.9fr) !important;
+  }
+}
+
+@media screen and (min-width: 851px) and (max-width: 1050px) {
+  body.extra-calculator-page:not(.scientific-page) .calculator.extra-calculator-box,
+  body.extra-calculator-page:not(.scientific-page) .calculator.bmi-calculator-box,
+  body.extra-calculator-page:not(.scientific-page) .calculator.calculator-box {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.extra-calculator-page:not(.scientific-page) .extra-result-box,
+  body.extra-calculator-page:not(.scientific-page) .calculator-clean-result,
+  body.extra-calculator-page:not(.scientific-page) .loan-style-output-panel,
+  body.extra-calculator-page:not(.scientific-page) [id$="ReportOutput"] {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    position: static !important;
+    max-height: none !important;
+  }
+}

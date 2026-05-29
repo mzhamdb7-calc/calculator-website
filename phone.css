@@ -39,3 +39,24 @@
     aspect-ratio: 12 / 7!important;
   }
 }
+
+/* ChatGPT update: stack the scientific-style calculator orientation cleanly on mobile */
+@media screen and (max-width: 850px) {
+  body.extra-calculator-page .calculator.extra-calculator-box,
+  body.extra-calculator-page .calculator.bmi-calculator-box,
+  body.extra-calculator-page .calculator.calculator-box {
+    display: block !important;
+    overflow: hidden !important;
+  }
+
+  body.extra-calculator-page .extra-input-card,
+  body.extra-calculator-page .extra-result-box,
+  body.extra-calculator-page .calculator-clean-result,
+  body.extra-calculator-page .loan-style-output-panel,
+  body.extra-calculator-page [id$="ReportOutput"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
