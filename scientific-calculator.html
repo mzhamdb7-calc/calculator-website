@@ -109,16 +109,61 @@
 <p class="subtitle">
         Use sin(), cos(), tan(), sqrt(), log(), ln(), pi and ^.
       </p>
-<div class="extra-input-card">
+<div class="scientific-classic-panel">
+<div class="extra-input-card scientific-expression-card">
 <div class="extra-input-card-title">Input details</div>
 <div class="extra-input-grid">
 <div class="extra-input-field">
 <label for="scientificExpression">Expression</label>
-<input id="scientificExpression" placeholder="Example: sqrt(144)+sin(pi/2)" type="text"/>
+<div class="scientific-input-line">
+<input id="scientificExpression" placeholder="Example: sin(x), x^2, sqrt(x), or sqrt(144)+sin(pi/2)" type="text"/>
+<button class="scientific-focus-btn" onclick="focusScientificInput()" type="button">Input</button>
 </div>
 </div>
 </div>
-<section class="extra-result-box" hidden="" id="extraCalcResult"></section>
+</div>
+<div class="scientific-keypad" aria-label="Scientific calculator buttons">
+<button onclick="appendScientific('sin(')" type="button">sin</button>
+<button onclick="appendScientific('cos(')" type="button">cos</button>
+<button onclick="appendScientific('tan(')" type="button">tan</button>
+<button onclick="appendScientific('sqrt(')" type="button">√</button>
+<button onclick="appendScientific('log(')" type="button">log</button>
+<button onclick="appendScientific('ln(')" type="button">ln</button>
+<button onclick="appendScientific('pi')" type="button">π</button>
+<button onclick="appendScientific('^')" type="button">xʸ</button>
+<button onclick="appendScientific('(')" type="button">(</button>
+<button onclick="appendScientific(')')" type="button">)</button>
+<button onclick="appendScientific('x')" type="button">x</button>
+<button onclick="appendScientific('/')" type="button">÷</button>
+<button onclick="appendScientific('7')" type="button">7</button>
+<button onclick="appendScientific('8')" type="button">8</button>
+<button onclick="appendScientific('9')" type="button">9</button>
+<button onclick="appendScientific('*')" type="button">×</button>
+<button onclick="appendScientific('4')" type="button">4</button>
+<button onclick="appendScientific('5')" type="button">5</button>
+<button onclick="appendScientific('6')" type="button">6</button>
+<button onclick="appendScientific('-')" type="button">−</button>
+<button onclick="appendScientific('1')" type="button">1</button>
+<button onclick="appendScientific('2')" type="button">2</button>
+<button onclick="appendScientific('3')" type="button">3</button>
+<button onclick="appendScientific('+')" type="button">+</button>
+<button class="scientific-clear-btn" onclick="clearScientificInput()" type="button">AC</button>
+<button onclick="appendScientific('0')" type="button">0</button>
+<button onclick="appendScientific('.')" type="button">.</button>
+<button class="scientific-equal-btn" onclick="calculateScientificExtra()" type="button">Graph</button>
+</div>
+</div>
+<section class="scientific-live-graph-card" id="scientificLiveGraphCard" aria-label="Live graph preview">
+<div class="scientific-graph-head">
+<div>
+<h2>Live Graph</h2>
+<p>Type an expression using <strong>x</strong>, for example <code>sin(x)</code>, <code>x^2</code>, <code>sqrt(x)</code>, or <code>log(x)</code>.</p>
+</div>
+<span class="scientific-graph-range">x: -10 to 10</span>
+</div>
+<canvas id="scientificGraphCanvas" width="720" height="420" aria-label="Scientific calculator live graph"></canvas>
+<p class="scientific-graph-status" id="scientificGraphStatus">Enter an expression to draw the graph.</p>
+</section>
 </section>
 
     <aside aria-label="Calculator guide and references" class="instruction-box universal-help-panel">
@@ -143,5 +188,84 @@
 <script src="script.js?v=card-layout-compact-20260528b"></script>
 <script src="pc.js?v=card-layout-compact-20260528b"></script>
 <script src="phone.js?v=card-layout-compact-20260528b"></script>
+
+<style id="chatgpt-scientific-button-grid-fix">
+/* ChatGPT fix: arrange scientific calculator buttons in a clean grid */
+.scientific-page .scientific-classic-panel {
+  width: 100% !important;
+}
+.scientific-page .scientific-keypad {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(64px, 1fr)) !important;
+  gap: 12px !important;
+  width: 100% !important;
+  max-width: 620px !important;
+  margin: 18px 0 24px 0 !important;
+  align-items: stretch !important;
+}
+.scientific-page .scientific-keypad button {
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 52px !important;
+  padding: 12px 10px !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(24, 71, 57, 0.22) !important;
+  background: #ffffff !important;
+  color: #0f241f !important;
+  font-size: 17px !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 8px 18px rgba(15, 36, 31, 0.08) !important;
+  cursor: pointer !important;
+}
+.scientific-page .scientific-keypad button:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 12px 22px rgba(15, 36, 31, 0.12) !important;
+}
+.scientific-page .scientific-keypad .scientific-clear-btn {
+  background: #fff4f4 !important;
+  border-color: rgba(190, 18, 60, 0.25) !important;
+  color: #9f1239 !important;
+}
+.scientific-page .scientific-keypad .scientific-equal-btn {
+  grid-column: span 2 !important;
+  background: #163b30 !important;
+  color: #ffffff !important;
+  border-color: #163b30 !important;
+}
+.scientific-page .scientific-live-graph-card {
+  width: 100% !important;
+  margin-top: 22px !important;
+  padding: 24px !important;
+  border: 1px solid rgba(24, 71, 57, 0.18) !important;
+  border-radius: 22px !important;
+  background: #ffffff !important;
+  box-shadow: 0 14px 34px rgba(15, 36, 31, 0.08) !important;
+}
+.scientific-page #scientificGraphCanvas {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 360px !important;
+  display: block !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(24, 71, 57, 0.14) !important;
+  background: #fbfdfa !important;
+}
+@media (max-width: 700px) {
+  .scientific-page .scientific-keypad {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 9px !important;
+  }
+  .scientific-page .scientific-keypad button {
+    min-height: 48px !important;
+    font-size: 15px !important;
+    border-radius: 12px !important;
+  }
+}
+</style>
+
 </body>
 </html>
