@@ -118,7 +118,17 @@
 </div>
 </div>
 </div>
-<section class="extra-result-box" hidden="" id="extraCalcResult"></section>
+<section class="scientific-live-graph-card" id="scientificLiveGraphCard" aria-label="Live graph preview">
+<div class="scientific-graph-head">
+<div>
+<h2>Live Graph</h2>
+<p>Type an expression using <strong>x</strong>, for example <code>sin(x)</code>, <code>x^2</code>, <code>sqrt(x)</code>, or <code>log(x)</code>.</p>
+</div>
+<span class="scientific-graph-range">x: -10 to 10</span>
+</div>
+<canvas id="scientificGraphCanvas" width="720" height="420" aria-label="Scientific calculator live graph"></canvas>
+<p class="scientific-graph-status" id="scientificGraphStatus">Enter an expression to draw the graph.</p>
+</section>
 </section>
 
     <aside aria-label="Calculator guide and references" class="instruction-box universal-help-panel">

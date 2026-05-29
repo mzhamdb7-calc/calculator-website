@@ -107,43 +107,51 @@
 </div>
 </section>
 <!-- Calculator Box -->
-<section class="calculator">
+<section class="calculator basic-best-card">
 <h1>Basic Calculator</h1>
 <p class="subtitle">
-        Free online calculator for quick math calculations.
+        A clean everyday calculator for addition, subtraction, multiplication, division, percentage, brackets, square root, and powers.
       </p>
+<div class="basic-display-card">
+<label class="basic-display-label" for="display">Enter calculation</label>
+<div class="display-row basic-best-display-row">
+<input aria-label="Calculator display" autocomplete="off" id="display" inputmode="decimal" placeholder="Example: 8 + 2 × 3" spellcheck="false" type="text"/>
+<button class="ans-btn" onclick="add('Ans')" title="Use previous answer" type="button">ANS</button>
+</div>
 <div aria-live="polite" class="basic-inline-result" id="basicInlineResult">
-<div class="basic-inline-kicker">Previous calculation</div>
-<div class="basic-inline-empty">Your previous input and answer will appear here after you press =.</div>
+<div class="basic-inline-kicker">Answer</div>
+<div class="basic-inline-empty">Your input and answer will appear here after you press =.</div>
 </div>
-<div class="display-row">
-<input aria-label="Calculator display" autocomplete="off" id="display" inputmode="decimal" spellcheck="false" type="text"/>
-<button class="ans-btn" onclick="add('Ans')" type="button">
-          ANS
-        </button>
 </div>
-<div class="buttons basic-grid">
-<button onclick="add('+')" type="button">+</button>
-<button onclick="add('-')" type="button">−</button>
-<button onclick="add('*')" type="button">×</button>
+<div class="basic-quick-row" aria-label="Quick function buttons">
+<button onclick="addFunction('sqrt')" type="button">√</button>
+<button onclick="addPower()" type="button">xʸ</button>
+<button onclick="add('(')" type="button">(</button>
+<button onclick="add(')')" type="button">)</button>
+</div>
+<div class="buttons basic-grid basic-best-grid" aria-label="Basic calculator keypad">
+<button class="ac-btn" onclick="clearDisplay()" type="button">AC</button>
+<button onclick="removeLast()" type="button">DEL</button>
+<button onclick="add('%')" type="button">%</button>
 <button onclick="add('/')" type="button">÷</button>
 <button onclick="add('7')" type="button">7</button>
 <button onclick="add('8')" type="button">8</button>
 <button onclick="add('9')" type="button">9</button>
-<button onclick="addPower()" type="button">xʸ</button>
+<button onclick="add('*')" type="button">×</button>
 <button onclick="add('4')" type="button">4</button>
 <button onclick="add('5')" type="button">5</button>
 <button onclick="add('6')" type="button">6</button>
-<button onclick="addFunction('sqrt')" type="button">√</button>
+<button onclick="add('-')" type="button">−</button>
 <button onclick="add('1')" type="button">1</button>
 <button onclick="add('2')" type="button">2</button>
 <button onclick="add('3')" type="button">3</button>
-<button onclick="removeLast()" type="button">←</button>
+<button onclick="add('+')" type="button">+</button>
 <button class="zero-btn" onclick="add('0')" type="button">0</button>
 <button onclick="add('.')" type="button">.</button>
-<button class="ac-btn" onclick="clearDisplay()" type="button">AC</button>
+<button onclick="add('00')" type="button">00</button>
 <button class="equal" onclick="calculate()" type="button">=</button>
 </div>
+<p class="basic-keyboard-note">Tip: you can also type with your keyboard. Press Enter to calculate, Backspace to delete, and Esc to clear.</p>
 </section>
 
     <aside aria-label="Calculator guide and references" class="instruction-box universal-help-panel">
@@ -156,6 +164,8 @@
       <section class="instruction-section instruction-formula-box"><h3>Formula used</h3><p>It follows the normal order of operations: brackets and powers first, then multiplication/division, then addition/subtraction.</p></section>
 
       <section class="instruction-section instruction-example-box"><h3>Example calculation</h3><p>8 + 2 × 3 = 14 because multiplication is calculated before addition.</p></section>
+
+      <section class="instruction-section instruction-faq-box"><h3>FAQs</h3><p><strong>Can I use brackets?</strong> Yes. Example: (8 + 2) × 3.</p><p><strong>Can I use percentage?</strong> Yes. Type 50% or tap %. The calculator treats it as 50 ÷ 100.</p><p><strong>Can I reuse the last answer?</strong> Yes. Tap ANS after making one calculation.</p></section>
 
       <section aria-label="References" class="reference-box universal-reference-box"><h2 class="reference-main-title">References</h2>
         <div class="reference-scroll universal-reference-list">
