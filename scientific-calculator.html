@@ -757,6 +757,102 @@ body.scientific-page #scientificGraphCanvas {
   cursor: crosshair !important;
 }
 </style>
+
+<style id="chatgpt-scientific-graph-left-small-final">
+/* Targeted layout: graph on the left, scientific keypad on the right, smaller graph card. */
+@media (min-width: 901px) {
+  body.scientific-page .scientific-workspace {
+    display: grid !important;
+    grid-template-columns: minmax(360px, 0.82fr) minmax(430px, 1fr) !important;
+    gap: 22px !important;
+    align-items: start !important;
+  }
+
+  body.scientific-page .scientific-right-panel {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    position: sticky !important;
+    top: 92px !important;
+  }
+
+  body.scientific-page .scientific-left-panel {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+
+  body.scientific-page .scientific-live-graph-card {
+    max-width: 560px !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 18px !important;
+    border-radius: 20px !important;
+  }
+
+  body.scientific-page .scientific-graph-head {
+    gap: 10px !important;
+    margin-bottom: 10px !important;
+  }
+
+  body.scientific-page .scientific-graph-head h2 {
+    font-size: 1.25rem !important;
+    margin: 0 0 4px !important;
+  }
+
+  body.scientific-page .scientific-graph-head p {
+    font-size: 0.86rem !important;
+    line-height: 1.35 !important;
+    margin: 0 !important;
+  }
+
+  body.scientific-page .scientific-expression-card {
+    padding: 12px !important;
+    margin: 10px 0 12px !important;
+  }
+
+  body.scientific-page .advanced-graph-toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    margin: 8px 0 10px !important;
+  }
+
+  body.scientific-page .advanced-graph-toolbar label {
+    width: 100% !important;
+    justify-content: space-between !important;
+  }
+
+  body.scientific-page .advanced-graph-toolbar input {
+    width: 88px !important;
+  }
+
+  body.scientific-page #scientificGraphCanvas {
+    height: 285px !important;
+    max-height: 285px !important;
+  }
+
+  body.scientific-page .scientific-keypad {
+    width: 100% !important;
+    max-width: none !important;
+  }
+}
+
+@media (max-width: 900px) {
+  body.scientific-page .scientific-workspace {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.scientific-page .scientific-right-panel,
+  body.scientific-page .scientific-left-panel {
+    grid-column: auto !important;
+    grid-row: auto !important;
+    position: static !important;
+  }
+
+  body.scientific-page #scientificGraphCanvas {
+    height: 300px !important;
+  }
+}
+</style>
+
 </body>
 </html>
 
