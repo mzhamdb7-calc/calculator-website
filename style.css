@@ -82,3 +82,65 @@ body[data-page="basic"] .basic-keyboard-note {
     font-size: .98rem !important;
   }
 }
+
+/* Final basic calculator display size adjustment */
+body[data-page="basic"] .basic-display-card,
+body[data-page="basic"] .basic-clean-display-card,
+body[data-page="basic"] .basic-two-line-display {
+  padding: 12px 16px !important;
+  margin: 14px 0 14px !important;
+  border-radius: 20px !important;
+}
+
+body[data-page="basic"] .basic-calculator-screen {
+  min-height: 76px !important;
+  padding: 10px 14px !important;
+  display: grid !important;
+  grid-template-rows: 22px 38px !important;
+  align-items: center !important;
+  gap: 2px !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  border: 1px solid #cfe3da !important;
+}
+
+body[data-page="basic"] .basic-previous-line {
+  min-height: 20px !important;
+  font-size: 0.88rem !important;
+  line-height: 1.15 !important;
+  text-align: right !important;
+  color: #6b8079 !important;
+  font-weight: 650 !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+body[data-page="basic"] #display {
+  min-height: 36px !important;
+  height: 38px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  font-size: 1.65rem !important;
+  line-height: 1.1 !important;
+  text-align: right !important;
+}
+
+body[data-page="basic"] #display::placeholder {
+  font-size: 1.65rem !important;
+}
+
+@media (max-width: 700px) {
+  body[data-page="basic"] .basic-calculator-screen {
+    min-height: 70px !important;
+    grid-template-rows: 20px 34px !important;
+    padding: 9px 12px !important;
+  }
+
+  body[data-page="basic"] #display,
+  body[data-page="basic"] #display::placeholder {
+    font-size: 1.4rem !important;
+  }
+}
