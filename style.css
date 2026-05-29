@@ -397,3 +397,15 @@ body[data-page="basic"] #display::placeholder {
     margin:0 0 16px !important;
   }
 }
+
+
+/* Grade Calculator */
+.grade-calculator-box .grade-input-grid {
+  margin-top: 18px;
+}
+.grade-result-box {
+  margin-top: 18px;
+}
+.clean-education-submenu .clean-nav-submenu-panel a {
+  white-space: nowrap;
+}

@@ -1,29 +1,24 @@
-<!DOCTYPE html>
 <!--
   Copyright © 2026 Hamdi. All rights reserved.
   Do not copy, modify, redistribute, or reuse this project without permission.
 -->
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-
-  <title>About</title>
-
+  <title>Grade Calculator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="About this free online calculator website.">
-
+  <meta name="description" content="Free grade calculator to convert marks into percentage and letter grade.">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=card-layout-compact-20260528b">
   <link rel="stylesheet" href="pc.css?v=card-layout-compact-20260528b" media="screen and (min-width: 851px)">
   <link rel="stylesheet" href="phone.css?v=card-layout-compact-20260528b" media="screen and (max-width: 850px)">
-<link rel="icon" href="favicon.ico">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
+<body class="calculator-page app-redesign" data-page="grade">
+  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">↑</button>
 
-<body class="about-page app-redesign">
-
-    <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">
-    ↑
-  </button>
   <nav id="navbar" class="clean-navbar">
   <div class="clean-nav-inner">
     <a class="clean-nav-link" href="index.html">Home</a>
@@ -115,45 +110,77 @@
   </div>
 </nav>
 
-    <main class="about-container">
-
-    <section class="about-box">
-
-      <h1>About</h1>
-
-      <div class="about-card">
-        <h2>About This Website</h2>
-
-        <p>
-          This website provides free online calculators for quick and easy calculations.
-        </p>
-
-        <p>
-          The calculators are designed with a simple cartoon-style layout so users can calculate things like age, BMI, loans, percentages, and compound interest more easily.
-        </p>
-      </div>
-
-      <div class="about-card">
-        <h2>Available Calculators</h2>
-
-        <p>
-          You can use calculators for basic math, age, BMI, loan payments, percentages, and compound interest.
-        </p>
-      </div>
-
-      <div class="about-card">
-        <h2>Simple and Free</h2>
-
-        <p>
-          The goal of this website is to make common calculations easier to use with a fun, clear, and simple design.
-        </p>
-      </div>
-
+  <main class="tool-layout grade-calculator-container" aria-label="Grade calculator">
+    <section class="tool-group-nav" aria-label="Related education tools">
+      <a class="current-extra-link" href="grade.html">Grade Calculator</a>
+      <a href="percentage-calculator.html">Percentage Calculator</a>
+      <a href="basic-calculator.html">Basic Calculator</a>
     </section>
 
+    <section class="calculator extra-calculator-box grade-calculator-box">
+      <h1>Grade Calculator</h1>
+      <p class="calculator-intro">Enter your score and total marks to calculate percentage and letter grade.</p>
+
+      <div class="extra-input-grid grade-input-grid">
+        <div class="input-group">
+          <label for="gradeScore">Score obtained</label>
+          <input id="gradeScore" type="number" inputmode="decimal" min="0" step="any" placeholder="Example: 78">
+        </div>
+        <div class="input-group">
+          <label for="gradeTotal">Total marks</label>
+          <input id="gradeTotal" type="number" inputmode="decimal" min="0" step="any" placeholder="Example: 100">
+        </div>
+      </div>
+
+      <button class="calculate-btn" type="button" onclick="calculateGrade()">Calculate Grade</button>
+      <section id="gradeResult" class="extra-result-box finance-upgrade-result-box grade-result-box" aria-live="polite" hidden></section>
+    </section>
+
+    <aside class="instruction-box extra-help-panel">
+      <h2>How to use</h2>
+      <ol>
+        <li>Enter the score obtained.</li>
+        <li>Enter the total marks.</li>
+        <li>The calculator shows percentage, letter grade, and status.</li>
+      </ol>
+      <h3>Default grade scale</h3>
+      <p>A: 80–100, B: 70–79, C: 60–69, D: 50–59, E: 40–49, F: below 40.</p>
+      <p>This is a general grade estimate. Your school, college, or exam board may use a different scale.</p>
+    </aside>
   </main>
-  <script src="script.js?v=card-layout-compact-20260528b" defer></script>
-  <script src="pc.js?v=card-layout-compact-20260528b" defer></script>
-  <script src="phone.js?v=card-layout-compact-20260528b" defer></script>
+
+<script>
+function calculateGrade() {
+  var score = Number(document.getElementById('gradeScore').value);
+  var total = Number(document.getElementById('gradeTotal').value);
+  var result = document.getElementById('gradeResult');
+  if (!Number.isFinite(score) || !Number.isFinite(total) || total <= 0) {
+    result.hidden = false;
+    result.innerHTML = '<article class="finance-result-shell"><header class="finance-result-header"><h2>Grade result</h2><p>Please enter a valid score and total marks.</p></header></article>';
+    return;
+  }
+  if (score < 0) score = 0;
+  var pct = (score / total) * 100;
+  var grade = pct >= 80 ? 'A' : pct >= 70 ? 'B' : pct >= 60 ? 'C' : pct >= 50 ? 'D' : pct >= 40 ? 'E' : 'F';
+  var status = pct >= 40 ? 'Pass' : 'Fail';
+  result.hidden = false;
+  result.innerHTML = '<article class="finance-result-shell">' +
+    '<header class="finance-result-header"><h2>Grade result</h2><p>Your grade summary based on the entered marks.</p></header>' +
+    '<div class="finance-result-summary-grid">' +
+    '<article class="finance-result-metric-card"><div class="finance-result-metric-label">Percentage</div><div class="finance-result-metric-value">' + pct.toFixed(2) + '%</div></article>' +
+    '<article class="finance-result-metric-card"><div class="finance-result-metric-label">Grade</div><div class="finance-result-metric-value">' + grade + '</div></article>' +
+    '<article class="finance-result-metric-card"><div class="finance-result-metric-label">Status</div><div class="finance-result-metric-value">' + status + '</div></article>' +
+    '</div></article>';
+}
+document.addEventListener('input', function(e) {
+  if (e.target && (e.target.id === 'gradeScore' || e.target.id === 'gradeTotal')) {
+    clearTimeout(window.gradeAutoTimer);
+    window.gradeAutoTimer = setTimeout(calculateGrade, 350);
+  }
+});
+</script>
+<script src="script.js?v=card-layout-compact-20260528b" defer></script>
+<script src="pc.js?v=card-layout-compact-20260528b" defer></script>
+<script src="phone.js?v=card-layout-compact-20260528b" defer></script>
 </body>
 </html>
