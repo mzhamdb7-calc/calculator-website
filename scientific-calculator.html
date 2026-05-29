@@ -110,18 +110,6 @@
 <div class="scientific-workspace">
 <div class="scientific-left-panel">
 <div class="scientific-classic-panel">
-<div class="extra-input-card scientific-expression-card">
-<div class="extra-input-card-title">Input details</div>
-<div class="extra-input-grid">
-<div class="extra-input-field">
-<label for="scientificExpression">Expression</label>
-<div class="scientific-input-line">
-<input id="scientificExpression" placeholder="Example: sin(x), x^2, sqrt(x), or sqrt(144)+sin(pi/2)" type="text"/>
-<button class="scientific-focus-btn" onclick="focusScientificInput()" type="button">Input</button>
-</div>
-</div>
-</div>
-</div>
 <div class="scientific-keypad" aria-label="Scientific calculator buttons">
 <button onclick="appendScientific('sin(')" type="button">sin</button>
 <button onclick="appendScientific('cos(')" type="button">cos</button>
@@ -161,6 +149,13 @@
 <p>Type an expression using <strong>x</strong>, for example <code>sin(x)</code>, <code>x^2</code>, <code>sqrt(x)</code>, or <code>log(x)</code>.</p>
 </div>
 <span class="scientific-graph-range">x: -10 to 10</span>
+</div>
+<div class="extra-input-card scientific-expression-card scientific-expression-inside-graph">
+  <div class="extra-input-card-title">Expression</div>
+  <div class="scientific-input-line">
+    <input id="scientificExpression" placeholder="Example: sin(x), x^2, sqrt(x), or sqrt(144)+sin(pi/2)" type="text"/>
+    <button class="scientific-focus-btn" onclick="focusScientificInput()" type="button">Input</button>
+  </div>
 </div>
 <div class="advanced-graph-toolbar" aria-label="Advanced graph controls">
   <button type="button" id="graphZoomIn">Zoom +</button>
@@ -656,6 +651,108 @@ body.scientific-page #scientificGraphCanvas {
 
   body.scientific-page #scientificGraphCanvas {
     height: 320px !important;
+  }
+}
+</style>
+
+
+<style id="chatgpt-scientific-input-graph-wide-keypad-fix">
+/* Targeted Scientific Calculator arrangement: graph + input at top, keypad full width below. */
+body.scientific-page .scientific-workspace {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 22px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+}
+
+body.scientific-page .scientific-right-panel,
+body.scientific-page .scientific-live-graph-card {
+  order: 1 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  position: static !important;
+  overflow: hidden !important;
+}
+
+body.scientific-page .scientific-left-panel {
+  order: 2 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+body.scientific-page .scientific-classic-panel {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+body.scientific-page .scientific-expression-inside-graph {
+  margin: 14px 0 12px !important;
+  padding: 14px !important;
+  background: rgba(255,255,255,0.82) !important;
+  border: 1px solid rgba(20, 83, 45, 0.12) !important;
+  border-radius: 14px !important;
+  box-shadow: none !important;
+}
+
+body.scientific-page .scientific-expression-inside-graph .extra-input-card-title {
+  margin-bottom: 8px !important;
+  font-size: 0.92rem !important;
+}
+
+body.scientific-page .scientific-input-line {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 10px !important;
+  align-items: center !important;
+}
+
+body.scientific-page #scientificExpression {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+body.scientific-page .scientific-keypad {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: grid !important;
+  grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  padding: 16px !important;
+}
+
+body.scientific-page .scientific-keypad button {
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 48px !important;
+  padding: 10px 8px !important;
+  white-space: nowrap !important;
+}
+
+body.scientific-page .scientific-keypad .scientific-clear-btn,
+body.scientific-page .scientific-keypad .scientific-equal-btn {
+  grid-column: span 2 !important;
+}
+
+@media (max-width: 980px) {
+  body.scientific-page .scientific-keypad {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 560px) {
+  body.scientific-page .scientific-input-line {
+    grid-template-columns: 1fr !important;
+  }
+  body.scientific-page .scientific-keypad {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    padding: 12px !important;
+  }
+  body.scientific-page .scientific-keypad button {
+    min-height: 44px !important;
+    font-size: 0.92rem !important;
   }
 }
 </style>
