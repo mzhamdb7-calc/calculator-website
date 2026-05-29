@@ -188,17 +188,17 @@ document.addEventListener('DOMContentLoaded', function () {
 <style>
 /* Two-row calculator screen: previous calculation on top, current display below */
 body[data-page="basic"] .basic-two-line-display {
-  padding: 18px !important;
+  padding: 12px !important;
 }
 
 body[data-page="basic"] .basic-calculator-screen {
   width: 100% !important;
-  min-height: 108px !important;
+  min-height: 76px !important;
   display: grid !important;
-  grid-template-rows: 34px minmax(58px, auto) !important;
+  grid-template-rows: 22px minmax(38px, auto) !important;
   align-items: stretch !important;
   gap: 0 !important;
-  padding: 12px 16px !important;
+  padding: 8px 12px !important;
   border: 1px solid #cfe3da !important;
   border-radius: 18px !important;
   background: #ffffff !important;
@@ -206,7 +206,7 @@ body[data-page="basic"] .basic-calculator-screen {
 }
 
 body[data-page="basic"] .basic-previous-line {
-  min-height: 34px !important;
+  min-height: 22px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: flex-end !important;
@@ -214,20 +214,20 @@ body[data-page="basic"] .basic-previous-line {
   white-space: nowrap !important;
   text-overflow: ellipsis !important;
   color: #6f827c !important;
-  font-size: .98rem !important;
+  font-size: .78rem !important;
   font-weight: 700 !important;
   text-align: right !important;
 }
 
 body[data-page="basic"] .basic-clean-display-card #display {
-  min-height: 58px !important;
+  min-height: 38px !important;
   padding: 0 !important;
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
   color: #10231d !important;
-  font-size: clamp(1.75rem, 5vw, 2.65rem) !important;
+  font-size: clamp(1.25rem, 3.6vw, 1.9rem) !important;
   font-weight: 850 !important;
   line-height: 1.15 !important;
   text-align: right !important;
@@ -247,12 +247,12 @@ body[data-page="basic"] .basic-clean-grid .equal {
 
 @media (max-width: 600px) {
   body[data-page="basic"] .basic-calculator-screen {
-    min-height: 96px !important;
-    grid-template-rows: 30px minmax(52px, auto) !important;
-    padding: 10px 14px !important;
+    min-height: 70px !important;
+    grid-template-rows: 20px minmax(34px, auto) !important;
+    padding: 8px 10px !important;
   }
   body[data-page="basic"] .basic-previous-line {
-    font-size: .86rem !important;
+    font-size: .72rem !important;
   }
 }
 </style>
@@ -335,29 +335,29 @@ document.addEventListener('DOMContentLoaded', function () {
     grid-area: display !important;
     margin: 0 !important;
     height: auto !important;
-    min-height: 210px !important;
+    min-height: 135px !important;
     display: flex !important;
     flex-direction: column !important;
-    justify-content: center !important;
+    justify-content: flex-start !important;
   }
 
   body[data-page="basic"] .basic-display-label {
-    margin-bottom: 10px !important;
+    margin-bottom: 6px !important;
   }
 
   body[data-page="basic"] .basic-calculator-screen {
-    min-height: 142px !important;
-    grid-template-rows: 38px minmax(86px, auto) !important;
-    padding: 16px 18px !important;
+    min-height: 92px !important;
+    grid-template-rows: 24px minmax(52px, auto) !important;
+    padding: 10px 14px !important;
   }
 
   body[data-page="basic"] .basic-previous-line {
-    font-size: 1rem !important;
+    font-size: .82rem !important;
   }
 
   body[data-page="basic"] .basic-clean-display-card #display {
-    min-height: 82px !important;
-    font-size: clamp(2.2rem, 3.2vw, 3.35rem) !important;
+    min-height: 52px !important;
+    font-size: clamp(1.55rem, 2.3vw, 2.15rem) !important;
   }
 
   body[data-page="basic"] .buttons.basic-grid,
@@ -368,7 +368,7 @@ document.addEventListener('DOMContentLoaded', function () {
     gap: 10px !important;
     align-self: start !important;
     margin: 0 !important;
-    padding: 18px !important;
+    padding: 12px !important;
     border: 1px solid #d8ebe2 !important;
     border-radius: 22px !important;
     background: linear-gradient(180deg, #f8fffb, #eef8f3) !important;
@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', function () {
   body[data-page="basic"] .basic-keyboard-note {
     grid-area: note !important;
     margin: 0 !important;
-    padding: 16px 18px !important;
+    padding: 10px 14px !important;
     border: 1px solid #d8ebe2 !important;
     border-radius: 18px !important;
     background: #ffffff !important;
@@ -422,6 +422,39 @@ document.addEventListener('DOMContentLoaded', function () {
     display: grid !important;
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
     gap: 8px !important;
+  }
+}
+</style>
+
+
+<style>
+/* BASIC ONLY: smaller, cleaner calculator display */
+body[data-page="basic"] .basic-display-card,
+body[data-page="basic"] .basic-clean-display-card,
+body[data-page="basic"] .basic-two-line-display {
+  padding: 12px !important;
+}
+body[data-page="basic"] .basic-calculator-screen {
+  min-height: 78px !important;
+  grid-template-rows: 22px minmax(40px, auto) !important;
+  padding: 8px 12px !important;
+  border-radius: 14px !important;
+}
+body[data-page="basic"] .basic-previous-line {
+  min-height: 22px !important;
+  font-size: .78rem !important;
+}
+body[data-page="basic"] .basic-clean-display-card #display {
+  min-height: 40px !important;
+  height: 40px !important;
+  font-size: clamp(1.3rem, 2.4vw, 2rem) !important;
+  line-height: 1.1 !important;
+}
+@media (min-width: 900px) {
+  body[data-page="basic"] .basic-display-card,
+  body[data-page="basic"] .basic-clean-display-card,
+  body[data-page="basic"] .basic-two-line-display {
+    min-height: 125px !important;
   }
 }
 </style>
