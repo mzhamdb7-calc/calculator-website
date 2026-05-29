@@ -309,3 +309,14 @@ body[data-page="basic"] #display::placeholder {
     font-size: .95rem !important;
   }
 }
+
+/* Hide menu bar while scrolling down */
+.clean-navbar {
+  transition: transform 220ms ease, opacity 220ms ease !important;
+  will-change: transform !important;
+}
+.clean-navbar.nav-hidden-on-scroll {
+  transform: translateY(-110%) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

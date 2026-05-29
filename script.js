@@ -257,3 +257,54 @@ function(){
   if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", install); else install();
   window.addEventListener("resize", function(){ clearTimeout(window.__sciCleanResize); window.__sciCleanResize=setTimeout(scheduleDraw,120); });
 }();
+
+(function () {
+  "use strict";
+  if (window.__calcStudioHideNavbarOnScrollInstalled) return;
+  window.__calcStudioHideNavbarOnScrollInstalled = true;
+
+  function initHideNavbarOnScroll() {
+    var nav = document.getElementById("navbar") || document.querySelector(".clean-navbar");
+    if (!nav) return;
+
+    var lastY = window.scrollY || 0;
+    var ticking = false;
+    var minMove = 8;
+
+    function isMenuOpen() {
+      return !!document.querySelector(".clean-nav-dropdown:hover, .clean-nav-dropdown:focus-within, .clean-nav-dropdown.is-open");
+    }
+
+    function update() {
+      var currentY = window.scrollY || 0;
+      var diff = currentY - lastY;
+
+      if (Math.abs(diff) >= minMove) {
+        if (currentY > 90 && diff > 0 && !isMenuOpen()) {
+          nav.classList.add("nav-hidden-on-scroll");
+        } else if (diff < 0 || currentY <= 90) {
+          nav.classList.remove("nav-hidden-on-scroll");
+        }
+        lastY = currentY;
+      }
+      ticking = false;
+    }
+
+    window.addEventListener("scroll", function () {
+      if (!ticking) {
+        window.requestAnimationFrame(update);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    nav.addEventListener("mouseenter", function () {
+      nav.classList.remove("nav-hidden-on-scroll");
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initHideNavbarOnScroll);
+  } else {
+    initHideNavbarOnScroll();
+  }
+}());
