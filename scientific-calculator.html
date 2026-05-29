@@ -162,7 +162,14 @@
 </div>
 <span class="scientific-graph-range">x: -10 to 10</span>
 </div>
-<canvas id="scientificGraphCanvas" width="720" height="420" aria-label="Scientific calculator live graph"></canvas>
+<div class="advanced-graph-toolbar" aria-label="Advanced graph controls">
+  <button type="button" id="graphZoomIn">Zoom +</button>
+  <button type="button" id="graphZoomOut">Zoom −</button>
+  <button type="button" id="graphResetView">Reset</button>
+  <label>Min x <input id="graphXMin" type="number" value="-10" step="1"></label>
+  <label>Max x <input id="graphXMax" type="number" value="10" step="1"></label>
+</div>
+<canvas id="scientificGraphCanvas" width="720" height="420" aria-label="Scientific calculator advanced live graph"></canvas>
 <p class="scientific-graph-status" id="scientificGraphStatus">Enter an expression to draw the graph.</p>
 </section>
 </div>
@@ -402,6 +409,65 @@ body.scientific-page #scientificGraphCanvas {
   }
   body.scientific-page #scientificGraphCanvas {
     height: 300px !important;
+  }
+}
+</style>
+
+
+<style id="chatgpt-advanced-scientific-graph-ui">
+body.scientific-page .scientific-live-graph-card {
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+body.scientific-page .advanced-graph-toolbar {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  align-items: center !important;
+  margin: 12px 0 14px !important;
+}
+body.scientific-page .advanced-graph-toolbar button {
+  border: 1px solid rgba(18, 80, 63, 0.22) !important;
+  background: #f7fbf8 !important;
+  color: #173f34 !important;
+  border-radius: 10px !important;
+  padding: 8px 10px !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+}
+body.scientific-page .advanced-graph-toolbar label {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  color: #31544b !important;
+}
+body.scientific-page .advanced-graph-toolbar input {
+  width: 72px !important;
+  border: 1px solid rgba(18, 80, 63, 0.22) !important;
+  border-radius: 9px !important;
+  padding: 7px 8px !important;
+  font: inherit !important;
+  background: #fff !important;
+}
+body.scientific-page #scientificGraphCanvas {
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  height: 430px !important;
+  touch-action: none !important;
+}
+@media (max-width: 650px) {
+  body.scientific-page .advanced-graph-toolbar {
+    gap: 6px !important;
+  }
+  body.scientific-page .advanced-graph-toolbar button,
+  body.scientific-page .advanced-graph-toolbar input {
+    padding: 7px 8px !important;
+  }
+  body.scientific-page #scientificGraphCanvas {
+    height: 320px !important;
   }
 }
 </style>
