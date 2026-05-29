@@ -225,3 +225,191 @@
     max-height: none !important;
   }
 }
+
+/* ChatGPT final fix 2026-05-29: stable dropdown hover + calculator side nav + instructions below */
+@media screen and (min-width: 851px) {
+  /* Keep Tools dropdown close to the Tools button so hover does not cancel */
+  #navbar.clean-navbar .clean-nav-dropdown {
+    position: relative !important;
+  }
+
+  #navbar.clean-navbar .clean-nav-dropdown-panel {
+    top: calc(100% - 1px) !important;
+    margin-top: 0 !important;
+    z-index: 99999 !important;
+  }
+
+  #navbar.clean-navbar .clean-calculator-panel {
+    position: absolute !important;
+    left: 0 !important;
+    right: auto !important;
+    width: 300px !important;
+    min-width: 300px !important;
+    max-width: 300px !important;
+    padding: 8px !important;
+    display: none !important;
+    grid-template-columns: 1fr !important;
+    overflow: visible !important;
+  }
+
+  #navbar.clean-navbar .clean-calculator-dropdown:hover > .clean-calculator-panel,
+  #navbar.clean-navbar .clean-calculator-dropdown:focus-within > .clean-calculator-panel,
+  #navbar.clean-navbar .clean-calculator-dropdown.is-open > .clean-calculator-panel {
+    display: grid !important;
+  }
+
+  /* Small invisible hover bridge under Tools */
+  #navbar.clean-navbar .clean-calculator-dropdown::after,
+  #navbar.clean-navbar .clean-info-dropdown::after {
+    content: "" !important;
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: 100% !important;
+    height: 12px !important;
+    display: block !important;
+  }
+
+  /* Submenu opens directly beside parent, no hover gap */
+  #navbar.clean-navbar .clean-nav-submenu {
+    position: relative !important;
+  }
+
+  #navbar.clean-navbar .clean-nav-submenu-panel {
+    position: absolute !important;
+    top: 0 !important;
+    left: calc(100% - 1px) !important;
+    margin-left: 0 !important;
+    width: 270px !important;
+    min-width: 270px !important;
+    max-width: 270px !important;
+    padding: 8px !important;
+    display: none !important;
+    grid-template-columns: 1fr !important;
+    overflow: hidden !important;
+    z-index: 100000 !important;
+  }
+
+  #navbar.clean-navbar .clean-nav-submenu:hover > .clean-nav-submenu-panel,
+  #navbar.clean-navbar .clean-nav-submenu:focus-within > .clean-nav-submenu-panel,
+  #navbar.clean-navbar .clean-nav-submenu.is-open > .clean-nav-submenu-panel {
+    display: grid !important;
+  }
+
+  #navbar.clean-navbar .clean-nav-panel-row,
+  #navbar.clean-navbar .clean-nav-submenu-button,
+  #navbar.clean-navbar .clean-nav-submenu-panel a {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.2 !important;
+  }
+
+  /* All calculator pages: side group nav on the left, calculator on the right, instructions below calculator */
+  body.extra-calculator-page main.extra-help-layout,
+  body.extra-calculator-page main.tool-layout,
+  body.extra-calculator-page main.calculator-container,
+  body.extra-calculator-page main.loan-calculator-container,
+  body.extra-calculator-page main.age-calculator-container,
+  body.extra-calculator-page main.bmi-calculator-container,
+  body.extra-calculator-page main.percentage-calculator-container,
+  body.extra-calculator-page main.discount-calculator-container,
+  body.extra-calculator-page main.compound-calculator-container {
+    width: min(1280px, calc(100vw - 48px)) !important;
+    max-width: 1280px !important;
+    display: grid !important;
+    grid-template-columns: minmax(220px, 260px) minmax(0, 1fr) !important;
+    gap: 22px !important;
+    align-items: start !important;
+  }
+
+  body.extra-calculator-page .extra-help-layout > .tool-group-nav,
+  body.extra-calculator-page .extra-help-layout > .loan-history-box,
+  body.extra-calculator-page .extra-help-layout > .extra-side-box,
+  body.extra-calculator-page .extra-help-layout > .extra-related-box,
+  body.extra-calculator-page .tool-layout > .tool-group-nav,
+  body.extra-calculator-page .tool-layout > .loan-history-box,
+  body.extra-calculator-page .tool-layout > .extra-side-box,
+  body.extra-calculator-page .tool-layout > .extra-related-box {
+    grid-column: 1 !important;
+    grid-row: 1 / span 20 !important;
+    order: 0 !important;
+    position: sticky !important;
+    top: 88px !important;
+    max-height: calc(100vh - 108px) !important;
+    overflow: auto !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  body.extra-calculator-page .extra-help-layout > .calculator,
+  body.extra-calculator-page .extra-help-layout > .calculator-box,
+  body.extra-calculator-page .extra-help-layout > .bmi-calculator-box,
+  body.extra-calculator-page .extra-help-layout > .extra-calculator-box,
+  body.extra-calculator-page .tool-layout > .calculator,
+  body.extra-calculator-page .tool-layout > .calculator-box,
+  body.extra-calculator-page .tool-layout > .bmi-calculator-box,
+  body.extra-calculator-page .tool-layout > .extra-calculator-box {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  body.extra-calculator-page .extra-help-layout > .calculator-clean-result,
+  body.extra-calculator-page .extra-help-layout > .loan-style-output-panel,
+  body.extra-calculator-page .extra-help-layout > .extra-result-box,
+  body.extra-calculator-page .tool-layout > .calculator-clean-result,
+  body.extra-calculator-page .tool-layout > .loan-style-output-panel,
+  body.extra-calculator-page .tool-layout > .extra-result-box {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    position: static !important;
+    max-height: none !important;
+    overflow: visible !important;
+    width: 100% !important;
+  }
+
+  body.extra-calculator-page .extra-help-layout > .instruction-box,
+  body.extra-calculator-page .extra-help-layout > .extra-help-panel,
+  body.extra-calculator-page .tool-layout > .instruction-box,
+  body.extra-calculator-page .tool-layout > .extra-help-panel {
+    grid-column: 2 !important;
+    grid-row: 99 !important;
+    position: static !important;
+    max-height: none !important;
+    overflow: visible !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+}
+
+@media screen and (min-width: 851px) and (max-width: 1080px) {
+  body.extra-calculator-page main.extra-help-layout,
+  body.extra-calculator-page main.tool-layout,
+  body.extra-calculator-page main.calculator-container,
+  body.extra-calculator-page main.loan-calculator-container,
+  body.extra-calculator-page main.age-calculator-container,
+  body.extra-calculator-page main.bmi-calculator-container,
+  body.extra-calculator-page main.percentage-calculator-container,
+  body.extra-calculator-page main.discount-calculator-container,
+  body.extra-calculator-page main.compound-calculator-container {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.extra-calculator-page .extra-help-layout > .tool-group-nav,
+  body.extra-calculator-page .extra-help-layout > .loan-history-box,
+  body.extra-calculator-page .extra-help-layout > .extra-side-box,
+  body.extra-calculator-page .tool-layout > .tool-group-nav,
+  body.extra-calculator-page .tool-layout > .loan-history-box,
+  body.extra-calculator-page .tool-layout > .extra-side-box,
+  body.extra-calculator-page .extra-help-layout > .calculator,
+  body.extra-calculator-page .extra-help-layout > .instruction-box,
+  body.extra-calculator-page .tool-layout > .calculator,
+  body.extra-calculator-page .tool-layout > .instruction-box {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    position: static !important;
+    max-height: none !important;
+  }
+}
