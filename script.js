@@ -205,7 +205,7 @@
     // Add practical implicit multiplication: 2x, 2pi, 2(x+1), x(x+1), )x, )(.
     expr = expr.replace(/(\d|\)|x)\s*(?=(x|\(|[A-Za-z]+\s*\())/gi, '$1*');
     expr = expr.replace(/(\d|\)|x)\s*\b(pi|e|tau|phi)\b/gi, '$1*$2');
-    expr = expr.replace(/\b(pi|e|tau|phi)\b\s*(?=(x|\(|[A-Za-z]+\s*\()))/gi, '$1*');
+    expr = expr.replace(/\b(pi|e|tau|phi)\b\s*(?=(?:x|\(|[A-Za-z]+\s*\())/gi, '$1*');
 
     return expr;
   }
