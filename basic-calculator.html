@@ -113,9 +113,12 @@
         A clean everyday calculator for addition, subtraction, multiplication, division, percentage, brackets, square root, and powers.
       </p>
 <div class="basic-clean-calculator">
-<div class="basic-display-card basic-clean-display-card">
+<div class="basic-display-card basic-clean-display-card basic-two-line-display">
 <label class="basic-display-label" for="display">Enter calculation</label>
+<div class="basic-calculator-screen" aria-live="polite">
+<div class="basic-previous-line" id="basicPreviousLine">Previous calculation</div>
 <input aria-label="Calculator display" autocomplete="off" id="display" inputmode="decimal" placeholder="0" spellcheck="false" type="text"/>
+</div>
 </div>
 <div class="buttons basic-grid basic-clean-grid" aria-label="Basic calculator keypad">
 <button class="basic-function" onclick="addFunction('sqrt')" type="button">√</button>
@@ -183,5 +186,130 @@ document.addEventListener('DOMContentLoaded', function () {
   new MutationObserver(removePreviousInputBox).observe(document.body, { childList: true, subtree: true });
 });
 </script>
+
+<style>
+/* Two-row calculator screen: previous calculation on top, current display below */
+body[data-page="basic"] .basic-two-line-display {
+  padding: 18px !important;
+}
+
+body[data-page="basic"] .basic-calculator-screen {
+  width: 100% !important;
+  min-height: 108px !important;
+  display: grid !important;
+  grid-template-rows: 34px minmax(58px, auto) !important;
+  align-items: stretch !important;
+  gap: 0 !important;
+  padding: 12px 16px !important;
+  border: 1px solid #cfe3da !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  box-shadow: inset 0 1px 3px rgba(16,35,29,.06) !important;
+}
+
+body[data-page="basic"] .basic-previous-line {
+  min-height: 34px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  color: #6f827c !important;
+  font-size: .98rem !important;
+  font-weight: 700 !important;
+  text-align: right !important;
+}
+
+body[data-page="basic"] .basic-clean-display-card #display {
+  min-height: 58px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #10231d !important;
+  font-size: clamp(1.75rem, 5vw, 2.65rem) !important;
+  font-weight: 850 !important;
+  line-height: 1.15 !important;
+  text-align: right !important;
+}
+
+body[data-page="basic"] .basic-clean-display-card #display:focus {
+  outline: none !important;
+}
+
+body[data-page="basic"] .basic-clean-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+body[data-page="basic"] .basic-clean-grid .equal {
+  grid-column: span 1 !important;
+}
+
+@media (max-width: 600px) {
+  body[data-page="basic"] .basic-calculator-screen {
+    min-height: 96px !important;
+    grid-template-rows: 30px minmax(52px, auto) !important;
+    padding: 10px 14px !important;
+  }
+  body[data-page="basic"] .basic-previous-line {
+    font-size: .86rem !important;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const display = document.getElementById('display');
+  const previousLine = document.getElementById('basicPreviousLine');
+  if (!display || !previousLine) return;
+
+  function clean(value) {
+    return String(value || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function setPrevious(text) {
+    const value = clean(text);
+    previousLine.textContent = value || 'Previous calculation';
+    previousLine.title = previousLine.textContent;
+  }
+
+  function loadLatestPrevious() {
+    try {
+      const history = JSON.parse(localStorage.getItem('basicCalculationHistory') || '[]');
+      const latest = Array.isArray(history) ? history[history.length - 1] : null;
+      if (latest && latest.expression) {
+        setPrevious(latest.expression + ' = ' + latest.result);
+      }
+    } catch (error) {}
+  }
+
+  loadLatestPrevious();
+
+  const oldCalculate = window.calculate;
+  if (typeof oldCalculate === 'function') {
+    window.calculate = function () {
+      const expressionBefore = clean(display.value);
+      oldCalculate.apply(this, arguments);
+      setTimeout(function () {
+        const answerAfter = clean(display.value);
+        if (expressionBefore && expressionBefore !== 'Error' && answerAfter && answerAfter !== 'Error') {
+          setPrevious(expressionBefore + ' = ' + answerAfter);
+        }
+      }, 0);
+    };
+  }
+
+  const oldClearDisplay = window.clearDisplay;
+  if (typeof oldClearDisplay === 'function') {
+    window.clearDisplay = function () {
+      oldClearDisplay.apply(this, arguments);
+      setPrevious('Previous calculation');
+    };
+  }
+});
+</script>
+
 </body>
 </html>
