@@ -110,18 +110,6 @@
 <div class="scientific-workspace">
 <div class="scientific-left-panel">
 <div class="scientific-classic-panel">
-<div class="extra-input-card scientific-expression-card">
-<div class="extra-input-card-title">Input details</div>
-<div class="extra-input-grid">
-<div class="extra-input-field">
-<label for="scientificExpression">Expression</label>
-<div class="scientific-input-line">
-<input id="scientificExpression" placeholder="Example: sin(x), x^2, sqrt(x), or sqrt(144)+sin(pi/2)" type="text"/>
-<button class="scientific-focus-btn" onclick="focusScientificInput()" type="button">Input</button>
-</div>
-</div>
-</div>
-</div>
 <div class="scientific-keypad" aria-label="Scientific calculator buttons">
 <button onclick="appendScientific('sin(')" type="button">sin</button>
 <button onclick="appendScientific('cos(')" type="button">cos</button>
@@ -163,14 +151,23 @@
 <span class="scientific-graph-range">x: -10 to 10</span>
 </div>
 <div class="advanced-graph-toolbar" aria-label="Advanced graph controls">
-  <button type="button" id="graphZoomIn">Zoom +</button>
-  <button type="button" id="graphZoomOut">Zoom −</button>
-  <button type="button" id="graphResetView">Reset</button>
   <label>Min x <input id="graphXMin" type="number" value="-10" step="1"></label>
   <label>Max x <input id="graphXMax" type="number" value="10" step="1"></label>
 </div>
 <canvas id="scientificGraphCanvas" width="720" height="420" aria-label="Scientific calculator advanced live graph"></canvas>
 <p class="scientific-graph-status" id="scientificGraphStatus">Enter an expression to draw the graph.</p>
+<div class="extra-input-card scientific-expression-card scientific-expression-inside-graph">
+<div class="extra-input-card-title">Input details</div>
+<div class="extra-input-grid">
+<div class="extra-input-field">
+<label for="scientificExpression">Expression</label>
+<div class="scientific-input-line">
+<input id="scientificExpression" placeholder="Example: sin(x), x^2, sqrt(x), or sqrt(144)+sin(pi/2)" type="text"/>
+<button class="scientific-focus-btn" onclick="focusScientificInput()" type="button">Input</button>
+</div>
+</div>
+</div>
+</div>
 </section>
 </div>
 </section>
@@ -656,6 +653,64 @@ body.scientific-page #scientificGraphCanvas {
 
   body.scientific-page #scientificGraphCanvas {
     height: 320px !important;
+  }
+}
+</style>
+
+
+<style id="chatgpt-scientific-input-under-graph-fix">
+/* Targeted fix: graph controls simplified, expression moved under graph */
+body.scientific-page .advanced-graph-toolbar {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin: 12px 0 !important;
+}
+body.scientific-page .advanced-graph-toolbar label {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+}
+body.scientific-page .advanced-graph-toolbar input {
+  width: 110px !important;
+  max-width: 110px !important;
+}
+body.scientific-page .scientific-expression-inside-graph {
+  margin-top: 14px !important;
+  padding: 16px !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+body.scientific-page .scientific-expression-inside-graph .scientific-input-line {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 12px !important;
+  align-items: center !important;
+}
+body.scientific-page .scientific-expression-inside-graph input#scientificExpression {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  height: 48px !important;
+  font-size: 16px !important;
+}
+body.scientific-page .scientific-expression-inside-graph .scientific-focus-btn {
+  height: 48px !important;
+  min-width: 92px !important;
+}
+body.scientific-page .scientific-classic-panel {
+  padding-top: 0 !important;
+}
+@media (max-width: 850px) {
+  body.scientific-page .scientific-expression-inside-graph .scientific-input-line {
+    grid-template-columns: 1fr !important;
+  }
+  body.scientific-page .scientific-expression-inside-graph .scientific-focus-btn {
+    width: 100% !important;
   }
 }
 </style>
