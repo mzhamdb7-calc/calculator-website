@@ -320,3 +320,67 @@ body[data-page="basic"] #display::placeholder {
   opacity: 0 !important;
   pointer-events: none !important;
 }
+
+
+/* Targeted fix: Age/BMI result boxes below calculator form */
+.age-bmi-result-below{
+  display:block !important;
+  width:100% !important;
+  min-height:96px !important;
+  padding:clamp(18px,2.2vw,26px) !important;
+  background:#ffffff !important;
+  border:1px solid var(--line) !important;
+  border-radius:var(--radius) !important;
+  box-shadow:var(--shadow-sm) !important;
+}
+.age-bmi-result-below h2{
+  margin:0 !important;
+  color:var(--ink) !important;
+  font-size:clamp(1.05rem,1.5vw,1.55rem) !important;
+  line-height:1.35 !important;
+  letter-spacing:-.02em !important;
+}
+.age-bmi-result-below h2:empty::before{
+  content:"Result will appear here";
+  color:var(--muted) !important;
+  font-size:1rem !important;
+  font-weight:700 !important;
+}
+@media (min-width:901px){
+  body.app-redesign main.age-calculator-container.tool-layout,
+  body.app-redesign main.bmi-calculator-container.tool-layout{
+    display:grid !important;
+    grid-template-columns:minmax(230px,280px) minmax(0,1fr) !important;
+    grid-template-rows:auto auto auto !important;
+    gap:22px 28px !important;
+    align-items:start !important;
+  }
+  body.app-redesign main.age-calculator-container.tool-layout > .tool-group-nav,
+  body.app-redesign main.bmi-calculator-container.tool-layout > .tool-group-nav{
+    grid-column:1 !important;
+    grid-row:1 / span 3 !important;
+  }
+  body.app-redesign main.age-calculator-container.tool-layout > .calculator,
+  body.app-redesign main.bmi-calculator-container.tool-layout > .calculator,
+  body.app-redesign main.bmi-calculator-container.tool-layout > .bmi-calculator-box{
+    grid-column:2 !important;
+    grid-row:1 !important;
+  }
+  body.app-redesign main.age-calculator-container.tool-layout > .age-bmi-result-below,
+  body.app-redesign main.bmi-calculator-container.tool-layout > .age-bmi-result-below{
+    grid-column:2 !important;
+    grid-row:2 !important;
+  }
+  body.app-redesign main.age-calculator-container.tool-layout > .instruction-box,
+  body.app-redesign main.age-calculator-container.tool-layout > .universal-help-panel,
+  body.app-redesign main.bmi-calculator-container.tool-layout > .instruction-box,
+  body.app-redesign main.bmi-calculator-container.tool-layout > .universal-help-panel{
+    grid-column:2 !important;
+    grid-row:3 !important;
+  }
+}
+@media (max-width:900px){
+  .age-bmi-result-below{
+    margin:0 0 16px !important;
+  }
+}
