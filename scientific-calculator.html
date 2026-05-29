@@ -118,17 +118,7 @@
 </div>
 </div>
 </div>
-<section class="scientific-live-graph-card" id="scientificLiveGraphCard" aria-label="Live graph preview">
-<div class="scientific-graph-head">
-<div>
-<h2>Live Graph</h2>
-<p>Type an expression using <strong>x</strong>, for example <code>sin(x)</code>, <code>x^2</code>, <code>sqrt(x)</code>, or <code>log(x)</code>.</p>
-</div>
-<span class="scientific-graph-range">x: -10 to 10</span>
-</div>
-<canvas id="scientificGraphCanvas" width="720" height="420" aria-label="Scientific calculator live graph"></canvas>
-<p class="scientific-graph-status" id="scientificGraphStatus">Enter an expression to draw the graph.</p>
-</section>
+<section class="extra-result-box" hidden="" id="extraCalcResult"></section>
 </section>
 
     <aside aria-label="Calculator guide and references" class="instruction-box universal-help-panel">
@@ -153,5 +143,115 @@
 <script src="script.js?v=card-layout-compact-20260528b"></script>
 <script src="pc.js?v=card-layout-compact-20260528b"></script>
 <script src="phone.js?v=card-layout-compact-20260528b"></script>
+
+<style>
+.scientific-input-pad {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.scientific-input-pad button {
+  min-height: 44px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 12px;
+  background: #ffffff;
+  color: #111827;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+}
+
+.scientific-input-pad button:hover {
+  transform: translateY(-1px);
+}
+
+.scientific-action-btn {
+  background: #f3f4f6 !important;
+}
+
+.scientific-calculate-btn {
+  grid-column: span 3;
+  background: #16a34a !important;
+  color: #ffffff !important;
+}
+
+@media (max-width: 520px) {
+  .scientific-input-pad {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .scientific-calculate-btn {
+    grid-column: span 2;
+  }
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const input = document.getElementById("scientificExpression");
+  if (!input) return;
+
+  function insertAtCursor(value) {
+    const start = input.selectionStart ?? input.value.length;
+    const end = input.selectionEnd ?? input.value.length;
+    input.value = input.value.slice(0, start) + value + input.value.slice(end);
+    const cursor = start + value.length;
+    input.focus();
+    input.setSelectionRange(cursor, cursor);
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+
+  document.querySelectorAll("[data-sci-insert]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      insertAtCursor(button.getAttribute("data-sci-insert") || "");
+    });
+  });
+
+  const delBtn = document.getElementById("scientificDeleteBtn");
+  if (delBtn) {
+    delBtn.addEventListener("click", function () {
+      const start = input.selectionStart ?? input.value.length;
+      const end = input.selectionEnd ?? input.value.length;
+      if (start !== end) {
+        input.value = input.value.slice(0, start) + input.value.slice(end);
+        input.setSelectionRange(start, start);
+      } else if (start > 0) {
+        input.value = input.value.slice(0, start - 1) + input.value.slice(start);
+        input.setSelectionRange(start - 1, start - 1);
+      }
+      input.focus();
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+  }
+
+  const clearBtn = document.getElementById("scientificClearBtn");
+  if (clearBtn) {
+    clearBtn.addEventListener("click", function () {
+      input.value = "";
+      input.focus();
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+  }
+
+  const calcBtn = document.getElementById("scientificCalculateBtn");
+  if (calcBtn) {
+    calcBtn.addEventListener("click", function () {
+      if (typeof window.calculateScientificExtra === "function") {
+        window.calculateScientificExtra();
+      }
+    });
+  }
+
+  input.addEventListener("keydown", function (event) {
+    if (event.key === "Enter" && typeof window.calculateScientificExtra === "function") {
+      event.preventDefault();
+      window.calculateScientificExtra();
+    }
+  });
+});
+</script>
+
 </body>
 </html>
