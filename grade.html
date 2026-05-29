@@ -110,74 +110,165 @@
   </div>
 </nav>
 
-  <main class="tool-layout grade-calculator-container" aria-label="Grade calculator">
+  <main class="tool-layout grade-calculator-container pointer-grade-page" aria-label="Pointer grade calculator">
     <section class="tool-group-nav" aria-label="Related education tools">
-      <a class="current-extra-link" href="grade.html">Grade Calculator</a>
+      <a class="current-extra-link" href="grade.html">Pointer Grade Calculator</a>
       <a href="percentage-calculator.html">Percentage Calculator</a>
       <a href="basic-calculator.html">Basic Calculator</a>
     </section>
 
-    <section class="calculator extra-calculator-box grade-calculator-box">
-      <h1>Grade Calculator</h1>
-      <p class="calculator-intro">Enter your score and total marks to calculate percentage and letter grade.</p>
+    <section class="calculator extra-calculator-box grade-calculator-box pointer-grade-box">
+      <h1>Pointer Grade Calculator</h1>
+      <p class="calculator-intro">Calculate GPA/CGPA using credit hours and grade points. Add each subject, enter its credit hour and pointer, then the result updates automatically.</p>
 
-      <div class="extra-input-grid grade-input-grid">
-        <div class="input-group">
-          <label for="gradeScore">Score obtained</label>
-          <input id="gradeScore" type="number" inputmode="decimal" min="0" step="any" placeholder="Example: 78">
-        </div>
-        <div class="input-group">
-          <label for="gradeTotal">Total marks</label>
-          <input id="gradeTotal" type="number" inputmode="decimal" min="0" step="any" placeholder="Example: 100">
-        </div>
+      <div class="pointer-grade-table-wrap" aria-label="Subject pointer inputs">
+        <table class="pointer-grade-table">
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th>Credit hour</th>
+              <th>Pointer</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="pointerGradeRows">
+            <tr>
+              <td><input type="text" class="pg-subject" placeholder="Subject 1"></td>
+              <td><input type="number" class="pg-credit" min="0" step="0.5" placeholder="3"></td>
+              <td><input type="number" class="pg-pointer" min="0" max="4" step="0.01" placeholder="4.00"></td>
+              <td><button type="button" class="pg-remove" onclick="removePointerRow(this)" aria-label="Remove row">×</button></td>
+            </tr>
+            <tr>
+              <td><input type="text" class="pg-subject" placeholder="Subject 2"></td>
+              <td><input type="number" class="pg-credit" min="0" step="0.5" placeholder="3"></td>
+              <td><input type="number" class="pg-pointer" min="0" max="4" step="0.01" placeholder="3.67"></td>
+              <td><button type="button" class="pg-remove" onclick="removePointerRow(this)" aria-label="Remove row">×</button></td>
+            </tr>
+            <tr>
+              <td><input type="text" class="pg-subject" placeholder="Subject 3"></td>
+              <td><input type="number" class="pg-credit" min="0" step="0.5" placeholder="2"></td>
+              <td><input type="number" class="pg-pointer" min="0" max="4" step="0.01" placeholder="3.00"></td>
+              <td><button type="button" class="pg-remove" onclick="removePointerRow(this)" aria-label="Remove row">×</button></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
-      <button class="calculate-btn" type="button" onclick="calculateGrade()">Calculate Grade</button>
-      <section id="gradeResult" class="extra-result-box finance-upgrade-result-box grade-result-box" aria-live="polite" hidden></section>
+      <div class="pointer-grade-actions">
+        <button class="calculate-btn pg-secondary-btn" type="button" onclick="addPointerRow()">+ Add subject</button>
+        <button class="calculate-btn" type="button" onclick="calculatePointerGrade()">Calculate Pointer</button>
+      </div>
+
+      <section id="gradeResult" class="extra-result-box finance-upgrade-result-box grade-result-box pointer-grade-result" aria-live="polite"></section>
     </section>
 
     <aside class="instruction-box extra-help-panel">
       <h2>How to use</h2>
       <ol>
-        <li>Enter the score obtained.</li>
-        <li>Enter the total marks.</li>
-        <li>The calculator shows percentage, letter grade, and status.</li>
+        <li>Enter each subject or course name.</li>
+        <li>Enter the credit hour for that subject.</li>
+        <li>Enter the pointer/grade point, such as 4.00, 3.67, 3.33, 3.00, and so on.</li>
+        <li>The calculator multiplies credit hour × pointer, then divides total quality points by total credit hours.</li>
       </ol>
-      <h3>Default grade scale</h3>
-      <p>A: 80–100, B: 70–79, C: 60–69, D: 50–59, E: 40–49, F: below 40.</p>
-      <p>This is a general grade estimate. Your school, college, or exam board may use a different scale.</p>
+      <h3>Formula</h3>
+      <p><strong>GPA / pointer = total quality points ÷ total credit hours</strong></p>
+      <p>Example: If one subject has 3 credit hours and 4.00 pointer, its quality point is 12.00.</p>
     </aside>
   </main>
 
+<style>
+.pointer-grade-box { max-width: 980px; }
+.pointer-grade-table-wrap { width: 100%; overflow-x: auto; margin-top: 18px; }
+.pointer-grade-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+.pointer-grade-table th { text-align: left; font-size: 0.85rem; color: #64748b; padding: 0 8px; }
+.pointer-grade-table td { padding: 0 8px; }
+.pointer-grade-table input { width: 100%; min-height: 44px; border: 1px solid #d7dde8; border-radius: 12px; padding: 10px 12px; font-size: 0.95rem; background: #fff; box-sizing: border-box; }
+.pointer-grade-table .pg-credit, .pointer-grade-table .pg-pointer { text-align: center; }
+.pg-remove { width: 42px; height: 42px; border: 0; border-radius: 12px; background: #fee2e2; color: #b91c1c; font-size: 1.25rem; font-weight: 800; cursor: pointer; }
+.pointer-grade-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+.pg-secondary-btn { background: #e8f7ef !important; color: #166534 !important; box-shadow: none !important; }
+.pointer-grade-result { margin-top: 18px; }
+.pointer-grade-mini-table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 0.92rem; }
+.pointer-grade-mini-table th, .pointer-grade-mini-table td { padding: 10px; border-bottom: 1px solid #e5e7eb; text-align: left; }
+.pointer-grade-mini-table th { color: #64748b; font-weight: 800; }
+@media (max-width: 760px) {
+  .pointer-grade-table { min-width: 620px; }
+  .pointer-grade-actions .calculate-btn { flex: 1 1 100%; }
+}
+</style>
+
 <script>
-function calculateGrade() {
-  var score = Number(document.getElementById('gradeScore').value);
-  var total = Number(document.getElementById('gradeTotal').value);
+function pointerRowHtml(index) {
+  return '<tr>' +
+    '<td><input type="text" class="pg-subject" placeholder="Subject ' + index + '"></td>' +
+    '<td><input type="number" class="pg-credit" min="0" step="0.5" placeholder="3"></td>' +
+    '<td><input type="number" class="pg-pointer" min="0" max="4" step="0.01" placeholder="4.00"></td>' +
+    '<td><button type="button" class="pg-remove" onclick="removePointerRow(this)" aria-label="Remove row">×</button></td>' +
+  '</tr>';
+}
+
+function addPointerRow() {
+  var body = document.getElementById('pointerGradeRows');
+  body.insertAdjacentHTML('beforeend', pointerRowHtml(body.children.length + 1));
+}
+
+function removePointerRow(button) {
+  var body = document.getElementById('pointerGradeRows');
+  if (body.children.length <= 1) return;
+  button.closest('tr').remove();
+  calculatePointerGrade();
+}
+
+function calculatePointerGrade() {
+  var rows = Array.from(document.querySelectorAll('#pointerGradeRows tr'));
+  var totalCredits = 0;
+  var totalQuality = 0;
+  var validRows = [];
+
+  rows.forEach(function(row, i) {
+    var subject = row.querySelector('.pg-subject').value.trim() || ('Subject ' + (i + 1));
+    var credit = Number(row.querySelector('.pg-credit').value);
+    var pointer = Number(row.querySelector('.pg-pointer').value);
+    if (Number.isFinite(credit) && Number.isFinite(pointer) && credit > 0 && pointer >= 0) {
+      if (pointer > 4) pointer = 4;
+      var quality = credit * pointer;
+      totalCredits += credit;
+      totalQuality += quality;
+      validRows.push({ subject: subject, credit: credit, pointer: pointer, quality: quality });
+    }
+  });
+
   var result = document.getElementById('gradeResult');
-  if (!Number.isFinite(score) || !Number.isFinite(total) || total <= 0) {
-    result.hidden = false;
-    result.innerHTML = '<article class="finance-result-shell"><header class="finance-result-header"><h2>Grade result</h2><p>Please enter a valid score and total marks.</p></header></article>';
+  if (!validRows.length || totalCredits <= 0) {
+    result.innerHTML = '<article class="finance-result-shell"><header class="finance-result-header"><h2>Pointer result</h2><p>Add at least one subject with credit hour and pointer.</p></header></article>';
     return;
   }
-  if (score < 0) score = 0;
-  var pct = (score / total) * 100;
-  var grade = pct >= 80 ? 'A' : pct >= 70 ? 'B' : pct >= 60 ? 'C' : pct >= 50 ? 'D' : pct >= 40 ? 'E' : 'F';
-  var status = pct >= 40 ? 'Pass' : 'Fail';
-  result.hidden = false;
+
+  var gpa = totalQuality / totalCredits;
+  var standing = gpa >= 3.67 ? 'Excellent' : gpa >= 3.00 ? 'Good' : gpa >= 2.00 ? 'Pass' : 'Needs improvement';
+  var tableRows = validRows.map(function(item) {
+    return '<tr><td>' + item.subject + '</td><td>' + item.credit.toFixed(1).replace('.0','') + '</td><td>' + item.pointer.toFixed(2) + '</td><td>' + item.quality.toFixed(2) + '</td></tr>';
+  }).join('');
+
   result.innerHTML = '<article class="finance-result-shell">' +
-    '<header class="finance-result-header"><h2>Grade result</h2><p>Your grade summary based on the entered marks.</p></header>' +
+    '<header class="finance-result-header"><h2>Pointer result</h2><p>Your weighted pointer based on credit hours.</p></header>' +
     '<div class="finance-result-summary-grid">' +
-    '<article class="finance-result-metric-card"><div class="finance-result-metric-label">Percentage</div><div class="finance-result-metric-value">' + pct.toFixed(2) + '%</div></article>' +
-    '<article class="finance-result-metric-card"><div class="finance-result-metric-label">Grade</div><div class="finance-result-metric-value">' + grade + '</div></article>' +
-    '<article class="finance-result-metric-card"><div class="finance-result-metric-label">Status</div><div class="finance-result-metric-value">' + status + '</div></article>' +
-    '</div></article>';
+    '<article class="finance-result-metric-card"><div class="finance-result-metric-label">GPA / Pointer</div><div class="finance-result-metric-value">' + gpa.toFixed(2) + '</div></article>' +
+    '<article class="finance-result-metric-card"><div class="finance-result-metric-label">Total credit hours</div><div class="finance-result-metric-value">' + totalCredits.toFixed(1).replace('.0','') + '</div></article>' +
+    '<article class="finance-result-metric-card"><div class="finance-result-metric-label">Standing</div><div class="finance-result-metric-value">' + standing + '</div></article>' +
+    '</div>' +
+    '<table class="pointer-grade-mini-table"><thead><tr><th>Subject</th><th>Credit</th><th>Pointer</th><th>Quality points</th></tr></thead><tbody>' + tableRows + '</tbody></table>' +
+    '</article>';
 }
+
 document.addEventListener('input', function(e) {
-  if (e.target && (e.target.id === 'gradeScore' || e.target.id === 'gradeTotal')) {
+  if (e.target && (e.target.classList.contains('pg-credit') || e.target.classList.contains('pg-pointer') || e.target.classList.contains('pg-subject'))) {
     clearTimeout(window.gradeAutoTimer);
-    window.gradeAutoTimer = setTimeout(calculateGrade, 350);
+    window.gradeAutoTimer = setTimeout(calculatePointerGrade, 250);
   }
 });
+
+document.addEventListener('DOMContentLoaded', calculatePointerGrade);
 </script>
 <script src="script.js?v=card-layout-compact-20260528b" defer></script>
 <script src="pc.js?v=card-layout-compact-20260528b" defer></script>
