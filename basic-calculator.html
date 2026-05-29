@@ -110,34 +110,22 @@
 <section class="calculator basic-best-card">
 <h1>Basic Calculator</h1>
 <p class="subtitle">
-        A clean everyday calculator for addition, subtraction, multiplication, division, percentage, brackets, square root, and powers.
+        Free online calculator for quick math calculations.
       </p>
-<div class="basic-best-workspace">
-<div class="basic-best-left">
-<div class="basic-display-card">
-<label class="basic-display-label" for="display">Enter calculation</label>
-<div class="display-row basic-best-display-row">
-<input aria-label="Calculator display" autocomplete="off" id="display" inputmode="decimal" placeholder="Example: 8 + 2 × 3" spellcheck="false" type="text"/>
-<button class="ans-btn" onclick="add('Ans')" title="Use previous answer" type="button">ANS</button>
-</div>
 <div aria-live="polite" class="basic-inline-result" id="basicInlineResult">
-<div class="basic-inline-kicker">Answer</div>
-<div class="basic-inline-empty">Your input and answer will appear here after you press =.</div>
+<div class="basic-inline-kicker">Previous calculation</div>
+<div class="basic-inline-empty">Your previous input and answer will appear here after you press =.</div>
 </div>
+<div class="display-row">
+<input aria-label="Calculator display" autocomplete="off" id="display" inputmode="decimal" spellcheck="false" type="text"/>
+<button class="ans-btn" onclick="add('Ans')" type="button">
+          ANS
+        </button>
 </div>
-<div class="basic-quick-row" aria-label="Quick function buttons">
-<button onclick="addFunction('sqrt')" type="button">√</button>
-<button onclick="addPower()" type="button">xʸ</button>
-<button onclick="add('(')" type="button">(</button>
-<button onclick="add(')')" type="button">)</button>
-</div>
-<p class="basic-keyboard-note">Tip: you can also type with your keyboard. Press Enter to calculate, Backspace to delete, and Esc to clear.</p>
-</div>
-<div class="basic-best-right">
-<div class="buttons basic-grid basic-best-grid" aria-label="Basic calculator keypad">
-<button class="ac-btn" onclick="clearDisplay()" type="button">AC</button>
-<button onclick="removeLast()" type="button">DEL</button>
-<button onclick="add('%')" type="button">%</button>
+<div class="buttons basic-grid">
+<button onclick="add('+')" type="button">+</button>
+<button onclick="add('-')" type="button">−</button>
+<button onclick="add('*')" type="button">×</button>
 <button onclick="add('/')" type="button">÷</button>
 <button onclick="add('7')" type="button">7</button>
 <button onclick="add('8')" type="button">8</button>
@@ -158,6 +146,7 @@
 </div>
 </div>
 </div>
+<p class="basic-keyboard-note">Tip: you can also type with your keyboard. Press Enter to calculate, Backspace to delete, and Esc to clear.</p>
 </section>
 
     <aside aria-label="Calculator guide and references" class="instruction-box universal-help-panel">
