@@ -1,1 +1,0 @@
-From-scratch redesign applied on 2026-05-28. Old CSS files were replaced, not layered. New app-shell layout, desktop left navigation, new cards, forms, result boxes, dropdowns, and mobile styling.

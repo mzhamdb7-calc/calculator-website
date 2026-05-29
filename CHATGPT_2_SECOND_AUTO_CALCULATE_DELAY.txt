@@ -1,1 +1,0 @@
-Updated auto-calculate debounce so input-based calculator pages wait until the user stops typing for 2 seconds before calculating. Select/change events also use the same 2-second delay.

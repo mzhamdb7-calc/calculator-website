@@ -1,1 +1,0 @@
-Result panels were changed to full-width sections below the calculator and guide area. Updated CSS cache version: result_full_width_20260528_1

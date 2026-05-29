@@ -1,1 +1,0 @@
-Complete rebuild: replaced old visual styling, removed old home abacus/dropdowns, rebuilt alignment, groups, colors, cards, forms, results, and navigation.

@@ -1,1 +1,0 @@
-Updated Community into Review, added Wall.html, removed visible chatting text, and cleaned review/wall layout.

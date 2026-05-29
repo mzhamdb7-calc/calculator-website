@@ -1,1 +1,0 @@
-Percentage Calculator result output upgraded to the newer clean card/result-box form.

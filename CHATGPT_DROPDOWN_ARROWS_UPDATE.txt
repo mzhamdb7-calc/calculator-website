@@ -1,1 +1,0 @@
-Added visible arrow indicators to nav dropdowns, submenus, FAQ details, expandable calculator panels, and select fields.

@@ -1,4 +1,0 @@
-Applied modern SaaS redesign option on 2026-05-28.
-Palette: white/off-white surfaces, charcoal text, deep teal navigation, emerald accents.
-Layout: desktop sidebar + calculator + help alignment, mobile single-column alignment.
-Functionality: calculator JavaScript unchanged.

@@ -1,1 +1,0 @@
-Fixed mortgage result, split finance calculator results into own boxes, added loan/debt line comparison graphs, and repaired fuel price input sizing.

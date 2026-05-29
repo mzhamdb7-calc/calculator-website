@@ -1,1 +1,0 @@
-Fixed BMI desktop sizing, lighter readable colour palette, better SI toggle placement, wider BMI form groups, and mobile sizing.

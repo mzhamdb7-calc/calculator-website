@@ -1,1 +1,0 @@
-Updated desktop calculator layout so calculator boxes are on the right side, guide/reference boxes are on the left, group navigation stays above, and result sections remain full-width below.

@@ -1,1 +1,0 @@
-Updated by ChatGPT: removed index-page dropdown panel description text/box only; calculator links preserved. Version index_dropdown_text_removed_20260528_1.

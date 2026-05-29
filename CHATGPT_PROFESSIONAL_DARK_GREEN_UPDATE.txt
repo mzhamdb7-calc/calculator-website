@@ -1,1 +1,0 @@
-Updated on 2026-05-28. Applied a professional dark green visual theme only. Existing layout, box alignment, calculator structure, and JavaScript behavior were not changed. CSS updated: style.css, pc.css, phone.css. HTML cache strings updated to pro_dark_green_20260528_1.

@@ -1,2 +1,0 @@
-Updated all pages with a green technological visual skin only. Existing page alignment, calculator structure, and box placement were left intact.
-Changed shared CSS files: style.css, pc.css, phone.css. Updated HTML cache version to green_tech_20260528_1.

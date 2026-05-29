@@ -1,1 +1,0 @@
-Removed the separate Basic Calculator result box and added an inline previous input/output box above the calculator answer display.
