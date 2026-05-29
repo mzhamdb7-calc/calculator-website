@@ -11,6 +11,36 @@
 <link href="pc.css?v=card-layout-compact-20260528b" media="screen and (min-width: 851px)" rel="stylesheet"/>
 <link href="phone.css?v=card-layout-compact-20260528b" media="screen and (max-width: 850px)" rel="stylesheet"/>
 <link href="favicon.ico" rel="icon"/>
+
+<style id="scientific-input-above-graph-fix">
+.scientific-live-graph-card .scientific-expression-above-graph {
+  margin: 14px 0 14px !important;
+  padding: 14px !important;
+  max-width: none !important;
+}
+.scientific-live-graph-card .scientific-expression-above-graph .extra-input-grid {
+  display: block !important;
+}
+.scientific-live-graph-card .scientific-expression-above-graph .scientific-input-line {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 10px !important;
+  align-items: center !important;
+}
+.scientific-live-graph-card .scientific-expression-above-graph input {
+  width: 100% !important;
+  min-height: 46px !important;
+}
+.scientific-live-graph-card .scientific-expression-above-graph .scientific-focus-btn {
+  min-height: 46px !important;
+  padding: 0 22px !important;
+}
+@media (max-width: 650px) {
+  .scientific-live-graph-card .scientific-expression-above-graph .scientific-input-line {
+    grid-template-columns: 1fr !important;
+  }
+}
+</style>
 </head>
 <body class="extra-calculator-page scientific-page app-redesign" data-page="scientific">
 <button aria-label="Go to top" id="scrollTopBtn" onclick="scrollToTop()" type="button">
@@ -150,13 +180,7 @@
 </div>
 <span class="scientific-graph-range">x: -10 to 10</span>
 </div>
-<div class="advanced-graph-toolbar" aria-label="Advanced graph controls">
-  <label>Min x <input id="graphXMin" type="number" value="-10" step="1"></label>
-  <label>Max x <input id="graphXMax" type="number" value="10" step="1"></label>
-</div>
-<canvas id="scientificGraphCanvas" width="720" height="420" aria-label="Scientific calculator advanced live graph"></canvas>
-<p class="scientific-graph-status" id="scientificGraphStatus">Enter an expression to draw the graph.</p>
-<div class="extra-input-card scientific-expression-card scientific-expression-inside-graph">
+<div class="extra-input-card scientific-expression-card scientific-expression-inside-graph scientific-expression-above-graph">
 <div class="extra-input-card-title">Input details</div>
 <div class="extra-input-grid">
 <div class="extra-input-field">
@@ -168,6 +192,12 @@
 </div>
 </div>
 </div>
+<div class="advanced-graph-toolbar" aria-label="Advanced graph controls">
+  <label>Min x <input id="graphXMin" type="number" value="-10" step="1"></label>
+  <label>Max x <input id="graphXMax" type="number" value="10" step="1"></label>
+</div>
+<canvas id="scientificGraphCanvas" width="720" height="420" aria-label="Scientific calculator advanced live graph"></canvas>
+<p class="scientific-graph-status" id="scientificGraphStatus">Enter an expression to draw the graph.</p>
 </section>
 </div>
 </section>
