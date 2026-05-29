@@ -483,5 +483,182 @@ body.scientific-page .scientific-graph-status {
 }
 </style>
 
+
+<style id="chatgpt-scientific-layout-final-fix">
+/* Final targeted fix: scientific calculator graph must not be squeezed or clipped. */
+body.scientific-page,
+body.scientific-page * {
+  box-sizing: border-box;
+}
+
+@media (min-width: 901px) {
+  body.scientific-page main.tool-layout,
+  body.scientific-page main.loan-calculator-container.tool-layout,
+  body.scientific-page main.extra-calculator-container.tool-layout {
+    width: min(1760px, calc(100vw - 48px)) !important;
+    max-width: 1760px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: grid !important;
+    grid-template-columns: 300px minmax(0, 1fr) !important;
+    gap: 28px !important;
+    align-items: start !important;
+    overflow: visible !important;
+  }
+
+  body.scientific-page main.tool-layout > .tool-group-nav,
+  body.scientific-page main.tool-layout > .loan-history-box.extra-side-box {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    max-width: 300px !important;
+    position: sticky !important;
+    top: 92px !important;
+  }
+
+  body.scientific-page main.tool-layout > .calculator.extra-calculator-box {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  body.scientific-page main.tool-layout > .instruction-box,
+  body.scientific-page main.tool-layout > .universal-help-panel {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    max-width: none !important;
+    position: static !important;
+  }
+}
+
+body.scientific-page .scientific-workspace {
+  display: grid !important;
+  grid-template-columns: minmax(360px, 0.9fr) minmax(520px, 1.1fr) !important;
+  gap: 28px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  align-items: start !important;
+  overflow: visible !important;
+}
+
+body.scientific-page .scientific-left-panel,
+body.scientific-page .scientific-right-panel,
+body.scientific-page .scientific-classic-panel,
+body.scientific-page .scientific-live-graph-card {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+body.scientific-page .scientific-classic-panel {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+body.scientific-page .scientific-expression-card,
+body.scientific-page .scientific-keypad,
+body.scientific-page .scientific-live-graph-card {
+  width: 100% !important;
+}
+
+body.scientific-page .scientific-live-graph-card {
+  margin: 0 !important;
+  padding: 24px !important;
+  overflow: hidden !important;
+  position: sticky !important;
+  top: 92px !important;
+}
+
+body.scientific-page .scientific-graph-head {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 14px !important;
+  align-items: start !important;
+}
+
+body.scientific-page .scientific-graph-head h2 {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+
+body.scientific-page .scientific-graph-head p {
+  max-width: 100% !important;
+  overflow-wrap: anywhere !important;
+}
+
+body.scientific-page .advanced-graph-toolbar {
+  display: grid !important;
+  grid-template-columns: repeat(3, auto) repeat(2, minmax(120px, 1fr)) !important;
+  gap: 10px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+}
+
+body.scientific-page .advanced-graph-toolbar label {
+  min-width: 0 !important;
+  white-space: nowrap !important;
+}
+
+body.scientific-page .advanced-graph-toolbar input {
+  width: 82px !important;
+  max-width: 100% !important;
+}
+
+body.scientific-page #scientificGraphCanvas {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 430px !important;
+  aspect-ratio: auto !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 1250px) {
+  body.scientific-page .scientific-workspace {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.scientific-page .scientific-live-graph-card {
+    position: static !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body.scientific-page main.tool-layout,
+  body.scientific-page main.loan-calculator-container.tool-layout,
+  body.scientific-page main.extra-calculator-container.tool-layout {
+    width: min(100%, calc(100vw - 24px)) !important;
+    display: block !important;
+  }
+
+  body.scientific-page .scientific-input-line,
+  body.scientific-page .scientific-graph-head,
+  body.scientific-page .advanced-graph-toolbar {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  body.scientific-page .scientific-keypad {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    padding: 12px !important;
+  }
+
+  body.scientific-page .scientific-live-graph-card {
+    padding: 16px !important;
+  }
+
+  body.scientific-page #scientificGraphCanvas {
+    height: 320px !important;
+  }
+}
+</style>
+
 </body>
 </html>
