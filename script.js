@@ -160,3 +160,199 @@
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', installAdvancedGraph); else installAdvancedGraph();
 })();
+
+/* ChatGPT upgrade: advanced scientific expression parser and graph support */
+(function(){
+  'use strict';
+  function isScientificPage(){
+    return document.body && (document.body.dataset.page === 'scientific' || location.pathname.indexOf('scientific-calculator') !== -1);
+  }
+  function $(id){ return document.getElementById(id); }
+  function fact(n){
+    if(!Number.isFinite(n) || n < 0 || Math.floor(n) !== n || n > 170) return NaN;
+    var out = 1;
+    for(var i=2;i<=n;i++) out *= i;
+    return out;
+  }
+  function root(n, r){ return Math.pow(n, 1 / r); }
+  var allowed = new Set([
+    'x','sin','cos','tan','asin','acos','atan','sinh','cosh','tanh',
+    'sqrt','cbrt','root','log','ln','exp','abs','floor','ceil','round',
+    'min','max','pow','fact','pi','e','tau','phi'
+  ]);
+  function normalizeExpression(raw){
+    var expr = String(raw || '').trim();
+    expr = expr
+      .replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-')
+      .replace(/π/g,'pi').replace(/√\s*\(/g,'sqrt(')
+      .replace(/\^/g,'**')
+      .replace(/\bMath\./g,'');
+
+    // Friendly aliases.
+    expr = expr
+      .replace(/\barcsin\s*\(/gi,'asin(')
+      .replace(/\barccos\s*\(/gi,'acos(')
+      .replace(/\barctan\s*\(/gi,'atan(')
+      .replace(/\blg\s*\(/gi,'log(');
+
+    // Convert factorial: 5!, x!, (x+1)! -> fact(...)
+    var previous;
+    do {
+      previous = expr;
+      expr = expr.replace(/(\([^()]*\)|\b(?:\d+(?:\.\d+)?|x|pi|e|tau|phi)\b)\s*!/gi, 'fact($1)');
+    } while(expr !== previous);
+
+    // Add practical implicit multiplication: 2x, 2pi, 2(x+1), x(x+1), )x, )(.
+    expr = expr.replace(/(\d|\)|x)\s*(?=(x|\(|[A-Za-z]+\s*\())/gi, '$1*');
+    expr = expr.replace(/(\d|\)|x)\s*\b(pi|e|tau|phi)\b/gi, '$1*$2');
+    expr = expr.replace(/\b(pi|e|tau|phi)\b\s*(?=(x|\(|[A-Za-z]+\s*\()))/gi, '$1*');
+
+    return expr;
+  }
+  function buildAdvancedFunction(raw){
+    var expr = normalizeExpression(raw);
+    if(!expr) throw new Error('Empty expression');
+    if(!/^[0-9A-Za-z_+\-*/%().,\s]+$/.test(expr)) throw new Error('Unsupported characters');
+    var words = expr.match(/[A-Za-z_]\w*/g) || [];
+    for(var i=0;i<words.length;i++){
+      if(!allowed.has(words[i])) throw new Error('Unsupported token: ' + words[i]);
+    }
+    var argNames = ['x','sin','cos','tan','asin','acos','atan','sinh','cosh','tanh','sqrt','cbrt','root','log','ln','exp','abs','floor','ceil','round','min','max','pow','fact','pi','e','tau','phi'];
+    var argValues = [
+      0, Math.sin, Math.cos, Math.tan, Math.asin, Math.acos, Math.atan, Math.sinh, Math.cosh, Math.tanh,
+      Math.sqrt, Math.cbrt, root, Math.log10, Math.log, Math.exp, Math.abs, Math.floor, Math.ceil, Math.round,
+      Math.min, Math.max, Math.pow, fact, Math.PI, Math.E, Math.PI * 2, (1 + Math.sqrt(5)) / 2
+    ];
+    var fn = Function(argNames.join(','), '"use strict"; return (' + expr + ');');
+    return function(x){ argValues[0] = x; return Number(fn.apply(null, argValues)); };
+  }
+  function niceStep(range, target){
+    var rough = Math.abs(range) / (target || 8);
+    if(!isFinite(rough) || rough <= 0) return 1;
+    var pow = Math.pow(10, Math.floor(Math.log10(rough)));
+    var n = rough / pow;
+    if(n >= 5) return 5 * pow;
+    if(n >= 2) return 2 * pow;
+    return pow;
+  }
+  function fmt(n){
+    if(!isFinite(n)) return '';
+    if(Math.abs(n) >= 10000 || (Math.abs(n) > 0 && Math.abs(n) < 0.001)) return n.toExponential(1);
+    return String(Math.round(n * 1000) / 1000);
+  }
+  function resizeCanvas(canvas){
+    var ratio = window.devicePixelRatio || 1;
+    var rect = canvas.getBoundingClientRect();
+    var w = Math.max(320, Math.floor(rect.width || 720));
+    var h = Math.max(260, Math.floor(rect.height || 430));
+    canvas.width = Math.floor(w * ratio);
+    canvas.height = Math.floor(h * ratio);
+    var ctx = canvas.getContext('2d');
+    ctx.setTransform(ratio,0,0,ratio,0,0);
+    return {ctx:ctx,w:w,h:h};
+  }
+  function setStatus(text){ var s=$('scientificGraphStatus'); if(s) s.textContent=text; }
+  function drawEmpty(canvas,text){
+    var r=resizeCanvas(canvas), ctx=r.ctx, w=r.w, h=r.h;
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle='#f8fafc'; ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle='#e5e7eb'; ctx.lineWidth=1;
+    for(var gx=40;gx<w;gx+=40){ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,h);ctx.stroke();}
+    for(var gy=40;gy<h;gy+=40){ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(w,gy);ctx.stroke();}
+    ctx.fillStyle='#64748b'; ctx.font='15px Inter, Arial, sans-serif'; ctx.textAlign='center';
+    ctx.fillText(text || 'Enter an expression to draw the graph', w/2, h/2);
+  }
+  var state={xMin:-10,xMax:10};
+  function drawAdvancedExpressionGraph(){
+    if(!isScientificPage()) return;
+    var input=$('scientificExpression'), canvas=$('scientificGraphCanvas');
+    if(!input || !canvas) return;
+    var expression=String(input.value || '').trim();
+    if(!expression){ drawEmpty(canvas,'Enter an expression to draw the graph'); setStatus('Enter an expression to draw the graph.'); return; }
+    var fn;
+    try{ fn=buildAdvancedFunction(expression); }
+    catch(e){ drawEmpty(canvas,'Unsupported expression'); setStatus('Advanced supported: sin, cos, tan, asin, acos, atan, sinh, cosh, tanh, sqrt, cbrt, root(n,r), log, ln, exp, abs, floor, ceil, round, min, max, pow, factorial !, pi, e, tau, phi.'); return; }
+    var xMin=parseFloat($('graphXMin') && $('graphXMin').value), xMax=parseFloat($('graphXMax') && $('graphXMax').value);
+    if(!isFinite(xMin)) xMin=state.xMin; if(!isFinite(xMax)) xMax=state.xMax; if(xMax<=xMin){xMin=-10;xMax=10;}
+    state.xMin=xMin; state.xMax=xMax;
+    var r=resizeCanvas(canvas), ctx=r.ctx, w=r.w, h=r.h;
+    var padL=56,padR=18,padT=26,padB=38,plotW=w-padL-padR,plotH=h-padT-padB;
+    var samples=Math.max(700,Math.floor(plotW*2));
+    var points=[];
+    for(var i=0;i<=samples;i++){
+      var x=xMin+(xMax-xMin)*i/samples, y;
+      try{ y=fn(x); }catch(e){ y=NaN; }
+      points.push({x:x,y:(isFinite(y) && Math.abs(y)<1e10)?y:NaN});
+    }
+    var ys=points.map(function(p){return p.y;}).filter(function(y){return isFinite(y);});
+    if(!ys.length){drawEmpty(canvas,'No graphable values in this range');setStatus('No graphable values found in the selected x range.');return;}
+    var yMin=Math.min.apply(null,ys), yMax=Math.max.apply(null,ys);
+    if(yMin===yMax){yMin-=5;yMax+=5;}
+    var yPad=(yMax-yMin)*0.12; yMin-=yPad; yMax+=yPad;
+    function sx(x){return padL+(x-xMin)/(xMax-xMin)*plotW;}
+    function sy(y){return padT+(yMax-y)/(yMax-yMin)*plotH;}
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle='#f8fafc';ctx.fillRect(0,0,w,h);
+    ctx.fillStyle='#fff';ctx.fillRect(padL,padT,plotW,plotH);
+    ctx.strokeStyle='#dbe7e1';ctx.lineWidth=1;ctx.strokeRect(padL,padT,plotW,plotH);
+    var xStep=niceStep(xMax-xMin,8), yStep=niceStep(yMax-yMin,7);
+    ctx.font='12px Inter, Arial, sans-serif';ctx.fillStyle='#526b62';ctx.strokeStyle='#e2ebe6';ctx.lineWidth=1;
+    ctx.textAlign='center';ctx.textBaseline='top';
+    for(var xv=Math.ceil(xMin/xStep)*xStep;xv<=xMax;xv+=xStep){var px=sx(xv);ctx.beginPath();ctx.moveTo(px,padT);ctx.lineTo(px,padT+plotH);ctx.stroke();ctx.fillText(fmt(xv),px,padT+plotH+8);}
+    ctx.textAlign='right';ctx.textBaseline='middle';
+    for(var yv=Math.ceil(yMin/yStep)*yStep;yv<=yMax;yv+=yStep){var py=sy(yv);ctx.beginPath();ctx.moveTo(padL,py);ctx.lineTo(padL+plotW,py);ctx.stroke();ctx.fillText(fmt(yv),padL-8,py);}
+    ctx.strokeStyle='#64748b';ctx.lineWidth=1.5;
+    if(xMin<=0&&xMax>=0){ctx.beginPath();ctx.moveTo(sx(0),padT);ctx.lineTo(sx(0),padT+plotH);ctx.stroke();}
+    if(yMin<=0&&yMax>=0){ctx.beginPath();ctx.moveTo(padL,sy(0));ctx.lineTo(padL+plotW,sy(0));ctx.stroke();}
+    ctx.save();ctx.beginPath();ctx.rect(padL,padT,plotW,plotH);ctx.clip();
+    ctx.strokeStyle='#0f766e';ctx.lineWidth=3;ctx.beginPath();
+    var drawing=false,lastY=null;
+    points.forEach(function(p){
+      if(!isFinite(p.y)){drawing=false;lastY=null;return;}
+      var py=sy(p.y),px=sx(p.x);
+      if(lastY!==null && Math.abs(py-lastY)>plotH*0.75){drawing=false;}
+      if(py<-plotH || py>h+plotH){drawing=false;lastY=py;return;}
+      if(drawing) ctx.lineTo(px,py); else {ctx.moveTo(px,py);drawing=true;}
+      lastY=py;
+    });
+    ctx.stroke();ctx.restore();
+    ctx.fillStyle='#0f241f';ctx.font='700 13px Inter, Arial, sans-serif';ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText('y = '+expression,padL,7);
+    var badge=document.querySelector('.scientific-graph-range'); if(badge) badge.textContent='x: '+fmt(xMin)+' to '+fmt(xMax);
+    setStatus('Advanced expression supported. Try: exp(-x^2), abs(sin(x)), root(x,3), sin(x)/x, 3!, or max(sin(x), cos(x)).');
+  }
+  function addAdvancedButtons(){
+    var keypad=document.querySelector('.scientific-keypad');
+    if(!keypad || keypad.dataset.advancedExpressionButtons === '1') return;
+    keypad.dataset.advancedExpressionButtons='1';
+    var buttons=[
+      ['exp','exp('],['abs','abs('],['asin','asin('],['acos','acos('],['atan','atan('],['cbrt','cbrt('],['root','root('],['!','!'],['e','e'],['tau','tau'],['min','min('],['max','max(']
+    ];
+    buttons.forEach(function(item){
+      var b=document.createElement('button');
+      b.type='button'; b.className='scientific-advanced-btn'; b.textContent=item[0];
+      b.addEventListener('click',function(){ if(window.appendScientific) window.appendScientific(item[1]); });
+      keypad.insertBefore(b, keypad.querySelector('.scientific-clear-btn'));
+    });
+  }
+  function install(){
+    if(!isScientificPage()) return;
+    var input=$('scientificExpression');
+    addAdvancedButtons();
+    if(input){
+      input.placeholder='Examples: exp(-x^2), sin(x)/x, root(x,3), abs(sin(x)), 5!';
+      var timer; function schedule(){clearTimeout(timer);timer=setTimeout(drawAdvancedExpressionGraph,120);}
+      input.addEventListener('input',schedule,true); input.addEventListener('change',schedule,true);
+    }
+    ['graphXMin','graphXMax'].forEach(function(id){var el=$(id); if(el){el.addEventListener('input',drawAdvancedExpressionGraph);el.addEventListener('change',drawAdvancedExpressionGraph);}});
+    var zin=$('graphZoomIn'), zout=$('graphZoomOut'), reset=$('graphResetView');
+    function applyRange(a,b){var min=$('graphXMin'),max=$('graphXMax'); if(min)min.value=String(Math.round(a*100)/100); if(max)max.value=String(Math.round(b*100)/100); drawAdvancedExpressionGraph();}
+    if(zin) zin.onclick=function(){var c=(state.xMin+state.xMax)/2,half=(state.xMax-state.xMin)/4;applyRange(c-half,c+half);};
+    if(zout) zout.onclick=function(){var c=(state.xMin+state.xMax)/2,half=(state.xMax-state.xMin);applyRange(c-half,c+half);};
+    if(reset) reset.onclick=function(){applyRange(-10,10);};
+    window.calculateScientificExtra=drawAdvancedExpressionGraph;
+    window.addEventListener('resize',drawAdvancedExpressionGraph);
+    setTimeout(drawAdvancedExpressionGraph,200);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',install); else install();
+  setTimeout(install,700);
+})();
