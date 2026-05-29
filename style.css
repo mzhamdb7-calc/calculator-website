@@ -144,3 +144,168 @@ body[data-page="basic"] #display::placeholder {
     font-size: 1.4rem !important;
   }
 }
+
+/* === FINAL FIX: calculator pages side layout + dropdown hover bridge === */
+@media (min-width: 901px) {
+  body.app-redesign main.calculator-container.tool-layout,
+  body.app-redesign .calculator-container.tool-layout {
+    display: grid !important;
+    grid-template-columns: minmax(230px, 280px) minmax(0, 1fr) !important;
+    grid-template-rows: auto auto !important;
+    gap: 22px 28px !important;
+    align-items: start !important;
+    max-width: 1280px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  body.app-redesign .tool-layout > .tool-group-nav,
+  body.app-redesign .tool-layout > .loan-history-box.extra-side-box {
+    grid-column: 1 !important;
+    grid-row: 1 / span 2 !important;
+    width: 100% !important;
+    max-width: 280px !important;
+    position: sticky !important;
+    top: 92px !important;
+    align-self: start !important;
+  }
+
+  body.app-redesign .tool-layout > .calculator {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  body.app-redesign .tool-layout > .instruction-box,
+  body.app-redesign .tool-layout > .universal-help-panel {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin-top: 0 !important;
+  }
+}
+
+@media (max-width: 900px) {
+  body.app-redesign main.calculator-container.tool-layout,
+  body.app-redesign .calculator-container.tool-layout {
+    display: block !important;
+  }
+
+  body.app-redesign .tool-layout > .tool-group-nav,
+  body.app-redesign .tool-layout > .loan-history-box.extra-side-box,
+  body.app-redesign .tool-layout > .calculator,
+  body.app-redesign .tool-layout > .instruction-box,
+  body.app-redesign .tool-layout > .universal-help-panel {
+    width: 100% !important;
+    max-width: none !important;
+    position: static !important;
+    margin-bottom: 16px !important;
+  }
+}
+
+/* Dropdown hover gap fix: creates an invisible bridge between Tools and menu */
+#navbar.clean-navbar .clean-nav-dropdown {
+  position: relative !important;
+}
+
+#navbar.clean-navbar .clean-nav-dropdown::after {
+  content: "" !important;
+  position: absolute !important;
+  left: -12px !important;
+  right: -12px !important;
+  top: 100% !important;
+  height: 20px !important;
+  background: transparent !important;
+  pointer-events: auto !important;
+}
+
+#navbar.clean-navbar .clean-nav-dropdown-panel {
+  top: calc(100% + 6px) !important;
+  z-index: 9999 !important;
+}
+
+#navbar.clean-navbar .clean-nav-dropdown:hover .clean-nav-dropdown-panel,
+#navbar.clean-navbar .clean-nav-dropdown:focus-within .clean-nav-dropdown-panel,
+#navbar.clean-navbar .clean-nav-dropdown-panel:hover {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Tools menu: stable compact vertical category menu, submenu opens beside it */
+@media (min-width: 851px) {
+  #navbar.clean-navbar .clean-calculator-panel {
+    width: 320px !important;
+    min-width: 320px !important;
+    max-width: 320px !important;
+    padding: 10px !important;
+    border-radius: 18px !important;
+    overflow: visible !important;
+  }
+
+  #navbar.clean-navbar .clean-calculator-panel .clean-nav-submenu {
+    position: relative !important;
+    display: block !important;
+  }
+
+  #navbar.clean-navbar .clean-calculator-panel .clean-nav-submenu-button,
+  #navbar.clean-navbar .clean-calculator-panel .clean-nav-panel-row {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    min-height: 42px !important;
+    padding: 10px 12px !important;
+    border-radius: 12px !important;
+    white-space: nowrap !important;
+  }
+
+  #navbar.clean-navbar .clean-calculator-panel .clean-nav-submenu-panel {
+    position: absolute !important;
+    top: 0 !important;
+    left: calc(100% + 8px) !important;
+    width: 300px !important;
+    min-width: 300px !important;
+    max-width: 300px !important;
+    display: none !important;
+    padding: 10px !important;
+    border-radius: 16px !important;
+    background: #fff !important;
+    border: 1px solid rgba(49,95,81,.16) !important;
+    box-shadow: 0 20px 44px rgba(16,35,29,.12) !important;
+    z-index: 10000 !important;
+  }
+
+  #navbar.clean-navbar .clean-calculator-panel .clean-nav-submenu::after {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 100% !important;
+    width: 12px !important;
+    height: 100% !important;
+    background: transparent !important;
+  }
+
+  #navbar.clean-navbar .clean-calculator-panel .clean-nav-submenu:hover > .clean-nav-submenu-panel,
+  #navbar.clean-navbar .clean-calculator-panel .clean-nav-submenu:focus-within > .clean-nav-submenu-panel,
+  #navbar.clean-navbar .clean-calculator-panel .clean-nav-submenu-panel:hover {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+
+  #navbar.clean-navbar .clean-calculator-panel .clean-nav-submenu-panel a {
+    display: block !important;
+    min-height: 38px !important;
+    padding: 9px 11px !important;
+    border-radius: 10px !important;
+    white-space: normal !important;
+    line-height: 1.2 !important;
+    font-size: .95rem !important;
+  }
+}
