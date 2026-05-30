@@ -310,3 +310,27 @@
 
 /* Phone: percentage result compact below inputs */
 @media screen and (max-width:850px){body[data-page="percentage"] #percentageLiveResultBox.percentage-result-compact{width:100%!important;max-width:100%!important;margin:12px 0 0!important;padding:11px 12px!important;min-height:66px!important}body[data-page="percentage"] #percentageLiveResultBox.percentage-result-compact #percentageLiveResult{font-size:1.12rem!important;line-height:1.16!important}}
+
+/* Phone: Unit Converter stacked clean layout */
+body[data-page="unitConverter"] .unit-converter-workspace {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  grid-template-areas:
+    "conversion"
+    "value"
+    "units"
+    "result" !important;
+  gap: 12px !important;
+}
+body[data-page="unitConverter"] .unit-type-buttons,
+body[data-page="unitConverter"] .unit-picker-grid,
+body[data-page="unitConverter"] .unit-button-list {
+  grid-template-columns: 1fr 1fr !important;
+}
+body[data-page="unitConverter"] .unit-converter-panel,
+body[data-page="unitConverter"] #extraCalcResult {
+  padding: 14px !important;
+}
+body[data-page="unitConverter"] .unit-result-value {
+  font-size: 1.45rem !important;
+}

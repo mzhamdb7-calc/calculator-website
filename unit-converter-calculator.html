@@ -116,11 +116,13 @@
         Choose a unit type and convert between units.
       </p>
 <p class="extra-page-note">Examples: length km to mile, weight kg to lb, volume liter to gallon, temperature c to f.</p>
-<div class="extra-input-card unit-converter-upgrade-card">
-<div class="extra-input-card-title">Input details</div>
+<div class="extra-input-card unit-converter-upgrade-card unit-converter-wide-card">
 <input id="unitType" type="hidden" value="length"/>
 <input id="unitFrom" type="hidden" value="m"/>
 <input id="unitTo" type="hidden" value="km"/>
+<div class="unit-converter-workspace">
+<section class="unit-converter-panel unit-conversion-panel" aria-label="Type of conversion">
+<div class="extra-input-card-title">Type of conversion</div>
 <div aria-label="Unit converter type" class="unit-type-buttons">
 <button class="unit-type-btn is-active" data-unit-type="length" type="button">Length</button>
 <button class="unit-type-btn" data-unit-type="weight" type="button">Weight</button>
@@ -129,14 +131,33 @@
 <button class="unit-type-btn" data-unit-type="volume" type="button">Volume</button>
 <button class="unit-type-btn" data-unit-type="speed" type="button">Speed</button>
 </div>
+</section>
+<section class="unit-converter-panel unit-value-panel" aria-label="Value input">
+<div class="extra-input-card-title">Value</div>
 <div class="extra-input-field unit-value-field">
 <label for="unitValue">Value</label>
 <input id="unitValue" inputmode="decimal" placeholder="Example: 100" type="number"/>
 </div>
+</section>
+<section class="unit-converter-panel unit-units-panel" aria-label="Type of unit">
+<div class="extra-input-card-title">Type of unit</div>
 <div class="unit-picker-grid">
 <section class="unit-picker-panel">
 <h3>From</h3>
 <div aria-label="From unit buttons" class="unit-button-list" id="unitFromButtons"></div>
+</section>
+<section class="unit-picker-panel">
+<h3>To</h3>
+<div aria-label="To unit buttons" class="unit-button-list" id="unitToButtons"></div>
+</section>
+</div>
+</section>
+<section aria-live="polite" class="unit-converter-panel unit-result-panel" id="extraCalcResult">
+<div class="unit-result-kicker">Result</div>
+<div class="unit-result-value">Enter value</div>
+</section>
+</div>
+</div>
 </section>
 <section class="unit-picker-panel">
 <h3>To</h3>

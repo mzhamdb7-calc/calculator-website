@@ -1090,13 +1090,18 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
     if(!box) return;
     box.hidden = false;
     box.style.display = 'block';
-    box.innerHTML = '<article class="finance-result-shell">' +
-      '<header class="finance-result-header"><h2>Unit conversion</h2><p>Converted value updates automatically.</p></header>' +
-      '<div class="finance-result-summary-grid">' +
-      '<article class="finance-result-metric-card"><div class="finance-result-metric-label">Value</div><div class="finance-result-metric-value">' + format(value) + ' ' + labelFor(type, from) + '</div></article>' +
-      '<article class="finance-result-metric-card"><div class="finance-result-metric-label">Converted</div><div class="finance-result-metric-value">' + format(result) + ' ' + labelFor(type, to) + '</div></article>' +
-      '<article class="finance-result-metric-card"><div class="finance-result-metric-label">Type</div><div class="finance-result-metric-value">' + type.charAt(0).toUpperCase() + type.slice(1) + '</div></article>' +
-      '</div></article>';
+    box.style.visibility = 'visible';
+    box.innerHTML = '<div class="unit-result-kicker">Result</div>' +
+      '<div class="unit-result-value">' + format(result) + ' ' + labelFor(type, to) + '</div>' +
+      '<div class="unit-result-detail">' + format(value) + ' ' + labelFor(type, from) + ' → ' + labelFor(type, to) + '</div>';
+  }
+  function renderEmptyResult(message){
+    const box = id('extraCalcResult');
+    if(!box) return;
+    box.hidden = false;
+    box.style.display = 'block';
+    box.style.visibility = 'visible';
+    box.innerHTML = '<div class="unit-result-kicker">Result</div><div class="unit-result-value">' + (message || 'Enter value') + '</div>';
   }
   function calculate(){
     const type = activeType();
@@ -1104,13 +1109,14 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
     const value = Number(String(valueInput && valueInput.value || '').replace(/,/g,'').trim());
     const from = id('unitFrom') ? id('unitFrom').value : '';
     const to = id('unitTo') ? id('unitTo').value : '';
-    if(!Number.isFinite(value)) return;
+    if(!Number.isFinite(value)) { renderEmptyResult('Enter value'); return; }
     let result = NaN;
     if(type === 'temperature') result = convertTemp(value, from, to);
     else if(factors[type] && Number.isFinite(factors[type][from]) && Number.isFinite(factors[type][to])) {
       result = value * factors[type][from] / factors[type][to];
     }
     if(Number.isFinite(result)) renderResult(value, result, type, from, to);
+    else renderEmptyResult('Unsupported unit');
   }
   function renderUnitButtons(which){
     const type = activeType();
