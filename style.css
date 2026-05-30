@@ -1583,3 +1583,18 @@ body[data-page="percentage"] .percentage-helper {
     align-self: start !important;
   }
 }
+
+
+/* Unit Converter: remove bottom result box completely */
+body[data-page="unitConverter"] #extraCalcResult,
+body[data-page="unitConverter"] .unit-converter-bottom-result,
+body[data-page="unitConverter"] .unit-converter-result-box {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+}
