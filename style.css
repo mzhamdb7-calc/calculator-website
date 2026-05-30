@@ -1958,3 +1958,114 @@ body[data-page="unitConverter"] .unit-value-field input {
     max-width: 100% !important;
   }
 }
+
+/* Unit Converter: final width + clean value input sizing */
+@media screen and (min-width: 851px) {
+  body[data-page="unitConverter"] main.extra-help-layout.tool-layout,
+  body[data-page="unitConverter"] main.loan-calculator-container.extra-calculator-container.extra-calculator-layout.extra-help-layout.tool-layout {
+    width: min(1760px, calc(100vw - 28px)) !important;
+    max-width: 1760px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    grid-template-columns: minmax(230px, 300px) minmax(0, 1fr) !important;
+    column-gap: 24px !important;
+  }
+
+  body[data-page="unitConverter"] main.extra-help-layout > .calculator.extra-calculator-box,
+  body[data-page="unitConverter"] .calculator.extra-calculator-box {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    padding-left: clamp(28px, 3vw, 48px) !important;
+    padding-right: clamp(28px, 3vw, 48px) !important;
+    overflow: visible !important;
+  }
+
+  body[data-page="unitConverter"] .unit-converter-workspace {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: minmax(620px, 1fr) minmax(320px, 380px) !important;
+    grid-template-areas:
+      "conversion value"
+      "units value" !important;
+    column-gap: 30px !important;
+    row-gap: 22px !important;
+    align-items: start !important;
+  }
+
+  body[data-page="unitConverter"] .unit-conversion-panel,
+  body[data-page="unitConverter"] .unit-units-panel {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  body[data-page="unitConverter"] .unit-value-panel {
+    grid-area: value !important;
+    width: 100% !important;
+    max-width: 380px !important;
+    min-width: 0 !important;
+    padding-top: 4px !important;
+    overflow: visible !important;
+  }
+
+  body[data-page="unitConverter"] .unit-value-panel .extra-input-card-title {
+    margin: 0 0 12px !important;
+    line-height: 1.1 !important;
+  }
+
+  body[data-page="unitConverter"] .unit-value-field {
+    width: 100% !important;
+    max-width: 340px !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+  }
+
+  body[data-page="unitConverter"] .unit-value-field label {
+    display: block !important;
+    margin: 0 0 8px !important;
+    font-size: 1rem !important;
+    line-height: 1.15 !important;
+    font-weight: 850 !important;
+  }
+
+  body[data-page="unitConverter"] .unit-value-field input#unitValue {
+    display: block !important;
+    width: 100% !important;
+    max-width: 340px !important;
+    min-width: 0 !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    padding: 0 16px !important;
+    border-radius: 14px !important;
+    font-size: 1rem !important;
+    line-height: 1.2 !important;
+    box-sizing: border-box !important;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  body[data-page="unitConverter"] .unit-type-buttons {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  body[data-page="unitConverter"] .unit-button-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media screen and (max-width: 850px) {
+  body[data-page="unitConverter"] .unit-converter-workspace {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "conversion"
+      "value"
+      "units" !important;
+  }
+
+  body[data-page="unitConverter"] .unit-value-panel,
+  body[data-page="unitConverter"] .unit-value-field,
+  body[data-page="unitConverter"] .unit-value-field input#unitValue {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
