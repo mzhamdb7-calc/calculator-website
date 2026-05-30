@@ -1526,3 +1526,60 @@ body[data-page="percentage"] .percentage-helper {
     font-size: 1.16rem !important;
   }
 }
+
+/* Percentage calculator desktop layout fix: keep old orientation, place result below inputs */
+@media screen and (min-width: 851px) {
+  body[data-page="percentage"] .percentage-type-calculator {
+    display: grid !important;
+    grid-template-columns: minmax(420px, 1.15fr) minmax(360px, 1fr) !important;
+    column-gap: 24px !important;
+    row-gap: 16px !important;
+    align-items: start !important;
+  }
+
+  body[data-page="percentage"] .percentage-type-calculator > h1,
+  body[data-page="percentage"] .percentage-type-calculator > .subtitle {
+    grid-column: 1 / -1 !important;
+    max-width: none !important;
+  }
+
+  body[data-page="percentage"] .percentage-type-calculator > .percentage-type-box {
+    grid-column: 1 !important;
+    grid-row: 3 / span 3 !important;
+    margin: 0 !important;
+    align-self: start !important;
+  }
+
+  body[data-page="percentage"] .percentage-type-calculator > .percentage-input-grid {
+    grid-column: 2 !important;
+    grid-row: 3 !important;
+    margin: 0 !important;
+    align-self: start !important;
+  }
+
+  body[data-page="percentage"] .percentage-type-calculator > #percentageLiveResultBox,
+  body[data-page="percentage"] #percentageLiveResultBox.percentage-result-compact {
+    grid-column: 2 !important;
+    grid-row: 4 !important;
+    align-self: start !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 2px 0 0 !important;
+    min-height: 88px !important;
+    padding: 14px 16px !important;
+    position: static !important;
+    top: auto !important;
+    box-shadow: 0 8px 20px rgba(38,58,51,.06) !important;
+  }
+
+  body[data-page="percentage"] #percentageLiveResultBox.percentage-result-compact #percentageLiveResult {
+    font-size: clamp(1.2rem, 1.9vw, 1.7rem) !important;
+  }
+
+  body[data-page="percentage"] .percentage-type-calculator > .percentage-helper {
+    grid-column: 2 !important;
+    grid-row: 5 !important;
+    margin: 0 !important;
+    align-self: start !important;
+  }
+}
