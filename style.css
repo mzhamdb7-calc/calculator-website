@@ -2993,3 +2993,13 @@ body[data-page="unitConverter"] .unit-inline-result .unit-copy-result-btn {
   }
 }
 
+
+
+/* Percentage result spacing: keep value square from touching copy button */
+body[data-page="percentage"] #percentageLiveResultBox .percentage-result-square-box {
+  margin-bottom: 12px !important;
+}
+
+body[data-page="percentage"] #percentageLiveResultBox .percentage-copy-btn {
+  margin-top: 0 !important;
+}
