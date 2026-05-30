@@ -293,3 +293,25 @@
     transform: none !important;
   }
 }
+
+
+/* Percentage mobile: keep result inside calculator under inputs */
+@media screen and (max-width:850px){
+  body[data-page="percentage"] .percentage-type-calculator > .percentage-type-box,
+  body[data-page="percentage"] .percentage-type-calculator > .percentage-input-grid,
+  body[data-page="percentage"] .percentage-type-calculator > .percentage-result-inside,
+  body[data-page="percentage"] .percentage-type-calculator > .percentage-helper{
+    grid-column:1 / -1 !important;
+    width:100% !important;
+    max-width:100% !important;
+  }
+  body[data-page="percentage"] .percentage-type-calculator > .percentage-result-inside{
+    margin:12px 0 0 !important;
+    padding:13px 14px !important;
+    min-height:76px !important;
+    border-radius:14px !important;
+  }
+  body[data-page="percentage"] .percentage-type-calculator > .percentage-result-inside #percentageLiveResult{
+    font-size:clamp(1.1rem,6vw,1.45rem) !important;
+  }
+}
