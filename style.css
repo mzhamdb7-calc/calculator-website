@@ -1483,49 +1483,46 @@ body:has(#unitValue) #extraCalcResult .finance-result-metric-value {
   overflow-wrap: anywhere !important;
 }
 
-
-
-/* Percentage result inside calculator box - scoped fix */
-body[data-page="percentage"] .percentage-type-calculator {
-  align-content: start !important;
-}
-body[data-page="percentage"] .percentage-type-calculator > .percentage-type-box,
-body[data-page="percentage"] .percentage-type-calculator > .percentage-input-grid,
-body[data-page="percentage"] .percentage-type-calculator > .percentage-result-inside,
-body[data-page="percentage"] .percentage-type-calculator > .percentage-helper {
-  grid-column: 1 / -1 !important;
-  width: 100% !important;
-  max-width: 760px !important;
-}
-body[data-page="percentage"] .percentage-type-calculator > .percentage-result-inside {
+/* Percentage calculator result placement - compact below input fields */
+body[data-page="percentage"] #percentageLiveResultBox.percentage-result-compact {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
   position: relative !important;
   z-index: 6 !important;
+  width: 100% !important;
+  max-width: 760px !important;
   margin: 14px 0 0 !important;
-  padding: 14px 16px !important;
-  min-height: 86px !important;
+  padding: 12px 14px !important;
+  min-height: 72px !important;
   border: 1px solid var(--line) !important;
-  border-radius: 16px !important;
-  background: linear-gradient(180deg, #ffffff 0%, #f4faf6 100%) !important;
-  box-shadow: 0 8px 20px rgba(38,58,51,.06) !important;
-  overflow: hidden !important;
+  border-radius: 14px !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f7fbf8 100%) !important;
+  box-shadow: 0 6px 16px rgba(38,58,51,.055) !important;
+  overflow-wrap: anywhere !important;
 }
-body[data-page="percentage"] .percentage-type-calculator > .percentage-result-inside .percentage-result-kicker {
+body[data-page="percentage"] #percentageLiveResultBox.percentage-result-compact .percentage-result-kicker {
   margin: 0 0 4px !important;
-  font-size: .76rem !important;
+  font-size: .74rem !important;
   line-height: 1.2 !important;
 }
-body[data-page="percentage"] .percentage-type-calculator > .percentage-result-inside #percentageLiveResult {
-  display: block !important;
-  visibility: visible !important;
+body[data-page="percentage"] #percentageLiveResultBox.percentage-result-compact #percentageLiveResult {
   margin: 0 !important;
-  font-size: clamp(1.2rem, 2.2vw, 1.7rem) !important;
-  line-height: 1.18 !important;
+  font-size: clamp(1.15rem, 2.1vw, 1.65rem) !important;
+  line-height: 1.16 !important;
   letter-spacing: -0.03em !important;
   word-break: break-word !important;
 }
 body[data-page="percentage"] .percentage-helper {
   margin-top: 10px !important;
+}
+@media (max-width: 760px) {
+  body[data-page="percentage"] #percentageLiveResultBox.percentage-result-compact {
+    max-width: 100% !important;
+    padding: 11px 12px !important;
+    min-height: 66px !important;
+  }
+  body[data-page="percentage"] #percentageLiveResultBox.percentage-result-compact #percentageLiveResult {
+    font-size: 1.16rem !important;
+  }
 }
