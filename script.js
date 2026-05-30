@@ -1860,3 +1860,45 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
   setTimeout(syncUnitInstructionWidth, 500);
   setTimeout(syncUnitInstructionWidth, 1200);
 })();
+
+
+/* Unit Converter: exact-match instruction box width to calculator box */
+(function () {
+  'use strict';
+
+  function syncUnitConverterInstructionWidth() {
+    if (!document.body || document.body.dataset.page !== 'unitConverter') return;
+
+    var main = document.querySelector('main.loan-calculator-container.extra-calculator-container.extra-calculator-layout.extra-help-layout.tool-layout');
+    var calculator = main && main.querySelector(':scope > .calculator.extra-calculator-box');
+    var instruction = main && main.querySelector(':scope > .instruction-box.universal-help-panel');
+
+    if (!main || !calculator || !instruction) return;
+
+    var width = Math.round(calculator.getBoundingClientRect().width);
+    if (width > 0) {
+      document.documentElement.style.setProperty('--unit-converter-box-width', width + 'px');
+      instruction.style.setProperty('width', width + 'px', 'important');
+      instruction.style.setProperty('max-width', width + 'px', 'important');
+      instruction.style.setProperty('min-width', '0', 'important');
+      instruction.style.setProperty('box-sizing', 'border-box', 'important');
+
+      instruction.querySelectorAll('.instruction-section, .instruction-what-box, .reference-box, .reference-scroll').forEach(function (el) {
+        el.style.setProperty('width', '100%', 'important');
+        el.style.setProperty('max-width', '100%', 'important');
+        el.style.setProperty('box-sizing', 'border-box', 'important');
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncUnitConverterInstructionWidth);
+  } else {
+    syncUnitConverterInstructionWidth();
+  }
+
+  window.addEventListener('resize', syncUnitConverterInstructionWidth);
+  setTimeout(syncUnitConverterInstructionWidth, 100);
+  setTimeout(syncUnitConverterInstructionWidth, 500);
+})();
+

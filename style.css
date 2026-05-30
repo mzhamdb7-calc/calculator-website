@@ -2939,3 +2939,57 @@ body[data-page="unitConverter"] .unit-inline-result .unit-copy-result-btn {
     padding: 14px !important;
   }
 }
+
+
+/* ===== Unit Converter instruction width final sync ===== */
+@media screen and (min-width: 851px) {
+  body[data-page="unitConverter"] main.loan-calculator-container.extra-calculator-container.extra-calculator-layout.extra-help-layout.tool-layout {
+    display: grid !important;
+    width: min(1480px, calc(100vw - 48px)) !important;
+    max-width: 1480px !important;
+    grid-template-columns: minmax(230px, 290px) minmax(0, 1fr) !important;
+    gap: 24px !important;
+    align-items: start !important;
+  }
+
+  body[data-page="unitConverter"] main.loan-calculator-container.extra-calculator-container.extra-calculator-layout.extra-help-layout.tool-layout > .tool-group-nav {
+    grid-column: 1 !important;
+    grid-row: 1 / span 2 !important;
+  }
+
+  body[data-page="unitConverter"] main.loan-calculator-container.extra-calculator-container.extra-calculator-layout.extra-help-layout.tool-layout > .calculator.extra-calculator-box,
+  body[data-page="unitConverter"] main.loan-calculator-container.extra-calculator-container.extra-calculator-layout.extra-help-layout.tool-layout > .instruction-box.universal-help-panel {
+    grid-column: 2 !important;
+    width: var(--unit-converter-box-width, 100%) !important;
+    max-width: var(--unit-converter-box-width, 100%) !important;
+    min-width: 0 !important;
+    justify-self: start !important;
+    align-self: start !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body[data-page="unitConverter"] main.loan-calculator-container.extra-calculator-container.extra-calculator-layout.extra-help-layout.tool-layout > .calculator.extra-calculator-box {
+    grid-row: 1 !important;
+  }
+
+  body[data-page="unitConverter"] main.loan-calculator-container.extra-calculator-container.extra-calculator-layout.extra-help-layout.tool-layout > .instruction-box.universal-help-panel {
+    grid-row: 2 !important;
+  }
+
+  body[data-page="unitConverter"] .instruction-box.universal-help-panel {
+    display: block !important;
+  }
+
+  body[data-page="unitConverter"] .instruction-box.universal-help-panel > *,
+  body[data-page="unitConverter"] .instruction-box.universal-help-panel .instruction-section,
+  body[data-page="unitConverter"] .instruction-box.universal-help-panel .instruction-what-box,
+  body[data-page="unitConverter"] .instruction-box.universal-help-panel .reference-box,
+  body[data-page="unitConverter"] .instruction-box.universal-help-panel .reference-scroll {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
