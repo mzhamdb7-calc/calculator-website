@@ -2069,3 +2069,151 @@ body[data-page="unitConverter"] .unit-value-field input {
     max-width: 100% !important;
   }
 }
+
+/* ===== Unit Converter reconstruction fix ===== */
+body[data-page="unitConverter"] .extra-calculator-box {
+  max-width: none !important;
+}
+
+body[data-page="unitConverter"] .unit-converter-upgrade-card,
+body[data-page="unitConverter"] .unit-converter-wide-card {
+  width: 100% !important;
+  max-width: none !important;
+  border-radius: 28px !important;
+  padding: 30px !important;
+  box-sizing: border-box !important;
+}
+
+body[data-page="unitConverter"] .unit-converter-workspace {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.9fr) minmax(280px, 0.9fr) !important;
+  grid-template-areas:
+    "conversion value"
+    "units value" !important;
+  gap: 28px !important;
+  align-items: start !important;
+  width: 100% !important;
+}
+
+body[data-page="unitConverter"] .unit-conversion-panel { grid-area: conversion !important; }
+body[data-page="unitConverter"] .unit-units-panel { grid-area: units !important; }
+body[data-page="unitConverter"] .unit-value-panel {
+  grid-area: value !important;
+  align-self: start !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: auto !important;
+}
+
+body[data-page="unitConverter"] .unit-converter-panel {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+body[data-page="unitConverter"] .unit-conversion-panel,
+body[data-page="unitConverter"] .unit-units-panel {
+  padding: 22px !important;
+  border-radius: 24px !important;
+}
+
+body[data-page="unitConverter"] .unit-value-panel .extra-input-card-title {
+  margin: 0 0 12px !important;
+}
+
+body[data-page="unitConverter"] .unit-value-panel .unit-value-field {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+body[data-page="unitConverter"] .unit-value-panel label {
+  display: block !important;
+  font-size: 1.05rem !important;
+  font-weight: 800 !important;
+  margin: 0 0 10px !important;
+  color: #17352f !important;
+}
+
+body[data-page="unitConverter"] #unitValue {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  height: 64px !important;
+  padding: 0 20px !important;
+  border-radius: 20px !important;
+  font-size: 1.1rem !important;
+  box-sizing: border-box !important;
+}
+
+body[data-page="unitConverter"] .unit-type-buttons {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+}
+
+body[data-page="unitConverter"] .unit-type-btn,
+body[data-page="unitConverter"] .unit-button-list button {
+  min-height: 66px !important;
+  font-size: clamp(1rem, 1.15vw, 1.15rem) !important;
+  line-height: 1.15 !important;
+  padding: 14px 12px !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+}
+
+body[data-page="unitConverter"] .unit-picker-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 22px !important;
+}
+
+body[data-page="unitConverter"] .unit-picker-panel {
+  min-width: 0 !important;
+}
+
+body[data-page="unitConverter"] .unit-button-list {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+}
+
+@media screen and (max-width: 1200px) {
+  body[data-page="unitConverter"] .unit-converter-workspace {
+    grid-template-columns: minmax(0, 1fr) 300px !important;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  body[data-page="unitConverter"] .unit-converter-upgrade-card,
+  body[data-page="unitConverter"] .unit-converter-wide-card {
+    padding: 22px !important;
+  }
+
+  body[data-page="unitConverter"] .unit-converter-workspace {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "conversion"
+      "value"
+      "units" !important;
+    gap: 20px !important;
+  }
+
+  body[data-page="unitConverter"] .unit-type-buttons {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media screen and (max-width: 560px) {
+  body[data-page="unitConverter"] .unit-type-buttons,
+  body[data-page="unitConverter"] .unit-picker-grid,
+  body[data-page="unitConverter"] .unit-button-list {
+    grid-template-columns: 1fr !important;
+  }
+}
