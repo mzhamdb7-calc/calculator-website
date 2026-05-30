@@ -473,5 +473,79 @@ body[data-page="basic"] .basic-clean-display-card #display {
 }
 </style>
 
+
+
+<style>
+/* BASIC ONLY: auto-shrink display text when the number is too long */
+body[data-page="basic"] .basic-clean-display-card #display {
+  font-variant-numeric: tabular-nums !important;
+  transition: font-size .12s ease !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const display = document.getElementById('display');
+  if (!display) return;
+
+  const maxDesktop = 30;
+  const maxMobile = 26;
+  const minSize = 16;
+
+  const measurer = document.createElement('span');
+  measurer.setAttribute('aria-hidden', 'true');
+  measurer.style.position = 'fixed';
+  measurer.style.left = '-9999px';
+  measurer.style.top = '-9999px';
+  measurer.style.visibility = 'hidden';
+  measurer.style.whiteSpace = 'pre';
+  measurer.style.pointerEvents = 'none';
+  document.body.appendChild(measurer);
+
+  function syncMeasureStyle() {
+    const style = window.getComputedStyle(display);
+    measurer.style.fontFamily = style.fontFamily;
+    measurer.style.fontWeight = style.fontWeight;
+    measurer.style.letterSpacing = style.letterSpacing;
+  }
+
+  function shrinkDisplayText() {
+    const available = Math.max(60, display.clientWidth - 12);
+    const maxSize = window.innerWidth < 700 ? maxMobile : maxDesktop;
+    let size = maxSize;
+    const text = display.value || display.placeholder || '0';
+
+    syncMeasureStyle();
+    measurer.textContent = text;
+    measurer.style.fontSize = size + 'px';
+
+    while (size > minSize && measurer.offsetWidth > available) {
+      size -= 1;
+      measurer.style.fontSize = size + 'px';
+    }
+
+    display.style.fontSize = size + 'px';
+  }
+
+  display.addEventListener('input', shrinkDisplayText);
+  window.addEventListener('resize', shrinkDisplayText);
+
+  ['add', 'addFunction', 'addPower', 'removeLast', 'clearDisplay', 'calculate'].forEach(function (fnName) {
+    const original = window[fnName];
+    if (typeof original === 'function' && !original.__basicShrinkWrapped) {
+      const wrapped = function () {
+        const result = original.apply(this, arguments);
+        setTimeout(shrinkDisplayText, 0);
+        return result;
+      };
+      wrapped.__basicShrinkWrapped = true;
+      window[fnName] = wrapped;
+    }
+  });
+
+  setTimeout(shrinkDisplayText, 50);
+});
+</script>
+
 </body>
 </html>
