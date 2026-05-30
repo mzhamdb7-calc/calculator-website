@@ -121,13 +121,20 @@
 <div class="unit-converter-workspace">
 <section class="unit-converter-panel unit-conversion-panel" aria-label="Type of conversion">
 <div class="extra-input-card-title">Type of conversion</div>
-<div aria-label="Unit converter type" class="unit-type-buttons">
-<button class="unit-type-btn is-active" data-unit-type="length" type="button">Length</button>
-<button class="unit-type-btn" data-unit-type="weight" type="button">Weight</button>
-<button class="unit-type-btn" data-unit-type="temperature" type="button">Temperature</button>
-<button class="unit-type-btn" data-unit-type="area" type="button">Area</button>
-<button class="unit-type-btn" data-unit-type="volume" type="button">Volume</button>
-<button class="unit-type-btn" data-unit-type="speed" type="button">Speed</button>
+<div class="unit-type-select-wrap">
+<label class="unit-select-label" for="unitTypeSelect">Conversion type</label>
+<select aria-label="Type of conversion" class="unit-converter-select" id="unitTypeSelect">
+<option value="length">Length</option>
+<option value="weight">Weight</option>
+<option value="temperature">Temperature</option>
+<option value="area">Area</option>
+<option value="volume">Volume</option>
+<option value="speed">Speed</option>
+<option value="currency">Currency</option>
+<option value="data">Data storage</option>
+<option value="time">Time</option>
+<option value="energyPower">Energy / Power</option>
+</select>
 </div>
 </section>
 <section class="unit-converter-panel unit-value-panel" aria-label="Value input">
@@ -155,11 +162,11 @@
 </section>
 </section>
 <aside aria-label="Calculator guide and references" class="instruction-box universal-help-panel">
-<section class="instruction-section instruction-what-box"><h3>What does this calculator do?</h3><p>Use this to convert common units such as length, weight, temperature, area, volume, and speed.</p></section>
+<section class="instruction-section instruction-what-box"><h3>What does this calculator do?</h3><p>Use this to convert common units such as length, weight, temperature, area, volume, speed, currency, data storage, time, and energy/power.</p></section>
 <h2 class="instruction-main-title">Instructions</h2>
-<section class="instruction-section instruction-how-box"><h3>How to use it</h3><p>Choose the unit type, enter the value, choose the starting unit and target unit, then read the converted result.</p></section>
+<section class="instruction-section instruction-how-box"><h3>How to use it</h3><p>Choose the conversion type, enter the value, then choose the starting unit and target unit.</p></section>
 <section class="instruction-section instruction-formula-box"><h3>Formula used</h3><p>The calculator uses fixed conversion factors between supported units. Temperature conversions also include an offset.</p></section>
-<section class="instruction-section instruction-example-box"><h3>Example calculation</h3><p>1 kilometre = 1000 metres. 1 inch = 2.54 centimetres.</p></section>
+<section class="instruction-section instruction-example-box"><h3>Example calculation</h3><p>1 kilometre = 1000 metres. 1 MB = 1000 KB. Currency rates here are static examples, not live exchange rates.</p></section>
 <section aria-label="References" class="reference-box universal-reference-box"><h2 class="reference-main-title">References</h2>
 <div class="reference-scroll universal-reference-list">
 <div class="reference-card"><h3>Unit conversion</h3><p>NIST provides reference information for SI units and conversion factors.</p><a href="https://www.nist.gov/pml/owm/metric-si/si-units" rel="noopener noreferrer" target="_blank">Open source</a></div>

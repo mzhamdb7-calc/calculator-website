@@ -1222,3 +1222,110 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initUnitDropdowns);
   else initUnitDropdowns();
 })();
+
+/* ===== Unit Converter type dropdown + expanded units override ===== */
+(function(){
+  'use strict';
+  if (!document.body || document.body.dataset.page !== 'unitConverter') return;
+
+  const unitSets = {
+    length: [['m','Meter'], ['km','Kilometer'], ['cm','Centimeter'], ['mm','Millimeter'], ['mile','Mile'], ['yard','Yard'], ['ft','Foot'], ['inch','Inch']],
+    weight: [['kg','Kilogram'], ['g','Gram'], ['mg','Milligram'], ['lb','Pound'], ['oz','Ounce'], ['tonne','Tonne']],
+    temperature: [['c','Celsius'], ['f','Fahrenheit'], ['k','Kelvin']],
+    area: [['m2','Square meter'], ['km2','Square kilometer'], ['cm2','Square centimeter'], ['ft2','Square foot'], ['in2','Square inch'], ['acre','Acre'], ['hectare','Hectare']],
+    volume: [['l','Liter'], ['ml','Milliliter'], ['m3','Cubic meter'], ['cm3','Cubic centimeter'], ['gallon','Gallon'], ['cup','Cup'], ['pint','Pint']],
+    speed: [['mps','Meter/sec'], ['kmh','Kilometer/hour'], ['mph','Mile/hour'], ['knot','Knot'], ['fps','Foot/sec']],
+    currency: [['usd','USD'], ['myr','MYR'], ['sgd','SGD'], ['eur','EUR'], ['gbp','GBP'], ['jpy','JPY'], ['aud','AUD']],
+    data: [['b','Byte'], ['kb','Kilobyte'], ['mb','Megabyte'], ['gb','Gigabyte'], ['tb','Terabyte'], ['kib','Kibibyte'], ['mib','Mebibyte'], ['gib','Gibibyte']],
+    time: [['s','Second'], ['min','Minute'], ['h','Hour'], ['day','Day'], ['week','Week'], ['month','Month'], ['year','Year']],
+    energyPower: [['j','Joule'], ['kj','Kilojoule'], ['cal','Calorie'], ['kcal','Kilocalorie'], ['wh','Watt-hour'], ['kwh','Kilowatt-hour'], ['w','Watt'], ['kw','Kilowatt'], ['hp','Horsepower']]
+  };
+
+  const factors = {
+    length: {m:1, km:1000, cm:0.01, mm:0.001, mile:1609.344, yard:0.9144, ft:0.3048, inch:0.0254},
+    weight: {kg:1, g:0.001, mg:0.000001, lb:0.45359237, oz:0.028349523125, tonne:1000},
+    area: {m2:1, km2:1000000, cm2:0.0001, ft2:0.09290304, in2:0.00064516, acre:4046.8564224, hectare:10000},
+    volume: {l:1, ml:0.001, m3:1000, cm3:0.001, gallon:3.785411784, cup:0.2365882365, pint:0.473176473},
+    speed: {mps:1, kmh:0.2777777778, mph:0.44704, knot:0.5144444444, fps:0.3048},
+    currency: {usd:1, myr:0.213, sgd:0.74, eur:1.08, gbp:1.27, jpy:0.0064, aud:0.66},
+    data: {b:1, kb:1000, mb:1000000, gb:1000000000, tb:1000000000000, kib:1024, mib:1048576, gib:1073741824},
+    time: {s:1, min:60, h:3600, day:86400, week:604800, month:2629746, year:31556952},
+    energyPower: {j:1, kj:1000, cal:4.184, kcal:4184, wh:3600, kwh:3600000, w:1, kw:1000, hp:745.699872}
+  };
+
+  const dimension = {
+    energyPower: {j:'energy', kj:'energy', cal:'energy', kcal:'energy', wh:'energy', kwh:'energy', w:'power', kw:'power', hp:'power'}
+  };
+
+  const defaults = {
+    length:['m','km'], weight:['kg','lb'], temperature:['c','f'], area:['m2','ft2'], volume:['l','gallon'], speed:['kmh','mph'],
+    currency:['usd','myr'], data:['mb','gb'], time:['h','min'], energyPower:['j','kj']
+  };
+
+  function id(name){ return document.getElementById(name); }
+
+  function fillSelect(select, items, selected){
+    if (!select) return;
+    select.innerHTML = '';
+    items.forEach(function(item){
+      const opt = document.createElement('option');
+      opt.value = item[0];
+      opt.textContent = item[1];
+      if (item[0] === selected) opt.selected = true;
+      select.appendChild(opt);
+    });
+  }
+
+  function convertTemp(value, from, to){
+    let c;
+    if (from === 'c') c = value;
+    else if (from === 'f') c = (value - 32) * 5 / 9;
+    else if (from === 'k') c = value - 273.15;
+    else return NaN;
+    if (to === 'c') return c;
+    if (to === 'f') return c * 9 / 5 + 32;
+    if (to === 'k') return c + 273.15;
+    return NaN;
+  }
+
+  function calculate(){
+    const type = (id('unitType') && id('unitType').value) || 'length';
+    const value = Number(String(id('unitValue') && id('unitValue').value || '').replace(/,/g,'').trim());
+    const from = id('unitFrom') ? id('unitFrom').value : '';
+    const to = id('unitTo') ? id('unitTo').value : '';
+    if (!Number.isFinite(value)) return;
+    if (type === 'temperature') return convertTemp(value, from, to);
+    if (dimension[type] && dimension[type][from] && dimension[type][to] && dimension[type][from] !== dimension[type][to]) return NaN;
+    const set = factors[type] || {};
+    if (Number.isFinite(set[from]) && Number.isFinite(set[to]) && set[to] !== 0) return value * set[from] / set[to];
+    return NaN;
+  }
+
+  function setType(type){
+    type = unitSets[type] ? type : 'length';
+    const pair = defaults[type] || defaults.length;
+    if (id('unitType')) id('unitType').value = type;
+    if (id('unitTypeSelect')) id('unitTypeSelect').value = type;
+    fillSelect(id('unitFrom'), unitSets[type], pair[0]);
+    fillSelect(id('unitTo'), unitSets[type], pair[1]);
+  }
+
+  function init(){
+    const typeSelect = id('unitTypeSelect');
+    if (typeSelect) {
+      typeSelect.addEventListener('change', function(){ setType(typeSelect.value); });
+    }
+    ['unitFrom','unitTo','unitValue'].forEach(function(name){
+      const el = id(name);
+      if (el) {
+        el.addEventListener('input', calculate);
+        el.addEventListener('change', calculate);
+      }
+    });
+    setType((id('unitType') && id('unitType').value) || 'length');
+    window.calculateUnitConverterExtra = calculate;
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
