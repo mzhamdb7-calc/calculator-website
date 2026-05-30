@@ -3003,3 +3003,33 @@ body[data-page="percentage"] #percentageLiveResultBox .percentage-result-square-
 body[data-page="percentage"] #percentageLiveResultBox .percentage-copy-btn {
   margin-top: 0 !important;
 }
+
+
+/* FAQ centralized references */
+#calculatorReferences {
+  margin-top: 22px !important;
+}
+#calculatorReferences .reference-faq-list {
+  display: grid !important;
+  gap: 12px !important;
+}
+#calculatorReferences .reference-faq-card {
+  margin: 12px 0 0 !important;
+  padding: 14px !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 14px !important;
+  background: var(--surface-soft) !important;
+}
+#calculatorReferences .reference-faq-card h3 {
+  margin: 0 0 6px !important;
+  font-size: 1rem !important;
+}
+#calculatorReferences .reference-faq-card p {
+  margin: 0 !important;
+}
+#calculatorReferences .reference-faq-card a {
+  display: inline-flex !important;
+  margin-top: 8px !important;
+  color: var(--primary-dark) !important;
+  font-weight: 800 !important;
+}

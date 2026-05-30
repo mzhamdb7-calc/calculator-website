@@ -118,7 +118,7 @@
 <div class="unit-converter-upgrade-card unit-converter-wide-card">
 <input id="unitType" type="hidden" value="length"/>
 <div class="unit-converter-workspace">
-<section class="unit-converter-panel unit-conversion-panel" aria-label="Type of conversion">
+<section aria-label="Type of conversion" class="unit-converter-panel unit-conversion-panel">
 <div class="extra-input-card-title">Type of conversion</div>
 <div class="unit-type-select-wrap">
 <label class="unit-select-label" for="unitTypeSelect">Conversion type</label>
@@ -136,12 +136,12 @@
 </select>
 </div>
 </section>
-<section class="unit-converter-panel unit-value-panel" aria-label="Value input">
+<section aria-label="Value input" class="unit-converter-panel unit-value-panel">
 <div class="extra-input-card-title">Value</div>
 <div class="extra-input-field unit-value-field">
-<input id="unitValue" aria-label="Value" inputmode="decimal" placeholder="Example: 100" type="number"/>
+<input aria-label="Value" id="unitValue" inputmode="decimal" placeholder="Example: 100" type="number"/>
 </div>
-<div class="unit-inline-result" aria-live="polite">
+<div aria-live="polite" class="unit-inline-result">
 <span class="unit-inline-result-label">Converted</span>
 <div class="unit-result-square-box">
 <strong id="unitInlineResult">Enter value</strong>
@@ -150,34 +150,29 @@
 <button class="unit-copy-result-btn" id="unitCopyResultBtn" type="button">Copy result</button>
 </div>
 </section>
-<section class="unit-converter-panel unit-units-panel" aria-label="Type of unit">
+<section aria-label="Type of unit" class="unit-converter-panel unit-units-panel">
 <div class="extra-input-card-title">Type of unit</div>
 <div class="unit-dropdown-grid">
 <section class="unit-dropdown-panel">
 <label for="unitFrom">From</label>
-<select id="unitFrom" aria-label="From unit"></select>
+<select aria-label="From unit" id="unitFrom"></select>
 </section>
 <section class="unit-dropdown-panel">
 <label for="unitTo">To</label>
-<select id="unitTo" aria-label="To unit"></select>
+<select aria-label="To unit" id="unitTo"></select>
 </section>
 </div>
 </section>
 </div>
 </div>
 </section>
-<aside aria-label="Calculator guide and references" class="instruction-box universal-help-panel">
+<aside aria-label="Calculator guide" class="instruction-box universal-help-panel">
 <section class="instruction-section instruction-what-box"><h3>What does this calculator do?</h3><p>Use this to convert common units such as length, weight, temperature, area, volume, speed, currency, data storage, time, and energy/power.</p></section>
 <h2 class="instruction-main-title">Instructions</h2>
 <section class="instruction-section instruction-how-box"><h3>How to use it</h3><p>Choose the conversion type, enter the value, then choose the starting unit and target unit.</p></section>
 <section class="instruction-section instruction-formula-box"><h3>Formula used</h3><p>The calculator uses fixed conversion factors for physical units. Currency mode fetches live daily exchange rates from the web.</p></section>
 <section class="instruction-section instruction-example-box"><h3>Example calculation</h3><p>1 kilometre = 1000 metres. 1 MB = 1000 KB. Currency conversion fetches live daily exchange rates from the web when Currency is selected.</p></section>
-<section aria-label="References" class="reference-box universal-reference-box"><h2 class="reference-main-title">References</h2>
-<div class="reference-scroll universal-reference-list">
-<div class="reference-card"><h3>Unit conversion</h3><p>NIST provides reference information for SI units and conversion factors.</p><a href="https://www.nist.gov/pml/owm/metric-si/si-units" rel="noopener noreferrer" target="_blank">Open source</a></div>
-<div class="reference-card"><h3>General note</h3><p>For medical, engineering, or legal measurements, always confirm the required unit standard.</p></div>
-</div>
-</section>
+
 </aside>
 </main>
 <script defer="" src="script.js?v=unit-instruction-width-final-isolated-20260530"></script>
