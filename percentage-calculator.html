@@ -153,8 +153,8 @@
 </section>
 <section class="age-bmi-result-below percentage-result-below" id="percentageLiveResultBox" aria-live="polite">
   <div class="percentage-result-kicker">Result</div>
-  <h2 id="percentageLiveResult"></h2>
-  <p class="percentage-result-formula" id="percentageFormula" hidden></p>
+  <h2 id="percentageResult"></h2>
+  <p class="percentage-result-formula" id="percentageFormula"></p>
 </section>
 
     <aside aria-label="Calculator guide and references" class="instruction-box universal-help-panel">
@@ -187,7 +187,7 @@
 .percentage-type-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 12px 25px rgba(47,125,104,.22)}
 .percentage-input-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:12px}
 .percentage-input-item{min-width:0}.percentage-input-item label{display:block;margin-bottom:8px;font-weight:900;color:var(--ink)}
-.percentage-input-item input{width:100%;box-sizing:border-box}.percentage-helper{margin:14px 0 0;color:var(--muted);line-height:1.45;font-weight:650}.percentage-result-kicker{margin-bottom:6px;color:var(--primary-dark);font-weight:900;text-transform:uppercase;letter-spacing:.08em;font-size:.82rem}.percentage-result-formula{display:none!important}.percentage-result-below #percentageLiveResult{margin:0;font-size:clamp(1.45rem,3vw,2.15rem);line-height:1.18;word-break:break-word}
+.percentage-input-item input{width:100%;box-sizing:border-box}.percentage-helper{margin:14px 0 0;color:var(--muted);line-height:1.45;font-weight:650}.percentage-result-kicker{margin-bottom:6px;color:var(--primary-dark);font-weight:900;text-transform:uppercase;letter-spacing:.08em;font-size:.82rem}.percentage-result-formula{margin:8px 0 0;color:var(--muted);line-height:1.45;font-weight:650}
 @media(max-width:760px){.percentage-type-buttons,.percentage-input-grid{grid-template-columns:1fr}.percentage-type-btn{text-align:left}}
 </style>
 <script>
@@ -269,16 +269,7 @@ document.addEventListener('DOMContentLoaded', function () {
       text = fmt(a * b / 100);
     }
     result.textContent = text;
-    result.style.setProperty('display', 'block', 'important');
-    const resultBox = document.getElementById('percentageLiveResultBox');
-    if (resultBox) {
-      resultBox.hidden = false;
-      resultBox.style.setProperty('display', 'block', 'important');
-      resultBox.style.setProperty('visibility', 'visible', 'important');
-    }
-    const legacyPanel = document.getElementById('percentageReportOutput');
-    if (legacyPanel) legacyPanel.remove();
-    if (formula) formula.textContent = '';
+    if (formula) formula.textContent = detail;
   }
   buttons.forEach(btn => btn.addEventListener('click', () => setMode(btn.dataset.type)));
   inputA.addEventListener('input', calculate);
