@@ -473,5 +473,92 @@ body[data-page="basic"] .basic-clean-display-card #display {
 }
 </style>
 
+
+
+<style>
+/* BASIC ONLY: auto-shrink display text when the number is too long */
+body[data-page="basic"] .basic-clean-display-card #display {
+  font-variant-numeric: tabular-nums !important;
+  transition: font-size .08s ease !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const display = document.getElementById('display');
+  if (!display) return;
+
+  const maxDesktop = 46;
+  const maxMobile = 34;
+  const minSize = 14;
+
+  const measurer = document.createElement('span');
+  measurer.setAttribute('aria-hidden', 'true');
+  Object.assign(measurer.style, {
+    position: 'fixed',
+    left: '-99999px',
+    top: '-99999px',
+    visibility: 'hidden',
+    whiteSpace: 'pre',
+    pointerEvents: 'none'
+  });
+  document.body.appendChild(measurer);
+
+  function syncMeasureStyle(size) {
+    const style = window.getComputedStyle(display);
+    measurer.style.fontFamily = style.fontFamily;
+    measurer.style.fontWeight = style.fontWeight;
+    measurer.style.letterSpacing = style.letterSpacing;
+    measurer.style.fontSize = size + 'px';
+  }
+
+  function shrinkDisplayText() {
+    const text = String(display.value || display.placeholder || '0');
+    const available = Math.max(80, display.clientWidth - 20);
+    let size = window.innerWidth < 700 ? maxMobile : maxDesktop;
+
+    measurer.textContent = text;
+    syncMeasureStyle(size);
+
+    while (size > minSize && measurer.offsetWidth > available) {
+      size -= 1;
+      syncMeasureStyle(size);
+    }
+
+    /* setProperty with important is required because older page CSS also uses !important */
+    display.style.setProperty('font-size', size + 'px', 'important');
+    display.style.setProperty('line-height', '1.05', 'important');
+  }
+
+  function queueShrink() {
+    requestAnimationFrame(shrinkDisplayText);
+    setTimeout(shrinkDisplayText, 40);
+  }
+
+  display.addEventListener('input', queueShrink);
+  display.addEventListener('change', queueShrink);
+  window.addEventListener('resize', queueShrink);
+
+  ['add', 'addFunction', 'addPower', 'removeLast', 'clearDisplay', 'calculate'].forEach(function (fnName) {
+    const original = window[fnName];
+    if (typeof original === 'function' && !original.__basicShrinkWrappedV2) {
+      const wrapped = function () {
+        const result = original.apply(this, arguments);
+        queueShrink();
+        return result;
+      };
+      wrapped.__basicShrinkWrappedV2 = true;
+      window[fnName] = wrapped;
+    }
+  });
+
+  queueShrink();
+});
+</script>
+
 </body>
 </html>
