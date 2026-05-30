@@ -15,6 +15,85 @@
 <link href="pc.css?v=card-layout-compact-20260528b" media="screen and (min-width: 851px)" rel="stylesheet"/>
 <link href="phone.css?v=card-layout-compact-20260528b" media="screen and (max-width: 850px)" rel="stylesheet"/>
 <link href="favicon.ico" rel="icon"/>
+
+<style id="percentage-standalone-fix-css">
+/* Percentage calculator standalone interaction fix */
+.percentage-type-calculator,
+.percentage-type-box,
+.percentage-type-buttons,
+.percentage-type-btn,
+.percentage-input-grid,
+.percentage-input-item,
+.percentage-input-item input,
+#percentageLiveResultBox,
+#percentageLiveResult {
+  pointer-events: auto !important;
+  position: relative !important;
+}
+.percentage-type-calculator { z-index: 5 !important; }
+.percentage-type-box,
+.percentage-input-grid { z-index: 6 !important; }
+.percentage-type-btn,
+.percentage-input-item input { z-index: 7 !important; }
+.percentage-type-buttons {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+.percentage-type-btn {
+  width: 100% !important;
+  min-height: 46px !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  touch-action: manipulation !important;
+}
+.percentage-type-btn.active,
+.percentage-type-btn[aria-pressed="true"] {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: #fff !important;
+}
+.percentage-input-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  max-width: 760px !important;
+}
+.percentage-input-item input {
+  width: 100% !important;
+  min-height: 54px !important;
+  box-sizing: border-box !important;
+}
+#percentageLiveResultBox {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  max-width: 760px !important;
+  margin-top: 18px !important;
+  padding: 18px 20px !important;
+  border-radius: 18px !important;
+}
+#percentageLiveResult {
+  display: block !important;
+  visibility: visible !important;
+  margin: 0 !important;
+  font-size: clamp(1.45rem, 3vw, 2.1rem) !important;
+  line-height: 1.15 !important;
+  word-break: break-word !important;
+}
+#percentageFormula,
+#percentageReportOutput,
+#percentageResult {
+  display: none !important;
+}
+@media (max-width: 760px) {
+  .percentage-type-buttons,
+  .percentage-input-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+</style>
+
 </head>
 <!-- submenu-regroup-fixed-v2 -->
 <body class="extra-calculator-page app-redesign">
@@ -153,8 +232,8 @@
 </section>
 <section class="age-bmi-result-below percentage-result-below" id="percentageLiveResultBox" aria-live="polite">
   <div class="percentage-result-kicker">Result</div>
-  <h2 id="percentageResult"></h2>
-  <p class="percentage-result-formula" id="percentageFormula"></p>
+  <h2 id="percentageLiveResult">Enter values</h2>
+  <p class="percentage-result-formula" id="percentageFormula" hidden></p>
 </section>
 
     <aside aria-label="Calculator guide and references" class="instruction-box universal-help-panel">
@@ -187,111 +266,166 @@
 .percentage-type-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 12px 25px rgba(47,125,104,.22)}
 .percentage-input-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:12px}
 .percentage-input-item{min-width:0}.percentage-input-item label{display:block;margin-bottom:8px;font-weight:900;color:var(--ink)}
-.percentage-input-item input{width:100%;box-sizing:border-box}.percentage-helper{margin:14px 0 0;color:var(--muted);line-height:1.45;font-weight:650}.percentage-result-kicker{margin-bottom:6px;color:var(--primary-dark);font-weight:900;text-transform:uppercase;letter-spacing:.08em;font-size:.82rem}.percentage-result-formula{margin:8px 0 0;color:var(--muted);line-height:1.45;font-weight:650}
+.percentage-input-item input{width:100%;box-sizing:border-box}.percentage-helper{margin:14px 0 0;color:var(--muted);line-height:1.45;font-weight:650}.percentage-result-kicker{margin-bottom:6px;color:var(--primary-dark);font-weight:900;text-transform:uppercase;letter-spacing:.08em;font-size:.82rem}.percentage-result-formula{display:none!important}.percentage-result-below #percentageLiveResult{margin:0;font-size:clamp(1.45rem,3vw,2.15rem);line-height:1.18;word-break:break-word}
 @media(max-width:760px){.percentage-type-buttons,.percentage-input-grid{grid-template-columns:1fr}.percentage-type-btn{text-align:left}}
 </style>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  const buttons = Array.from(document.querySelectorAll('.percentage-type-btn'));
-  const inputA = document.getElementById('percentageInputA');
-  const inputB = document.getElementById('percentageInputB');
-  const labelA = document.getElementById('percentageLabelA');
-  const labelB = document.getElementById('percentageLabelB');
-  const helper = document.getElementById('percentageHelper');
-  const result = document.getElementById('percentageLiveResult');
-  const formula = document.getElementById('percentageFormula');
-  if (!buttons.length || !inputA || !inputB || !result) return;
 
-  const modes = {
-    of: { a: 'Input A: Percentage (%)', b: 'Input B: Number', pa: 'Example: 20', pb: 'Example: 150', help: 'Find A% of B. Example: 20% of 150 = 30.' },
-    iswhat: { a: 'Input A: Part value', b: 'Input B: Total value', pa: 'Example: 30', pb: 'Example: 150', help: 'Find what percentage A is of B. Example: 30 is 20% of 150.' },
+
+<script id="percentage-standalone-fix-js">
+(function () {
+  'use strict';
+
+  function $(selector, root) { return (root || document).querySelector(selector); }
+  function $all(selector, root) { return Array.prototype.slice.call((root || document).querySelectorAll(selector)); }
+  function byId(id) { return document.getElementById(id); }
+
+  var modes = {
+    of: { a: 'Input A: Percentage (%)', b: 'Input B: Number', pa: 'Example: 20', pb: 'Example: 150', help: 'Find A% of B.' },
+    iswhat: { a: 'Input A: Part value', b: 'Input B: Total value', pa: 'Example: 30', pb: 'Example: 150', help: 'Find what percentage A is of B.' },
     increase: { a: 'Input A: Original value', b: 'Input B: New value', pa: 'Example: 100', pb: 'Example: 125', help: 'Find percentage increase from A to B.' },
     decrease: { a: 'Input A: Original value', b: 'Input B: New value', pa: 'Example: 100', pb: 'Example: 80', help: 'Find percentage decrease from A to B.' },
     difference: { a: 'Input A: First value', b: 'Input B: Second value', pa: 'Example: 80', pb: 'Example: 100', help: 'Find percentage difference between A and B.' },
     discount: { a: 'Input A: Original price', b: 'Input B: Discount (%)', pa: 'Example: 100', pb: 'Example: 20', help: 'Find the final price after discount.' },
     salary: { a: 'Input A: Current salary', b: 'Input B: Increment (%)', pa: 'Example: 3000', pb: 'Example: 5', help: 'Find the new salary after increment.' },
-    reverse: { a: 'Input A: Known value', b: 'Input B: Percentage (%)', pa: 'Example: 50', pb: 'Example: 25', help: 'Find the full/original value when A is B%.' },
+    reverse: { a: 'Input A: Known value', b: 'Input B: Percentage (%)', pa: 'Example: 50', pb: 'Example: 25', help: 'Find the original value when A is B%.' },
     profitmargin: { a: 'Input A: Selling price', b: 'Input B: Cost price', pa: 'Example: 150', pb: 'Example: 100', help: 'Find the profit margin percentage.' },
     markup: { a: 'Input A: Cost price', b: 'Input B: Markup (%)', pa: 'Example: 100', pb: 'Example: 30', help: 'Find the selling price after markup.' },
     gstsst: { a: 'Input A: Amount before tax', b: 'Input B: GST/SST (%)', pa: 'Example: 100', pb: 'Example: 6', help: 'Find the total amount after GST/SST.' },
     commission: { a: 'Input A: Sales amount', b: 'Input B: Commission (%)', pa: 'Example: 5000', pb: 'Example: 5', help: 'Find the commission amount.' }
   };
-  let currentType = 'of';
-  const fmt = n => Number.isFinite(n) ? Number(n.toFixed(8)).toLocaleString('en-MY') : '-';
-  const money = n => Number.isFinite(n) ? 'RM ' + Number(n.toFixed(2)).toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-';
-  const val = el => {
-    const n = Number(String(el.value || '').replace(/,/g, '').trim());
-    return Number.isFinite(n) ? n : NaN;
-  };
+
+  var state = { type: 'of' };
+
+  function numberFromInput(input) {
+    var raw = String((input && input.value) || '').replace(/,/g, '').trim();
+    if (!raw) return NaN;
+    var value = Number(raw);
+    return Number.isFinite(value) ? value : NaN;
+  }
+
+  function fmt(value, decimals) {
+    if (!Number.isFinite(value)) return '-';
+    var fixed = Number(value.toFixed(decimals == null ? 8 : decimals));
+    return fixed.toLocaleString('en-MY', { maximumFractionDigits: decimals == null ? 8 : decimals, minimumFractionDigits: 0 });
+  }
+
+  function money(value) {
+    if (!Number.isFinite(value)) return '-';
+    return 'RM ' + Number(value.toFixed(2)).toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function resultText(a, b) {
+    var answer;
+    switch (state.type) {
+      case 'of':
+        return fmt((a / 100) * b);
+      case 'iswhat':
+        return b === 0 ? 'Cannot divide by zero' : fmt((a / b) * 100) + '%';
+      case 'increase':
+        return a === 0 ? 'Cannot divide by zero' : fmt(((b - a) / a) * 100) + '%';
+      case 'decrease':
+        return a === 0 ? 'Cannot divide by zero' : fmt(((a - b) / a) * 100) + '%';
+      case 'difference':
+        var avg = (Math.abs(a) + Math.abs(b)) / 2;
+        return avg === 0 ? 'Cannot calculate difference' : fmt((Math.abs(a - b) / avg) * 100) + '%';
+      case 'discount':
+        return fmt(a - ((a * b) / 100));
+      case 'salary':
+        return money(a + ((a * b) / 100));
+      case 'reverse':
+        return b === 0 ? 'Cannot divide by zero' : fmt(a / (b / 100));
+      case 'profitmargin':
+        return a === 0 ? 'Cannot divide by zero' : fmt(((a - b) / a) * 100) + '%';
+      case 'markup':
+        answer = a + ((a * b) / 100);
+        return fmt(answer);
+      case 'gstsst':
+        answer = a + ((a * b) / 100);
+        return fmt(answer);
+      case 'commission':
+        return fmt((a * b) / 100);
+      default:
+        return 'Select a type';
+    }
+  }
+
+  function calculate() {
+    var inputA = byId('percentageInputA');
+    var inputB = byId('percentageInputB');
+    var result = byId('percentageLiveResult');
+    var resultBox = byId('percentageLiveResultBox');
+    var legacy = byId('percentageReportOutput');
+    var oldResult = byId('percentageResult');
+    if (legacy) legacy.remove();
+    if (oldResult) oldResult.style.setProperty('display', 'none', 'important');
+    if (!inputA || !inputB || !result || !resultBox) return;
+    var a = numberFromInput(inputA);
+    var b = numberFromInput(inputB);
+    resultBox.hidden = false;
+    resultBox.style.setProperty('display', 'block', 'important');
+    resultBox.style.setProperty('visibility', 'visible', 'important');
+    resultBox.style.setProperty('opacity', '1', 'important');
+    result.textContent = (Number.isFinite(a) && Number.isFinite(b)) ? resultText(a, b) : 'Enter values';
+  }
+
   function setMode(type) {
-    currentType = type;
-    buttons.forEach(btn => btn.classList.toggle('active', btn.dataset.type === type));
-    const m = modes[type];
-    labelA.textContent = m.a;
-    labelB.textContent = m.b;
-    inputA.placeholder = m.pa;
-    inputB.placeholder = m.pb;
-    helper.textContent = m.help;
+    if (!modes[type]) type = 'of';
+    state.type = type;
+    var mode = modes[type];
+    var labelA = byId('percentageLabelA');
+    var labelB = byId('percentageLabelB');
+    var inputA = byId('percentageInputA');
+    var inputB = byId('percentageInputB');
+    var helper = byId('percentageHelper');
+    if (labelA) labelA.textContent = mode.a;
+    if (labelB) labelB.textContent = mode.b;
+    if (inputA) inputA.placeholder = mode.pa;
+    if (inputB) inputB.placeholder = mode.pb;
+    if (helper) helper.textContent = mode.help;
+    $all('.percentage-type-btn').forEach(function (btn) {
+      var active = btn.getAttribute('data-type') === type;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      btn.type = 'button';
+    });
     calculate();
   }
-  function calculate() {
-    const a = val(inputA), b = val(inputB);
-    if (!Number.isFinite(a) || !Number.isFinite(b)) {
-      result.textContent = '';
-      if (formula) formula.textContent = '';
-      return;
+
+  function init() {
+    var inputA = byId('percentageInputA');
+    var inputB = byId('percentageInputB');
+    var form = $('.clean-nav-search');
+    if (form) form.addEventListener('submit', function (e) { e.preventDefault(); });
+
+    $all('.percentage-type-btn').forEach(function (btn) {
+      btn.type = 'button';
+      btn.style.pointerEvents = 'auto';
+      btn.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        setMode(btn.getAttribute('data-type'));
+      });
+    });
+    if (inputA) {
+      inputA.addEventListener('input', calculate);
+      inputA.addEventListener('change', calculate);
     }
-    let text = '';
-    if (currentType === 'of') {
-      text = fmt(a / 100 * b);
-    } else if (currentType === 'iswhat') {
-      text = b === 0 ? 'Cannot divide by zero' : `${fmt(a / b * 100)}%`;
-    } else if (currentType === 'increase') {
-      text = a === 0 ? 'Cannot divide by zero' : `${fmt((b - a) / a * 100)}%`;
-    } else if (currentType === 'decrease') {
-      text = a === 0 ? 'Cannot divide by zero' : `${fmt((a - b) / a * 100)}%`;
-    } else if (currentType === 'difference') {
-      const avg = (Math.abs(a) + Math.abs(b)) / 2;
-      text = avg === 0 ? 'Cannot calculate difference' : `${fmt(Math.abs(a - b) / avg * 100)}%`;
-    } else if (currentType === 'discount') {
-      text = fmt(a - (a * b / 100));
-    } else if (currentType === 'salary') {
-      text = money(a + (a * b / 100));
-    } else if (currentType === 'reverse') {
-      text = b === 0 ? 'Cannot divide by zero' : fmt(a / (b / 100));
-    } else if (currentType === 'profitmargin') {
-      text = a === 0 ? 'Cannot divide by zero' : `${fmt((a - b) / a * 100)}%`;
-    } else if (currentType === 'markup') {
-      text = fmt(a + (a * b / 100));
-    } else if (currentType === 'gstsst') {
-      text = fmt(a + (a * b / 100));
-    } else if (currentType === 'commission') {
-      text = fmt(a * b / 100);
+    if (inputB) {
+      inputB.addEventListener('input', calculate);
+      inputB.addEventListener('change', calculate);
     }
-    result.textContent = text;
-    if (formula) formula.textContent = detail;
+    window.calculatePercentage = calculate;
+    window.calculatePercentageTypeButtons = calculate;
+    window.__percentageSetMode = setMode;
+    window.scrollToTop = function () { window.scrollTo({ top: 0, behavior: 'smooth' }); };
+    setMode(($('.percentage-type-btn.active') || $('.percentage-type-btn') || {}).getAttribute ? (($('.percentage-type-btn.active') || $('.percentage-type-btn')).getAttribute('data-type')) : 'of');
+    [50, 250, 700].forEach(function (delay) { setTimeout(calculate, delay); });
   }
-  buttons.forEach(btn => btn.addEventListener('click', () => setMode(btn.dataset.type)));
-  inputA.addEventListener('input', calculate);
-  inputB.addEventListener('input', calculate);
-  setMode('of');
-});
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
+  else init();
+})();
 </script>
 
-<script src="script.js?v=card-layout-compact-20260528b" defer></script>
-<script src="pc.js?v=card-layout-compact-20260528b" defer></script>
-<script src="phone.js?v=card-layout-compact-20260528b" defer></script>
-<script>
-window.addEventListener('load', function () {
-  const a = document.getElementById('percentageInputA');
-  const b = document.getElementById('percentageInputB');
-  const result = document.getElementById('percentageLiveResult');
-  const legacy = document.getElementById('percentageReportOutput');
-  if (legacy) legacy.remove();
-  if (result) result.style.setProperty('display', 'block', 'important');
-  if (a) a.dispatchEvent(new Event('input', { bubbles: true }));
-  if (b) b.dispatchEvent(new Event('input', { bubbles: true }));
-});
-</script>
 </body>
 </html>
