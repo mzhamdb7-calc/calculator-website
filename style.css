@@ -409,3 +409,26 @@ body[data-page="basic"] #display::placeholder {
 .clean-education-submenu .clean-nav-submenu-panel a {
   white-space: nowrap;
 }
+
+
+/* Regrouped calculator navigation: consistent menu, cards and sidebars */
+.clean-calculator-panel{
+  min-width: 300px;
+  max-width: min(92vw, 760px);
+}
+.clean-nav-submenu-panel{
+  min-width: 260px;
+}
+.tool-group-nav .loan-history-top h3{
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.tool-group-nav .extra-side-links a{
+  text-align: left;
+}
+.home-category-grid{
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+.home-category-card .home-card-links{
+  align-content: start;
+}
