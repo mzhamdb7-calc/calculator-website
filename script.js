@@ -1686,3 +1686,73 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
+
+
+/* Unit Converter copy result button */
+(function(){
+  'use strict';
+  function ready(fn){
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+    else fn();
+  }
+  ready(function(){
+    if (!document.body || document.body.dataset.page !== 'unitConverter') return;
+    var btn = document.getElementById('unitCopyResultBtn');
+    var result = document.getElementById('unitInlineResult');
+    var detail = document.getElementById('unitInlineDetail');
+    if (!btn || !result) return;
+
+    function getText(){
+      var main = (result.textContent || '').trim();
+      var sub = detail ? (detail.textContent || '').trim() : '';
+      if (!main || /^enter value$/i.test(main) || /^-$/i.test(main)) return '';
+      return sub ? main + ' — ' + sub : main;
+    }
+
+    function syncButton(){
+      btn.disabled = !getText();
+    }
+
+    btn.addEventListener('click', function(){
+      var text = getText();
+      if (!text) return;
+      function done(){
+        var old = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(function(){ btn.textContent = old || 'Copy result'; }, 1200);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(function(){
+          var area = document.createElement('textarea');
+          area.value = text;
+          area.setAttribute('readonly', '');
+          area.style.position = 'fixed';
+          area.style.left = '-9999px';
+          document.body.appendChild(area);
+          area.select();
+          try { document.execCommand('copy'); done(); } catch(e) {}
+          area.remove();
+        });
+      } else {
+        var area = document.createElement('textarea');
+        area.value = text;
+        area.setAttribute('readonly', '');
+        area.style.position = 'fixed';
+        area.style.left = '-9999px';
+        document.body.appendChild(area);
+        area.select();
+        try { document.execCommand('copy'); done(); } catch(e) {}
+        area.remove();
+      }
+    });
+
+    syncButton();
+    if (window.MutationObserver) {
+      new MutationObserver(syncButton).observe(result, {childList:true, characterData:true, subtree:true});
+      if (detail) new MutationObserver(syncButton).observe(detail, {childList:true, characterData:true, subtree:true});
+    }
+    document.addEventListener('input', syncButton, true);
+    document.addEventListener('change', syncButton, true);
+    setTimeout(syncButton, 500);
+  });
+})();

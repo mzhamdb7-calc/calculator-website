@@ -2370,3 +2370,36 @@ body[data-page="unitConverter"] #unitInlineDetail {
     max-width: 100% !important;
   }
 }
+
+
+/* Unit Converter copy button below result */
+body[data-page="unitConverter"] .unit-copy-result-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  max-width: 360px !important;
+  min-height: 44px !important;
+  margin: 10px 0 0 !important;
+  padding: 10px 14px !important;
+  border: 1px solid #0f6b55 !important;
+  border-radius: 14px !important;
+  background: #0f6b55 !important;
+  color: #ffffff !important;
+  font-weight: 850 !important;
+  cursor: pointer !important;
+  box-shadow: 0 8px 18px rgba(15,107,85,.16) !important;
+}
+body[data-page="unitConverter"] .unit-copy-result-btn:hover {
+  background: #0b5846 !important;
+  border-color: #0b5846 !important;
+}
+body[data-page="unitConverter"] .unit-copy-result-btn:disabled {
+  opacity: .55 !important;
+  cursor: not-allowed !important;
+}
+@media screen and (max-width: 900px) {
+  body[data-page="unitConverter"] .unit-copy-result-btn {
+    max-width: 100% !important;
+  }
+}
