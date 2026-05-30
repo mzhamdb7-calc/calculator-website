@@ -16,7 +16,8 @@
   <link rel="stylesheet" href="phone.css?v=card-layout-compact-20260528b" media="screen and (max-width: 850px)">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
-<body class="calculator-page app-redesign" data-page="grade">
+<!-- submenu-regroup-fixed-v2 -->
+<body class="extra-calculator-page app-redesign" data-page="grade">
   <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">↑</button>
 
   <nav id="navbar" class="clean-navbar">
@@ -112,10 +113,10 @@
   <main class="tool-layout grade-calculator-container pointer-grade-page" aria-label="Pointer grade calculator">
     <section class="loan-history-box extra-side-box tool-group-nav" aria-label="Related calculator tools">
 <div class="loan-history-top">
-<h3>Education</h3>
+<h3>Education Tools</h3>
 </div>
 <div class="extra-side-links">
-<a class="current-extra-link" href="grade.html">Pointer Grade Calculator</a>
+<a class="current-extra-link" href="grade.html" aria-current="page">Pointer Grade Calculator</a>
 </div>
 </section>
 
@@ -179,6 +180,44 @@
   </main>
 
 <style>
+
+/* Keep the Pointer Grade side group bar consistent with the other calculator pages */
+.pointer-grade-page > .tool-group-nav {
+  width: 100%;
+}
+.pointer-grade-page .tool-group-nav .loan-history-top h3 {
+  margin: 0 0 14px;
+  color: #5b746b;
+  font-size: 0.86rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.pointer-grade-page .tool-group-nav .extra-side-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+.pointer-grade-page .tool-group-nav .extra-side-links a {
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+  justify-content: flex-start;
+  text-align: left;
+  white-space: normal;
+}
+@media (max-width: 850px) {
+  .pointer-grade-page .tool-group-nav .extra-side-links {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .pointer-grade-page .tool-group-nav .extra-side-links a {
+    white-space: nowrap;
+  }
+}
+
 .pointer-grade-box { max-width: 980px; }
 .pointer-grade-table-wrap { width: 100%; overflow-x: auto; margin-top: 18px; }
 .pointer-grade-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
