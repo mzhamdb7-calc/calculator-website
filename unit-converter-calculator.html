@@ -131,6 +131,134 @@ body[data-page="unitConverter"] #extraCalcResult .finance-result-metric-value{
 }
 
 </style>
+
+<style id="unit-converter-sizing-fix">
+/* Unit Converter: balanced box sizing and result placement */
+body:has(#unitValue) .calculator.extra-calculator-box {
+  max-width: 960px !important;
+  width: 100% !important;
+  overflow: visible !important;
+}
+body:has(#unitValue) .unit-converter-upgrade-card {
+  width: min(100%, 760px) !important;
+  max-width: 760px !important;
+  box-sizing: border-box !important;
+  padding: 22px !important;
+  overflow: hidden !important;
+}
+body:has(#unitValue) .unit-type-buttons {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  width: 100% !important;
+  margin: 12px 0 18px !important;
+}
+body:has(#unitValue) .unit-type-btn {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 48px !important;
+  padding: 0 10px !important;
+  border-radius: 14px !important;
+  font-size: 0.95rem !important;
+  line-height: 1.15 !important;
+  white-space: normal !important;
+  text-align: center !important;
+}
+body:has(#unitValue) .unit-value-field,
+body:has(#unitValue) .unit-value-field input {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+body:has(#unitValue) .unit-value-field input {
+  height: 54px !important;
+  font-size: 1rem !important;
+  padding: 0 16px !important;
+}
+body:has(#unitValue) .unit-picker-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  width: 100% !important;
+  align-items: start !important;
+}
+body:has(#unitValue) .unit-picker-panel {
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  padding: 16px !important;
+  overflow: hidden !important;
+}
+body:has(#unitValue) .unit-button-list {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  width: 100% !important;
+}
+body:has(#unitValue) .unit-button-list button {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 46px !important;
+  padding: 0 8px !important;
+  border-radius: 13px !important;
+  font-size: 0.9rem !important;
+  line-height: 1.1 !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  text-align: center !important;
+}
+body:has(#unitValue) #extraCalcResult {
+  width: min(100%, 760px) !important;
+  max-width: 760px !important;
+  margin: 22px 0 0 !important;
+  padding: 18px !important;
+  box-sizing: border-box !important;
+}
+body:has(#unitValue) #extraCalcResult .finance-result-shell {
+  padding: 0 !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+body:has(#unitValue) #extraCalcResult .finance-result-header {
+  text-align: left !important;
+  margin-bottom: 14px !important;
+}
+body:has(#unitValue) #extraCalcResult .finance-result-header h2 {
+  font-size: 1.15rem !important;
+  margin: 0 0 4px !important;
+}
+body:has(#unitValue) #extraCalcResult .finance-result-header p {
+  font-size: 0.95rem !important;
+  margin: 0 !important;
+}
+body:has(#unitValue) #extraCalcResult .finance-result-summary-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+body:has(#unitValue) #extraCalcResult .finance-result-metric-card {
+  min-width: 0 !important;
+  padding: 14px !important;
+  text-align: center !important;
+}
+body:has(#unitValue) #extraCalcResult .finance-result-metric-value {
+  font-size: 1.05rem !important;
+  line-height: 1.2 !important;
+  overflow-wrap: anywhere !important;
+}
+@media (max-width: 760px) {
+  body:has(#unitValue) .unit-type-buttons,
+  body:has(#unitValue) .unit-picker-grid,
+  body:has(#unitValue) #extraCalcResult .finance-result-summary-grid {
+    grid-template-columns: 1fr !important;
+  }
+  body:has(#unitValue) .unit-button-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+</style>
+
 </head>
 <body class="extra-calculator-page unitConverter-page app-redesign" data-page="unitConverter">
 <button aria-label="Go to top" id="scrollTopBtn" onclick="scrollToTop()" type="button">
