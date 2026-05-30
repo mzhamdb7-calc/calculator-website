@@ -11,13 +11,14 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="Free basic calculator for quick math calculations." name="description"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
-<link href="style.css?v=card-layout-compact-20260528b" rel="stylesheet"/>
-<link href="pc.css?v=card-layout-compact-20260528b" media="screen and (min-width: 851px)" rel="stylesheet"/>
-<link href="phone.css?v=card-layout-compact-20260528b" media="screen and (max-width: 850px)" rel="stylesheet"/>
+<link href="style.css?v=isolated-20260530" rel="stylesheet"/>
+<link href="phone.css?v=phone-20260530" rel="stylesheet" media="screen and (max-width: 850px)"/>
+
+
 <link href="favicon.ico" rel="icon" type="image/x-icon"/>
 </head>
 <!-- submenu-regroup-fixed-v2 -->
-<body class="extra-calculator-page basic-page app-redesign" data-page="basic">
+<body class="extra-calculator-page basic-page app-redesign page-basic" data-page="basic">
 <button aria-label="Go to top" id="scrollTopBtn" onclick="scrollToTop()" type="button">
     ↑
   </button>
@@ -27,65 +28,63 @@
 <div class="clean-nav-dropdown clean-calculator-dropdown">
 <button aria-expanded="false" class="clean-nav-link clean-nav-button" type="button">Tools <span aria-hidden="true">▼</span></button>
 <div class="clean-nav-dropdown-panel clean-calculator-panel">
-
-        <div class="clean-nav-submenu clean-general-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">General <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="basic-calculator.html">Basic Calculator</a>
-            <a href="percentage-calculator.html">Percentage Calculator</a>
-            <a href="unit-converter-calculator.html">Unit Converter</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-health-age-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Health & Age <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="age-calculator.html">Age Calculator</a>
-            <a href="bmi-calculator.html">BMI Calculator</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-education-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Education <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="grade.html">Pointer Grade Calculator</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-income-tax-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Income & Tax <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="salary-calculator.html">Salary Calculator</a>
-            <a href="gaji-penjawat-awam-calculator.html">Gaji Penjawat Awam</a>
-            <a href="tax-calculator.html">Tax Calculator</a>
-            <a href="currency-converter.html">Currency Converter</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-finance-growth-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Finance & Growth <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="inflation-calculator.html">Inflation Calculator</a>
-            <a href="compound-interest-calculator.html">Compound Interest</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-loans-debt-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Loans & Debt <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="loan-calculator.html">Loan Calculator</a>
-            <a href="mortgage-calculator.html">Mortgage Calculator</a>
-            <a href="personal-loan-calculator.html">Personal Loan</a>
-            <a href="loan-comparison-calculator.html">Loan Comparison</a>
-            <a href="debt-payoff-calculator.html">Debt Payoff</a>
-            <a href="credit-card-payoff-calculator.html">Credit Card Payoff</a>
-            <a href="credit-card-interest-calculator.html">Credit Card Interest</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-property-travel-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Property & Travel <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="rental-yield-calculator.html">Rental Yield</a>
-            <a href="fuel-cost-calculator.html">Fuel Cost</a>
-          </div>
-        </div>
-
-      </div>
+<div class="clean-nav-submenu clean-general-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">General <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="basic-calculator.html">Basic Calculator</a>
+<a href="percentage-calculator.html">Percentage Calculator</a>
+<a href="unit-converter-calculator.html">Unit Converter</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-health-age-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Health &amp; Age <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="age-calculator.html">Age Calculator</a>
+<a href="bmi-calculator.html">BMI Calculator</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-education-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Education <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="grade.html">Pointer Grade Calculator</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-income-tax-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Income &amp; Tax <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="salary-calculator.html">Salary Calculator</a>
+<a href="gaji-penjawat-awam-calculator.html">Gaji Penjawat Awam</a>
+<a href="tax-calculator.html">Tax Calculator</a>
+<a href="currency-converter.html">Currency Converter</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-finance-growth-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Finance &amp; Growth <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="inflation-calculator.html">Inflation Calculator</a>
+<a href="compound-interest-calculator.html">Compound Interest</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-loans-debt-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Loans &amp; Debt <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="loan-calculator.html">Loan Calculator</a>
+<a href="mortgage-calculator.html">Mortgage Calculator</a>
+<a href="personal-loan-calculator.html">Personal Loan</a>
+<a href="loan-comparison-calculator.html">Loan Comparison</a>
+<a href="debt-payoff-calculator.html">Debt Payoff</a>
+<a href="credit-card-payoff-calculator.html">Credit Card Payoff</a>
+<a href="credit-card-interest-calculator.html">Credit Card Interest</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-property-travel-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Property &amp; Travel <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="rental-yield-calculator.html">Rental Yield</a>
+<a href="fuel-cost-calculator.html">Fuel Cost</a>
+</div>
+</div>
+</div>
 </div>
 <div class="clean-nav-dropdown clean-info-dropdown">
 <button aria-expanded="false" class="clean-nav-link clean-nav-button" type="button">Resources <span aria-hidden="true">▼</span></button>
@@ -97,7 +96,7 @@
 </div>
 </div>
 <a class="clean-nav-link clean-chat-link" href="review.html">Review</a>
-    <a class="clean-nav-link clean-wall-link" href="Wall.html">Wall</a>
+<a class="clean-nav-link clean-wall-link" href="Wall.html">Wall</a>
 <form autocomplete="off" class="clean-nav-search" role="search">
 <label class="clean-nav-search-label" for="cleanCalculatorSearchInput">Search tools</label>
 <input aria-label="Search tools" class="clean-nav-search-input" id="cleanCalculatorSearchInput" placeholder="Search tools" type="search"/>
@@ -108,7 +107,7 @@
 </nav>
 <main class="calculator-container tool-layout">
 <!-- History Box -->
-<section class="loan-history-box extra-side-box tool-group-nav" aria-label="Related calculator tools">
+<section aria-label="Related calculator tools" class="loan-history-box extra-side-box tool-group-nav">
 <div class="loan-history-top">
 <h3>General Tools</h3>
 </div>
@@ -127,12 +126,12 @@
 <div class="basic-clean-calculator">
 <div class="basic-display-card basic-clean-display-card basic-two-line-display">
 <label class="basic-display-label" for="display">Enter calculation</label>
-<div class="basic-calculator-screen" aria-live="polite">
+<div aria-live="polite" class="basic-calculator-screen">
 <div class="basic-previous-line" id="basicPreviousLine">Previous calculation</div>
 <input aria-label="Calculator display" autocomplete="off" id="display" inputmode="decimal" placeholder="0" spellcheck="false" type="text"/>
 </div>
 </div>
-<div class="buttons basic-grid basic-clean-grid" aria-label="Basic calculator keypad">
+<div aria-label="Basic calculator keypad" class="buttons basic-grid basic-clean-grid">
 <button class="basic-function" onclick="addFunction('sqrt')" type="button">√</button>
 <button class="basic-function" onclick="addPower()" type="button">xʸ</button>
 <button class="basic-function" onclick="add('(')" type="button">(</button>
@@ -161,404 +160,31 @@
 <p class="basic-keyboard-note">Tip: you can also type with your keyboard. Press Enter to calculate, Backspace to delete, and Esc to clear.</p>
 </div>
 </section>
-
-    <aside aria-label="Calculator guide and references" class="instruction-box universal-help-panel">
-      <section class="instruction-section instruction-what-box"><h3>What does this calculator do?</h3><p>Use this for quick everyday maths such as addition, subtraction, multiplication, division, powers, and square root.</p></section>
-
-      <h2 class="instruction-main-title">Instructions</h2>
-
-      <section class="instruction-section instruction-how-box"><h3>How to use it</h3><p>Type or tap the numbers, choose the operator, then press =. Use AC to clear and ← to delete one character.</p></section>
-
-      <section class="instruction-section instruction-formula-box"><h3>Formula used</h3><p>It follows the normal order of operations: brackets and powers first, then multiplication/division, then addition/subtraction.</p></section>
-
-      <section class="instruction-section instruction-example-box"><h3>Example calculation</h3><p>8 + 2 × 3 = 14 because multiplication is calculated before addition.</p></section>
-
-      <section class="instruction-section instruction-faq-box"><h3>FAQs</h3><p><strong>Can I use brackets?</strong> Yes. Example: (8 + 2) × 3.</p><p><strong>Can I use percentage?</strong> Yes. Type 50% or tap %. The calculator treats it as 50 ÷ 100.</p><p><strong>Can I reuse the last answer?</strong> Yes. Tap ANS after making one calculation.</p></section>
-
-      <section aria-label="References" class="reference-box universal-reference-box"><h2 class="reference-main-title">References</h2>
-        <div class="reference-scroll universal-reference-list">
-          <div class="reference-card"><h3>Order of operations</h3><p>Standard arithmetic uses a fixed order so calculations are consistent.</p><a href="https://www.purplemath.com/modules/orderops.htm" rel="noopener noreferrer" target="_blank">Open source</a></div>
-          <div class="reference-card"><h3>General note</h3><p>For important money, school, or work calculations, recheck the result with your own records.</p></div>
-        </div>
-      </section>
-    </aside>
+<aside aria-label="Calculator guide and references" class="instruction-box universal-help-panel">
+<section class="instruction-section instruction-what-box"><h3>What does this calculator do?</h3><p>Use this for quick everyday maths such as addition, subtraction, multiplication, division, powers, and square root.</p></section>
+<h2 class="instruction-main-title">Instructions</h2>
+<section class="instruction-section instruction-how-box"><h3>How to use it</h3><p>Type or tap the numbers, choose the operator, then press =. Use AC to clear and ← to delete one character.</p></section>
+<section class="instruction-section instruction-formula-box"><h3>Formula used</h3><p>It follows the normal order of operations: brackets and powers first, then multiplication/division, then addition/subtraction.</p></section>
+<section class="instruction-section instruction-example-box"><h3>Example calculation</h3><p>8 + 2 × 3 = 14 because multiplication is calculated before addition.</p></section>
+<section class="instruction-section instruction-faq-box"><h3>FAQs</h3><p><strong>Can I use brackets?</strong> Yes. Example: (8 + 2) × 3.</p><p><strong>Can I use percentage?</strong> Yes. Type 50% or tap %. The calculator treats it as 50 ÷ 100.</p><p><strong>Can I reuse the last answer?</strong> Yes. Tap ANS after making one calculation.</p></section>
+<section aria-label="References" class="reference-box universal-reference-box"><h2 class="reference-main-title">References</h2>
+<div class="reference-scroll universal-reference-list">
+<div class="reference-card"><h3>Order of operations</h3><p>Standard arithmetic uses a fixed order so calculations are consistent.</p><a href="https://www.purplemath.com/modules/orderops.htm" rel="noopener noreferrer" target="_blank">Open source</a></div>
+<div class="reference-card"><h3>General note</h3><p>For important money, school, or work calculations, recheck the result with your own records.</p></div>
+</div>
+</section>
+</aside>
 </main>
-<script src="script.js?v=card-layout-compact-20260528b" defer></script>
-<script src="pc.js?v=card-layout-compact-20260528b" defer></script>
-<script src="phone.js?v=card-layout-compact-20260528b" defer></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  const removePreviousInputBox = () => {
-    const box = document.getElementById('basicInlineResult');
-    if (box) box.remove();
-    document.querySelectorAll('.basic-inline-result').forEach(function (el) { el.remove(); });
-  };
-  removePreviousInputBox();
-  new MutationObserver(removePreviousInputBox).observe(document.body, { childList: true, subtree: true });
-});
-</script>
-
-<style>
-/* Two-row calculator screen: previous calculation on top, current display below */
-body[data-page="basic"] .basic-two-line-display {
-  padding: 12px !important;
-}
-
-body[data-page="basic"] .basic-calculator-screen {
-  width: 100% !important;
-  min-height: 76px !important;
-  display: grid !important;
-  grid-template-rows: 22px minmax(38px, auto) !important;
-  align-items: stretch !important;
-  gap: 0 !important;
-  padding: 8px 12px !important;
-  border: 1px solid #cfe3da !important;
-  border-radius: 18px !important;
-  background: #ffffff !important;
-  box-shadow: inset 0 1px 3px rgba(16,35,29,.06) !important;
-}
-
-body[data-page="basic"] .basic-previous-line {
-  min-height: 22px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-  overflow: hidden !important;
-  white-space: nowrap !important;
-  text-overflow: ellipsis !important;
-  color: #6f827c !important;
-  font-size: .78rem !important;
-  font-weight: 700 !important;
-  text-align: right !important;
-}
-
-body[data-page="basic"] .basic-clean-display-card #display {
-  min-height: 38px !important;
-  padding: 0 !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  color: #10231d !important;
-  font-size: clamp(1.25rem, 3.6vw, 1.9rem) !important;
-  font-weight: 850 !important;
-  line-height: 1.15 !important;
-  text-align: right !important;
-}
-
-body[data-page="basic"] .basic-clean-display-card #display:focus {
-  outline: none !important;
-}
-
-body[data-page="basic"] .basic-clean-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-}
-
-body[data-page="basic"] .basic-clean-grid .equal {
-  grid-column: span 1 !important;
-}
-
-@media (max-width: 600px) {
-  body[data-page="basic"] .basic-calculator-screen {
-    min-height: 70px !important;
-    grid-template-rows: 20px minmax(34px, auto) !important;
-    padding: 8px 10px !important;
-  }
-  body[data-page="basic"] .basic-previous-line {
-    font-size: .72rem !important;
-  }
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  const display = document.getElementById('display');
-  const previousLine = document.getElementById('basicPreviousLine');
-  if (!display || !previousLine) return;
-
-  function clean(value) {
-    return String(value || '').replace(/\s+/g, ' ').trim();
-  }
-
-  function setPrevious(text) {
-    const value = clean(text);
-    previousLine.textContent = value || 'Previous calculation';
-    previousLine.title = previousLine.textContent;
-  }
-
-  function loadLatestPrevious() {
-    try {
-      const history = JSON.parse(localStorage.getItem('basicCalculationHistory') || '[]');
-      const latest = Array.isArray(history) ? history[history.length - 1] : null;
-      if (latest && latest.expression) {
-        setPrevious(latest.expression + ' = ' + latest.result);
-      }
-    } catch (error) {}
-  }
-
-  loadLatestPrevious();
-
-  const oldCalculate = window.calculate;
-  if (typeof oldCalculate === 'function') {
-    window.calculate = function () {
-      const expressionBefore = clean(display.value);
-      oldCalculate.apply(this, arguments);
-      setTimeout(function () {
-        const answerAfter = clean(display.value);
-        if (expressionBefore && expressionBefore !== 'Error' && answerAfter && answerAfter !== 'Error') {
-          setPrevious(expressionBefore + ' = ' + answerAfter);
-        }
-      }, 0);
-    };
-  }
-
-  const oldClearDisplay = window.clearDisplay;
-  if (typeof oldClearDisplay === 'function') {
-    window.clearDisplay = function () {
-      oldClearDisplay.apply(this, arguments);
-      setPrevious('Previous calculation');
-    };
-  }
-});
-</script>
+<script defer="" src="script.js?v=isolated-20260530"></script>
+<script defer src="phone.js?v=phone-20260530"></script>
 
 
 
-<style>
-/* BASIC CALCULATOR ONLY: desktop uses empty space with display left + keypad right */
-@media (min-width: 900px) {
-  body[data-page="basic"] .calculator.basic-best-card {
-    max-width: 980px !important;
-  }
-
-  body[data-page="basic"] .basic-clean-calculator {
-    display: grid !important;
-    grid-template-columns: minmax(360px, 1fr) minmax(340px, 430px) !important;
-    grid-template-areas:
-      "display keypad"
-      "note keypad" !important;
-    gap: 18px !important;
-    align-items: start !important;
-    margin-top: 22px !important;
-  }
-
-  body[data-page="basic"] .basic-display-card,
-  body[data-page="basic"] .basic-clean-display-card,
-  body[data-page="basic"] .basic-two-line-display {
-    grid-area: display !important;
-    margin: 0 !important;
-    height: auto !important;
-    min-height: 135px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: flex-start !important;
-  }
-
-  body[data-page="basic"] .basic-display-label {
-    margin-bottom: 6px !important;
-  }
-
-  body[data-page="basic"] .basic-calculator-screen {
-    min-height: 92px !important;
-    grid-template-rows: 24px minmax(52px, auto) !important;
-    padding: 10px 14px !important;
-  }
-
-  body[data-page="basic"] .basic-previous-line {
-    font-size: .82rem !important;
-  }
-
-  body[data-page="basic"] .basic-clean-display-card #display {
-    min-height: 52px !important;
-    font-size: clamp(1.55rem, 2.3vw, 2.15rem) !important;
-  }
-
-  body[data-page="basic"] .buttons.basic-grid,
-  body[data-page="basic"] .basic-clean-grid {
-    grid-area: keypad !important;
-    display: grid !important;
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    gap: 10px !important;
-    align-self: start !important;
-    margin: 0 !important;
-    padding: 12px !important;
-    border: 1px solid #d8ebe2 !important;
-    border-radius: 22px !important;
-    background: linear-gradient(180deg, #f8fffb, #eef8f3) !important;
-    box-shadow: 0 14px 30px rgba(16, 35, 29, .07) !important;
-  }
-
-  body[data-page="basic"] .buttons.basic-grid button,
-  body[data-page="basic"] .basic-clean-grid button {
-    min-height: 62px !important;
-    border-radius: 16px !important;
-    font-size: 1.15rem !important;
-    font-weight: 850 !important;
-  }
-
-  body[data-page="basic"] .basic-clean-grid .basic-function {
-    background: #f4fbf7 !important;
-    color: #116149 !important;
-  }
-
-  body[data-page="basic"] .basic-clean-grid .ac-btn {
-    background: #fff2f2 !important;
-    color: #b42318 !important;
-    border-color: #ffd5d5 !important;
-  }
-
-  body[data-page="basic"] .basic-clean-grid .equal {
-    background: #116149 !important;
-    color: #ffffff !important;
-    border-color: #116149 !important;
-  }
-
-  body[data-page="basic"] .basic-keyboard-note {
-    grid-area: note !important;
-    margin: 0 !important;
-    padding: 10px 14px !important;
-    border: 1px solid #d8ebe2 !important;
-    border-radius: 18px !important;
-    background: #ffffff !important;
-    box-shadow: 0 10px 24px rgba(16, 35, 29, .05) !important;
-    font-size: .95rem !important;
-  }
-}
-
-@media (max-width: 899px) {
-  body[data-page="basic"] .basic-clean-calculator {
-    display: block !important;
-  }
-
-  body[data-page="basic"] .buttons.basic-grid,
-  body[data-page="basic"] .basic-clean-grid {
-    display: grid !important;
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    gap: 8px !important;
-  }
-}
-</style>
-
-
-<style>
-/* BASIC ONLY: smaller, cleaner calculator display */
-body[data-page="basic"] .basic-display-card,
-body[data-page="basic"] .basic-clean-display-card,
-body[data-page="basic"] .basic-two-line-display {
-  padding: 12px !important;
-}
-body[data-page="basic"] .basic-calculator-screen {
-  min-height: 78px !important;
-  grid-template-rows: 22px minmax(40px, auto) !important;
-  padding: 8px 12px !important;
-  border-radius: 14px !important;
-}
-body[data-page="basic"] .basic-previous-line {
-  min-height: 22px !important;
-  font-size: .78rem !important;
-}
-body[data-page="basic"] .basic-clean-display-card #display {
-  min-height: 40px !important;
-  height: 40px !important;
-  font-size: clamp(1.3rem, 2.4vw, 2rem) !important;
-  line-height: 1.1 !important;
-}
-@media (min-width: 900px) {
-  body[data-page="basic"] .basic-display-card,
-  body[data-page="basic"] .basic-clean-display-card,
-  body[data-page="basic"] .basic-two-line-display {
-    min-height: 125px !important;
-  }
-}
-</style>
 
 
 
-<style>
-/* BASIC ONLY: auto-shrink display text when the number is too long */
-body[data-page="basic"] .basic-clean-display-card #display {
-  font-variant-numeric: tabular-nums !important;
-  transition: font-size .08s ease !important;
-  max-width: 100% !important;
-  overflow: hidden !important;
-  text-overflow: clip !important;
-  white-space: nowrap !important;
-}
-</style>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  const display = document.getElementById('display');
-  if (!display) return;
 
-  const maxDesktop = 46;
-  const maxMobile = 34;
-  const minSize = 14;
-
-  const measurer = document.createElement('span');
-  measurer.setAttribute('aria-hidden', 'true');
-  Object.assign(measurer.style, {
-    position: 'fixed',
-    left: '-99999px',
-    top: '-99999px',
-    visibility: 'hidden',
-    whiteSpace: 'pre',
-    pointerEvents: 'none'
-  });
-  document.body.appendChild(measurer);
-
-  function syncMeasureStyle(size) {
-    const style = window.getComputedStyle(display);
-    measurer.style.fontFamily = style.fontFamily;
-    measurer.style.fontWeight = style.fontWeight;
-    measurer.style.letterSpacing = style.letterSpacing;
-    measurer.style.fontSize = size + 'px';
-  }
-
-  function shrinkDisplayText() {
-    const text = String(display.value || display.placeholder || '0');
-    const available = Math.max(80, display.clientWidth - 20);
-    let size = window.innerWidth < 700 ? maxMobile : maxDesktop;
-
-    measurer.textContent = text;
-    syncMeasureStyle(size);
-
-    while (size > minSize && measurer.offsetWidth > available) {
-      size -= 1;
-      syncMeasureStyle(size);
-    }
-
-    /* setProperty with important is required because older page CSS also uses !important */
-    display.style.setProperty('font-size', size + 'px', 'important');
-    display.style.setProperty('line-height', '1.05', 'important');
-  }
-
-  function queueShrink() {
-    requestAnimationFrame(shrinkDisplayText);
-    setTimeout(shrinkDisplayText, 40);
-  }
-
-  display.addEventListener('input', queueShrink);
-  display.addEventListener('change', queueShrink);
-  window.addEventListener('resize', queueShrink);
-
-  ['add', 'addFunction', 'addPower', 'removeLast', 'clearDisplay', 'calculate'].forEach(function (fnName) {
-    const original = window[fnName];
-    if (typeof original === 'function' && !original.__basicShrinkWrappedV2) {
-      const wrapped = function () {
-        const result = original.apply(this, arguments);
-        queueShrink();
-        return result;
-      };
-      wrapped.__basicShrinkWrappedV2 = true;
-      window[fnName] = wrapped;
-    }
-  });
-
-  queueShrink();
-});
-</script>
 
 </body>
 </html>

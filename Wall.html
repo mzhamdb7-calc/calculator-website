@@ -1,204 +1,117 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Review Wall | Calculator Hub</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="A clean signature wall showing reviews left by users of the calculator website.">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=card-layout-compact-20260528b">
-  <link rel="stylesheet" href="pc.css?v=card-layout-compact-20260528b" media="screen and (min-width: 851px)">
-  <link rel="stylesheet" href="phone.css?v=card-layout-compact-20260528b" media="screen and (max-width: 850px)">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+<meta charset="utf-8"/>
+<title>Review Wall | Calculator Hub</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="A clean signature wall showing reviews left by users of the calculator website." name="description"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="style.css?v=isolated-20260530" rel="stylesheet"/>
+<link href="phone.css?v=phone-20260530" rel="stylesheet" media="screen and (max-width: 850px)"/>
+
+
+<link href="favicon.ico" rel="icon" type="image/x-icon"/>
 </head>
 <!-- submenu-regroup-fixed-v2 -->
-<body class="info-page review-wall-page signature-wall-page app-redesign" data-page="wall">
-
-  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">↑</button>
-
-  <nav id="navbar" class="clean-navbar">
-  <div class="clean-nav-inner">
-    <a class="clean-nav-link" href="index.html">Home</a>
-
-    <div class="clean-nav-dropdown clean-calculator-dropdown">
-      <button type="button" class="clean-nav-link clean-nav-button" aria-expanded="false">Tools <span aria-hidden="true">▼</span></button>
-      <div class="clean-nav-dropdown-panel clean-calculator-panel">
-
-        <div class="clean-nav-submenu clean-general-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">General <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="basic-calculator.html">Basic Calculator</a>
-            <a href="percentage-calculator.html">Percentage Calculator</a>
-            <a href="unit-converter-calculator.html">Unit Converter</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-health-age-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Health & Age <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="age-calculator.html">Age Calculator</a>
-            <a href="bmi-calculator.html">BMI Calculator</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-education-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Education <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="grade.html">Pointer Grade Calculator</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-income-tax-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Income & Tax <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="salary-calculator.html">Salary Calculator</a>
-            <a href="gaji-penjawat-awam-calculator.html">Gaji Penjawat Awam</a>
-            <a href="tax-calculator.html">Tax Calculator</a>
-            <a href="currency-converter.html">Currency Converter</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-finance-growth-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Finance & Growth <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="inflation-calculator.html">Inflation Calculator</a>
-            <a href="compound-interest-calculator.html">Compound Interest</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-loans-debt-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Loans & Debt <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="loan-calculator.html">Loan Calculator</a>
-            <a href="mortgage-calculator.html">Mortgage Calculator</a>
-            <a href="personal-loan-calculator.html">Personal Loan</a>
-            <a href="loan-comparison-calculator.html">Loan Comparison</a>
-            <a href="debt-payoff-calculator.html">Debt Payoff</a>
-            <a href="credit-card-payoff-calculator.html">Credit Card Payoff</a>
-            <a href="credit-card-interest-calculator.html">Credit Card Interest</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-property-travel-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Property & Travel <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="rental-yield-calculator.html">Rental Yield</a>
-            <a href="fuel-cost-calculator.html">Fuel Cost</a>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="clean-nav-dropdown clean-info-dropdown">
-      <button type="button" class="clean-nav-link clean-nav-button" aria-expanded="false">Resources <span aria-hidden="true">▼</span></button>
-      <div class="clean-nav-dropdown-panel clean-info-panel">
-        <a href="about.html">About</a>
-        <a href="FAQS.html">FAQs</a>
-        <a href="privacy-policy.html">Privacy Policy</a>
-        <a href="contact.html">Contact</a>
-      </div>
-    </div>
-
-    <a class="clean-nav-link clean-chat-link" href="review.html">Review</a>
-    <a class="clean-nav-link clean-wall-link" href="Wall.html">Wall</a>
-
-    <form class="clean-nav-search" role="search" autocomplete="off">
-      <label class="clean-nav-search-label" for="cleanCalculatorSearchInput">Search tools</label>
-      <input id="cleanCalculatorSearchInput" class="clean-nav-search-input" type="search" placeholder="Search tools" aria-label="Search tools">
-      <button type="submit" class="clean-nav-search-button" aria-label="Search">🔍</button>
-      <ul class="clean-nav-search-results" hidden></ul>
-    </form>
-  </div>
+<body class="info-page review-wall-page signature-wall-page app-redesign page-wall" data-page="wall">
+<button aria-label="Go to top" id="scrollTopBtn" onclick="scrollToTop()" type="button">↑</button>
+<nav class="clean-navbar" id="navbar">
+<div class="clean-nav-inner">
+<a class="clean-nav-link" href="index.html">Home</a>
+<div class="clean-nav-dropdown clean-calculator-dropdown">
+<button aria-expanded="false" class="clean-nav-link clean-nav-button" type="button">Tools <span aria-hidden="true">▼</span></button>
+<div class="clean-nav-dropdown-panel clean-calculator-panel">
+<div class="clean-nav-submenu clean-general-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">General <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="basic-calculator.html">Basic Calculator</a>
+<a href="percentage-calculator.html">Percentage Calculator</a>
+<a href="unit-converter-calculator.html">Unit Converter</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-health-age-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Health &amp; Age <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="age-calculator.html">Age Calculator</a>
+<a href="bmi-calculator.html">BMI Calculator</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-education-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Education <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="grade.html">Pointer Grade Calculator</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-income-tax-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Income &amp; Tax <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="salary-calculator.html">Salary Calculator</a>
+<a href="gaji-penjawat-awam-calculator.html">Gaji Penjawat Awam</a>
+<a href="tax-calculator.html">Tax Calculator</a>
+<a href="currency-converter.html">Currency Converter</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-finance-growth-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Finance &amp; Growth <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="inflation-calculator.html">Inflation Calculator</a>
+<a href="compound-interest-calculator.html">Compound Interest</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-loans-debt-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Loans &amp; Debt <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="loan-calculator.html">Loan Calculator</a>
+<a href="mortgage-calculator.html">Mortgage Calculator</a>
+<a href="personal-loan-calculator.html">Personal Loan</a>
+<a href="loan-comparison-calculator.html">Loan Comparison</a>
+<a href="debt-payoff-calculator.html">Debt Payoff</a>
+<a href="credit-card-payoff-calculator.html">Credit Card Payoff</a>
+<a href="credit-card-interest-calculator.html">Credit Card Interest</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-property-travel-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Property &amp; Travel <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="rental-yield-calculator.html">Rental Yield</a>
+<a href="fuel-cost-calculator.html">Fuel Cost</a>
+</div>
+</div>
+</div>
+</div>
+<div class="clean-nav-dropdown clean-info-dropdown">
+<button aria-expanded="false" class="clean-nav-link clean-nav-button" type="button">Resources <span aria-hidden="true">▼</span></button>
+<div class="clean-nav-dropdown-panel clean-info-panel">
+<a href="about.html">About</a>
+<a href="FAQS.html">FAQs</a>
+<a href="privacy-policy.html">Privacy Policy</a>
+<a href="contact.html">Contact</a>
+</div>
+</div>
+<a class="clean-nav-link clean-chat-link" href="review.html">Review</a>
+<a class="clean-nav-link clean-wall-link" href="Wall.html">Wall</a>
+<form autocomplete="off" class="clean-nav-search" role="search">
+<label class="clean-nav-search-label" for="cleanCalculatorSearchInput">Search tools</label>
+<input aria-label="Search tools" class="clean-nav-search-input" id="cleanCalculatorSearchInput" placeholder="Search tools" type="search"/>
+<button aria-label="Search" class="clean-nav-search-button" type="submit">🔍</button>
+<ul class="clean-nav-search-results" hidden=""></ul>
+</form>
+</div>
 </nav>
+<main aria-label="Review signature wall" class="signature-wall-shell">
+<div aria-label="Wall actions" class="signature-wall-topbar">
+<a class="signature-wall-action" href="review.html">Sign the wall</a>
+<a class="signature-wall-action signature-wall-action-light" href="index.html">Back to tools</a>
+</div>
+<section aria-label="Review wall canvas" class="signature-wall-canvas" id="signatureWallCanvas">
+<div aria-live="polite" class="signature-wall-grid" id="reviewWallGrid"></div>
+</section>
+</main>
 
-  <main class="signature-wall-shell" aria-label="Review signature wall">
-    <div class="signature-wall-topbar" aria-label="Wall actions">
-      <a class="signature-wall-action" href="review.html">Sign the wall</a>
-      <a class="signature-wall-action signature-wall-action-light" href="index.html">Back to tools</a>
-    </div>
+<script defer="" src="script.js?v=isolated-20260530"></script>
+<script defer src="phone.js?v=phone-20260530"></script>
 
-    <section id="signatureWallCanvas" class="signature-wall-canvas" aria-label="Review wall canvas">
-      <div id="reviewWallGrid" class="signature-wall-grid" aria-live="polite"></div>
-    </section>
-  </main>
 
-  <script>
-    (function () {
-      "use strict";
-
-      const storageKey = "calculatorUserReviewsV1";
-      const wall = document.getElementById("reviewWallGrid");
-      const canvas = document.getElementById("signatureWallCanvas");
-
-      function escapeText(value) {
-        return String(value || "").replace(/[&<>"']/g, function (ch) {
-          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch];
-        });
-      }
-
-      function stars(value) {
-        const rating = Math.max(1, Math.min(5, Number(value) || 5));
-        return "★".repeat(rating) + "☆".repeat(5 - rating);
-      }
-
-      function getReviews() {
-        try {
-          const list = JSON.parse(localStorage.getItem(storageKey) || "[]");
-          return Array.isArray(list) ? list : [];
-        } catch {
-          return [];
-        }
-      }
-
-      function layoutFor(index, count) {
-        const wide = window.matchMedia("(min-width: 1120px)").matches;
-        const tablet = window.matchMedia("(min-width: 760px)").matches;
-        const columns = wide ? 4 : (tablet ? 3 : 1);
-        const row = Math.floor(index / columns);
-        const col = index % columns;
-        const jitterX = ((index * 37) % 9) - 4;
-        const jitterY = ((index * 29) % 34) - 8;
-        const rotate = (((index * 17) % 13) - 6) + "deg";
-        const width = (wide ? 230 : 210) + ((index * 19) % 44);
-        const left = columns === 1 ? 0 : (4 + col * (92 / columns) + jitterX);
-        const top = 38 + (row * 210) + jitterY;
-        return {
-          left: left + "%",
-          top: top + "px",
-          rotate: rotate,
-          width: width + "px",
-          minHeight: Math.max(620, 140 + (Math.ceil(count / columns) * 220)) + "px"
-        };
-      }
-
-      function renderWall() {
-        const reviews = getReviews();
-        if (!wall || !canvas) return;
-
-        if (!reviews.length) {
-          wall.innerHTML = "";
-          canvas.classList.add("is-empty");
-          canvas.style.minHeight = "calc(100vh - 128px)";
-          return;
-        }
-
-        canvas.classList.remove("is-empty");
-        canvas.style.minHeight = layoutFor(0, reviews.length).minHeight;
-        wall.innerHTML = reviews.map(function (review, index) {
-          const pos = layoutFor(index, reviews.length);
-          return '<article class="signature-wall-note" style="--note-left:' + pos.left + '; --note-top:' + pos.top + '; --note-rotate:' + pos.rotate + '; --note-width:' + pos.width + ';">' +
-            '<div class="signature-wall-rating" aria-label="' + escapeText(review.rating || 5) + ' out of 5 stars">' + stars(review.rating) + '</div>' +
-            '<p class="signature-wall-message">“' + escapeText(review.message || review.title || "Helpful calculator website") + '”</p>' +
-            '<p class="signature-wall-signed">— ' + escapeText(review.name || "Guest") + '</p>' +
-            '<time class="signature-wall-time">' + escapeText(review.time || "") + '</time>' +
-          '</article>';
-        }).join("");
-      }
-
-      window.addEventListener("resize", renderWall);
-      window.addEventListener("storage", function (event) { if (event.key === storageKey) renderWall(); });
-      renderWall();
-      setInterval(renderWall, 5000);
-    })();
-  </script>
-
-  <script src="script.js?v=card-layout-compact-20260528b" defer></script>
-  <script src="pc.js?v=card-layout-compact-20260528b" defer></script>
-  <script src="phone.js?v=card-layout-compact-20260528b" defer></script>
 </body>
 </html>

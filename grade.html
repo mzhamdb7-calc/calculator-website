@@ -2,317 +2,175 @@
   Copyright © 2026 Hamdi. All rights reserved.
   Do not copy, modify, redistribute, or reuse this project without permission.
 -->
-
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Grade Calculator</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Free grade calculator to convert marks into percentage and letter grade.">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=card-layout-compact-20260528b">
-  <link rel="stylesheet" href="pc.css?v=card-layout-compact-20260528b" media="screen and (min-width: 851px)">
-  <link rel="stylesheet" href="phone.css?v=card-layout-compact-20260528b" media="screen and (max-width: 850px)">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+<meta charset="utf-8"/>
+<title>Grade Calculator</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Free grade calculator to convert marks into percentage and letter grade." name="description"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="style.css?v=isolated-20260530" rel="stylesheet"/>
+<link href="phone.css?v=phone-20260530" rel="stylesheet" media="screen and (max-width: 850px)"/>
+
+
+<link href="favicon.ico" rel="icon" type="image/x-icon"/>
 </head>
 <!-- submenu-regroup-fixed-v2 -->
-<body class="extra-calculator-page app-redesign" data-page="grade">
-  <button id="scrollTopBtn" type="button" onclick="scrollToTop()" aria-label="Go to top">↑</button>
-
-  <nav id="navbar" class="clean-navbar">
-  <div class="clean-nav-inner">
-    <a class="clean-nav-link" href="index.html">Home</a>
-
-    <div class="clean-nav-dropdown clean-calculator-dropdown">
-      <button type="button" class="clean-nav-link clean-nav-button" aria-expanded="false">Tools <span aria-hidden="true">▼</span></button>
-      <div class="clean-nav-dropdown-panel clean-calculator-panel">
-
-        <div class="clean-nav-submenu clean-general-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">General <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="basic-calculator.html">Basic Calculator</a>
-            <a href="percentage-calculator.html">Percentage Calculator</a>
-            <a href="unit-converter-calculator.html">Unit Converter</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-health-age-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Health & Age <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="age-calculator.html">Age Calculator</a>
-            <a href="bmi-calculator.html">BMI Calculator</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-education-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Education <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="grade.html">Pointer Grade Calculator</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-income-tax-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Income & Tax <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="salary-calculator.html">Salary Calculator</a>
-            <a href="gaji-penjawat-awam-calculator.html">Gaji Penjawat Awam</a>
-            <a href="tax-calculator.html">Tax Calculator</a>
-            <a href="currency-converter.html">Currency Converter</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-finance-growth-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Finance & Growth <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="inflation-calculator.html">Inflation Calculator</a>
-            <a href="compound-interest-calculator.html">Compound Interest</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-loans-debt-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Loans & Debt <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="loan-calculator.html">Loan Calculator</a>
-            <a href="mortgage-calculator.html">Mortgage Calculator</a>
-            <a href="personal-loan-calculator.html">Personal Loan</a>
-            <a href="loan-comparison-calculator.html">Loan Comparison</a>
-            <a href="debt-payoff-calculator.html">Debt Payoff</a>
-            <a href="credit-card-payoff-calculator.html">Credit Card Payoff</a>
-            <a href="credit-card-interest-calculator.html">Credit Card Interest</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-property-travel-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Property & Travel <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="rental-yield-calculator.html">Rental Yield</a>
-            <a href="fuel-cost-calculator.html">Fuel Cost</a>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="clean-nav-dropdown clean-info-dropdown">
-      <button type="button" class="clean-nav-link clean-nav-button" aria-expanded="false">Resources <span aria-hidden="true">▼</span></button>
-      <div class="clean-nav-dropdown-panel clean-info-panel">
-        <a href="about.html">About</a>
-        <a href="FAQS.html">FAQs</a>
-        <a href="privacy-policy.html">Privacy Policy</a>
-        <a href="contact.html">Contact</a>
-      </div>
-    </div>
-
-    <a class="clean-nav-link clean-chat-link" href="review.html">Review</a>
-    <a class="clean-nav-link clean-wall-link" href="Wall.html">Wall</a>
-
-    <form class="clean-nav-search" role="search" autocomplete="off">
-      <label class="clean-nav-search-label" for="cleanCalculatorSearchInput">Search tools</label>
-      <input id="cleanCalculatorSearchInput" class="clean-nav-search-input" type="search" placeholder="Search tools" aria-label="Search tools">
-      <button type="submit" class="clean-nav-search-button" aria-label="Search">🔍</button>
-      <ul class="clean-nav-search-results" hidden></ul>
-    </form>
-  </div>
+<body class="extra-calculator-page app-redesign page-grade" data-page="grade">
+<button aria-label="Go to top" id="scrollTopBtn" onclick="scrollToTop()" type="button">↑</button>
+<nav class="clean-navbar" id="navbar">
+<div class="clean-nav-inner">
+<a class="clean-nav-link" href="index.html">Home</a>
+<div class="clean-nav-dropdown clean-calculator-dropdown">
+<button aria-expanded="false" class="clean-nav-link clean-nav-button" type="button">Tools <span aria-hidden="true">▼</span></button>
+<div class="clean-nav-dropdown-panel clean-calculator-panel">
+<div class="clean-nav-submenu clean-general-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">General <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="basic-calculator.html">Basic Calculator</a>
+<a href="percentage-calculator.html">Percentage Calculator</a>
+<a href="unit-converter-calculator.html">Unit Converter</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-health-age-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Health &amp; Age <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="age-calculator.html">Age Calculator</a>
+<a href="bmi-calculator.html">BMI Calculator</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-education-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Education <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="grade.html">Pointer Grade Calculator</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-income-tax-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Income &amp; Tax <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="salary-calculator.html">Salary Calculator</a>
+<a href="gaji-penjawat-awam-calculator.html">Gaji Penjawat Awam</a>
+<a href="tax-calculator.html">Tax Calculator</a>
+<a href="currency-converter.html">Currency Converter</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-finance-growth-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Finance &amp; Growth <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="inflation-calculator.html">Inflation Calculator</a>
+<a href="compound-interest-calculator.html">Compound Interest</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-loans-debt-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Loans &amp; Debt <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="loan-calculator.html">Loan Calculator</a>
+<a href="mortgage-calculator.html">Mortgage Calculator</a>
+<a href="personal-loan-calculator.html">Personal Loan</a>
+<a href="loan-comparison-calculator.html">Loan Comparison</a>
+<a href="debt-payoff-calculator.html">Debt Payoff</a>
+<a href="credit-card-payoff-calculator.html">Credit Card Payoff</a>
+<a href="credit-card-interest-calculator.html">Credit Card Interest</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-property-travel-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Property &amp; Travel <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="rental-yield-calculator.html">Rental Yield</a>
+<a href="fuel-cost-calculator.html">Fuel Cost</a>
+</div>
+</div>
+</div>
+</div>
+<div class="clean-nav-dropdown clean-info-dropdown">
+<button aria-expanded="false" class="clean-nav-link clean-nav-button" type="button">Resources <span aria-hidden="true">▼</span></button>
+<div class="clean-nav-dropdown-panel clean-info-panel">
+<a href="about.html">About</a>
+<a href="FAQS.html">FAQs</a>
+<a href="privacy-policy.html">Privacy Policy</a>
+<a href="contact.html">Contact</a>
+</div>
+</div>
+<a class="clean-nav-link clean-chat-link" href="review.html">Review</a>
+<a class="clean-nav-link clean-wall-link" href="Wall.html">Wall</a>
+<form autocomplete="off" class="clean-nav-search" role="search">
+<label class="clean-nav-search-label" for="cleanCalculatorSearchInput">Search tools</label>
+<input aria-label="Search tools" class="clean-nav-search-input" id="cleanCalculatorSearchInput" placeholder="Search tools" type="search"/>
+<button aria-label="Search" class="clean-nav-search-button" type="submit">🔍</button>
+<ul class="clean-nav-search-results" hidden=""></ul>
+</form>
+</div>
 </nav>
-
-  <main class="tool-layout grade-calculator-container pointer-grade-page" aria-label="Pointer grade calculator">
-    <section class="loan-history-box extra-side-box tool-group-nav" aria-label="Related calculator tools">
+<main aria-label="Pointer grade calculator" class="tool-layout grade-calculator-container pointer-grade-page">
+<section aria-label="Related calculator tools" class="loan-history-box extra-side-box tool-group-nav">
 <div class="loan-history-top">
 <h3>Education Tools</h3>
 </div>
 <div class="extra-side-links">
-<a class="current-extra-link" href="grade.html" aria-current="page">Pointer Grade Calculator</a>
+<a aria-current="page" class="current-extra-link" href="grade.html">Pointer Grade Calculator</a>
 </div>
 </section>
+<section class="calculator extra-calculator-box grade-calculator-box pointer-grade-box">
+<h1>Pointer Grade Calculator</h1>
+<p class="calculator-intro">Calculate GPA/CGPA using credit hours and grade points. Add each subject, enter its credit hour and pointer, then the result updates automatically.</p>
+<div aria-label="Subject pointer inputs" class="pointer-grade-table-wrap">
+<table class="pointer-grade-table">
+<thead>
+<tr>
+<th>Subject</th>
+<th>Credit hour</th>
+<th>Pointer</th>
+<th></th>
+</tr>
+</thead>
+<tbody id="pointerGradeRows">
+<tr>
+<td><input class="pg-subject" placeholder="Subject 1" type="text"/></td>
+<td><input class="pg-credit" min="0" placeholder="3" step="0.5" type="number"/></td>
+<td><input class="pg-pointer" max="4" min="0" placeholder="4.00" step="0.01" type="number"/></td>
+<td><button aria-label="Remove row" class="pg-remove" onclick="removePointerRow(this)" type="button">×</button></td>
+</tr>
+<tr>
+<td><input class="pg-subject" placeholder="Subject 2" type="text"/></td>
+<td><input class="pg-credit" min="0" placeholder="3" step="0.5" type="number"/></td>
+<td><input class="pg-pointer" max="4" min="0" placeholder="3.67" step="0.01" type="number"/></td>
+<td><button aria-label="Remove row" class="pg-remove" onclick="removePointerRow(this)" type="button">×</button></td>
+</tr>
+<tr>
+<td><input class="pg-subject" placeholder="Subject 3" type="text"/></td>
+<td><input class="pg-credit" min="0" placeholder="2" step="0.5" type="number"/></td>
+<td><input class="pg-pointer" max="4" min="0" placeholder="3.00" step="0.01" type="number"/></td>
+<td><button aria-label="Remove row" class="pg-remove" onclick="removePointerRow(this)" type="button">×</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pointer-grade-actions">
+<button class="calculate-btn pg-secondary-btn" onclick="addPointerRow()" type="button">+ Add subject</button>
+<button class="calculate-btn" onclick="calculatePointerGrade()" type="button">Calculate Pointer</button>
+</div>
+<section aria-live="polite" class="extra-result-box finance-upgrade-result-box grade-result-box pointer-grade-result" id="gradeResult"></section>
+</section>
+<aside class="instruction-box extra-help-panel">
+<h2>How to use</h2>
+<ol>
+<li>Enter each subject or course name.</li>
+<li>Enter the credit hour for that subject.</li>
+<li>Enter the pointer/grade point, such as 4.00, 3.67, 3.33, 3.00, and so on.</li>
+<li>The calculator multiplies credit hour × pointer, then divides total quality points by total credit hours.</li>
+</ol>
+<h3>Formula</h3>
+<p><strong>GPA / pointer = total quality points ÷ total credit hours</strong></p>
+<p>Example: If one subject has 3 credit hours and 4.00 pointer, its quality point is 12.00.</p>
+</aside>
+</main>
 
-    <section class="calculator extra-calculator-box grade-calculator-box pointer-grade-box">
-      <h1>Pointer Grade Calculator</h1>
-      <p class="calculator-intro">Calculate GPA/CGPA using credit hours and grade points. Add each subject, enter its credit hour and pointer, then the result updates automatically.</p>
 
-      <div class="pointer-grade-table-wrap" aria-label="Subject pointer inputs">
-        <table class="pointer-grade-table">
-          <thead>
-            <tr>
-              <th>Subject</th>
-              <th>Credit hour</th>
-              <th>Pointer</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="pointerGradeRows">
-            <tr>
-              <td><input type="text" class="pg-subject" placeholder="Subject 1"></td>
-              <td><input type="number" class="pg-credit" min="0" step="0.5" placeholder="3"></td>
-              <td><input type="number" class="pg-pointer" min="0" max="4" step="0.01" placeholder="4.00"></td>
-              <td><button type="button" class="pg-remove" onclick="removePointerRow(this)" aria-label="Remove row">×</button></td>
-            </tr>
-            <tr>
-              <td><input type="text" class="pg-subject" placeholder="Subject 2"></td>
-              <td><input type="number" class="pg-credit" min="0" step="0.5" placeholder="3"></td>
-              <td><input type="number" class="pg-pointer" min="0" max="4" step="0.01" placeholder="3.67"></td>
-              <td><button type="button" class="pg-remove" onclick="removePointerRow(this)" aria-label="Remove row">×</button></td>
-            </tr>
-            <tr>
-              <td><input type="text" class="pg-subject" placeholder="Subject 3"></td>
-              <td><input type="number" class="pg-credit" min="0" step="0.5" placeholder="2"></td>
-              <td><input type="number" class="pg-pointer" min="0" max="4" step="0.01" placeholder="3.00"></td>
-              <td><button type="button" class="pg-remove" onclick="removePointerRow(this)" aria-label="Remove row">×</button></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+<script defer="" src="script.js?v=isolated-20260530"></script>
+<script defer src="phone.js?v=phone-20260530"></script>
 
-      <div class="pointer-grade-actions">
-        <button class="calculate-btn pg-secondary-btn" type="button" onclick="addPointerRow()">+ Add subject</button>
-        <button class="calculate-btn" type="button" onclick="calculatePointerGrade()">Calculate Pointer</button>
-      </div>
 
-      <section id="gradeResult" class="extra-result-box finance-upgrade-result-box grade-result-box pointer-grade-result" aria-live="polite"></section>
-    </section>
-
-    <aside class="instruction-box extra-help-panel">
-      <h2>How to use</h2>
-      <ol>
-        <li>Enter each subject or course name.</li>
-        <li>Enter the credit hour for that subject.</li>
-        <li>Enter the pointer/grade point, such as 4.00, 3.67, 3.33, 3.00, and so on.</li>
-        <li>The calculator multiplies credit hour × pointer, then divides total quality points by total credit hours.</li>
-      </ol>
-      <h3>Formula</h3>
-      <p><strong>GPA / pointer = total quality points ÷ total credit hours</strong></p>
-      <p>Example: If one subject has 3 credit hours and 4.00 pointer, its quality point is 12.00.</p>
-    </aside>
-  </main>
-
-<style>
-
-/* Keep the Pointer Grade side group bar consistent with the other calculator pages */
-.pointer-grade-page > .tool-group-nav {
-  width: 100%;
-}
-.pointer-grade-page .tool-group-nav .loan-history-top h3 {
-  margin: 0 0 14px;
-  color: #5b746b;
-  font-size: 0.86rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-.pointer-grade-page .tool-group-nav .extra-side-links {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-}
-.pointer-grade-page .tool-group-nav .extra-side-links a {
-  width: auto;
-  min-width: 0;
-  max-width: 100%;
-  justify-content: flex-start;
-  text-align: left;
-  white-space: normal;
-}
-@media (max-width: 850px) {
-  .pointer-grade-page .tool-group-nav .extra-side-links {
-    flex-direction: row;
-    overflow-x: auto;
-    padding-bottom: 4px;
-  }
-  .pointer-grade-page .tool-group-nav .extra-side-links a {
-    white-space: nowrap;
-  }
-}
-
-.pointer-grade-box { max-width: 980px; }
-.pointer-grade-table-wrap { width: 100%; overflow-x: auto; margin-top: 18px; }
-.pointer-grade-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
-.pointer-grade-table th { text-align: left; font-size: 0.85rem; color: #64748b; padding: 0 8px; }
-.pointer-grade-table td { padding: 0 8px; }
-.pointer-grade-table input { width: 100%; min-height: 44px; border: 1px solid #d7dde8; border-radius: 12px; padding: 10px 12px; font-size: 0.95rem; background: #fff; box-sizing: border-box; }
-.pointer-grade-table .pg-credit, .pointer-grade-table .pg-pointer { text-align: center; }
-.pg-remove { width: 42px; height: 42px; border: 0; border-radius: 12px; background: #fee2e2; color: #b91c1c; font-size: 1.25rem; font-weight: 800; cursor: pointer; }
-.pointer-grade-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
-.pg-secondary-btn { background: #e8f7ef !important; color: #166534 !important; box-shadow: none !important; }
-.pointer-grade-result { margin-top: 18px; }
-.pointer-grade-mini-table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 0.92rem; }
-.pointer-grade-mini-table th, .pointer-grade-mini-table td { padding: 10px; border-bottom: 1px solid #e5e7eb; text-align: left; }
-.pointer-grade-mini-table th { color: #64748b; font-weight: 800; }
-@media (max-width: 760px) {
-  .pointer-grade-table { min-width: 620px; }
-  .pointer-grade-actions .calculate-btn { flex: 1 1 100%; }
-}
-</style>
-
-<script>
-function pointerRowHtml(index) {
-  return '<tr>' +
-    '<td><input type="text" class="pg-subject" placeholder="Subject ' + index + '"></td>' +
-    '<td><input type="number" class="pg-credit" min="0" step="0.5" placeholder="3"></td>' +
-    '<td><input type="number" class="pg-pointer" min="0" max="4" step="0.01" placeholder="4.00"></td>' +
-    '<td><button type="button" class="pg-remove" onclick="removePointerRow(this)" aria-label="Remove row">×</button></td>' +
-  '</tr>';
-}
-
-function addPointerRow() {
-  var body = document.getElementById('pointerGradeRows');
-  body.insertAdjacentHTML('beforeend', pointerRowHtml(body.children.length + 1));
-}
-
-function removePointerRow(button) {
-  var body = document.getElementById('pointerGradeRows');
-  if (body.children.length <= 1) return;
-  button.closest('tr').remove();
-  calculatePointerGrade();
-}
-
-function calculatePointerGrade() {
-  var rows = Array.from(document.querySelectorAll('#pointerGradeRows tr'));
-  var totalCredits = 0;
-  var totalQuality = 0;
-  var validRows = [];
-
-  rows.forEach(function(row, i) {
-    var subject = row.querySelector('.pg-subject').value.trim() || ('Subject ' + (i + 1));
-    var credit = Number(row.querySelector('.pg-credit').value);
-    var pointer = Number(row.querySelector('.pg-pointer').value);
-    if (Number.isFinite(credit) && Number.isFinite(pointer) && credit > 0 && pointer >= 0) {
-      if (pointer > 4) pointer = 4;
-      var quality = credit * pointer;
-      totalCredits += credit;
-      totalQuality += quality;
-      validRows.push({ subject: subject, credit: credit, pointer: pointer, quality: quality });
-    }
-  });
-
-  var result = document.getElementById('gradeResult');
-  if (!validRows.length || totalCredits <= 0) {
-    result.innerHTML = '<article class="finance-result-shell"><header class="finance-result-header"><h2>Pointer result</h2><p>Add at least one subject with credit hour and pointer.</p></header></article>';
-    return;
-  }
-
-  var gpa = totalQuality / totalCredits;
-  var standing = gpa >= 3.67 ? 'Excellent' : gpa >= 3.00 ? 'Good' : gpa >= 2.00 ? 'Pass' : 'Needs improvement';
-  var tableRows = validRows.map(function(item) {
-    return '<tr><td>' + item.subject + '</td><td>' + item.credit.toFixed(1).replace('.0','') + '</td><td>' + item.pointer.toFixed(2) + '</td><td>' + item.quality.toFixed(2) + '</td></tr>';
-  }).join('');
-
-  result.innerHTML = '<article class="finance-result-shell">' +
-    '<header class="finance-result-header"><h2>Pointer result</h2><p>Your weighted pointer based on credit hours.</p></header>' +
-    '<div class="finance-result-summary-grid">' +
-    '<article class="finance-result-metric-card"><div class="finance-result-metric-label">GPA / Pointer</div><div class="finance-result-metric-value">' + gpa.toFixed(2) + '</div></article>' +
-    '<article class="finance-result-metric-card"><div class="finance-result-metric-label">Total credit hours</div><div class="finance-result-metric-value">' + totalCredits.toFixed(1).replace('.0','') + '</div></article>' +
-    '<article class="finance-result-metric-card"><div class="finance-result-metric-label">Standing</div><div class="finance-result-metric-value">' + standing + '</div></article>' +
-    '</div>' +
-    '<table class="pointer-grade-mini-table"><thead><tr><th>Subject</th><th>Credit</th><th>Pointer</th><th>Quality points</th></tr></thead><tbody>' + tableRows + '</tbody></table>' +
-    '</article>';
-}
-
-document.addEventListener('input', function(e) {
-  if (e.target && (e.target.classList.contains('pg-credit') || e.target.classList.contains('pg-pointer') || e.target.classList.contains('pg-subject'))) {
-    clearTimeout(window.gradeAutoTimer);
-    window.gradeAutoTimer = setTimeout(calculatePointerGrade, 250);
-  }
-});
-
-document.addEventListener('DOMContentLoaded', calculatePointerGrade);
-</script>
-<script src="script.js?v=card-layout-compact-20260528b" defer></script>
-<script src="pc.js?v=card-layout-compact-20260528b" defer></script>
-<script src="phone.js?v=card-layout-compact-20260528b" defer></script>
 </body>
 </html>

@@ -7,261 +7,16 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="Convert length, weight, volume and temperature units." name="description"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
-<link href="style.css?v=card-layout-compact-20260528b" rel="stylesheet"/>
-<link href="pc.css?v=card-layout-compact-20260528b" media="screen and (min-width: 851px)" rel="stylesheet"/>
-<link href="phone.css?v=card-layout-compact-20260528b" media="screen and (max-width: 850px)" rel="stylesheet"/>
+<link href="style.css?v=isolated-20260530" rel="stylesheet"/>
+<link href="phone.css?v=phone-20260530" rel="stylesheet" media="screen and (max-width: 850px)"/>
+
+
 <link href="favicon.ico" rel="icon"/>
 
-<style>
-body[data-page="unitConverter"] .unit-converter-upgrade-card{display:grid;gap:16px}
-body[data-page="unitConverter"] .unit-type-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-body[data-page="unitConverter"] .unit-type-btn,
-body[data-page="unitConverter"] .unit-button-list button{min-height:44px;border-radius:12px;border:1px solid #c8d8d0;background:#fff;color:#263a33;font-weight:800;cursor:pointer;box-shadow:0 6px 14px rgba(38,58,51,.05)}
-body[data-page="unitConverter"] .unit-type-btn:hover,
-body[data-page="unitConverter"] .unit-button-list button:hover{border-color:#2f7d68;background:#f0f8f4}
-body[data-page="unitConverter"] .unit-type-btn.is-active,
-body[data-page="unitConverter"] .unit-button-list button.is-active{background:#2f7d68;color:#fff;border-color:#2f7d68}
-body[data-page="unitConverter"] .unit-value-field{max-width:420px}
-body[data-page="unitConverter"] .unit-picker-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-body[data-page="unitConverter"] .unit-picker-panel{padding:14px;border:1px solid #d7e3dc;border-radius:16px;background:#fbfcf8}
-body[data-page="unitConverter"] .unit-picker-panel h3{margin:0 0 10px;font-size:1rem}
-body[data-page="unitConverter"] .unit-button-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-body[data-page="unitConverter"] .unit-result-note{margin-top:10px;color:#586f67;font-size:.95rem}
-@media (max-width:650px){body[data-page="unitConverter"] .unit-type-buttons,body[data-page="unitConverter"] .unit-picker-grid{grid-template-columns:1fr}body[data-page="unitConverter"] .unit-button-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
-/* Unit Converter clean sizing update */
-body[data-page="unitConverter"] .extra-calculator-box{
-  display:block !important;
-}
-body[data-page="unitConverter"] .unit-converter-upgrade-card{
-  max-width:760px !important;
-  margin:0 auto !important;
-  padding:18px !important;
-  gap:14px !important;
-}
-body[data-page="unitConverter"] .unit-type-buttons{
-  grid-template-columns:repeat(6,minmax(0,1fr)) !important;
-  gap:8px !important;
-}
-body[data-page="unitConverter"] .unit-type-btn{
-  min-height:40px !important;
-  padding:8px 10px !important;
-  font-size:.9rem !important;
-  line-height:1.15 !important;
-}
-body[data-page="unitConverter"] .unit-value-field{
-  max-width:360px !important;
-  width:100% !important;
-  margin:0 !important;
-}
-body[data-page="unitConverter"] .unit-value-field input{
-  height:46px !important;
-  font-size:1rem !important;
-  padding:10px 12px !important;
-  border-radius:12px !important;
-}
-body[data-page="unitConverter"] .unit-picker-grid{
-  grid-template-columns:1fr 1fr !important;
-  align-items:start !important;
-  gap:12px !important;
-}
-body[data-page="unitConverter"] .unit-picker-panel{
-  padding:12px !important;
-}
-body[data-page="unitConverter"] .unit-picker-panel h3{
-  font-size:.95rem !important;
-  margin-bottom:8px !important;
-}
-body[data-page="unitConverter"] .unit-button-list{
-  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-  gap:7px !important;
-}
-body[data-page="unitConverter"] .unit-button-list button{
-  min-height:38px !important;
-  padding:7px 8px !important;
-  font-size:.86rem !important;
-  line-height:1.15 !important;
-}
-body[data-page="unitConverter"] #extraCalcResult{
-  display:block !important;
-  width:100% !important;
-  max-width:760px !important;
-  margin:16px auto 0 !important;
-  padding:0 !important;
-  clear:both !important;
-}
-body[data-page="unitConverter"] #extraCalcResult .finance-result-shell{
-  padding:16px !important;
-  border-radius:16px !important;
-}
-body[data-page="unitConverter"] #extraCalcResult .finance-result-header{
-  margin-bottom:10px !important;
-}
-body[data-page="unitConverter"] #extraCalcResult .finance-result-header h2{
-  font-size:1.05rem !important;
-  margin:0 0 3px !important;
-}
-body[data-page="unitConverter"] #extraCalcResult .finance-result-header p{
-  font-size:.88rem !important;
-  margin:0 !important;
-}
-body[data-page="unitConverter"] #extraCalcResult .finance-result-summary-grid{
-  display:grid !important;
-  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
-  gap:10px !important;
-}
-body[data-page="unitConverter"] #extraCalcResult .finance-result-metric-card{
-  padding:12px !important;
-  border-radius:14px !important;
-}
-body[data-page="unitConverter"] #extraCalcResult .finance-result-metric-label{
-  font-size:.78rem !important;
-}
-body[data-page="unitConverter"] #extraCalcResult .finance-result-metric-value{
-  font-size:1rem !important;
-  line-height:1.2 !important;
-  word-break:break-word !important;
-}
-@media (max-width:850px){
-  body[data-page="unitConverter"] .unit-type-buttons{grid-template-columns:repeat(3,minmax(0,1fr)) !important;}
-  body[data-page="unitConverter"] .unit-picker-grid{grid-template-columns:1fr !important;}
-  body[data-page="unitConverter"] #extraCalcResult .finance-result-summary-grid{grid-template-columns:1fr !important;}
-}
-@media (max-width:480px){
-  body[data-page="unitConverter"] .unit-type-buttons{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}
-}
-
-</style>
-
-<style id="unit-converter-sizing-fix">
-/* Unit Converter: balanced box sizing and result placement */
-body:has(#unitValue) .calculator.extra-calculator-box {
-  max-width: 960px !important;
-  width: 100% !important;
-  overflow: visible !important;
-}
-body:has(#unitValue) .unit-converter-upgrade-card {
-  width: min(100%, 760px) !important;
-  max-width: 760px !important;
-  box-sizing: border-box !important;
-  padding: 22px !important;
-  overflow: hidden !important;
-}
-body:has(#unitValue) .unit-type-buttons {
-  display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: 10px !important;
-  width: 100% !important;
-  margin: 12px 0 18px !important;
-}
-body:has(#unitValue) .unit-type-btn {
-  width: 100% !important;
-  min-width: 0 !important;
-  height: 48px !important;
-  padding: 0 10px !important;
-  border-radius: 14px !important;
-  font-size: 0.95rem !important;
-  line-height: 1.15 !important;
-  white-space: normal !important;
-  text-align: center !important;
-}
-body:has(#unitValue) .unit-value-field,
-body:has(#unitValue) .unit-value-field input {
-  width: 100% !important;
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-}
-body:has(#unitValue) .unit-value-field input {
-  height: 54px !important;
-  font-size: 1rem !important;
-  padding: 0 16px !important;
-}
-body:has(#unitValue) .unit-picker-grid {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  gap: 16px !important;
-  width: 100% !important;
-  align-items: start !important;
-}
-body:has(#unitValue) .unit-picker-panel {
-  width: 100% !important;
-  min-width: 0 !important;
-  box-sizing: border-box !important;
-  padding: 16px !important;
-  overflow: hidden !important;
-}
-body:has(#unitValue) .unit-button-list {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  gap: 10px !important;
-  width: 100% !important;
-}
-body:has(#unitValue) .unit-button-list button {
-  width: 100% !important;
-  min-width: 0 !important;
-  height: 46px !important;
-  padding: 0 8px !important;
-  border-radius: 13px !important;
-  font-size: 0.9rem !important;
-  line-height: 1.1 !important;
-  white-space: normal !important;
-  overflow-wrap: anywhere !important;
-  text-align: center !important;
-}
-body:has(#unitValue) #extraCalcResult {
-  width: min(100%, 760px) !important;
-  max-width: 760px !important;
-  margin: 22px 0 0 !important;
-  padding: 18px !important;
-  box-sizing: border-box !important;
-}
-body:has(#unitValue) #extraCalcResult .finance-result-shell {
-  padding: 0 !important;
-  box-shadow: none !important;
-  border: 0 !important;
-  background: transparent !important;
-}
-body:has(#unitValue) #extraCalcResult .finance-result-header {
-  text-align: left !important;
-  margin-bottom: 14px !important;
-}
-body:has(#unitValue) #extraCalcResult .finance-result-header h2 {
-  font-size: 1.15rem !important;
-  margin: 0 0 4px !important;
-}
-body:has(#unitValue) #extraCalcResult .finance-result-header p {
-  font-size: 0.95rem !important;
-  margin: 0 !important;
-}
-body:has(#unitValue) #extraCalcResult .finance-result-summary-grid {
-  display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: 12px !important;
-}
-body:has(#unitValue) #extraCalcResult .finance-result-metric-card {
-  min-width: 0 !important;
-  padding: 14px !important;
-  text-align: center !important;
-}
-body:has(#unitValue) #extraCalcResult .finance-result-metric-value {
-  font-size: 1.05rem !important;
-  line-height: 1.2 !important;
-  overflow-wrap: anywhere !important;
-}
-@media (max-width: 760px) {
-  body:has(#unitValue) .unit-type-buttons,
-  body:has(#unitValue) .unit-picker-grid,
-  body:has(#unitValue) #extraCalcResult .finance-result-summary-grid {
-    grid-template-columns: 1fr !important;
-  }
-  body:has(#unitValue) .unit-button-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-}
-</style>
 
 </head>
 <!-- submenu-regroup-fixed-v2 -->
-<body class="extra-calculator-page unitConverter-page app-redesign" data-page="unitConverter">
+<body class="extra-calculator-page unitConverter-page app-redesign page-unitConverter" data-page="unitConverter">
 <button aria-label="Go to top" id="scrollTopBtn" onclick="scrollToTop()" type="button">
     ↑
   </button>
@@ -271,65 +26,63 @@ body:has(#unitValue) #extraCalcResult .finance-result-metric-value {
 <div class="clean-nav-dropdown clean-calculator-dropdown">
 <button aria-expanded="false" class="clean-nav-link clean-nav-button" type="button">Tools <span aria-hidden="true">▼</span></button>
 <div class="clean-nav-dropdown-panel clean-calculator-panel">
-
-        <div class="clean-nav-submenu clean-general-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">General <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="basic-calculator.html">Basic Calculator</a>
-            <a href="percentage-calculator.html">Percentage Calculator</a>
-            <a href="unit-converter-calculator.html">Unit Converter</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-health-age-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Health & Age <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="age-calculator.html">Age Calculator</a>
-            <a href="bmi-calculator.html">BMI Calculator</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-education-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Education <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="grade.html">Pointer Grade Calculator</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-income-tax-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Income & Tax <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="salary-calculator.html">Salary Calculator</a>
-            <a href="gaji-penjawat-awam-calculator.html">Gaji Penjawat Awam</a>
-            <a href="tax-calculator.html">Tax Calculator</a>
-            <a href="currency-converter.html">Currency Converter</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-finance-growth-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Finance & Growth <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="inflation-calculator.html">Inflation Calculator</a>
-            <a href="compound-interest-calculator.html">Compound Interest</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-loans-debt-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Loans & Debt <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="loan-calculator.html">Loan Calculator</a>
-            <a href="mortgage-calculator.html">Mortgage Calculator</a>
-            <a href="personal-loan-calculator.html">Personal Loan</a>
-            <a href="loan-comparison-calculator.html">Loan Comparison</a>
-            <a href="debt-payoff-calculator.html">Debt Payoff</a>
-            <a href="credit-card-payoff-calculator.html">Credit Card Payoff</a>
-            <a href="credit-card-interest-calculator.html">Credit Card Interest</a>
-          </div>
-        </div>
-        <div class="clean-nav-submenu clean-property-travel-submenu">
-          <button type="button" class="clean-nav-panel-row clean-nav-submenu-button">Property & Travel <span aria-hidden="true">▶</span></button>
-          <div class="clean-nav-submenu-panel">
-            <a href="rental-yield-calculator.html">Rental Yield</a>
-            <a href="fuel-cost-calculator.html">Fuel Cost</a>
-          </div>
-        </div>
-
-      </div>
+<div class="clean-nav-submenu clean-general-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">General <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="basic-calculator.html">Basic Calculator</a>
+<a href="percentage-calculator.html">Percentage Calculator</a>
+<a href="unit-converter-calculator.html">Unit Converter</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-health-age-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Health &amp; Age <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="age-calculator.html">Age Calculator</a>
+<a href="bmi-calculator.html">BMI Calculator</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-education-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Education <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="grade.html">Pointer Grade Calculator</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-income-tax-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Income &amp; Tax <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="salary-calculator.html">Salary Calculator</a>
+<a href="gaji-penjawat-awam-calculator.html">Gaji Penjawat Awam</a>
+<a href="tax-calculator.html">Tax Calculator</a>
+<a href="currency-converter.html">Currency Converter</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-finance-growth-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Finance &amp; Growth <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="inflation-calculator.html">Inflation Calculator</a>
+<a href="compound-interest-calculator.html">Compound Interest</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-loans-debt-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Loans &amp; Debt <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="loan-calculator.html">Loan Calculator</a>
+<a href="mortgage-calculator.html">Mortgage Calculator</a>
+<a href="personal-loan-calculator.html">Personal Loan</a>
+<a href="loan-comparison-calculator.html">Loan Comparison</a>
+<a href="debt-payoff-calculator.html">Debt Payoff</a>
+<a href="credit-card-payoff-calculator.html">Credit Card Payoff</a>
+<a href="credit-card-interest-calculator.html">Credit Card Interest</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-property-travel-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Property &amp; Travel <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="rental-yield-calculator.html">Rental Yield</a>
+<a href="fuel-cost-calculator.html">Fuel Cost</a>
+</div>
+</div>
+</div>
 </div>
 <div class="clean-nav-dropdown clean-info-dropdown">
 <button aria-expanded="false" class="clean-nav-link clean-nav-button" type="button">Resources <span aria-hidden="true">▼</span></button>
@@ -341,7 +94,7 @@ body:has(#unitValue) #extraCalcResult .finance-result-metric-value {
 </div>
 </div>
 <a class="clean-nav-link clean-chat-link" href="review.html">Review</a>
-    <a class="clean-nav-link clean-wall-link" href="Wall.html">Wall</a>
+<a class="clean-nav-link clean-wall-link" href="Wall.html">Wall</a>
 <form autocomplete="off" class="clean-nav-search" role="search">
 <label class="clean-nav-search-label" for="cleanCalculatorSearchInput">Search tools</label>
 <input aria-label="Search tools" class="clean-nav-search-input" id="cleanCalculatorSearchInput" placeholder="Search tools" type="search"/>
@@ -351,8 +104,7 @@ body:has(#unitValue) #extraCalcResult .finance-result-metric-value {
 </div>
 </nav>
 <main class="loan-calculator-container extra-calculator-container extra-calculator-layout extra-help-layout tool-layout">
-
-<section class="loan-history-box extra-side-box tool-group-nav" aria-label="Related calculator tools">
+<section aria-label="Related calculator tools" class="loan-history-box extra-side-box tool-group-nav">
 <div class="loan-history-top">
 <h3>General Tools</h3>
 </div>
@@ -373,13 +125,13 @@ body:has(#unitValue) #extraCalcResult .finance-result-metric-value {
 <input id="unitType" type="hidden" value="length"/>
 <input id="unitFrom" type="hidden" value="m"/>
 <input id="unitTo" type="hidden" value="km"/>
-<div class="unit-type-buttons" aria-label="Unit converter type">
-<button class="unit-type-btn is-active" type="button" data-unit-type="length">Length</button>
-<button class="unit-type-btn" type="button" data-unit-type="weight">Weight</button>
-<button class="unit-type-btn" type="button" data-unit-type="temperature">Temperature</button>
-<button class="unit-type-btn" type="button" data-unit-type="area">Area</button>
-<button class="unit-type-btn" type="button" data-unit-type="volume">Volume</button>
-<button class="unit-type-btn" type="button" data-unit-type="speed">Speed</button>
+<div aria-label="Unit converter type" class="unit-type-buttons">
+<button class="unit-type-btn is-active" data-unit-type="length" type="button">Length</button>
+<button class="unit-type-btn" data-unit-type="weight" type="button">Weight</button>
+<button class="unit-type-btn" data-unit-type="temperature" type="button">Temperature</button>
+<button class="unit-type-btn" data-unit-type="area" type="button">Area</button>
+<button class="unit-type-btn" data-unit-type="volume" type="button">Volume</button>
+<button class="unit-type-btn" data-unit-type="speed" type="button">Speed</button>
 </div>
 <div class="extra-input-field unit-value-field">
 <label for="unitValue">Value</label>
@@ -388,180 +140,34 @@ body:has(#unitValue) #extraCalcResult .finance-result-metric-value {
 <div class="unit-picker-grid">
 <section class="unit-picker-panel">
 <h3>From</h3>
-<div class="unit-button-list" id="unitFromButtons" aria-label="From unit buttons"></div>
+<div aria-label="From unit buttons" class="unit-button-list" id="unitFromButtons"></div>
 </section>
 <section class="unit-picker-panel">
 <h3>To</h3>
-<div class="unit-button-list" id="unitToButtons" aria-label="To unit buttons"></div>
+<div aria-label="To unit buttons" class="unit-button-list" id="unitToButtons"></div>
 </section>
 </div>
 </div>
 <section class="extra-result-box" id="extraCalcResult"><div class="calc-side-placeholder"><strong>Result preview</strong><span>Enter values to see the calculation here.</span></div></section>
 </section>
-
-    <aside aria-label="Calculator guide and references" class="instruction-box universal-help-panel">
-      <section class="instruction-section instruction-what-box"><h3>What does this calculator do?</h3><p>Use this to convert common units such as length, weight, temperature, area, volume, and speed.</p></section>
-
-      <h2 class="instruction-main-title">Instructions</h2>
-
-      <section class="instruction-section instruction-how-box"><h3>How to use it</h3><p>Choose the unit type, enter the value, choose the starting unit and target unit, then read the converted result.</p></section>
-
-      <section class="instruction-section instruction-formula-box"><h3>Formula used</h3><p>The calculator uses fixed conversion factors between supported units. Temperature conversions also include an offset.</p></section>
-
-      <section class="instruction-section instruction-example-box"><h3>Example calculation</h3><p>1 kilometre = 1000 metres. 1 inch = 2.54 centimetres.</p></section>
-
-      <section aria-label="References" class="reference-box universal-reference-box"><h2 class="reference-main-title">References</h2>
-        <div class="reference-scroll universal-reference-list">
-          <div class="reference-card"><h3>Unit conversion</h3><p>NIST provides reference information for SI units and conversion factors.</p><a href="https://www.nist.gov/pml/owm/metric-si/si-units" rel="noopener noreferrer" target="_blank">Open source</a></div>
-          <div class="reference-card"><h3>General note</h3><p>For medical, engineering, or legal measurements, always confirm the required unit standard.</p></div>
-        </div>
-      </section>
-    </aside>
+<aside aria-label="Calculator guide and references" class="instruction-box universal-help-panel">
+<section class="instruction-section instruction-what-box"><h3>What does this calculator do?</h3><p>Use this to convert common units such as length, weight, temperature, area, volume, and speed.</p></section>
+<h2 class="instruction-main-title">Instructions</h2>
+<section class="instruction-section instruction-how-box"><h3>How to use it</h3><p>Choose the unit type, enter the value, choose the starting unit and target unit, then read the converted result.</p></section>
+<section class="instruction-section instruction-formula-box"><h3>Formula used</h3><p>The calculator uses fixed conversion factors between supported units. Temperature conversions also include an offset.</p></section>
+<section class="instruction-section instruction-example-box"><h3>Example calculation</h3><p>1 kilometre = 1000 metres. 1 inch = 2.54 centimetres.</p></section>
+<section aria-label="References" class="reference-box universal-reference-box"><h2 class="reference-main-title">References</h2>
+<div class="reference-scroll universal-reference-list">
+<div class="reference-card"><h3>Unit conversion</h3><p>NIST provides reference information for SI units and conversion factors.</p><a href="https://www.nist.gov/pml/owm/metric-si/si-units" rel="noopener noreferrer" target="_blank">Open source</a></div>
+<div class="reference-card"><h3>General note</h3><p>For medical, engineering, or legal measurements, always confirm the required unit standard.</p></div>
+</div>
+</section>
+</aside>
 </main>
-<script src="script.js?v=card-layout-compact-20260528b" defer></script>
-<script src="pc.js?v=card-layout-compact-20260528b" defer></script>
-<script src="phone.js?v=card-layout-compact-20260528b" defer></script>
+<script defer="" src="script.js?v=isolated-20260530"></script>
+<script defer src="phone.js?v=phone-20260530"></script>
 
-<script>
-(function(){
-  'use strict';
-  if(!/unit-converter-calculator\.html?$/i.test(location.pathname)) return;
 
-  const unitSets = {
-    length: [
-      ['m','Meter'], ['km','Kilometer'], ['cm','Centimeter'], ['mm','Millimeter'],
-      ['mile','Mile'], ['yard','Yard'], ['ft','Foot'], ['inch','Inch']
-    ],
-    weight: [
-      ['kg','Kilogram'], ['g','Gram'], ['mg','Milligram'], ['lb','Pound'],
-      ['oz','Ounce'], ['tonne','Tonne']
-    ],
-    temperature: [
-      ['c','Celsius'], ['f','Fahrenheit'], ['k','Kelvin']
-    ],
-    area: [
-      ['m2','Square meter'], ['km2','Square kilometer'], ['cm2','Square centimeter'],
-      ['ft2','Square foot'], ['in2','Square inch'], ['acre','Acre'], ['hectare','Hectare']
-    ],
-    volume: [
-      ['l','Liter'], ['ml','Milliliter'], ['m3','Cubic meter'], ['cm3','Cubic centimeter'],
-      ['gallon','Gallon'], ['cup','Cup'], ['pint','Pint']
-    ],
-    speed: [
-      ['mps','Meter/sec'], ['kmh','Kilometer/hour'], ['mph','Mile/hour'],
-      ['knot','Knot'], ['fps','Foot/sec']
-    ]
-  };
 
-  const factors = {
-    length: {m:1,km:1000,cm:0.01,mm:0.001,mile:1609.344,yard:0.9144,ft:0.3048,inch:0.0254},
-    weight: {kg:1,g:0.001,mg:0.000001,lb:0.45359237,oz:0.028349523125,tonne:1000},
-    area: {m2:1,km2:1000000,cm2:0.0001,ft2:0.09290304,in2:0.00064516,acre:4046.8564224,hectare:10000},
-    volume: {l:1,ml:0.001,m3:1000,cm3:0.001,gallon:3.785411784,cup:0.2365882365,pint:0.473176473},
-    speed: {mps:1,kmh:0.2777777778,mph:0.44704,knot:0.5144444444,fps:0.3048}
-  };
-
-  const defaults = {
-    length:['m','km'], weight:['kg','lb'], temperature:['c','f'],
-    area:['m2','ft2'], volume:['l','gallon'], speed:['kmh','mph']
-  };
-
-  function id(name){ return document.getElementById(name); }
-  function activeType(){ return id('unitType') ? id('unitType').value || 'length' : 'length'; }
-  function labelFor(type, key){
-    const found = (unitSets[type] || []).find(item => item[0] === key);
-    return found ? found[1] : key;
-  }
-  function format(value){
-    if(!Number.isFinite(value)) return '-';
-    return Number(value.toPrecision(12)).toLocaleString('en-MY', {maximumFractionDigits:8});
-  }
-  function convertTemp(value, from, to){
-    let c;
-    if(from === 'c') c = value;
-    else if(from === 'f') c = (value - 32) * 5 / 9;
-    else if(from === 'k') c = value - 273.15;
-    else return NaN;
-    if(to === 'c') return c;
-    if(to === 'f') return c * 9 / 5 + 32;
-    if(to === 'k') return c + 273.15;
-    return NaN;
-  }
-  function renderResult(value, result, type, from, to){
-    const box = id('extraCalcResult');
-    if(!box) return;
-    box.hidden = false;
-    box.style.display = 'block';
-    box.innerHTML = '<article class="finance-result-shell">' +
-      '<header class="finance-result-header"><h2>Unit conversion</h2><p>Converted value updates automatically.</p></header>' +
-      '<div class="finance-result-summary-grid">' +
-      '<article class="finance-result-metric-card"><div class="finance-result-metric-label">Value</div><div class="finance-result-metric-value">' + format(value) + ' ' + labelFor(type, from) + '</div></article>' +
-      '<article class="finance-result-metric-card"><div class="finance-result-metric-label">Converted</div><div class="finance-result-metric-value">' + format(result) + ' ' + labelFor(type, to) + '</div></article>' +
-      '<article class="finance-result-metric-card"><div class="finance-result-metric-label">Type</div><div class="finance-result-metric-value">' + type.charAt(0).toUpperCase() + type.slice(1) + '</div></article>' +
-      '</div></article>';
-  }
-  function calculate(){
-    const type = activeType();
-    const valueInput = id('unitValue');
-    const value = Number(String(valueInput && valueInput.value || '').replace(/,/g,'').trim());
-    const from = id('unitFrom') ? id('unitFrom').value : '';
-    const to = id('unitTo') ? id('unitTo').value : '';
-    if(!Number.isFinite(value)) return;
-    let result = NaN;
-    if(type === 'temperature') result = convertTemp(value, from, to);
-    else if(factors[type] && Number.isFinite(factors[type][from]) && Number.isFinite(factors[type][to])) {
-      result = value * factors[type][from] / factors[type][to];
-    }
-    if(Number.isFinite(result)) renderResult(value, result, type, from, to);
-  }
-  function renderUnitButtons(which){
-    const type = activeType();
-    const holder = id(which === 'from' ? 'unitFromButtons' : 'unitToButtons');
-    const input = id(which === 'from' ? 'unitFrom' : 'unitTo');
-    if(!holder || !input) return;
-    holder.innerHTML = '';
-    (unitSets[type] || []).forEach(([key, label]) => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.textContent = label;
-      btn.dataset.unitValue = key;
-      if(input.value === key) btn.classList.add('is-active');
-      btn.addEventListener('click', () => {
-        input.value = key;
-        holder.querySelectorAll('button').forEach(b => b.classList.remove('is-active'));
-        btn.classList.add('is-active');
-        input.dispatchEvent(new Event('change', {bubbles:true}));
-        calculate();
-      });
-      holder.appendChild(btn);
-    });
-  }
-  function setType(type){
-    if(!unitSets[type]) return;
-    id('unitType').value = type;
-    const pair = defaults[type];
-    id('unitFrom').value = pair[0];
-    id('unitTo').value = pair[1];
-    document.querySelectorAll('.unit-type-btn').forEach(btn => btn.classList.toggle('is-active', btn.dataset.unitType === type));
-    renderUnitButtons('from');
-    renderUnitButtons('to');
-    id('unitType').dispatchEvent(new Event('change', {bubbles:true}));
-    calculate();
-  }
-  function init(){
-    document.querySelectorAll('.unit-type-btn').forEach(btn => btn.addEventListener('click', () => setType(btn.dataset.unitType)));
-    const valueInput = id('unitValue');
-    if(valueInput){
-      valueInput.addEventListener('input', calculate);
-      valueInput.addEventListener('change', calculate);
-    }
-    window.calculateUnitConverterExtra = calculate;
-    setType(activeType());
-  }
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
-  setTimeout(function(){ window.calculateUnitConverterExtra = calculate; }, 400);
-})();
-</script>
 </body>
 </html>
