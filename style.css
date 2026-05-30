@@ -2403,3 +2403,41 @@ body[data-page="unitConverter"] .unit-copy-result-btn:disabled {
     max-width: 100% !important;
   }
 }
+
+
+/* Percentage Calculator copy button below result */
+body[data-page="percentage"] .percentage-copy-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: fit-content !important;
+  min-width: 132px !important;
+  min-height: 42px !important;
+  margin: 10px 0 0 !important;
+  padding: 0 16px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: var(--primary) !important;
+  color: #fff !important;
+  font-weight: 850 !important;
+  box-shadow: 0 8px 18px rgba(14,116,144,.16) !important;
+}
+body[data-page="percentage"] .percentage-copy-btn:hover {
+  background: var(--primary-dark) !important;
+}
+@media screen and (min-width: 851px) {
+  body[data-page="percentage"] .percentage-type-calculator > .percentage-copy-btn {
+    grid-column: 2 !important;
+    grid-row: 5 !important;
+    align-self: start !important;
+  }
+  body[data-page="percentage"] .percentage-type-calculator > .percentage-helper {
+    grid-column: 2 !important;
+    grid-row: 6 !important;
+  }
+}
+@media screen and (max-width: 850px) {
+  body[data-page="percentage"] .percentage-copy-btn {
+    width: 100% !important;
+  }
+}

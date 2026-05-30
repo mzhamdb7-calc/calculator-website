@@ -897,6 +897,38 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
       inputB.addEventListener('input', calculate);
       inputB.addEventListener('change', calculate);
     }
+    var copyBtn = byId('percentageCopyBtn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function () {
+        var result = byId('percentageLiveResult');
+        var text = result ? String(result.textContent || '').trim() : '';
+        if (!text || text === 'Enter values') return;
+        function done() {
+          var oldText = copyBtn.textContent;
+          copyBtn.textContent = 'Copied';
+          setTimeout(function () { copyBtn.textContent = oldText; }, 1200);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done).catch(function () {
+            var temp = document.createElement('textarea');
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            temp.remove();
+            done();
+          });
+        } else {
+          var temp = document.createElement('textarea');
+          temp.value = text;
+          document.body.appendChild(temp);
+          temp.select();
+          document.execCommand('copy');
+          temp.remove();
+          done();
+        }
+      });
+    }
     window.calculatePercentage = calculate;
     window.calculatePercentageTypeButtons = calculate;
     window.__percentageSetMode = setMode;
