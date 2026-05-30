@@ -1787,3 +1787,46 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
     setTimeout(syncButton, 500);
   });
 })();
+
+
+/* Basic Calculator copy result button */
+(function(){
+  'use strict';
+  function initBasicCopyButton(){
+    if (!document.body || document.body.dataset.page !== 'basic') return;
+    var btn = document.getElementById('basicCopyBtn');
+    var display = document.getElementById('display');
+    if (!btn || !display || btn.dataset.copyReady === '1') return;
+    btn.dataset.copyReady = '1';
+    btn.addEventListener('click', function(){
+      var text = String(display.value || '').trim();
+      if (!text || text === 'Error') return;
+      function done(){
+        var oldText = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(function(){ btn.textContent = oldText || 'Copy result'; }, 1200);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(function(){
+          var temp = document.createElement('textarea');
+          temp.value = text;
+          document.body.appendChild(temp);
+          temp.select();
+          document.execCommand('copy');
+          temp.remove();
+          done();
+        });
+      } else {
+        var temp = document.createElement('textarea');
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        temp.remove();
+        done();
+      }
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initBasicCopyButton);
+  else initBasicCopyButton();
+})();

@@ -2523,3 +2523,64 @@ body[data-page="unitConverter"] .unit-copy-result-btn {
     max-width: 100% !important;
   }
 }
+
+
+/* Basic Calculator copy button below display */
+body[data-page="basic"] .basic-copy-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: fit-content !important;
+  min-width: 126px !important;
+  min-height: 40px !important;
+  margin: 10px 0 0 !important;
+  padding: 0 16px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: var(--primary) !important;
+  color: #fff !important;
+  font-weight: 850 !important;
+  box-shadow: 0 8px 18px rgba(14,116,144,.16) !important;
+  cursor: pointer !important;
+}
+body[data-page="basic"] .basic-copy-btn:hover {
+  background: var(--primary-dark) !important;
+}
+@media (min-width: 900px) {
+  body[data-page="basic"] .basic-clean-calculator {
+    grid-template-areas:
+      "display keypad"
+      "copy keypad"
+      "note keypad" !important;
+    row-gap: 10px !important;
+  }
+  body[data-page="basic"] .basic-copy-btn {
+    grid-area: copy !important;
+    align-self: start !important;
+    justify-self: start !important;
+  }
+}
+@media (max-width: 899px) {
+  body[data-page="basic"] .basic-copy-btn {
+    width: 100% !important;
+    margin: 8px 0 12px !important;
+  }
+}
+
+/* Percentage Calculator: reduce gap between result box and copy button */
+body[data-page="percentage"] .percentage-copy-btn {
+  margin-top: 4px !important;
+}
+@media screen and (min-width: 851px) {
+  body[data-page="percentage"] .percentage-type-calculator {
+    row-gap: 8px !important;
+  }
+  body[data-page="percentage"] .percentage-type-calculator > .percentage-copy-btn {
+    margin-top: 0 !important;
+  }
+}
+@media screen and (max-width: 850px) {
+  body[data-page="percentage"] .percentage-copy-btn {
+    margin-top: 6px !important;
+  }
+}
