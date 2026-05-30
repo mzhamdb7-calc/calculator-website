@@ -1898,3 +1898,63 @@ body[data-page="unitConverter"] .unit-value-field input {
     max-width: 100% !important;
   }
 }
+
+
+/* Unit Converter final clean layout: remove the large outer input background box */
+body[data-page="unitConverter"] .unit-converter-upgrade-card,
+body[data-page="unitConverter"] .unit-converter-wide-card {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin-top: 20px !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+}
+
+body[data-page="unitConverter"] .unit-converter-workspace {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+body[data-page="unitConverter"] .unit-value-panel {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  max-width: 280px !important;
+}
+
+body[data-page="unitConverter"] .unit-value-field {
+  max-width: 260px !important;
+}
+
+body[data-page="unitConverter"] .unit-value-field input {
+  width: 260px !important;
+  max-width: 100% !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  padding: 0 14px !important;
+  border-radius: 13px !important;
+  font-size: .95rem !important;
+}
+
+@media screen and (min-width: 851px) {
+  body[data-page="unitConverter"] .unit-converter-workspace {
+    grid-template-columns: minmax(540px, 1fr) 280px !important;
+    column-gap: 28px !important;
+    row-gap: 22px !important;
+  }
+}
+
+@media screen and (max-width: 850px) {
+  body[data-page="unitConverter"] .unit-value-panel,
+  body[data-page="unitConverter"] .unit-value-field,
+  body[data-page="unitConverter"] .unit-value-field input {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
