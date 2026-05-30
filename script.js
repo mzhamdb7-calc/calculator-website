@@ -1830,3 +1830,33 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initBasicCopyButton);
   else initBasicCopyButton();
 })();
+
+/* Sync Unit Converter instruction box width to calculator box */
+(function(){
+  'use strict';
+  function syncUnitInstructionWidth(){
+    if (!document.body || document.body.dataset.page !== 'unitConverter') return;
+    var main = document.querySelector('main');
+    var calc = main && main.querySelector(':scope > .calculator.extra-calculator-box');
+    var instruction = main && main.querySelector(':scope > .instruction-box.universal-help-panel');
+    if (!calc || !instruction) return;
+    if (window.innerWidth < 851) {
+      instruction.style.width = '';
+      instruction.style.maxWidth = '';
+      return;
+    }
+    var width = Math.round(calc.getBoundingClientRect().width);
+    if (width > 0) {
+      instruction.style.width = width + 'px';
+      instruction.style.maxWidth = width + 'px';
+      instruction.style.justifySelf = 'start';
+      instruction.style.boxSizing = 'border-box';
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', syncUnitInstructionWidth);
+  else syncUnitInstructionWidth();
+  window.addEventListener('resize', syncUnitInstructionWidth);
+  setTimeout(syncUnitInstructionWidth, 100);
+  setTimeout(syncUnitInstructionWidth, 500);
+  setTimeout(syncUnitInstructionWidth, 1200);
+})();

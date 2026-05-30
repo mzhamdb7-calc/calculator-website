@@ -2670,3 +2670,84 @@ body[data-page="percentage"] .percentage-copy-btn {
     box-sizing: border-box !important;
   }
 }
+
+/* ===== Actual final fix: remove copy gaps and sync Unit Converter instruction width ===== */
+@media screen and (min-width: 900px) {
+  body[data-page="basic"] .basic-clean-calculator {
+    row-gap: 0 !important;
+    column-gap: 18px !important;
+  }
+
+  body[data-page="basic"] .basic-display-card,
+  body[data-page="basic"] .basic-clean-display-card,
+  body[data-page="basic"] .basic-two-line-display {
+    margin-bottom: 0 !important;
+  }
+
+  body[data-page="basic"] .basic-copy-btn {
+    grid-area: copy !important;
+    margin: -6px 0 4px !important;
+    transform: translateY(-8px) !important;
+    min-height: 34px !important;
+    padding: 0 14px !important;
+  }
+}
+
+@media screen and (max-width: 899px) {
+  body[data-page="basic"] .basic-display-card,
+  body[data-page="basic"] .basic-clean-display-card,
+  body[data-page="basic"] .basic-two-line-display {
+    margin-bottom: 0 !important;
+  }
+
+  body[data-page="basic"] .basic-copy-btn {
+    margin: -4px 0 8px !important;
+    min-height: 36px !important;
+  }
+}
+
+body[data-page="percentage"] #percentageLiveResultBox.percentage-result-compact {
+  margin-bottom: 0 !important;
+}
+
+body[data-page="percentage"] .percentage-copy-btn {
+  margin-top: -8px !important;
+  transform: translateY(-6px) !important;
+  min-height: 34px !important;
+  padding: 0 13px !important;
+}
+
+@media screen and (min-width: 851px) {
+  body[data-page="percentage"] .percentage-type-calculator {
+    row-gap: 0 !important;
+  }
+
+  body[data-page="percentage"] .percentage-type-calculator > .percentage-copy-btn {
+    grid-column: 2 !important;
+    grid-row: 5 !important;
+    margin-top: -10px !important;
+    transform: translateY(-8px) !important;
+  }
+
+  body[data-page="percentage"] .percentage-type-calculator > .percentage-helper {
+    grid-column: 2 !important;
+    grid-row: 6 !important;
+    margin-top: -4px !important;
+  }
+}
+
+@media screen and (min-width: 851px) {
+  body[data-page="unitConverter"] main > .calculator.extra-calculator-box,
+  body[data-page="unitConverter"] main > .instruction-box.universal-help-panel {
+    grid-column: 2 !important;
+    justify-self: start !important;
+    align-self: start !important;
+    box-sizing: border-box !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  body[data-page="unitConverter"] main > .instruction-box.universal-help-panel {
+    grid-row: 2 !important;
+  }
+}
