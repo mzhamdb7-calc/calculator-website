@@ -2751,3 +2751,106 @@ body[data-page="percentage"] .percentage-copy-btn {
     grid-row: 2 !important;
   }
 }
+
+
+/* ===== Final direct fix: Basic copy button position + Unit Converter instruction width ===== */
+body[data-page="basic"] .basic-display-card .basic-copy-btn,
+body[data-page="basic"] .basic-clean-display-card .basic-copy-btn,
+body[data-page="basic"] .basic-two-line-display .basic-copy-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: fit-content !important;
+  min-width: 108px !important;
+  min-height: 30px !important;
+  padding: 0 12px !important;
+  margin: 6px 0 0 !important;
+  transform: none !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: var(--primary) !important;
+  color: #fff !important;
+  font-size: .82rem !important;
+  line-height: 1 !important;
+  font-weight: 850 !important;
+  box-shadow: 0 5px 12px rgba(14,116,144,.14) !important;
+  grid-area: auto !important;
+}
+
+@media screen and (min-width: 900px) {
+  body[data-page="basic"] .basic-clean-calculator {
+    grid-template-areas:
+      "display keypad"
+      "note keypad" !important;
+    row-gap: 10px !important;
+    column-gap: 18px !important;
+  }
+  body[data-page="basic"] .basic-display-card,
+  body[data-page="basic"] .basic-clean-display-card,
+  body[data-page="basic"] .basic-two-line-display {
+    grid-area: display !important;
+    margin-bottom: 0 !important;
+  }
+  body[data-page="basic"] .buttons.basic-grid,
+  body[data-page="basic"] .basic-clean-grid {
+    grid-area: keypad !important;
+  }
+  body[data-page="basic"] .basic-keyboard-note {
+    grid-area: note !important;
+  }
+}
+
+@media screen and (max-width: 899px) {
+  body[data-page="basic"] .basic-display-card .basic-copy-btn,
+  body[data-page="basic"] .basic-clean-display-card .basic-copy-btn,
+  body[data-page="basic"] .basic-two-line-display .basic-copy-btn {
+    width: 100% !important;
+    margin: 6px 0 0 !important;
+    min-height: 34px !important;
+  }
+}
+
+@media screen and (min-width: 851px) {
+  body[data-page="unitConverter"] main.loan-calculator-container.extra-calculator-container.extra-calculator-layout.extra-help-layout.tool-layout {
+    width: min(1480px, calc(100vw - 48px)) !important;
+    max-width: 1480px !important;
+    display: grid !important;
+    grid-template-columns: minmax(230px, 290px) minmax(0, 1180px) !important;
+    gap: 24px !important;
+    align-items: start !important;
+    justify-content: center !important;
+  }
+
+  body[data-page="unitConverter"] main.loan-calculator-container.extra-calculator-container.extra-calculator-layout.extra-help-layout.tool-layout > .tool-group-nav {
+    grid-column: 1 !important;
+    grid-row: 1 / span 2 !important;
+  }
+
+  body[data-page="unitConverter"] main.loan-calculator-container.extra-calculator-container.extra-calculator-layout.extra-help-layout.tool-layout > .calculator.extra-calculator-box,
+  body[data-page="unitConverter"] main.loan-calculator-container.extra-calculator-container.extra-calculator-layout.extra-help-layout.tool-layout > .instruction-box.universal-help-panel {
+    grid-column: 2 !important;
+    width: 100% !important;
+    max-width: 1180px !important;
+    min-width: 0 !important;
+    justify-self: stretch !important;
+    box-sizing: border-box !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  body[data-page="unitConverter"] main.loan-calculator-container.extra-calculator-container.extra-calculator-layout.extra-help-layout.tool-layout > .calculator.extra-calculator-box {
+    grid-row: 1 !important;
+  }
+
+  body[data-page="unitConverter"] main.loan-calculator-container.extra-calculator-container.extra-calculator-layout.extra-help-layout.tool-layout > .instruction-box.universal-help-panel {
+    grid-row: 2 !important;
+  }
+
+  body[data-page="unitConverter"] .instruction-box.universal-help-panel .instruction-section,
+  body[data-page="unitConverter"] .instruction-box.universal-help-panel .reference-box,
+  body[data-page="unitConverter"] .instruction-box.universal-help-panel .reference-scroll {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
