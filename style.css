@@ -2441,3 +2441,27 @@ body[data-page="percentage"] .percentage-copy-btn:hover {
     width: 100% !important;
   }
 }
+
+/* Unit Converter: make instruction box match calculator box width */
+@media screen and (min-width: 851px) {
+  body[data-page="unitConverter"] main.extra-help-layout.tool-layout > .instruction-box,
+  body[data-page="unitConverter"] main.loan-calculator-container.extra-calculator-container.extra-calculator-layout.extra-help-layout.tool-layout > .instruction-box,
+  body[data-page="unitConverter"] .instruction-box.universal-help-panel {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    justify-self: stretch !important;
+    align-self: start !important;
+  }
+
+  body[data-page="unitConverter"] .instruction-box.universal-help-panel .reference-box,
+  body[data-page="unitConverter"] .instruction-box.universal-help-panel .universal-reference-box {
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+  }
+}
