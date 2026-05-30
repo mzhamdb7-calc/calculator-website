@@ -132,6 +132,11 @@
     <button class="percentage-type-btn" type="button" data-type="difference">5. Percentage difference</button>
     <button class="percentage-type-btn" type="button" data-type="discount">6. Discount calculator</button>
     <button class="percentage-type-btn" type="button" data-type="salary">7. Salary increment</button>
+    <button class="percentage-type-btn" type="button" data-type="reverse">8. Reverse percentage</button>
+    <button class="percentage-type-btn" type="button" data-type="profitmargin">9. Profit margin</button>
+    <button class="percentage-type-btn" type="button" data-type="markup">10. Markup calculator</button>
+    <button class="percentage-type-btn" type="button" data-type="gstsst">11. GST/SST calculator</button>
+    <button class="percentage-type-btn" type="button" data-type="commission">12. Commission calculator</button>
   </div>
 </div>
 <div class="percentage-input-grid">
@@ -149,19 +154,19 @@
 <section class="age-bmi-result-below percentage-result-below" aria-live="polite">
   <div class="percentage-result-kicker">Result</div>
   <h2 id="percentageResult"></h2>
-  <p class="percentage-result-formula" id="percentageFormula"></p>
+  <p class="percentage-result-formula" id="percentageFormula" hidden></p>
 </section>
 
     <aside aria-label="Calculator guide and references" class="instruction-box universal-help-panel">
-      <section class="instruction-section instruction-what-box"><h3>What does this calculator do?</h3><p>Use this to calculate common percentage questions, discount values, percentage change, salary increment, and percentage difference.</p></section>
+      <section class="instruction-section instruction-what-box"><h3>What does this calculator do?</h3><p>Use this to calculate common percentage questions, reverse percentage, profit margin, markup, GST/SST, commission, discount, and salary increment.</p></section>
 
       <h2 class="instruction-main-title">Instructions</h2>
 
       <section class="instruction-section instruction-how-box"><h3>How to use it</h3><p>Choose the calculation type, then enter Input A and Input B. The labels change based on the selected mode, and the result updates automatically.</p></section>
 
-      <section class="instruction-section instruction-formula-box"><h3>Formula used</h3><p>The formula changes based on the selected mode. For example, A% of B = A ÷ 100 × B, and percentage change = (B − A) ÷ A × 100.</p></section>
+      <section class="instruction-section instruction-formula-box"><h3>Formula used</h3><p>The calculation changes based on the selected mode. The result box shows only the final result, without formula text.</p></section>
 
-      <section class="instruction-section instruction-example-box"><h3>Example calculation</h3><p>Example: 20% of 150 = 30. If salary is 3000 and increment is 5%, new salary is 3150.</p></section>
+      <section class="instruction-section instruction-example-box"><h3>Example calculation</h3><p>Example: 20% of 150 = 30. If sales are 5000 and commission is 5%, commission is 250.</p></section>
 
       <section aria-label="References" class="reference-box universal-reference-box"><h2 class="reference-main-title">References</h2>
         <div class="reference-scroll universal-reference-list">
@@ -176,13 +181,13 @@
 .percentage-type-calculator .subtitle{max-width:760px!important}
 .percentage-type-box{margin:22px 0 18px!important;padding:16px!important;border:1px solid var(--line)!important;border-radius:18px!important;background:linear-gradient(180deg,#f8fffb,#eef8f3)!important}
 .percentage-type-label{display:block;margin-bottom:10px;color:var(--primary-dark);font-weight:900;text-transform:uppercase;letter-spacing:.08em;font-size:.82rem}
-.percentage-type-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.percentage-type-btn{min-height:48px;padding:10px 12px;border:1px solid var(--line-strong);border-radius:14px;background:#fff;color:var(--ink);font-weight:800;text-align:left;cursor:pointer;transition:transform .15s ease,background .15s ease,color .15s ease,box-shadow .15s ease}
+.percentage-type-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.percentage-type-btn{min-height:46px;padding:10px 12px;border:1px solid var(--line-strong);border-radius:14px;background:#fff;color:var(--ink);font-weight:800;text-align:left;cursor:pointer;transition:transform .15s ease,background .15s ease,color .15s ease,box-shadow .15s ease}
 .percentage-type-btn:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(16,35,29,.08)}
 .percentage-type-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 12px 25px rgba(47,125,104,.22)}
 .percentage-input-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:12px}
 .percentage-input-item{min-width:0}.percentage-input-item label{display:block;margin-bottom:8px;font-weight:900;color:var(--ink)}
-.percentage-input-item input{width:100%;box-sizing:border-box}.percentage-helper{margin:14px 0 0;color:var(--muted);line-height:1.45;font-weight:650}.percentage-result-kicker{margin-bottom:6px;color:var(--primary-dark);font-weight:900;text-transform:uppercase;letter-spacing:.08em;font-size:.82rem}.percentage-result-formula{margin:8px 0 0;color:var(--muted);line-height:1.45;font-weight:650}
+.percentage-input-item input{width:100%;box-sizing:border-box}.percentage-helper{margin:14px 0 0;color:var(--muted);line-height:1.45;font-weight:650}.percentage-result-kicker{margin-bottom:6px;color:var(--primary-dark);font-weight:900;text-transform:uppercase;letter-spacing:.08em;font-size:.82rem}.percentage-result-formula{display:none!important}.percentage-result-below #percentageResult{margin:0;font-size:clamp(1.45rem,3vw,2.15rem);line-height:1.18;word-break:break-word}
 @media(max-width:760px){.percentage-type-buttons,.percentage-input-grid{grid-template-columns:1fr}.percentage-type-btn{text-align:left}}
 </style>
 <script>
@@ -203,8 +208,13 @@ document.addEventListener('DOMContentLoaded', function () {
     increase: { a: 'Input A: Original value', b: 'Input B: New value', pa: 'Example: 100', pb: 'Example: 125', help: 'Find percentage increase from A to B.' },
     decrease: { a: 'Input A: Original value', b: 'Input B: New value', pa: 'Example: 100', pb: 'Example: 80', help: 'Find percentage decrease from A to B.' },
     difference: { a: 'Input A: First value', b: 'Input B: Second value', pa: 'Example: 80', pb: 'Example: 100', help: 'Find percentage difference between A and B.' },
-    discount: { a: 'Input A: Original price', b: 'Input B: Discount (%)', pa: 'Example: 100', pb: 'Example: 20', help: 'Find discount amount and final price.' },
-    salary: { a: 'Input A: Current salary', b: 'Input B: Increment (%)', pa: 'Example: 3000', pb: 'Example: 5', help: 'Find increment amount and new salary.' }
+    discount: { a: 'Input A: Original price', b: 'Input B: Discount (%)', pa: 'Example: 100', pb: 'Example: 20', help: 'Find the final price after discount.' },
+    salary: { a: 'Input A: Current salary', b: 'Input B: Increment (%)', pa: 'Example: 3000', pb: 'Example: 5', help: 'Find the new salary after increment.' },
+    reverse: { a: 'Input A: Known value', b: 'Input B: Percentage (%)', pa: 'Example: 50', pb: 'Example: 25', help: 'Find the full/original value when A is B%.' },
+    profitmargin: { a: 'Input A: Selling price', b: 'Input B: Cost price', pa: 'Example: 150', pb: 'Example: 100', help: 'Find the profit margin percentage.' },
+    markup: { a: 'Input A: Cost price', b: 'Input B: Markup (%)', pa: 'Example: 100', pb: 'Example: 30', help: 'Find the selling price after markup.' },
+    gstsst: { a: 'Input A: Amount before tax', b: 'Input B: GST/SST (%)', pa: 'Example: 100', pb: 'Example: 6', help: 'Find the total amount after GST/SST.' },
+    commission: { a: 'Input A: Sales amount', b: 'Input B: Commission (%)', pa: 'Example: 5000', pb: 'Example: 5', help: 'Find the commission amount.' }
   };
   let currentType = 'of';
   const fmt = n => Number.isFinite(n) ? Number(n.toFixed(8)).toLocaleString('en-MY') : '-';
@@ -228,40 +238,38 @@ document.addEventListener('DOMContentLoaded', function () {
     const a = val(inputA), b = val(inputB);
     if (!Number.isFinite(a) || !Number.isFinite(b)) {
       result.textContent = '';
-      if (formula) formula.textContent = 'Enter Input A and Input B to see the result.';
+      if (formula) formula.textContent = '';
       return;
     }
-    let text = '', detail = '';
+    let text = '';
     if (currentType === 'of') {
-      const ans = a / 100 * b;
-      text = `${fmt(a)}% of ${fmt(b)} = ${fmt(ans)}`;
-      detail = `Formula: ${fmt(a)} ÷ 100 × ${fmt(b)} = ${fmt(ans)}`;
+      text = fmt(a / 100 * b);
     } else if (currentType === 'iswhat') {
-      if (b === 0) { text = 'Cannot divide by zero'; detail = 'Input B must not be 0.'; }
-      else { const ans = a / b * 100; text = `${fmt(a)} is ${fmt(ans)}% of ${fmt(b)}`; detail = `Formula: ${fmt(a)} ÷ ${fmt(b)} × 100 = ${fmt(ans)}%`; }
+      text = b === 0 ? 'Cannot divide by zero' : `${fmt(a / b * 100)}%`;
     } else if (currentType === 'increase') {
-      if (a === 0) { text = 'Cannot divide by zero'; detail = 'Input A must not be 0.'; }
-      else { const ans = (b - a) / a * 100; text = `Increase = ${fmt(ans)}%`; detail = `Change: ${fmt(b - a)}. Formula: (${fmt(b)} − ${fmt(a)}) ÷ ${fmt(a)} × 100`; }
+      text = a === 0 ? 'Cannot divide by zero' : `${fmt((b - a) / a * 100)}%`;
     } else if (currentType === 'decrease') {
-      if (a === 0) { text = 'Cannot divide by zero'; detail = 'Input A must not be 0.'; }
-      else { const ans = (a - b) / a * 100; text = `Decrease = ${fmt(ans)}%`; detail = `Change: ${fmt(a - b)}. Formula: (${fmt(a)} − ${fmt(b)}) ÷ ${fmt(a)} × 100`; }
+      text = a === 0 ? 'Cannot divide by zero' : `${fmt((a - b) / a * 100)}%`;
     } else if (currentType === 'difference') {
       const avg = (Math.abs(a) + Math.abs(b)) / 2;
-      if (avg === 0) { text = 'Cannot calculate difference'; detail = 'Both values cannot be 0.'; }
-      else { const ans = Math.abs(a - b) / avg * 100; text = `Percentage difference = ${fmt(ans)}%`; detail = `Formula: |${fmt(a)} − ${fmt(b)}| ÷ average × 100`; }
+      text = avg === 0 ? 'Cannot calculate difference' : `${fmt(Math.abs(a - b) / avg * 100)}%`;
     } else if (currentType === 'discount') {
-      const discount = a * b / 100;
-      const finalPrice = a - discount;
-      text = `Final price = ${fmt(finalPrice)}`;
-      detail = `Discount saved: ${fmt(discount)} (${fmt(b)}% of ${fmt(a)}).`;
+      text = fmt(a - (a * b / 100));
     } else if (currentType === 'salary') {
-      const increase = a * b / 100;
-      const newSalary = a + increase;
-      text = `New salary = ${money(newSalary)}`;
-      detail = `Increment amount: ${money(increase)} (${fmt(b)}% of ${money(a)}).`;
+      text = money(a + (a * b / 100));
+    } else if (currentType === 'reverse') {
+      text = b === 0 ? 'Cannot divide by zero' : fmt(a / (b / 100));
+    } else if (currentType === 'profitmargin') {
+      text = a === 0 ? 'Cannot divide by zero' : `${fmt((a - b) / a * 100)}%`;
+    } else if (currentType === 'markup') {
+      text = fmt(a + (a * b / 100));
+    } else if (currentType === 'gstsst') {
+      text = fmt(a + (a * b / 100));
+    } else if (currentType === 'commission') {
+      text = fmt(a * b / 100);
     }
     result.textContent = text;
-    if (formula) formula.textContent = detail;
+    if (formula) formula.textContent = '';
   }
   buttons.forEach(btn => btn.addEventListener('click', () => setMode(btn.dataset.type)));
   inputA.addEventListener('input', calculate);
