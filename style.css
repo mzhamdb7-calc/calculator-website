@@ -2217,3 +2217,51 @@ body[data-page="unitConverter"] .unit-button-list {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* ===== Unit Converter: dropdown unit type layout ===== */
+body[data-page="unitConverter"] .unit-dropdown-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+  width: 100% !important;
+}
+
+body[data-page="unitConverter"] .unit-dropdown-panel {
+  min-width: 0 !important;
+  padding: 18px !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 20px !important;
+  background: rgba(255,255,255,.72) !important;
+}
+
+body[data-page="unitConverter"] .unit-dropdown-panel label {
+  display: block !important;
+  margin: 0 0 10px !important;
+  color: #17352f !important;
+  font-weight: 850 !important;
+  font-size: 1rem !important;
+}
+
+body[data-page="unitConverter"] .unit-dropdown-panel select {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 58px !important;
+  padding: 0 44px 0 16px !important;
+  border: 1px solid var(--line-strong) !important;
+  border-radius: 16px !important;
+  background: #fff !important;
+  color: var(--ink) !important;
+  font-weight: 750 !important;
+  font-size: 1rem !important;
+  box-sizing: border-box !important;
+}
+
+body[data-page="unitConverter"] .unit-units-panel {
+  padding: 22px !important;
+}
+
+@media screen and (max-width: 560px) {
+  body[data-page="unitConverter"] .unit-dropdown-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

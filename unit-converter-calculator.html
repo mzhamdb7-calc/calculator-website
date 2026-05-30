@@ -118,8 +118,6 @@
 <p class="extra-page-note">Examples: length km to mile, weight kg to lb, volume liter to gallon, temperature c to f.</p>
 <div class="unit-converter-upgrade-card unit-converter-wide-card">
 <input id="unitType" type="hidden" value="length"/>
-<input id="unitFrom" type="hidden" value="m"/>
-<input id="unitTo" type="hidden" value="km"/>
 <div class="unit-converter-workspace">
 <section class="unit-converter-panel unit-conversion-panel" aria-label="Type of conversion">
 <div class="extra-input-card-title">Type of conversion</div>
@@ -141,14 +139,14 @@
 </section>
 <section class="unit-converter-panel unit-units-panel" aria-label="Type of unit">
 <div class="extra-input-card-title">Type of unit</div>
-<div class="unit-picker-grid">
-<section class="unit-picker-panel">
-<h3>From</h3>
-<div aria-label="From unit buttons" class="unit-button-list" id="unitFromButtons"></div>
+<div class="unit-dropdown-grid">
+<section class="unit-dropdown-panel">
+<label for="unitFrom">From</label>
+<select id="unitFrom" aria-label="From unit"></select>
 </section>
-<section class="unit-picker-panel">
-<h3>To</h3>
-<div aria-label="To unit buttons" class="unit-button-list" id="unitToButtons"></div>
+<section class="unit-dropdown-panel">
+<label for="unitTo">To</label>
+<select id="unitTo" aria-label="To unit"></select>
 </section>
 </div>
 </section>

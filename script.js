@@ -1151,3 +1151,74 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
   setTimeout(function(){ window.calculateUnitConverterExtra = calculate; }, 400);
 })();
 })();
+
+/* ===== Unit Converter dropdown units override ===== */
+(function(){
+  'use strict';
+  if (!document.body || document.body.dataset.page !== 'unitConverter') return;
+
+  const unitSets = {
+    length: [['m','Meter'], ['km','Kilometer'], ['cm','Centimeter'], ['mm','Millimeter'], ['mile','Mile'], ['yard','Yard'], ['ft','Foot'], ['inch','Inch']],
+    weight: [['kg','Kilogram'], ['g','Gram'], ['mg','Milligram'], ['lb','Pound'], ['oz','Ounce'], ['tonne','Tonne']],
+    temperature: [['c','Celsius'], ['f','Fahrenheit'], ['k','Kelvin']],
+    area: [['m2','Square meter'], ['km2','Square kilometer'], ['cm2','Square centimeter'], ['ft2','Square foot'], ['in2','Square inch'], ['acre','Acre'], ['hectare','Hectare']],
+    volume: [['l','Liter'], ['ml','Milliliter'], ['m3','Cubic meter'], ['cm3','Cubic centimeter'], ['gallon','Gallon'], ['cup','Cup'], ['pint','Pint']],
+    speed: [['mps','Meter/sec'], ['kmh','Kilometer/hour'], ['mph','Mile/hour'], ['knot','Knot'], ['fps','Foot/sec']]
+  };
+
+  const defaults = {
+    length:['m','km'], weight:['kg','lb'], temperature:['c','f'],
+    area:['m2','ft2'], volume:['l','gallon'], speed:['kmh','mph']
+  };
+
+  function id(name){ return document.getElementById(name); }
+
+  function fillSelect(select, items, selected){
+    if (!select) return;
+    select.innerHTML = '';
+    items.forEach(function(item){
+      const opt = document.createElement('option');
+      opt.value = item[0];
+      opt.textContent = item[1];
+      if (item[0] === selected) opt.selected = true;
+      select.appendChild(opt);
+    });
+  }
+
+  function updateDropdowns(type){
+    type = unitSets[type] ? type : 'length';
+    const pair = defaults[type] || defaults.length;
+    if (id('unitType')) id('unitType').value = type;
+    fillSelect(id('unitFrom'), unitSets[type], pair[0]);
+    fillSelect(id('unitTo'), unitSets[type], pair[1]);
+    document.querySelectorAll('.unit-type-btn').forEach(function(btn){
+      btn.classList.toggle('is-active', btn.dataset.unitType === type);
+    });
+    if (typeof window.calculateUnitConverterExtra === 'function') {
+      window.calculateUnitConverterExtra();
+    }
+  }
+
+  function initUnitDropdowns(){
+    document.querySelectorAll('.unit-type-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        setTimeout(function(){ updateDropdowns(btn.dataset.unitType); }, 0);
+      });
+    });
+    ['unitFrom','unitTo','unitValue'].forEach(function(name){
+      const el = id(name);
+      if (el) {
+        el.addEventListener('change', function(){
+          if (typeof window.calculateUnitConverterExtra === 'function') window.calculateUnitConverterExtra();
+        });
+        el.addEventListener('input', function(){
+          if (typeof window.calculateUnitConverterExtra === 'function') window.calculateUnitConverterExtra();
+        });
+      }
+    });
+    updateDropdowns((id('unitType') && id('unitType').value) || 'length');
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initUnitDropdowns);
+  else initUnitDropdowns();
+})();
