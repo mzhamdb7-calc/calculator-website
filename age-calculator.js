@@ -468,6 +468,201 @@
     }, 500);
   }
 
+  function sanitizePdfText(value) {
+    return String(value == null ? '' : value)
+      .replace(/[\u2018\u2019\u201A\u201B]/g, "'")
+      .replace(/[\u201C\u201D\u201E\u201F]/g, '"')
+      .replace(/[\u2013\u2014]/g, '-')
+      .replace(/[\u2026]/g, '...')
+      .replace(/[^\x09\x0A\x0D\x20-\x7E]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function pdfString(value) {
+    return '(' + sanitizePdfText(value).replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)') + ')';
+  }
+
+  function wrapPdfText(text, maxChars) {
+    text = sanitizePdfText(text);
+    if (!text) return ['-'];
+
+    var words = text.split(/\s+/);
+    var lines = [];
+    var current = '';
+
+    words.forEach(function (word) {
+      if (word.length > maxChars) {
+        if (current) {
+          lines.push(current);
+          current = '';
+        }
+        while (word.length > maxChars) {
+          lines.push(word.slice(0, maxChars));
+          word = word.slice(maxChars);
+        }
+      }
+
+      var test = current ? current + ' ' + word : word;
+      if (test.length > maxChars && current) {
+        lines.push(current);
+        current = word;
+      } else {
+        current = test;
+      }
+    });
+
+    if (current) lines.push(current);
+    return lines.length ? lines : ['-'];
+  }
+
+  function buildAgeReportPdf(data, plainText) {
+    data = data || getReportData() || { generated: new Date().toLocaleString(), groups: [] };
+
+    var pageWidth = 595;
+    var pageHeight = 842;
+    var marginX = 48;
+    var bottomMargin = 48;
+    var y = pageHeight - 54;
+    var pages = [''];
+
+    function currentPageIndex() {
+      return pages.length - 1;
+    }
+
+    function addRaw(command) {
+      pages[currentPageIndex()] += command + '\n';
+    }
+
+    function newPage() {
+      pages.push('');
+      y = pageHeight - 54;
+    }
+
+    function ensureSpace(height) {
+      if (y - height < bottomMargin) newPage();
+    }
+
+    function drawLine() {
+      ensureSpace(12);
+      addRaw('0.82 0.88 0.86 RG 0.75 w ' + marginX + ' ' + y.toFixed(2) + ' m ' + (pageWidth - marginX) + ' ' + y.toFixed(2) + ' l S');
+      y -= 14;
+    }
+
+    function addTextLine(text, size, bold, indent, gapAfter) {
+      indent = indent || 0;
+      gapAfter = gapAfter || 0;
+      size = size || 10;
+
+      var maxChars = Math.max(22, Math.floor(((pageWidth - (marginX * 2) - indent) / (size * 0.53))));
+      var wrapped = wrapPdfText(text, maxChars);
+      wrapped.forEach(function (line) {
+        ensureSpace(size + 8);
+        addRaw('BT /' + (bold ? 'F2' : 'F1') + ' ' + size + ' Tf ' + (marginX + indent) + ' ' + y.toFixed(2) + ' Td ' + pdfString(line) + ' Tj ET');
+        y -= Math.round(size * 1.45);
+      });
+      if (gapAfter) y -= gapAfter;
+    }
+
+    function addRow(label, value) {
+      label = sanitizePdfText(label || '');
+      value = sanitizePdfText(value || '-');
+      addTextLine(label + ': ' + value, 10, false, 14, 1);
+    }
+
+    addTextLine('Age Report', 22, true, 0, 2);
+    addTextLine('Generated: ' + (data.generated || new Date().toLocaleString()), 10, false, 0, 4);
+    if (data.countdown) addTextLine('Next age countdown: ' + data.countdown, 10, true, 0, 4);
+    drawLine();
+
+    var groups = data.groups || [];
+    if (!groups.length && plainText) {
+      addTextLine('Report Details', 14, true, 0, 4);
+      String(plainText).split(/\n+/).forEach(function (line) {
+        if (line.trim()) addTextLine(line, 10, false, 14, 0);
+      });
+    } else {
+      groups.forEach(function (groupData) {
+        if (!groupData) return;
+        var hasRows = groupData.rows && groupData.rows.length;
+        var hasVisuals = groupData.visuals && groupData.visuals.length;
+        if (!hasRows && !hasVisuals) return;
+
+        ensureSpace(42);
+        addTextLine(groupData.title || 'Details', 14, true, 0, 3);
+
+        (groupData.rows || []).forEach(function (item) {
+          addRow(item.label, item.value);
+        });
+
+        (groupData.visuals || []).forEach(function (item) {
+          addRow(item.label, item.value);
+        });
+
+        y -= 6;
+        drawLine();
+      });
+    }
+
+    pages.forEach(function (_, index) {
+      pages[index] += 'BT /F1 8 Tf ' + marginX + ' 26 Td ' + pdfString('Age Calculator PDF Report - Page ' + (index + 1) + ' of ' + pages.length) + ' Tj ET\n';
+    });
+
+    var objects = [];
+    function addObject(content) {
+      objects.push(content);
+      return objects.length;
+    }
+
+    var catalogId = addObject('<< /Type /Catalog /Pages 2 0 R >>');
+    var pagesId = addObject('');
+    var fontId = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
+    var fontBoldId = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>');
+    var pageIds = [];
+
+    pages.forEach(function (content) {
+      var contentId = addObject('<< /Length ' + content.length + ' >>\nstream\n' + content + 'endstream');
+      var pageId = addObject('<< /Type /Page /Parent ' + pagesId + ' 0 R /MediaBox [0 0 ' + pageWidth + ' ' + pageHeight + '] /Resources << /Font << /F1 ' + fontId + ' 0 R /F2 ' + fontBoldId + ' 0 R >> >> /Contents ' + contentId + ' 0 R >>');
+      pageIds.push(pageId);
+    });
+
+    objects[pagesId - 1] = '<< /Type /Pages /Kids [' + pageIds.map(function (id) { return id + ' 0 R'; }).join(' ') + '] /Count ' + pageIds.length + ' >>';
+
+    var pdf = '%PDF-1.4\n';
+    var offsets = [0];
+    objects.forEach(function (content, index) {
+      offsets.push(pdf.length);
+      pdf += (index + 1) + ' 0 obj\n' + content + '\nendobj\n';
+    });
+
+    var xrefOffset = pdf.length;
+    pdf += 'xref\n0 ' + (objects.length + 1) + '\n';
+    pdf += '0000000000 65535 f \n';
+    for (var i = 1; i <= objects.length; i += 1) {
+      pdf += String(offsets[i]).padStart(10, '0') + ' 00000 n \n';
+    }
+    pdf += 'trailer\n<< /Size ' + (objects.length + 1) + ' /Root ' + catalogId + ' 0 R >>\nstartxref\n' + xrefOffset + '\n%%EOF';
+
+    return pdf;
+  }
+
+  function saveAgeReportPdf(text) {
+    var data = getReportData();
+    var pdf = buildAgeReportPdf(data, text);
+    var blob = new Blob([pdf], { type: 'application/pdf' });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = 'age-report.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(function () {
+      URL.revokeObjectURL(url);
+    }, 800);
+    setActionFeedback('PDF report saved');
+  }
+
   function getReportData() {
     var panel = byId('ageReportOutput');
     if (!panel) return null;
@@ -822,8 +1017,7 @@
       if (action === 'copy') {
         copyResultText(text);
       } else if (action === 'save') {
-        downloadTextFile('age-result.txt', text);
-        setActionFeedback('Saved');
+        saveAgeReportPdf(text);
       } else if (action === 'share') {
         if (navigator.share) {
           navigator.share({ title: 'Age result', text: text }).then(function () {
