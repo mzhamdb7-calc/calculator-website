@@ -1209,10 +1209,12 @@
     if (!button) return;
 
     button.textContent = '↑';
+    button.setAttribute('aria-label', 'Go to top');
 
     function updateButton() {
-      button.style.display = window.scrollY > 200 ? 'flex' : 'none';
-      button.classList.toggle('is-visible', window.scrollY > 200);
+      var visible = window.scrollY > 200;
+      button.classList.toggle('is-visible', visible);
+      button.style.display = visible ? 'flex' : 'none';
     }
 
     button.addEventListener('click', function (event) {
