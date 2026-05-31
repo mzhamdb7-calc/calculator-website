@@ -1970,21 +1970,23 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
     return '<section class="age-final-group-box"><h3>' + esc(title) + '</h3><ul class="age-final-result-list">' + rows.join('') + '</ul></section>';
   }
   function removeDuplicateAgePanels() {
-    var calc = document.querySelector('main.age-calculator-container > .calculator');
-    if (!calc) return null;
+    var main = document.querySelector('main.age-calculator-container');
+    var calc = main && main.querySelector(':scope > .calculator');
+    if (!main || !calc) return null;
     var panels = Array.from(document.querySelectorAll('#ageReportOutput'));
-    var keeper = panels.find(function (panel) { return panel.parentElement === calc; }) || panels[0] || null;
+    var keeper = panels.find(function (panel) { return panel.parentElement === main; }) || panels[0] || null;
     if (!keeper) {
       keeper = document.createElement('section');
       keeper.id = 'ageReportOutput';
-      keeper.className = 'age-clean-result age-point-output';
+      keeper.className = 'age-clean-result age-point-output age-final-output';
       keeper.setAttribute('aria-label', 'Age Calculator result');
       keeper.hidden = true;
     }
     panels.forEach(function (panel) {
       if (panel !== keeper) panel.remove();
     });
-    if (keeper.parentElement !== calc) calc.appendChild(keeper);
+    if (keeper.parentElement !== main) calc.insertAdjacentElement('afterend', keeper);
+    else if (keeper.previousElementSibling !== calc) calc.insertAdjacentElement('afterend', keeper);
     keeper.className = 'age-clean-result age-point-output age-final-output';
     keeper.setAttribute('aria-label', 'Age Calculator result');
     return keeper;
