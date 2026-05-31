@@ -5549,3 +5549,83 @@ body[data-page="bmi"] #bmiReportOutput.bmi-rebuilt-output {
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* ===== BMI layout update: Optional box below Details ===== */
+body[data-page="bmi"] #bmiInputGroups.bmi-details-option-layout {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 18px !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 28px 0 0 !important;
+}
+
+body[data-page="bmi"] #bmiInputGroups > .bmi-details-box,
+body[data-page="bmi"] #bmiInputGroups > #bmiOptionBox.bmi-option-box {
+  grid-column: 1 !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  justify-self: stretch !important;
+  box-sizing: border-box !important;
+}
+
+body[data-page="bmi"] #bmiInputGroups > .bmi-details-box {
+  grid-row: 1 !important;
+}
+
+body[data-page="bmi"] #bmiInputGroups > #bmiOptionBox.bmi-option-box {
+  grid-row: 2 !important;
+}
+
+body[data-page="bmi"] #bmiDetailsGrid.bmi-details-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+}
+
+body[data-page="bmi"] #bmiOptionBox[open] #bmiOptionContent.bmi-option-content {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+}
+
+body[data-page="bmi"] #bmiOptionBox:not([open]) {
+  padding-top: 22px !important;
+  padding-bottom: 22px !important;
+}
+
+body[data-page="bmi"] #bmiInputGroups .bmi-option-summary {
+  margin-bottom: 0 !important;
+}
+
+body[data-page="bmi"] #bmiOptionBox[open] .bmi-option-summary {
+  margin-bottom: 18px !important;
+}
+
+body[data-page="bmi"] main.bmi-calculator-container > #bmiReportOutput,
+body[data-page="bmi"] main.bmi-calculator-container > .bmi-rebuilt-output,
+body[data-page="bmi"] main.bmi-calculator-container > .bmi-clean-result,
+body[data-page="bmi"] main.bmi-calculator-container > .bmi-box-output {
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin-top: 22px !important;
+}
+
+@media screen and (max-width: 1180px) {
+  body[data-page="bmi"] #bmiDetailsGrid.bmi-details-grid,
+  body[data-page="bmi"] #bmiOptionBox[open] #bmiOptionContent.bmi-option-content {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media screen and (max-width: 720px) {
+  body[data-page="bmi"] #bmiDetailsGrid.bmi-details-grid,
+  body[data-page="bmi"] #bmiOptionBox[open] #bmiOptionContent.bmi-option-content {
+    grid-template-columns: 1fr !important;
+  }
+}
