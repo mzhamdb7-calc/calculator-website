@@ -1201,29 +1201,21 @@
     });
   }
 
-
   function setupScrollTopButton() {
-    if (!isAgePage()) return;
-
     var button = byId('scrollTopBtn');
-    if (!button) return;
-
-    button.textContent = '↑';
-    button.setAttribute('aria-label', 'Go to top');
-
-    function updateButton() {
-      var visible = window.scrollY > 200;
-      button.classList.toggle('is-visible', visible);
-      button.style.display = visible ? 'flex' : 'none';
-    }
+    if (!button || button.dataset.scrollTopReady === '1') return;
+    button.dataset.scrollTopReady = '1';
 
     button.addEventListener('click', function (event) {
       event.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    window.addEventListener('scroll', updateButton, { passive: true });
-    updateButton();
+    window.addEventListener('scroll', function () {
+      button.style.display = window.scrollY > 200 ? 'flex' : 'none';
+    }, { passive: true });
+
+    button.style.display = window.scrollY > 200 ? 'flex' : 'none';
   }
 
   window.scrollToTop = function () {
