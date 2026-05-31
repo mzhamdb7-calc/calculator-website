@@ -2101,3 +2101,78 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
   else bind();
 })();
+
+
+/* ===== AGE CALCULATOR WIDTH + RESULT GROUP BOX REPAIR 20260531 ===== */
+(function () {
+  'use strict';
+
+  function syncAgeResultBox() {
+    if (!document.body || document.body.dataset.page !== 'age') return;
+
+    var main = document.querySelector('main.age-calculator-container');
+    var calculator = main && main.querySelector(':scope > .calculator');
+    var result = document.getElementById('ageReportOutput');
+    var instruction = main && main.querySelector(':scope > .instruction-box');
+
+    if (!main || !calculator || !result) return;
+
+    if (result.parentElement !== main || result.previousElementSibling !== calculator) {
+      calculator.insertAdjacentElement('afterend', result);
+    }
+
+    result.classList.add('age-clean-result', 'age-point-output', 'age-final-output');
+    result.setAttribute('aria-label', 'Age Calculator result');
+
+    if (instruction && instruction.previousElementSibling !== result) {
+      result.insertAdjacentElement('afterend', instruction);
+    }
+
+    var width = Math.round(calculator.getBoundingClientRect().width);
+    if (width > 0 && window.innerWidth > 850) {
+      document.documentElement.style.setProperty('--age-calculator-box-width', width + 'px');
+      result.style.setProperty('width', width + 'px', 'important');
+      result.style.setProperty('max-width', width + 'px', 'important');
+    } else {
+      document.documentElement.style.setProperty('--age-calculator-box-width', '100%');
+      result.style.setProperty('width', '100%', 'important');
+      result.style.setProperty('max-width', '100%', 'important');
+    }
+
+    result.style.setProperty('box-sizing', 'border-box', 'important');
+  }
+
+  function startAgeResultRepair() {
+    syncAgeResultBox();
+
+    ['input', 'change', 'click'].forEach(function (eventName) {
+      document.addEventListener(eventName, function (event) {
+        var target = event.target;
+        if (!target) return;
+        if (target.id === 'ageName' || target.id === 'birthdate' || target.id === 'dateToCalculate' || target.id === 'ageCalculateBtn') {
+          setTimeout(syncAgeResultBox, 0);
+          setTimeout(syncAgeResultBox, 120);
+        }
+      }, true);
+    });
+
+    window.addEventListener('resize', syncAgeResultBox);
+    setTimeout(syncAgeResultBox, 100);
+    setTimeout(syncAgeResultBox, 400);
+    setTimeout(syncAgeResultBox, 900);
+    setTimeout(syncAgeResultBox, 1600);
+
+    if (window.MutationObserver) {
+      new MutationObserver(function () {
+        setTimeout(syncAgeResultBox, 0);
+      }).observe(document.body, { childList: true, subtree: true });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startAgeResultRepair);
+  } else {
+    startAgeResultRepair();
+  }
+})();
+

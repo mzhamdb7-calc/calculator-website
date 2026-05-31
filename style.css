@@ -4260,3 +4260,237 @@ body[data-page="age"] main.age-calculator-container > .instruction-box {
     grid-row: auto !important;
   }
 }
+
+
+/* ===== AGE CALCULATOR WIDTH + RESULT GROUP BOX REPAIR 20260531 ===== */
+body[data-page="age"] main.age-calculator-container {
+  align-items: start !important;
+}
+
+@media (min-width: 851px) {
+  body[data-page="age"] main.age-calculator-container.tool-layout {
+    display: grid !important;
+    grid-template-columns: minmax(230px, 280px) minmax(0, 1fr) !important;
+    grid-template-rows: auto auto auto !important;
+    gap: 22px 28px !important;
+    align-items: start !important;
+  }
+
+  body[data-page="age"] main.age-calculator-container.tool-layout > .tool-group-nav {
+    grid-column: 1 !important;
+    grid-row: 1 / span 3 !important;
+  }
+}
+
+body[data-page="age"] main.age-calculator-container > .calculator,
+body[data-page="age"] main.age-calculator-container > #ageReportOutput,
+body[data-page="age"] main.age-calculator-container > .instruction-box {
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body[data-page="age"] main.age-calculator-container > .calculator {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  width: 100% !important;
+  max-width: none !important;
+  justify-self: stretch !important;
+}
+
+body[data-page="age"] main.age-calculator-container > #ageReportOutput.age-final-output,
+body[data-page="age"] main.age-calculator-container > #ageReportOutput.age-clean-result,
+body[data-page="age"] main.age-calculator-container > #ageReportOutput.age-point-output,
+body[data-page="age"] main.age-calculator-container > #ageReportOutput {
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+  width: var(--age-calculator-box-width, 100%) !important;
+  max-width: var(--age-calculator-box-width, 100%) !important;
+  min-width: 0 !important;
+  justify-self: stretch !important;
+  display: block !important;
+  margin: 22px 0 0 !important;
+  padding: clamp(22px, 3vw, 34px) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius) !important;
+  background: var(--surface) !important;
+  box-shadow: var(--shadow-sm) !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+}
+
+body[data-page="age"] main.age-calculator-container > #ageReportOutput[hidden],
+body[data-page="age"] main.age-calculator-container > #ageReportOutput:empty {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+body[data-page="age"] main.age-calculator-container > .calculator > #ageReportOutput {
+  display: none !important;
+}
+
+body[data-page="age"] main.age-calculator-container > .instruction-box {
+  grid-column: 2 !important;
+  grid-row: 3 !important;
+  width: 100% !important;
+  max-width: none !important;
+  justify-self: stretch !important;
+}
+
+body[data-page="age"] #ageReportOutput .age-final-result-shell,
+body[data-page="age"] #ageReportOutput .age-point-result-box,
+body[data-page="age"] #ageReportOutput .age-result-clean-box {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+}
+
+body[data-page="age"] #ageReportOutput .age-final-result-grid,
+body[data-page="age"] #ageReportOutput .age-result-group-grid,
+body[data-page="age"] #ageReportOutput .age-result-clean-box {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  align-items: stretch !important;
+}
+
+body[data-page="age"] #ageReportOutput .age-final-group-box,
+body[data-page="age"] #ageReportOutput .age-result-group-box,
+body[data-page="age"] #ageReportOutput .age-result-clean-section {
+  display: block !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  padding: 18px !important;
+  border: 1px solid #d8e8e0 !important;
+  border-radius: 20px !important;
+  background: #ffffff !important;
+  box-shadow: 0 8px 20px rgba(38, 58, 51, 0.055) !important;
+  box-sizing: border-box !important;
+}
+
+body[data-page="age"] #ageReportOutput .age-final-group-box h3,
+body[data-page="age"] #ageReportOutput .age-result-group-box h3,
+body[data-page="age"] #ageReportOutput .age-result-clean-section h3 {
+  margin: 0 0 12px !important;
+  padding: 0 0 9px !important;
+  border-bottom: 1px solid #dcebe4 !important;
+  color: #086452 !important;
+  font-size: 1rem !important;
+  line-height: 1.25 !important;
+  font-weight: 900 !important;
+  text-align: left !important;
+}
+
+body[data-page="age"] #ageReportOutput .age-final-result-list,
+body[data-page="age"] #ageReportOutput .age-point-result-list,
+body[data-page="age"] #ageReportOutput .age-result-clean-section ul {
+  list-style: none !important;
+  display: grid !important;
+  gap: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body[data-page="age"] #ageReportOutput .age-final-result-row,
+body[data-page="age"] #ageReportOutput .age-point-result-list li,
+body[data-page="age"] #ageReportOutput .age-result-clean-section li {
+  display: grid !important;
+  grid-template-columns: minmax(135px, 0.42fr) minmax(0, 1fr) !important;
+  gap: 12px !important;
+  align-items: start !important;
+  padding: 10px 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid #eef5f1 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+}
+
+body[data-page="age"] #ageReportOutput .age-final-result-row:last-child,
+body[data-page="age"] #ageReportOutput .age-point-result-list li:last-child,
+body[data-page="age"] #ageReportOutput .age-result-clean-section li:last-child {
+  border-bottom: 0 !important;
+}
+
+body[data-page="age"] #ageReportOutput .age-final-result-row strong,
+body[data-page="age"] #ageReportOutput .age-final-result-row span,
+body[data-page="age"] #ageReportOutput .age-point-result-list strong,
+body[data-page="age"] #ageReportOutput .age-point-result-list span,
+body[data-page="age"] #ageReportOutput .age-result-clean-section strong,
+body[data-page="age"] #ageReportOutput .age-result-clean-section span {
+  min-width: 0 !important;
+  line-height: 1.35 !important;
+  overflow-wrap: anywhere !important;
+  text-align: left !important;
+}
+
+body[data-page="age"] #ageReportOutput .age-final-result-row strong,
+body[data-page="age"] #ageReportOutput .age-point-result-list strong,
+body[data-page="age"] #ageReportOutput .age-result-clean-section strong {
+  color: #40594f !important;
+  font-size: 0.92rem !important;
+  font-weight: 850 !important;
+}
+
+body[data-page="age"] #ageReportOutput .age-final-result-row span,
+body[data-page="age"] #ageReportOutput .age-point-result-list span,
+body[data-page="age"] #ageReportOutput .age-result-clean-section span {
+  color: #10231d !important;
+  font-size: 0.95rem !important;
+}
+
+body[data-page="age"] #ageReportOutput .age-final-error,
+body[data-page="age"] #ageReportOutput .age-result-error {
+  padding: 16px 18px !important;
+  border: 1px solid #f2c7c7 !important;
+  border-radius: 18px !important;
+  background: #fff7f7 !important;
+  color: #8a1f1f !important;
+  font-weight: 800 !important;
+}
+
+@media screen and (max-width: 1050px) {
+  body[data-page="age"] .calculator > .age-input-layout,
+  body[data-page="age"] .age-date-input-grid,
+  body[data-page="age"] #ageReportOutput .age-final-result-grid,
+  body[data-page="age"] #ageReportOutput .age-result-group-grid,
+  body[data-page="age"] #ageReportOutput .age-result-clean-box {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media screen and (max-width: 850px) {
+  body[data-page="age"] main.age-calculator-container > .calculator,
+  body[data-page="age"] main.age-calculator-container > #ageReportOutput,
+  body[data-page="age"] main.age-calculator-container > .instruction-box {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  body[data-page="age"] main.age-calculator-container > #ageReportOutput:not([hidden]) {
+    margin-top: 18px !important;
+  }
+
+  body[data-page="age"] #ageReportOutput .age-final-result-row,
+  body[data-page="age"] #ageReportOutput .age-point-result-list li,
+  body[data-page="age"] #ageReportOutput .age-result-clean-section li {
+    grid-template-columns: 1fr !important;
+    gap: 4px !important;
+  }
+}
+
