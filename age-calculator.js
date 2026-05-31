@@ -413,7 +413,11 @@
         row('Exact age', exactAgeText),
         row('Normal age', parts.years + ' years old'),
         row('Asian age', asianAge + ' years old'),
-        row('Day of week born', birth.date.toLocaleDateString('en-US', { weekday: 'long' }))
+        row('Day of week born', birth.date.toLocaleDateString('en-US', { weekday: 'long' })),
+        row('Born on', formatLongDateFromUtc(birth.utc)),
+        row('Quick summary', shareText),
+        row('Quick age line', 'Age: ' + exactAgeText + ' • Days lived: ' + comma(totalDays) + ' • Next birthday: ' + nextBirthdayText),
+        row('Profile style summary', (name !== '-' ? name : 'This person') + ' was born on ' + birth.date.toLocaleDateString('en-US', { weekday: 'long' }) + ' and is a ' + westernZodiac(birth.month, birth.day) + '.')
       ]) +
       group('Time Lived Totals', [
         row('Months old', comma(totalMonths)),
@@ -422,14 +426,19 @@
         row('Hours old', comma(totalHours)),
         row('Minutes old', comma(totalMinutes)),
         row('Seconds old', comma(totalSeconds)),
-        row('Estimated sleep time', comma(Math.floor(totalDays / 3)) + ' days')
+        row('Estimated sleep time', comma(Math.floor(totalDays / 3)) + ' days'),
+        row('Sunrises lived', comma(totalDays)),
+        row('Moon cycles experienced', (totalDays / 29.530588).toFixed(1)),
+        row('Approximate heartbeats', comma(Math.round(totalDays * 24 * 60 * 70))),
+        row('Approximate breaths', comma(Math.round(totalDays * 24 * 60 * 16)))
       ]) +
       group('Next Birthday Countdown', [
         row('Countdown', nextBirthdayText),
         row('Next birthday date', formatLongDateFromUtc(nextBirthday.utc)),
         row('Age on next birthday', ordinal(nextBirthday.age) + ' birthday'),
         row('Birthday cycle progress', nextBirthday.progress.toFixed(1) + '% completed'),
-        row('Birthday message', nextBirthday.days === 0 ? 'Happy birthday!' : 'Your next birthday is getting closer')
+        row('Birthday message', nextBirthday.days === 0 ? 'Happy birthday!' : 'Your next birthday is getting closer'),
+        row('Next celebration', nextBirthdayText + ' until birthday')
       ]) +
       group('Zodiac Information', [
         row('Western zodiac', westernZodiac(birth.month, birth.day)),
@@ -445,19 +454,6 @@
         row('Days until retirement age', target.utc >= retirementUtc ? 'Retirement age reached' : comma(retirementDays) + ' days'),
         row('Retirement date', formatLongDateFromUtc(retirementUtc)),
         row('Progress to retirement age', retirementProgress.toFixed(1) + '%')
-      ]) +
-      group('High Engagement Outputs', [
-        row('Born on', birth.date.toLocaleDateString('en-US', { weekday: 'long' })),
-        row('Next celebration', nextBirthdayText + ' until birthday'),
-        row('Sunrises lived', comma(totalDays)),
-        row('Moon cycles experienced', (totalDays / 29.530588).toFixed(1)),
-        row('Approximate heartbeats', comma(Math.round(totalDays * 24 * 60 * 70))),
-        row('Approximate breaths', comma(Math.round(totalDays * 24 * 60 * 16)))
-      ]) +
-      group('Shareable Output', [
-        row('Short summary', shareText),
-        row('Share line', 'Age: ' + exactAgeText + ' • Days lived: ' + comma(totalDays) + ' • Next birthday: ' + nextBirthdayText),
-        row('Profile style', (name !== '-' ? name : 'This person') + ' was born on ' + birth.date.toLocaleDateString('en-US', { weekday: 'long' }) + ' and is a ' + westernZodiac(birth.month, birth.day) + '.')
       ]) +
       group('Useful Life Milestones', [
         row('18 years old', daysUntilAge(birth, target, 18, '18 years old')),
