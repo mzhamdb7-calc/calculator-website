@@ -2087,3 +2087,43 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();
+
+
+/* Age Calculator final input grouping and result width sync */
+(function(){
+  'use strict';
+  function isAgePage(){ return document.body && document.body.dataset && document.body.dataset.page === 'age'; }
+  function todayISO(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function syncAgeResultWidth(){
+    if(!isAgePage()) return;
+    var calc = document.querySelector('main.age-calculator-container > .calculator');
+    var panels = document.querySelectorAll('main.age-calculator-container > #ageReportOutput, main.age-calculator-container > .age-clean-result, main.age-calculator-container > .age-point-output, main.age-calculator-container > .loan-style-output-panel.calculator-clean-result');
+    if(!calc || !panels.length) return;
+    var w = Math.round(calc.getBoundingClientRect().width);
+    panels.forEach(function(panel){
+      if(w > 0){
+        panel.style.setProperty('width', w + 'px', 'important');
+        panel.style.setProperty('max-width', w + 'px', 'important');
+        panel.style.setProperty('box-sizing', 'border-box', 'important');
+      }
+    });
+  }
+  function ensureAgeInputs(){
+    if(!isAgePage()) return;
+    var calc = document.querySelector('main.age-calculator-container > .calculator');
+    if(!calc) return;
+    var birth = document.getElementById('birthdate');
+    var target = document.getElementById('dateToCalculate');
+    if(target && !target.value) target.value = todayISO();
+    syncAgeResultWidth();
+  }
+  function start(){
+    ensureAgeInputs();
+    [50,150,400,900,1800].forEach(function(t){ setTimeout(ensureAgeInputs,t); });
+    window.addEventListener('resize', syncAgeResultWidth);
+    document.addEventListener('input', function(e){ if(e.target && /^(birthdate|dateToCalculate|ageName)$/.test(e.target.id || '')) setTimeout(syncAgeResultWidth, 120); }, true);
+    document.addEventListener('change', function(e){ if(e.target && /^(birthdate|dateToCalculate|ageName)$/.test(e.target.id || '')) setTimeout(syncAgeResultWidth, 120); }, true);
+    if(window.MutationObserver && document.body){ new MutationObserver(function(){ syncAgeResultWidth(); }).observe(document.body,{childList:true,subtree:true}); }
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();

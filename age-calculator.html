@@ -117,10 +117,26 @@
 <p class="subtitle">
         Calculate your normal age and Asian age instantly.
       </p>
-<label for="ageName">Name (optional):</label>
-<input autocomplete="name" id="ageName" placeholder="Optional" type="text"/>
-<label for="birthdate">Enter your birth date:</label>
-<input id="birthdate" type="date"/>
+<div class="age-input-layout">
+  <section class="age-input-box age-name-box">
+    <h2>Name</h2>
+    <label for="ageName">Name (optional):</label>
+    <input autocomplete="name" id="ageName" placeholder="Optional" type="text"/>
+  </section>
+  <section class="age-input-box age-date-box">
+    <h2>Date details</h2>
+    <div class="age-date-input-grid">
+      <div class="age-field">
+        <label for="birthdate">Enter birth date:</label>
+        <input id="birthdate" type="date"/>
+      </div>
+      <div class="age-field">
+        <label for="dateToCalculate">Calculation date:</label>
+        <input id="dateToCalculate" type="date" aria-label="Calculation date"/>
+      </div>
+    </div>
+  </section>
+</div>
 </section>
 <aside aria-label="Calculator guide" class="instruction-box universal-help-panel">
 <section class="instruction-section instruction-what-box"><h3>What does this calculator do?</h3><p>Use this to calculate age from a birth date, including years, months, days, birthday countdown, and related age details.</p></section>
