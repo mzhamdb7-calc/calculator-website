@@ -652,7 +652,7 @@
        opens the printable report and immediately opens the browser print dialog.
        The user can then choose Save as PDF and the saved file matches the report layout. */
     openPrintableReport(text, { autoPrint: true, sourceAction: 'save' });
-    setActionFeedback('Report opened. Choose Save as PDF.');
+    setActionFeedback('One-page report opened. Choose Save as PDF.');
   }
 
   function getReportData() {
@@ -727,12 +727,10 @@
     data = data || { title: 'Age Report', generated: new Date().toLocaleString(), countdown: '', groups: [] };
 
     var personName = findReportValue(data, 'Name') || 'Age Calculator User';
-    var exactAge = findReportValue(data, 'Exact age') || '-';
     var normalAge = findReportValue(data, 'Normal age') || '-';
     var birthDate = findReportValue(data, 'Birth date') || '-';
     var calculationDate = findReportValue(data, 'Calculation date') || '-';
     var daysOld = findReportValue(data, 'Days old') || '-';
-    var nextBirthday = findReportValue(data, 'Countdown') || '-';
     var zodiac = findReportValue(data, 'Western zodiac') || '-';
 
     function stat(label, value) {
@@ -746,17 +744,10 @@
       }).join('') + '</tbody></table>';
     }
 
-    function renderVisuals(visuals) {
-      if (!visuals || !visuals.length) return '';
-      return '<div class="report-visuals">' + visuals.map(function (item) {
-        return '<div class="report-visual"><div><strong>' + escapeHtml(item.label) + '</strong><span>' + escapeHtml(item.value) + '</span></div><p><i style="width:' + escapeHtml(item.width) + '"></i></p></div>';
-      }).join('') + '</div>';
-    }
-
     var sections = (data.groups || []).filter(function (groupData) {
       return groupData && groupData.title !== 'Visual Elements';
     }).map(function (groupData) {
-      return '<section class="report-section"><h2>' + escapeHtml(groupData.title) + '</h2>' + renderRows(groupData.rows) + renderVisuals(groupData.visuals) + '</section>';
+      return '<section class="report-section"><h2>' + escapeHtml(groupData.title) + '</h2>' + renderRows(groupData.rows) + '</section>';
     }).join('');
 
     if (!sections && plainText) {
@@ -767,52 +758,37 @@
       '<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">' +
       '<title>' + escapeHtml('Age Report - ' + personName) + '</title>' +
       '<style>' +
-      '@page{size:A4;margin:14mm}' +
+      '@page{size:A4 portrait;margin:8mm}' +
       '*{box-sizing:border-box}' +
-      'html,body{margin:0;padding:0}' +
-      'body{font-family:Inter,Arial,sans-serif;color:#111827;background:#eef2f7;line-height:1.45}' +
-      '.print-toolbar{position:sticky;top:0;z-index:5;display:flex;justify-content:center;gap:10px;padding:12px;background:#0f172a;box-shadow:0 8px 24px rgba(15,23,42,.18)}' +
-      '.print-toolbar button{border:0;border-radius:999px;background:#ffffff;color:#0f172a;padding:10px 18px;font-weight:800;cursor:pointer}' +
+      'html,body{margin:0;padding:0;min-height:auto;overflow:auto}' +
+      'body{font-family:Arial,Inter,sans-serif;color:#111827;background:#eef2f7;line-height:1.25}' +
+      '.print-toolbar{position:sticky;top:0;z-index:5;display:flex;justify-content:center;align-items:center;gap:10px;padding:10px;background:#0f172a;box-shadow:0 8px 24px rgba(15,23,42,.18)}' +
+      '.print-toolbar button{border:0;border-radius:999px;background:#ffffff;color:#0f172a;padding:9px 16px;font-weight:800;cursor:pointer}' +
       '.print-toolbar button.primary{background:#0f8f72;color:#ffffff}' +
       '.print-toolbar span{display:flex;align-items:center;color:#cbd5e1;font-size:12px;font-weight:700}' +
-      '.report-page{width:min(210mm,calc(100vw - 24px));margin:18px auto;padding:18mm;background:#ffffff;border:1px solid #d1d5db;box-shadow:0 24px 70px rgba(15,23,42,.16)}' +
-      '.report-header{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;padding-bottom:16px;border-bottom:3px solid #0f8f72}' +
-      '.brand{font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#0f8f72;margin:0 0 8px}' +
-      'h1{margin:0;color:#10231d;font-size:32px;line-height:1.05;letter-spacing:-.04em}' +
-      '.subtitle{margin:8px 0 0;color:#64748b;font-size:13px}' +
-      '.report-meta{text-align:right;color:#475569;font-size:12px;line-height:1.55;min-width:180px}' +
-      '.report-meta strong{display:block;color:#111827;font-size:13px}' +
-      '.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:14px;margin-top:18px}' +
-      '.hero-main,.countdown-card{padding:16px;border:1px solid #d8e8e0;border-radius:16px;background:#f8fffb}' +
-      '.hero-label{margin:0 0 6px;color:#64748b;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.09em}' +
-      '.hero-name{margin:0;color:#10231d;font-size:22px;font-weight:900}' +
-      '.hero-age{margin:8px 0 0;color:#0f8f72;font-size:20px;font-weight:900}' +
-      '.countdown-card{background:#0f8f72;color:#ffffff}' +
-      '.countdown-card .hero-label{color:rgba(255,255,255,.78)}' +
-      '.countdown-card strong{display:block;font-size:18px;line-height:1.2}' +
-      '.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}' +
-      '.report-stat{padding:12px;border:1px solid #e5e7eb;border-radius:14px;background:#ffffff}' +
-      '.report-stat span{display:block;color:#64748b;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}' +
-      '.report-stat strong{display:block;margin-top:5px;color:#111827;font-size:13px;line-height:1.25}' +
-      '.section-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}' +
-      '.report-section{break-inside:avoid;page-break-inside:avoid;border:1px solid #d1d5db;border-radius:14px;overflow:hidden;background:#ffffff}' +
-      '.report-section h2{margin:0;padding:10px 12px;color:#10231d;background:#f1f5f9;border-bottom:1px solid #d1d5db;font-size:15px;line-height:1.2}' +
-      'table{width:100%;border-collapse:collapse}' +
-      'th,td{padding:8px 12px;border-bottom:1px solid #edf2f7;vertical-align:top;font-size:12px}' +
+      '.report-page{width:210mm;max-width:calc(100vw - 24px);min-height:297mm;margin:16px auto;padding:12mm 15mm 10mm;background:#ffffff;border:1px solid #d1d5db;box-shadow:0 24px 70px rgba(15,23,42,.16);overflow:hidden}' +
+      '.report-header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;padding-bottom:9px;border-bottom:3px solid #0f8f72}' +
+      '.brand{font-size:9px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#0f8f72;margin:0}' +
+      '.report-meta{text-align:right;color:#475569;font-size:8.5px;line-height:1.35;min-width:150px}' +
+      '.report-meta strong{display:block;color:#111827;font-size:8.5px}' +
+      '.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}' +
+      '.report-stat{min-height:36px;padding:7px 8px;border:1px solid #cbd5e1;border-radius:8px;background:#ffffff}' +
+      '.report-stat span{display:block;color:#64748b;font-size:7.5px;font-weight:900;text-transform:uppercase;letter-spacing:.07em}' +
+      '.report-stat strong{display:block;margin-top:4px;color:#111827;font-size:9.5px;line-height:1.2;overflow-wrap:anywhere}' +
+      '.section-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}' +
+      '.report-section{break-inside:avoid;page-break-inside:avoid;border:1px solid #cbd5e1;border-radius:8px;overflow:hidden;background:#ffffff}' +
+      '.report-section h2{margin:0;padding:6px 8px;color:#10231d;background:#f1f5f9;border-bottom:1px solid #cbd5e1;font-size:9.5px;line-height:1.15}' +
+      'table{width:100%;border-collapse:collapse;table-layout:fixed}' +
+      'th,td{padding:4px 7px;border-bottom:1px solid #edf2f7;vertical-align:top;font-size:7.6px;line-height:1.18}' +
       'tr:last-child th,tr:last-child td{border-bottom:0}' +
-      'th{width:42%;text-align:left;color:#475569;font-weight:800}' +
-      'td{color:#111827;font-weight:650;overflow-wrap:anywhere}' +
-      '.report-visuals{display:grid;gap:10px;padding:12px}' +
-      '.report-visual div{display:flex;justify-content:space-between;gap:10px;margin-bottom:7px;color:#111827;font-size:12px;font-weight:800}' +
-      '.report-visual span{color:#0f8f72}' +
-      '.report-visual p{height:10px;margin:0;overflow:hidden;border:1px solid #d8e8e0;border-radius:999px;background:#edf7f2}' +
-      '.report-visual i{display:block;height:100%;background:#0f8f72;border-radius:999px}' +
-      '.report-footer{margin-top:18px;padding-top:10px;border-top:1px solid #e5e7eb;color:#64748b;font-size:11px;text-align:center}' +
-      'pre{white-space:pre-wrap;font:inherit;font-size:12px;margin:0;padding:12px}' +
-      '@media(max-width:800px){.report-page{padding:22px}.hero,.section-grid,.stats{grid-template-columns:1fr}.report-meta{text-align:left}.report-header{display:block}}' +
-      '@media print{body{background:#fff}.print-toolbar{display:none!important}.report-page{width:auto;margin:0;padding:0;border:0;box-shadow:none}.report-header{padding-bottom:12px}.section-grid{gap:8px}.report-section{border-radius:10px}h1{font-size:28px}.hero{margin-top:14px}.stats{gap:8px}.report-footer{position:fixed;bottom:0;left:0;right:0}}' +
+      'th{width:38%;text-align:left;color:#475569;font-weight:900}' +
+      'td{color:#111827;font-weight:700;overflow-wrap:anywhere}' +
+      '.report-footer{margin-top:9px;padding-top:7px;border-top:1px solid #e5e7eb;color:#64748b;font-size:7.3px;text-align:center}' +
+      'pre{white-space:pre-wrap;font:inherit;font-size:8px;margin:0;padding:8px}' +
+      '@media(max-width:800px){.report-page{width:auto;max-width:calc(100vw - 20px);min-height:auto;padding:20px}.stats,.section-grid{grid-template-columns:1fr}.report-meta{text-align:left;margin-top:8px}.report-header{display:block}}' +
+      '@media print{html,body{width:210mm;background:#fff!important;overflow:visible!important}.print-toolbar{display:none!important}.report-page{width:auto;max-width:none;min-height:auto;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;overflow:visible!important;break-after:avoid;page-break-after:avoid}.report-header{padding-bottom:7px}.stats{gap:5px;margin-top:7px}.report-stat{min-height:30px;padding:5px 6px;border-radius:6px}.section-grid{gap:6px;margin-top:7px}.report-section{border-radius:6px;break-inside:avoid;page-break-inside:avoid}.report-section h2{padding:4px 6px;font-size:8.8px}th,td{padding:3.2px 5.5px;font-size:7.15px;line-height:1.12}.report-footer{margin-top:6px;padding-top:5px;font-size:6.8px}}' +
       '</style></head>' +
-      '<body><div class="print-toolbar"><button class="primary" onclick="window.print()">Print / Save PDF</button><button onclick="window.close()">Close</button><span>Use this button or Ctrl+P, then choose Save as PDF.</span></div>' +
+      '<body><div class="print-toolbar"><button class="primary" onclick="window.print()">Print / Save PDF</button><button onclick="window.close()">Close</button><span>Same one-page report for Save and Print / Save PDF.</span></div>' +
       '<main class="report-page">' +
       '<header class="report-header"><p class="brand">CalcStudio</p>' +
       '<div class="report-meta"><strong>Generated</strong>' + escapeHtml(data.generated) + '<br><strong>Calculation date</strong>' + escapeHtml(calculationDate) + '</div></header>' +
@@ -1046,7 +1022,7 @@
         }
       } else if (action === 'report') {
         openPrintableReport(text, { sourceAction: 'report' });
-        setActionFeedback('Report opened. Use Print / Save PDF for the same report layout.');
+        setActionFeedback('One-page report opened. Use Print / Save PDF for the same report layout.');
       }
     });
   }
