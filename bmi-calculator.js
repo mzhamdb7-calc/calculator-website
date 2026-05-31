@@ -3310,3 +3310,95 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
   }
 })();
 /* ===== END BMI FINAL RESULT CLEANUP ===== */
+
+
+/* ===== BMI FINAL DOM ORDER: CALCULATOR -> RESULT -> INSTRUCTIONS/FAQS ===== */
+(function () {
+  'use strict';
+  function isBmiPage() {
+    return document.body && (document.body.dataset.page === 'bmi' || document.body.classList.contains('page-bmi') || document.body.classList.contains('bmi-page'));
+  }
+  function forceBmiFlow() {
+    if (!isBmiPage()) return;
+    var doc = document.documentElement;
+    var main = document.querySelector('main.bmi-calculator-container');
+    var calc = main && main.querySelector(':scope > .calculator.bmi-calculator-box');
+    var result = document.getElementById('bmiReportOutput') || document.querySelector('.bmi-rebuilt-output, .bmi-clean-result, .bmi-box-output');
+    var instruction = main && main.querySelector(':scope > .instruction-box');
+
+    doc.style.setProperty('height', 'auto', 'important');
+    doc.style.setProperty('max-height', 'none', 'important');
+    doc.style.setProperty('overflow-y', 'auto', 'important');
+    document.body.style.setProperty('height', 'auto', 'important');
+    document.body.style.setProperty('max-height', 'none', 'important');
+    document.body.style.setProperty('overflow-y', 'auto', 'important');
+
+    if (!main || !calc) return;
+    main.style.setProperty('height', 'auto', 'important');
+    main.style.setProperty('max-height', 'none', 'important');
+    main.style.setProperty('overflow', 'visible', 'important');
+
+    if (result) {
+      result.id = 'bmiReportOutput';
+      result.classList.add('bmi-rebuilt-output', 'bmi-direct-output');
+      if (result.parentElement !== main || result.previousElementSibling !== calc) {
+        calc.insertAdjacentElement('afterend', result);
+      }
+      result.style.setProperty('grid-column', window.innerWidth > 850 ? '2' : '1', 'important');
+      result.style.setProperty('grid-row', window.innerWidth > 850 ? '2' : 'auto', 'important');
+      result.style.setProperty('position', 'static', 'important');
+      result.style.setProperty('width', '100%', 'important');
+      result.style.setProperty('max-width', 'none', 'important');
+      result.style.setProperty('height', 'auto', 'important');
+      result.style.setProperty('max-height', 'none', 'important');
+      result.style.setProperty('overflow', 'visible', 'important');
+      result.style.setProperty('margin', result.hidden ? '0' : '24px 0 0', 'important');
+      result.style.setProperty('padding', '0', 'important');
+      result.style.setProperty('border', '0', 'important');
+      result.style.setProperty('background', 'transparent', 'important');
+      result.style.setProperty('box-shadow', 'none', 'important');
+      result.style.setProperty('transform', 'none', 'important');
+
+      result.querySelectorAll('.bmi-rebuilt-result-card, .bmi-direct-result-card').forEach(function (card) {
+        card.style.setProperty('position', 'static', 'important');
+        card.style.setProperty('width', '100%', 'important');
+        card.style.setProperty('max-width', 'none', 'important');
+        card.style.setProperty('height', 'auto', 'important');
+        card.style.setProperty('max-height', 'none', 'important');
+        card.style.setProperty('overflow', 'visible', 'important');
+        card.style.setProperty('box-sizing', 'border-box', 'important');
+      });
+    }
+
+    if (instruction) {
+      if (result && result.parentElement === main && instruction.previousElementSibling !== result) {
+        result.insertAdjacentElement('afterend', instruction);
+      } else if (!result && instruction.previousElementSibling !== calc) {
+        calc.insertAdjacentElement('afterend', instruction);
+      }
+      instruction.style.setProperty('grid-column', window.innerWidth > 850 ? '2' : '1', 'important');
+      instruction.style.setProperty('grid-row', window.innerWidth > 850 ? '3' : 'auto', 'important');
+      instruction.style.setProperty('position', 'static', 'important');
+      instruction.style.setProperty('display', 'block', 'important');
+      instruction.style.setProperty('width', '100%', 'important');
+      instruction.style.setProperty('max-width', 'none', 'important');
+      instruction.style.setProperty('height', 'auto', 'important');
+      instruction.style.setProperty('min-height', '0', 'important');
+      instruction.style.setProperty('max-height', 'none', 'important');
+      instruction.style.setProperty('overflow', 'visible', 'important');
+      instruction.style.setProperty('margin-top', '24px', 'important');
+      instruction.style.setProperty('transform', 'none', 'important');
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', forceBmiFlow);
+  else forceBmiFlow();
+  [60, 160, 360, 800, 1400, 2200].forEach(function (delay) { setTimeout(forceBmiFlow, delay); });
+  window.addEventListener('resize', forceBmiFlow);
+  document.addEventListener('input', function () { setTimeout(forceBmiFlow, 80); setTimeout(forceBmiFlow, 300); }, true);
+  document.addEventListener('change', function () { setTimeout(forceBmiFlow, 80); setTimeout(forceBmiFlow, 300); }, true);
+  if (window.MutationObserver) {
+    new MutationObserver(function () { setTimeout(forceBmiFlow, 40); }).observe(document.documentElement, { childList: true, subtree: true });
+  }
+})();
+/* ===== END BMI FINAL DOM ORDER ===== */
