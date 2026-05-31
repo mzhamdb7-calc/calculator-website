@@ -4768,3 +4768,80 @@ body[data-page="bmi"] main.bmi-calculator-container > .age-bmi-result-below {
   box-shadow: none !important;
   overflow: hidden !important;
 }
+
+/* ===== BMI: stretch input boxes to remove unused empty space ===== */
+body[data-page="bmi"] .calculator.bmi-calculator-box,
+body[data-page="bmi"] .bmi-calculator-box {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+}
+
+body[data-page="bmi"] .bmi-calculator-box > .bmi-title-row,
+body[data-page="bmi"] .bmi-calculator-box > #bmiInputGroups.bmi-input-groups,
+body[data-page="bmi"] .bmi-calculator-box > .bmi-input-groups {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  grid-column: 1 / -1 !important;
+  box-sizing: border-box !important;
+}
+
+body[data-page="bmi"] .bmi-calculator-box > #bmiInputGroups.bmi-details-option-layout,
+body[data-page="bmi"] .bmi-calculator-box > .bmi-details-option-layout {
+  display: grid !important;
+  grid-template-columns: minmax(0, 2fr) minmax(300px, .8fr) !important;
+  gap: 18px !important;
+  align-items: start !important;
+}
+
+body[data-page="bmi"] #bmiInputGroups > .bmi-details-box {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  width: 100% !important;
+}
+
+body[data-page="bmi"] #bmiInputGroups > #bmiOptionBox.bmi-option-box {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  width: 100% !important;
+}
+
+body[data-page="bmi"] #bmiInputGroups .bmi-details-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+}
+
+body[data-page="bmi"] #bmiInputGroups .bmi-field input,
+body[data-page="bmi"] #bmiInputGroups .bmi-field select {
+  min-height: 54px !important;
+}
+
+@media screen and (max-width: 1180px) {
+  body[data-page="bmi"] .bmi-calculator-box > #bmiInputGroups.bmi-details-option-layout,
+  body[data-page="bmi"] .bmi-calculator-box > .bmi-details-option-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-page="bmi"] #bmiInputGroups > .bmi-details-box,
+  body[data-page="bmi"] #bmiInputGroups > #bmiOptionBox.bmi-option-box {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+
+  body[data-page="bmi"] #bmiInputGroups .bmi-details-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media screen and (max-width: 720px) {
+  body[data-page="bmi"] #bmiInputGroups .bmi-details-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* BMI: force the calculator card itself to stop using the old two-column inner grid. */
+body.extra-calculator-page[data-page="bmi"] main.bmi-calculator-container > section.calculator.bmi-calculator-box {
+  display: block !important;
+}
