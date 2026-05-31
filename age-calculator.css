@@ -5002,3 +5002,12 @@ body[data-page="age"] #ageReportOutput .age-single-error {
     gap: 4px !important;
   }
 }
+
+/* ===== AGE AUTOCALC RESULT PRESENT FIX ===== */
+body[data-page="age"] main.age-calculator-container > #ageReportOutput[hidden] {
+  display: none !important;
+}
+
+body[data-page="age"] main.age-calculator-container > #ageReportOutput:not([hidden]) {
+  display: block !important;
+}

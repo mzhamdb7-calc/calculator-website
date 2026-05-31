@@ -11,7 +11,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="Calculate your normal age and Asian age instantly with this free online age calculator." name="description"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
-<link href="age-calculator.css?v=age-auto-faq-20260601" rel="stylesheet"/>
+<link href="age-calculator.css?v=age-autocalc-result-fixed-20260601-2" rel="stylesheet"/>
 <link href="favicon.ico" rel="icon" type="image/x-icon"/>
 
 
@@ -122,18 +122,18 @@
   <section class="age-input-box age-name-box">
     <h2>Name</h2>
     <label for="ageName">Name (optional):</label>
-    <input autocomplete="name" id="ageName" placeholder="Optional" type="text"/>
+    <input autocomplete="name" id="ageName" placeholder="Optional" type="text" oninput="window.calculateAge&&window.calculateAge()" onchange="window.calculateAge&&window.calculateAge()"/>
   </section>
   <section class="age-input-box age-date-box">
     <h2>Date details</h2>
     <div class="age-date-input-grid">
       <div class="age-field">
         <label for="birthdate">Enter birth date:</label>
-        <input id="birthdate" type="date"/>
+        <input id="birthdate" type="date" oninput="window.calculateAge&&window.calculateAge()" onchange="window.calculateAge&&window.calculateAge()"/>
       </div>
       <div class="age-field">
         <label for="dateToCalculate">Calculation date:</label>
-        <input id="dateToCalculate" type="date" aria-label="Calculation date"/>
+        <input id="dateToCalculate" type="date" aria-label="Calculation date" oninput="window.calculateAge&&window.calculateAge()" onchange="window.calculateAge&&window.calculateAge()"/>
       </div>
     </div>
 </section>
@@ -150,7 +150,7 @@
 
 </aside>
 </main>
-<script defer src="age-calculator.js?v=age-auto-faq-20260601"></script>
+<script defer src="age-calculator.js?v=age-autocalc-result-fixed-20260601-2"></script>
 
 </body>
 </html>
