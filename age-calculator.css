@@ -5783,38 +5783,7 @@ body[data-page="age"] #ageReportOutput .age-single-result-title {
 }
 
 
-/* ===== AGE GO-UP BUTTON EXACT MATCH WITH OTHER PAGES ===== */
-body[data-page="age"] #scrollTopBtn {
-  position: fixed !important;
-  right: 18px !important;
-  bottom: 22px !important;
-  z-index: 70 !important;
-  width: 46px !important;
-  height: 46px !important;
-  min-width: 46px !important;
-  min-height: 46px !important;
-  max-width: 46px !important;
-  max-height: 46px !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  display: none;
-  align-items: center !important;
-  justify-content: center !important;
-  border: 0 !important;
-  border-radius: 14px !important;
-  background: #ffffff !important;
-  color: #0f8f70 !important;
-  font-size: 1.12rem !important;
-  font-weight: 800 !important;
-  line-height: 1 !important;
-  box-shadow: 0 14px 35px rgba(25, 54, 44, 0.12) !important;
-  cursor: pointer !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  transform: translateY(12px) !important;
-  pointer-events: none !important;
-  transition: opacity .18s ease, transform .18s ease, visibility .18s ease, box-shadow .18s ease !important;
-}
+
 
 body[data-page="age"] #scrollTopBtn.is-visible {
   display: flex !important;
@@ -5844,5 +5813,69 @@ body[data-page="age"] #scrollTopBtn:focus-visible {
     max-height: 42px !important;
     border-radius: 13px !important;
     font-size: 1.02rem !important;
+  }
+}
+
+
+/* ===== AGE GO-UP BUTTON: USE THE SAME STYLE AS OTHER PAGES ===== */
+body[data-page="age"] #scrollTopBtn,
+body.page-age #scrollTopBtn {
+  position: fixed !important;
+  right: 18px !important;
+  bottom: 22px !important;
+  z-index: 70 !important;
+  width: 46px !important;
+  height: 46px !important;
+  min-width: 46px !important;
+  min-height: 46px !important;
+  max-width: 46px !important;
+  max-height: 46px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: none;
+  place-items: center !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #0f8f70 !important;
+  background: var(--nav) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  border-radius: 50% !important;
+  box-shadow: var(--shadow-md) !important;
+  font-size: 1rem !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  pointer-events: auto !important;
+  transition: none !important;
+}
+
+body[data-page="age"] #scrollTopBtn:hover,
+body[data-page="age"] #scrollTopBtn:focus-visible,
+body.page-age #scrollTopBtn:hover,
+body.page-age #scrollTopBtn:focus-visible {
+  color: #ffffff !important;
+  background: var(--primary-dark) !important;
+  outline: none !important;
+}
+
+body[data-page="age"] #scrollTopBtn.is-visible,
+body.page-age #scrollTopBtn.is-visible {
+  display: flex !important;
+}
+
+@media screen and (max-width: 700px) {
+  body[data-page="age"] #scrollTopBtn,
+  body.page-age #scrollTopBtn {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+    max-width: 42px !important;
+    max-height: 42px !important;
+    right: 14px !important;
+    bottom: 18px !important;
   }
 }

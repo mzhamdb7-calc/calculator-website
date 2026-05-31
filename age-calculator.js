@@ -1206,19 +1206,13 @@
     if (!isAgePage()) return;
 
     var button = byId('scrollTopBtn');
-    if (!button) {
-      button = document.createElement('button');
-      button.id = 'scrollTopBtn';
-      button.type = 'button';
-      button.setAttribute('aria-label', 'Go to top');
-      button.textContent = '↑';
-      document.body.appendChild(button);
-    }
+    if (!button) return;
+
+    button.textContent = '↑';
 
     function updateButton() {
-      var shouldShow = window.scrollY > 180;
-      button.classList.toggle('is-visible', shouldShow);
-      button.style.display = shouldShow ? 'flex' : 'none';
+      button.style.display = window.scrollY > 200 ? 'flex' : 'none';
+      button.classList.toggle('is-visible', window.scrollY > 200);
     }
 
     button.addEventListener('click', function (event) {
@@ -1227,10 +1221,7 @@
     });
 
     window.addEventListener('scroll', updateButton, { passive: true });
-    window.addEventListener('resize', updateButton);
     updateButton();
-    setTimeout(updateButton, 250);
-    setTimeout(updateButton, 1000);
   }
 
   window.scrollToTop = function () {
