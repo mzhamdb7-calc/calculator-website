@@ -291,6 +291,14 @@
     showResult(html);
   }
 
+  function scheduleAgeCalculation() {
+    if (!isAgePage()) return;
+    window.clearTimeout(window.__ageAutoCalculateTimer);
+    window.__ageAutoCalculateTimer = window.setTimeout(function () {
+      calculateAge();
+    }, 0);
+  }
+
   function setupAgePage() {
     if (!isAgePage()) return;
     ensureResultPanel();
@@ -301,11 +309,12 @@
       var input = document.getElementById(id);
       if (!input || input.dataset.ageBound === '1') return;
       input.dataset.ageBound = '1';
-      input.addEventListener('input', calculateAge);
-      input.addEventListener('change', calculateAge);
+      ['input', 'change', 'keyup', 'blur'].forEach(function (eventName) {
+        input.addEventListener(eventName, scheduleAgeCalculation);
+      });
     });
 
-    calculateAge();
+    scheduleAgeCalculation();
     syncResultWidth();
   }
 
