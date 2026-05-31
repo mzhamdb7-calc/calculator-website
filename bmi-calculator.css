@@ -4845,3 +4845,37 @@ body[data-page="bmi"] #bmiInputGroups .bmi-field select {
 body.extra-calculator-page[data-page="bmi"] main.bmi-calculator-container > section.calculator.bmi-calculator-box {
   display: block !important;
 }
+
+
+/* ===== BMI: move body-measurement inputs under Option ===== */
+body[data-page="bmi"] #bmiInputGroups .bmi-details-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  align-items: start !important;
+}
+
+body[data-page="bmi"] #bmiInputGroups > #bmiOptionBox.bmi-option-box {
+  overflow: visible !important;
+}
+
+body[data-page="bmi"] #bmiInputGroups #bmiOptionBox .bmi-option-content {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+}
+
+body[data-page="bmi"] #bmiInputGroups #bmiOptionBox .bmi-time-goal-field {
+  grid-column: 1 / -1 !important;
+}
+
+@media screen and (max-width: 1180px) {
+  body[data-page="bmi"] #bmiInputGroups #bmiOptionBox .bmi-option-content {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media screen and (max-width: 720px) {
+  body[data-page="bmi"] #bmiInputGroups .bmi-details-grid,
+  body[data-page="bmi"] #bmiInputGroups #bmiOptionBox .bmi-option-content {
+    grid-template-columns: 1fr !important;
+  }
+}
