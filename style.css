@@ -3165,3 +3165,48 @@ body[data-page="age"] #ageReportOutput .age-point-result-list span {
     gap: 4px !important;
   }
 }
+
+/* Age Calculator: fully remove the empty result placeholder box */
+body[data-page="age"] main.age-calculator-container > #ageReportOutput:not(:has(.age-point-result-box)),
+body[data-page="age"] main.age-calculator-container > .age-clean-result:not(:has(.age-point-result-box)),
+body[data-page="age"] main.age-calculator-container > .age-point-output:not(:has(.age-point-result-box)),
+body[data-page="age"] main.age-calculator-container > #ageResult:not(:has(.age-point-result-box)),
+body[data-page="age"] main.age-calculator-container > .loan-style-output-panel.calculator-clean-result:not(:has(.age-point-result-box)) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+body[data-page="age"] main.age-calculator-container > #ageReportOutput:has(.age-point-result-box),
+body[data-page="age"] main.age-calculator-container > .age-clean-result:has(.age-point-result-box),
+body[data-page="age"] main.age-calculator-container > .age-point-output:has(.age-point-result-box) {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: clamp(18px, 2.2vw, 26px) !important;
+  margin: 0 !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 22px !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f7fbf8 100%) !important;
+  box-shadow: 0 12px 28px rgba(38, 58, 51, .07) !important;
+  overflow: visible !important;
+}
+
+body[data-page="age"] main.age-calculator-container > .instruction-box {
+  grid-row: 3 !important;
+}

@@ -1902,3 +1902,62 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
   setTimeout(syncUnitConverterInstructionWidth, 500);
 })();
 
+
+/* Age Calculator blank result placeholder remover */
+(function(){
+  'use strict';
+  function isAgePage(){ return document.body && document.body.dataset && document.body.dataset.page === 'age'; }
+  function hasAgeContent(panel){
+    if(!panel) return false;
+    var resultBox = panel.querySelector('.age-point-result-box, .age-result-group-grid');
+    return !!(resultBox && String(panel.textContent || '').trim().length > 0);
+  }
+  function cleanAgeBlankResults(){
+    if(!isAgePage()) return;
+    var panels = Array.prototype.slice.call(document.querySelectorAll('main.age-calculator-container > #ageReportOutput, main.age-calculator-container > .age-clean-result, main.age-calculator-container > .age-point-output, main.age-calculator-container > #ageResult, main.age-calculator-container > .loan-style-output-panel.calculator-clean-result'));
+    panels.forEach(function(panel){
+      if(hasAgeContent(panel)){
+        panel.hidden = false;
+        panel.removeAttribute('aria-hidden');
+        panel.style.removeProperty('display');
+        panel.style.removeProperty('visibility');
+        panel.style.removeProperty('opacity');
+        panel.style.removeProperty('height');
+        panel.style.removeProperty('max-height');
+        panel.style.removeProperty('padding');
+        panel.style.removeProperty('margin');
+        panel.style.removeProperty('border');
+        panel.style.removeProperty('box-shadow');
+      } else {
+        panel.hidden = true;
+        panel.setAttribute('aria-hidden','true');
+        panel.style.setProperty('display','none','important');
+        panel.style.setProperty('visibility','hidden','important');
+        panel.style.setProperty('opacity','0','important');
+        panel.style.setProperty('height','0','important');
+        panel.style.setProperty('max-height','0','important');
+        panel.style.setProperty('min-height','0','important');
+        panel.style.setProperty('padding','0','important');
+        panel.style.setProperty('margin','0','important');
+        panel.style.setProperty('border','0','important');
+        panel.style.setProperty('box-shadow','none','important');
+        panel.style.setProperty('overflow','hidden','important');
+      }
+    });
+  }
+  function start(){
+    cleanAgeBlankResults();
+    [50,150,350,700,1200,2200].forEach(function(delay){ setTimeout(cleanAgeBlankResults, delay); });
+    document.addEventListener('input', function(e){
+      if(e.target && e.target.id === 'birthdate') setTimeout(cleanAgeBlankResults, 80);
+    }, true);
+    document.addEventListener('change', function(e){
+      if(e.target && e.target.id === 'birthdate') setTimeout(cleanAgeBlankResults, 80);
+    }, true);
+    if(window.MutationObserver && document.body){
+      new MutationObserver(function(){ cleanAgeBlankResults(); }).observe(document.body,{childList:true,subtree:true,characterData:true});
+    }
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
