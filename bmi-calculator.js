@@ -2457,9 +2457,6 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
     if (otherRows.length) groupHtml += makeGroup('Other details', 'other', otherRows);
 
     return '<article class="bmi-rebuilt-result-card">' +
-      '<header class="bmi-rebuilt-header">' +
-        '<div><p class="bmi-rebuilt-kicker">BMI Result</p><h2>' + esc(bmi ? bmi.value : 'Result') + '</h2>' + (category ? '<p class="bmi-rebuilt-category">' + esc(category.value) + '</p>' : '') + '</div>' +
-      '</header>' +
       '<section class="bmi-rebuilt-summary-grid" aria-label="BMI summary">' + summaryRows.map(function (row) { return makeSummaryItem(row); }).join('') + '</section>' +
       '<div class="bmi-rebuilt-group-grid">' + groupHtml + '</div>' +
       '<div class="bmi-rebuilt-actions"><button type="button" class="bmi-rebuilt-btn bmi-copy-btn">Copy</button><button type="button" class="bmi-rebuilt-btn bmi-save-btn">Save</button><button type="button" class="bmi-rebuilt-btn bmi-share-btn">Share</button><button type="button" class="bmi-rebuilt-btn bmi-report-btn">Report</button></div>' +
@@ -3179,7 +3176,6 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
     var text = 'BMI Calculator Result\n\n' + plainText(rows);
     panel.innerHTML =
       '<article class="bmi-rebuilt-result-card bmi-direct-result-card">' +
-        '<header class="bmi-rebuilt-header"><div><p class="bmi-rebuilt-kicker">BMI Result</p><h2>' + esc(bmi ? bmi.value : 'BMI') + '</h2>' + (category ? '<p class="bmi-rebuilt-category">' + esc(category.value) + '</p>' : '') + '</div></header>' +
         '<section class="bmi-rebuilt-summary-grid" aria-label="BMI summary">' + [bmi, category, healthy, difference, risk].filter(Boolean).map(function (row) { return makeSummary(row); }).join('') + '</section>' +
         '<div class="bmi-rebuilt-group-grid">' +
           makeGroup('Calories', calories) +
@@ -3241,3 +3237,76 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install);
   else install();
 })();
+
+
+/* ===== BMI FINAL RESULT CLEANUP: NO HERO, NO DOUBLE BOX, FULL PAGE SCROLL ===== */
+(function () {
+  'use strict';
+  function isBmiPage() {
+    return document.body && (document.body.dataset.page === 'bmi' || document.body.classList.contains('page-bmi') || document.body.classList.contains('bmi-page'));
+  }
+  function cleanBmiResult() {
+    if (!isBmiPage()) return;
+    document.documentElement.style.setProperty('height', 'auto', 'important');
+    document.documentElement.style.setProperty('max-height', 'none', 'important');
+    document.documentElement.style.setProperty('overflow-y', 'auto', 'important');
+    document.body.style.setProperty('height', 'auto', 'important');
+    document.body.style.setProperty('max-height', 'none', 'important');
+    document.body.style.setProperty('overflow-y', 'auto', 'important');
+
+    var main = document.querySelector('main.bmi-calculator-container');
+    var calc = main && main.querySelector(':scope > .calculator.bmi-calculator-box');
+    var panel = document.getElementById('bmiReportOutput') || document.querySelector('.bmi-rebuilt-output, .bmi-clean-result, .bmi-box-output');
+    var instruction = main && main.querySelector(':scope > .instruction-box');
+
+    if (main) {
+      main.style.setProperty('height', 'auto', 'important');
+      main.style.setProperty('max-height', 'none', 'important');
+      main.style.setProperty('overflow', 'visible', 'important');
+    }
+
+    if (panel && calc && main) {
+      if (panel.parentElement !== main || panel.previousElementSibling !== calc) calc.insertAdjacentElement('afterend', panel);
+      panel.id = 'bmiReportOutput';
+      panel.classList.add('bmi-rebuilt-output');
+      panel.style.setProperty('position', 'static', 'important');
+      panel.style.setProperty('display', panel.hidden ? 'none' : 'block', 'important');
+      panel.style.setProperty('width', '100%', 'important');
+      panel.style.setProperty('max-width', 'none', 'important');
+      panel.style.setProperty('margin', panel.hidden ? '0' : '24px 0 0', 'important');
+      panel.style.setProperty('padding', '0', 'important');
+      panel.style.setProperty('border', '0', 'important');
+      panel.style.setProperty('background', 'transparent', 'important');
+      panel.style.setProperty('box-shadow', 'none', 'important');
+      panel.style.setProperty('overflow', 'visible', 'important');
+
+      panel.querySelectorAll('.bmi-rebuilt-header, .bmi-rebuilt-kicker, .bmi-rebuilt-category').forEach(function (el) { el.remove(); });
+
+      var card = panel.querySelector('.bmi-rebuilt-result-card, .bmi-direct-result-card');
+      if (card) {
+        card.style.setProperty('width', '100%', 'important');
+        card.style.setProperty('max-width', 'none', 'important');
+        card.style.setProperty('margin', '0', 'important');
+        card.style.setProperty('box-sizing', 'border-box', 'important');
+        card.style.setProperty('overflow', 'visible', 'important');
+      }
+    }
+
+    if (instruction) {
+      instruction.style.setProperty('position', 'static', 'important');
+      instruction.style.setProperty('height', 'auto', 'important');
+      instruction.style.setProperty('max-height', 'none', 'important');
+      instruction.style.setProperty('overflow', 'visible', 'important');
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', cleanBmiResult);
+  else cleanBmiResult();
+  [50, 150, 400, 900, 1600].forEach(function (delay) { setTimeout(cleanBmiResult, delay); });
+  document.addEventListener('input', function () { setTimeout(cleanBmiResult, 80); setTimeout(cleanBmiResult, 260); }, true);
+  document.addEventListener('change', function () { setTimeout(cleanBmiResult, 80); setTimeout(cleanBmiResult, 260); }, true);
+  if (window.MutationObserver) {
+    new MutationObserver(function () { setTimeout(cleanBmiResult, 30); }).observe(document.documentElement, { childList: true, subtree: true });
+  }
+})();
+/* ===== END BMI FINAL RESULT CLEANUP ===== */
