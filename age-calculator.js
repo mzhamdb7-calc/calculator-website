@@ -454,6 +454,20 @@
     }, 500);
   }
 
+  function downloadHtmlFile(filename, html) {
+    var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(function () {
+      URL.revokeObjectURL(url);
+    }, 500);
+  }
+
   function getReportData() {
     var panel = byId('ageReportOutput');
     if (!panel) return null;
@@ -610,7 +624,7 @@
       '@media(max-width:800px){.report-page{padding:22px}.hero,.section-grid,.stats{grid-template-columns:1fr}.report-meta{text-align:left}.report-header{display:block}}' +
       '@media print{body{background:#fff}.print-toolbar{display:none!important}.report-page{width:auto;margin:0;padding:0;border:0;box-shadow:none}.report-header{padding-bottom:12px}.section-grid{gap:8px}.report-section{border-radius:10px}h1{font-size:28px}.hero{margin-top:14px}.stats{gap:8px}.report-footer{position:fixed;bottom:0;left:0;right:0}}' +
       '</style></head>' +
-      '<body><div class="print-toolbar"><button class="primary" onclick="window.print()">Print / Save PDF</button><button onclick="window.close()">Close</button></div>' +
+      '<body><div class="print-toolbar"><button class="primary" onclick="window.print()">Save as PDF</button><button onclick="window.close()">Close</button></div>' +
       '<main class="report-page">' +
       '<header class="report-header"><p class="brand">CalcStudio</p>' +
       '<div class="report-meta"><strong>Generated</strong>' + escapeHtml(data.generated) + '<br><strong>Calculation date</strong>' + escapeHtml(calculationDate) + '</div></header>' +
@@ -622,20 +636,18 @@
 
   function openPrintableReport(text) {
     var data = getReportData();
+    var reportHtml = buildPrintableReportHtml(data, text);
     var win = window.open('', '_blank');
     if (!win) {
-      downloadTextFile('age-report.txt', text);
-      setActionFeedback('Report saved');
+      downloadHtmlFile('age-report.html', reportHtml);
+      setActionFeedback('Report downloaded');
       return;
     }
 
     win.document.open();
-    win.document.write(buildPrintableReportHtml(data, text));
+    win.document.write(reportHtml);
     win.document.close();
     win.focus();
-    setTimeout(function () {
-      win.print();
-    }, 450);
   }
 
   function resultActionsHtml() {
