@@ -1,23 +1,19 @@
-/* Age Calculator page-only JavaScript. No shared calculator files needed. */
+/* Age Calculator page-only JavaScript. Auto-calculate, single result box, no shared files. */
 (function () {
   'use strict';
 
   var DAY_MS = 24 * 60 * 60 * 1000;
 
-  function id(name) {
-    return document.getElementById(name);
+  function byId(id) {
+    return document.getElementById(id);
   }
 
-  function qs(selector, root) {
-    return (root || document).querySelector(selector);
-  }
-
-  function qsa(selector, root) {
+  function all(selector, root) {
     return Array.prototype.slice.call((root || document).querySelectorAll(selector));
   }
 
   function isAgePage() {
-    return !!(document.body && document.body.getAttribute('data-page') === 'age');
+    return !!document.body && document.body.getAttribute('data-page') === 'age';
   }
 
   function escapeHtml(value) {
@@ -34,11 +30,11 @@
   }
 
   function todayISO() {
-    var today = new Date();
-    return today.getFullYear() + '-' + pad(today.getMonth() + 1) + '-' + pad(today.getDate());
+    var now = new Date();
+    return now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
   }
 
-  function parseISODate(value) {
+  function parseDateInput(value) {
     var match = String(value || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
     if (!match) return null;
 
@@ -47,14 +43,7 @@
     var day = Number(match[3]);
     var date = new Date(year, month - 1, day);
 
-    if (
-      !Number.isFinite(year) ||
-      !Number.isFinite(month) ||
-      !Number.isFinite(day) ||
-      date.getFullYear() !== year ||
-      date.getMonth() !== month - 1 ||
-      date.getDate() !== day
-    ) {
+    if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
       return null;
     }
 
@@ -67,13 +56,13 @@
     };
   }
 
-  function formatDate(value) {
-    var parsed = parseISODate(value);
+  function formatDateInput(value) {
+    var parsed = parseDateInput(value);
     if (!parsed) return '-';
     return pad(parsed.day) + '/' + pad(parsed.month) + '/' + parsed.year;
   }
 
-  function number(value) {
+  function comma(value) {
     return Number(value || 0).toLocaleString('en-US');
   }
 
@@ -81,7 +70,7 @@
     return new Date(year, month, 0).getDate();
   }
 
-  function ageParts(birth, target) {
+  function getAgeParts(birth, target) {
     var years = target.year - birth.year;
     var months = target.month - birth.month;
     var days = target.day - birth.day;
@@ -96,14 +85,10 @@
       months += 12;
     }
 
-    return {
-      years: Math.max(0, years),
-      months: Math.max(0, months),
-      days: Math.max(0, days)
-    };
+    return { years: years, months: months, days: days };
   }
 
-  function formatCalendar(parsed, locale) {
+  function safeCalendar(parsed, locale) {
     try {
       return new Intl.DateTimeFormat(locale, {
         weekday: 'long',
@@ -111,7 +96,7 @@
         month: 'long',
         day: 'numeric'
       }).format(parsed.date);
-    } catch (error) {
+    } catch (err) {
       return '-';
     }
   }
@@ -139,37 +124,42 @@
   }
 
   function nextBirthdayDays(birth, target) {
-    var targetUtc = target.utc;
     var nextUtc = Date.UTC(target.year, birth.month - 1, birth.day);
-    if (nextUtc < targetUtc) nextUtc = Date.UTC(target.year + 1, birth.month - 1, birth.day);
-    return Math.max(0, Math.ceil((nextUtc - targetUtc) / DAY_MS));
+    if (nextUtc < target.utc) nextUtc = Date.UTC(target.year + 1, birth.month - 1, birth.day);
+    return Math.max(0, Math.ceil((nextUtc - target.utc) / DAY_MS));
   }
 
   function daysUntilAge(birth, target, wantedAge, label) {
     var milestoneUtc = Date.UTC(birth.year + wantedAge, birth.month - 1, birth.day);
     if (target.utc >= milestoneUtc) return label + ' reached';
-    return number(Math.ceil((milestoneUtc - target.utc) / DAY_MS)) + ' days before ' + label;
+    return comma(Math.ceil((milestoneUtc - target.utc) / DAY_MS)) + ' days before ' + label;
   }
 
   function row(label, value) {
-    return '<li class="age-single-result-row"><strong>' + escapeHtml(label) + '</strong><span>' + escapeHtml(value) + '</span></li>';
+    return '<li class="age-single-result-row"><strong>' + escapeHtml(label) + ':</strong><span>' + escapeHtml(value) + '</span></li>';
   }
 
   function group(title, rows) {
     return '<section class="age-single-group-box"><h3>' + escapeHtml(title) + '</h3><ul class="age-single-result-list">' + rows.join('') + '</ul></section>';
   }
 
-  function getLayout() {
-    var main = qs('main.age-calculator-container');
-    var calculator = main ? qs(':scope > .calculator', main) : qs('.calculator');
-    return { main: main, calculator: calculator };
+  function getCalculator() {
+    var main = document.querySelector('main.age-calculator-container');
+    if (!main) return null;
+    for (var i = 0; i < main.children.length; i += 1) {
+      if (main.children[i].classList && main.children[i].classList.contains('calculator')) {
+        return main.children[i];
+      }
+    }
+    return document.querySelector('.calculator');
   }
 
-  function ensureResultPanel() {
-    var layout = getLayout();
-    if (!layout.main || !layout.calculator) return null;
+  function ensurePanel() {
+    var main = document.querySelector('main.age-calculator-container');
+    var calculator = getCalculator();
+    if (!main || !calculator) return null;
 
-    var panels = qsa('#ageReportOutput');
+    var panels = all('#ageReportOutput');
     var panel = panels[0];
 
     if (!panel) {
@@ -177,87 +167,106 @@
       panel.id = 'ageReportOutput';
     }
 
-    panels.forEach(function (otherPanel) {
-      if (otherPanel !== panel) otherPanel.remove();
+    panels.forEach(function (duplicate) {
+      if (duplicate !== panel) duplicate.remove();
     });
 
     panel.className = 'age-single-output';
     panel.setAttribute('aria-label', 'Age Calculator result');
     panel.setAttribute('aria-live', 'polite');
 
-    if (panel.parentElement !== layout.main || panel.previousElementSibling !== layout.calculator) {
-      layout.calculator.insertAdjacentElement('afterend', panel);
+    if (panel.parentElement !== main || panel.previousElementSibling !== calculator) {
+      calculator.insertAdjacentElement('afterend', panel);
     }
 
     return panel;
   }
 
-  function syncResultWidth() {
-    var panel = id('ageReportOutput');
-    var calculator = qs('main.age-calculator-container > .calculator') || qs('.calculator');
+  function syncPanelWidth() {
+    var panel = byId('ageReportOutput');
+    var calculator = getCalculator();
     if (!panel || !calculator) return;
 
-    panel.style.boxSizing = 'border-box';
-    panel.style.width = '100%';
-    panel.style.maxWidth = '100%';
+    panel.style.setProperty('box-sizing', 'border-box', 'important');
+    panel.style.setProperty('width', '100%', 'important');
+    panel.style.setProperty('max-width', '100%', 'important');
 
     if (window.innerWidth > 850) {
       var width = Math.round(calculator.getBoundingClientRect().width);
       if (width > 0) {
-        panel.style.width = width + 'px';
-        panel.style.maxWidth = width + 'px';
+        panel.style.setProperty('width', width + 'px', 'important');
+        panel.style.setProperty('max-width', width + 'px', 'important');
       }
     }
   }
 
-  function hideResult() {
-    var panel = ensureResultPanel();
+  function hidePanel() {
+    var panel = ensurePanel();
     if (!panel) return;
     panel.innerHTML = '';
     panel.hidden = true;
     panel.setAttribute('aria-hidden', 'true');
-    panel.style.display = 'none';
-    syncResultWidth();
+    panel.style.setProperty('display', 'none', 'important');
+    syncPanelWidth();
   }
 
-  function showResult(html) {
-    var panel = ensureResultPanel();
+  function showPanel(html) {
+    var panel = ensurePanel();
     if (!panel) return;
+
     panel.innerHTML = html;
     panel.hidden = false;
     panel.removeAttribute('hidden');
     panel.removeAttribute('aria-hidden');
-    panel.style.display = 'block';
-    syncResultWidth();
-    setTimeout(syncResultWidth, 0);
+    panel.style.setProperty('display', 'block', 'important');
+    panel.style.setProperty('visibility', 'visible', 'important');
+    panel.style.setProperty('opacity', '1', 'important');
+    syncPanelWidth();
+
+    setTimeout(syncPanelWidth, 0);
+    setTimeout(syncPanelWidth, 100);
+  }
+
+  function showError(message) {
+    showPanel('<div class="age-single-result-shell"><div class="age-single-error">' + escapeHtml(message) + '</div></div>');
   }
 
   function calculateAge() {
     if (!isAgePage()) return false;
 
-    var nameInput = id('ageName');
-    var birthInput = id('birthdate');
-    var targetInput = id('dateToCalculate');
+    var nameInput = byId('ageName');
+    var birthInput = byId('birthdate');
+    var targetInput = byId('dateToCalculate');
 
     if (!birthInput) return false;
     if (targetInput && !targetInput.value) targetInput.value = todayISO();
 
     if (!birthInput.value) {
-      hideResult();
+      hidePanel();
       return false;
     }
 
     var birthValue = birthInput.value;
     var targetValue = targetInput && targetInput.value ? targetInput.value : todayISO();
-    var birth = parseISODate(birthValue);
-    var target = parseISODate(targetValue);
+    var birth = parseDateInput(birthValue);
+    var target = parseDateInput(targetValue);
 
-    if (!birth || !target || birth.utc > target.utc) {
-      showResult('<div class="age-single-result-shell"><div class="age-single-error">Please choose a valid birth date before the calculation date.</div></div>');
+    if (!birth) {
+      showError('Please enter a valid birth date.');
       return false;
     }
 
-    var parts = ageParts(birth, target);
+    if (!target) {
+      showError('Please enter a valid calculation date.');
+      return false;
+    }
+
+    if (birth.utc > target.utc) {
+      showError('The birth date must be on or before the calculation date.');
+      return false;
+    }
+
+    var parts = getAgeParts(birth, target);
     var totalDays = Math.max(0, Math.floor((target.utc - birth.utc) / DAY_MS));
     var totalWeeks = Math.floor(totalDays / 7);
     var totalMonths = parts.years * 12 + parts.months;
@@ -265,7 +274,6 @@
     var animal = chineseZodiac(birth.year);
     var name = nameInput && nameInput.value.trim() ? nameInput.value.trim() : '-';
     var asianAge = target.year - birth.year + 1;
-    var exactAge = parts.years + ' years, ' + parts.months + ' months, ' + parts.days + ' days';
     var birthdayDays = nextBirthdayDays(birth, target);
 
     var html = '<div class="age-single-result-shell">' +
@@ -273,22 +281,22 @@
       '<div class="age-single-result-grid">' +
       group('Birth & calendar', [
         row('Name', name),
-        row('Date range', formatDate(birthValue) + ' to ' + formatDate(targetValue)),
+        row('Date range', formatDateInput(birthValue) + ' to ' + formatDateInput(targetValue)),
         row('Day of week born', birth.date.toLocaleDateString('en-US', { weekday: 'long' })),
-        row('Born date in Islamic calendar', formatCalendar(birth, 'en-GB-u-ca-islamic')),
-        row('Born date in Chinese calendar', formatCalendar(birth, 'en-GB-u-ca-chinese'))
+        row('Born date in Islamic calendar', safeCalendar(birth, 'en-GB-u-ca-islamic')),
+        row('Born date in Chinese calendar', safeCalendar(birth, 'en-GB-u-ca-chinese'))
       ]) +
       group('Current age', [
-        row('Exact age', exactAge),
+        row('Exact age', parts.years + ' years, ' + parts.months + ' months, ' + parts.days + ' days'),
         row('Normal age', parts.years + ' years old'),
         row('Asian age', asianAge + ' years old'),
         row('Age in ' + animal + ' year', parts.years + ' years old')
       ]) +
       group('Total time lived', [
-        row('Months old', number(totalMonths)),
-        row('Weeks old', number(totalWeeks)),
-        row('Days old', number(totalDays)),
-        row('Seconds old', number(totalSeconds))
+        row('Months old', comma(totalMonths)),
+        row('Weeks old', comma(totalWeeks)),
+        row('Days old', comma(totalDays)),
+        row('Seconds old', comma(totalSeconds))
       ]) +
       group('Birthday & milestones', [
         row('Next birthday countdown', birthdayDays + ' day' + (birthdayDays === 1 ? '' : 's')),
@@ -296,9 +304,9 @@
         row('Retirement', daysUntilAge(birth, target, 60, 'retirement'))
       ]) +
       group('Life summary', [
-        row('Estimated sleep time', number(Math.floor(totalDays / 3)) + ' days'),
-        row('Estimated breaths', number(Math.round(totalDays * 24 * 60 * 16))),
-        row('Estimated heartbeats', number(Math.round(totalDays * 24 * 60 * 70))),
+        row('Estimated sleep time', comma(Math.floor(totalDays / 3)) + ' days'),
+        row('Estimated breaths', comma(Math.round(totalDays * 24 * 60 * 16))),
+        row('Estimated heartbeats', comma(Math.round(totalDays * 24 * 60 * 70))),
         row('Moon cycles experienced', (totalDays / 29.530588).toFixed(1))
       ]) +
       group('Zodiac', [
@@ -307,29 +315,28 @@
       ]) +
       '</div></div>';
 
-    showResult(html);
+    showPanel(html);
     return true;
   }
 
-  var calculateTimer = null;
-
+  var timer = null;
   function scheduleCalculate() {
-    clearTimeout(calculateTimer);
-    calculateTimer = setTimeout(calculateAge, 20);
+    clearTimeout(timer);
+    timer = setTimeout(calculateAge, 15);
   }
 
   function bindAgeInputs() {
     if (!isAgePage()) return;
 
-    ensureResultPanel();
+    ensurePanel();
 
-    var targetInput = id('dateToCalculate');
+    var targetInput = byId('dateToCalculate');
     if (targetInput && !targetInput.value) targetInput.value = todayISO();
 
     ['ageName', 'birthdate', 'dateToCalculate'].forEach(function (inputId) {
-      var input = id(inputId);
-      if (!input || input.dataset.ageBound === '1') return;
-      input.dataset.ageBound = '1';
+      var input = byId(inputId);
+      if (!input || input.dataset.ageAutoBound === '1') return;
+      input.dataset.ageAutoBound = '1';
 
       ['input', 'change', 'keyup', 'paste', 'blur'].forEach(function (eventName) {
         input.addEventListener(eventName, scheduleCalculate);
@@ -337,18 +344,18 @@
     });
 
     calculateAge();
-    syncResultWidth();
+    syncPanelWidth();
   }
 
   function setupNavbar() {
-    var navbar = id('navbar');
-    if (!navbar) return;
+    var navbar = byId('navbar');
+    if (!navbar || navbar.dataset.ageNavReady === '1') return;
+    navbar.dataset.ageNavReady = '1';
 
-    qsa('.clean-nav-button', navbar).forEach(function (button) {
-      if (button.dataset.navBound === '1') return;
-      button.dataset.navBound = '1';
+    all('.clean-nav-button', navbar).forEach(function (button) {
       button.addEventListener('click', function (event) {
         event.preventDefault();
+        event.stopPropagation();
         var parent = button.closest('.clean-nav-dropdown, .clean-nav-submenu');
         if (!parent) return;
         parent.classList.toggle('is-open');
@@ -359,11 +366,11 @@
 
     document.addEventListener('click', function (event) {
       if (!navbar.contains(event.target)) {
-        qsa('.is-open, .nav-open', navbar).forEach(function (item) {
+        all('.is-open, .nav-open', navbar).forEach(function (item) {
           item.classList.remove('is-open');
           item.classList.remove('nav-open');
         });
-        qsa('.clean-nav-button[aria-expanded="true"]', navbar).forEach(function (button) {
+        all('.clean-nav-button[aria-expanded="true"]', navbar).forEach(function (button) {
           button.setAttribute('aria-expanded', 'false');
         });
       }
@@ -371,19 +378,18 @@
   }
 
   function setupSearch() {
-    var form = qs('.clean-nav-search');
-    var input = id('cleanCalculatorSearchInput');
-    var list = form ? qs('.clean-nav-search-results', form) : null;
-    if (!form || !input || !list) return;
+    var form = document.querySelector('.clean-nav-search');
+    var input = byId('cleanCalculatorSearchInput');
+    var list = form ? form.querySelector('.clean-nav-search-results') : null;
+    if (!form || !input || !list || form.dataset.ageSearchReady === '1') return;
+    form.dataset.ageSearchReady = '1';
 
-    var tools = qsa('.clean-calculator-panel a').map(function (link) {
+    var tools = all('.clean-calculator-panel a').map(function (link) {
       return {
         title: (link.textContent || '').trim(),
         href: link.getAttribute('href') || '#'
       };
-    }).filter(function (item) {
-      return item.title;
-    });
+    }).filter(function (item) { return item.title; });
 
     function renderSearch() {
       var query = input.value.trim().toLowerCase();
@@ -406,7 +412,7 @@
     input.addEventListener('input', renderSearch);
     form.addEventListener('submit', function (event) {
       event.preventDefault();
-      var first = qs('a', list);
+      var first = list.querySelector('a');
       if (first) window.location.href = first.getAttribute('href');
     });
   }
@@ -419,9 +425,9 @@
   window.calculateAgeStandalone = calculateAge;
 
   function ready() {
-    try { bindAgeInputs(); } catch (error) { /* keep page usable */ }
-    try { setupNavbar(); } catch (error) { /* keep page usable */ }
-    try { setupSearch(); } catch (error) { /* keep page usable */ }
+    bindAgeInputs();
+    setupNavbar();
+    setupSearch();
   }
 
   if (document.readyState === 'loading') {
@@ -432,8 +438,9 @@
 
   window.addEventListener('load', function () {
     bindAgeInputs();
-    syncResultWidth();
+    calculateAge();
+    syncPanelWidth();
   });
 
-  window.addEventListener('resize', syncResultWidth);
+  window.addEventListener('resize', syncPanelWidth);
 })();
