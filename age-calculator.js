@@ -647,11 +647,12 @@
   }
 
   function saveAgeReportPdf(text) {
-    /* Use the same clean report layout for Save and browser PDF saving.
-       Browsers do not allow a webpage to silently choose "Save as PDF",
-       so this opens the report and the print/PDF dialog instead of saving text. */
-    openPrintableReport(text, { autoPrint: true });
-    setActionFeedback('Report opened for PDF saving');
+    /* Save must use the same professional report layout as the Report / Print PDF page.
+       A browser cannot silently choose the system "Save as PDF" destination, so this
+       opens the printable report and immediately opens the browser print dialog.
+       The user can then choose Save as PDF and the saved file matches the report layout. */
+    openPrintableReport(text, { autoPrint: true, sourceAction: 'save' });
+    setActionFeedback('Report opened. Choose Save as PDF.');
   }
 
   function getReportData() {
@@ -764,7 +765,7 @@
 
     return '<!doctype html>' +
       '<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">' +
-      '<title>Age Report</title>' +
+      '<title>' + escapeHtml('Age Report - ' + personName) + '</title>' +
       '<style>' +
       '@page{size:A4;margin:14mm}' +
       '*{box-sizing:border-box}' +
@@ -773,6 +774,7 @@
       '.print-toolbar{position:sticky;top:0;z-index:5;display:flex;justify-content:center;gap:10px;padding:12px;background:#0f172a;box-shadow:0 8px 24px rgba(15,23,42,.18)}' +
       '.print-toolbar button{border:0;border-radius:999px;background:#ffffff;color:#0f172a;padding:10px 18px;font-weight:800;cursor:pointer}' +
       '.print-toolbar button.primary{background:#0f8f72;color:#ffffff}' +
+      '.print-toolbar span{display:flex;align-items:center;color:#cbd5e1;font-size:12px;font-weight:700}' +
       '.report-page{width:min(210mm,calc(100vw - 24px));margin:18px auto;padding:18mm;background:#ffffff;border:1px solid #d1d5db;box-shadow:0 24px 70px rgba(15,23,42,.16)}' +
       '.report-header{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;padding-bottom:16px;border-bottom:3px solid #0f8f72}' +
       '.brand{font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#0f8f72;margin:0 0 8px}' +
@@ -810,7 +812,7 @@
       '@media(max-width:800px){.report-page{padding:22px}.hero,.section-grid,.stats{grid-template-columns:1fr}.report-meta{text-align:left}.report-header{display:block}}' +
       '@media print{body{background:#fff}.print-toolbar{display:none!important}.report-page{width:auto;margin:0;padding:0;border:0;box-shadow:none}.report-header{padding-bottom:12px}.section-grid{gap:8px}.report-section{border-radius:10px}h1{font-size:28px}.hero{margin-top:14px}.stats{gap:8px}.report-footer{position:fixed;bottom:0;left:0;right:0}}' +
       '</style></head>' +
-      '<body><div class="print-toolbar"><button class="primary" onclick="window.print()">Print / Save PDF</button><button onclick="window.close()">Close</button></div>' +
+      '<body><div class="print-toolbar"><button class="primary" onclick="window.print()">Print / Save PDF</button><button onclick="window.close()">Close</button><span>Use this button or Ctrl+P, then choose Save as PDF.</span></div>' +
       '<main class="report-page">' +
       '<header class="report-header"><p class="brand">CalcStudio</p>' +
       '<div class="report-meta"><strong>Generated</strong>' + escapeHtml(data.generated) + '<br><strong>Calculation date</strong>' + escapeHtml(calculationDate) + '</div></header>' +
@@ -826,8 +828,7 @@
     var reportHtml = buildPrintableReportHtml(data, text);
     var win = window.open('', '_blank');
     if (!win) {
-      downloadHtmlFile('age-report.html', reportHtml);
-      setActionFeedback('Report downloaded');
+      setActionFeedback('Popup blocked. Allow popups, then click Save or Report again.');
       return;
     }
 
@@ -837,14 +838,24 @@
     win.focus();
 
     if (options.autoPrint) {
-      setTimeout(function () {
+      var runPrint = function () {
         try {
           win.focus();
           win.print();
+          setActionFeedback('Choose Save as PDF in the print dialog.');
         } catch (error) {
-          setActionFeedback('Open the report tab to save as PDF');
+          setActionFeedback('Open the report tab, then choose Print / Save PDF.');
         }
-      }, 450);
+      };
+
+      if (win.document.readyState === 'complete') {
+        setTimeout(runPrint, 350);
+      } else {
+        win.addEventListener('load', function () {
+          setTimeout(runPrint, 350);
+        });
+        setTimeout(runPrint, 900);
+      }
     }
   }
 
@@ -1034,8 +1045,8 @@
           setActionFeedback('Share unavailable, copied instead');
         }
       } else if (action === 'report') {
-        openPrintableReport(text);
-        setActionFeedback('Report opened');
+        openPrintableReport(text, { sourceAction: 'report' });
+        setActionFeedback('Report opened. Use Print / Save PDF for the same report layout.');
       }
     });
   }
