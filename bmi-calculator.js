@@ -2672,3 +2672,97 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
     }, true);
   });
 })();
+
+
+/* ===== BMI RESULT WIDTH SYNC + NO OVERLAY FIX (FINAL) ===== */
+(function () {
+  'use strict';
+
+  function isBmiPage() {
+    return document.body && document.body.dataset && document.body.dataset.page === 'bmi';
+  }
+
+  function syncBmiResultLayout() {
+    if (!isBmiPage()) return;
+
+    var main = document.querySelector('main.bmi-calculator-container');
+    var calculator = main && main.querySelector(':scope > .calculator.bmi-calculator-box');
+    var result = document.getElementById('bmiReportOutput') || document.querySelector('.bmi-rebuilt-output, .bmi-clean-result, .bmi-box-output');
+    var instruction = main && main.querySelector(':scope > .instruction-box');
+
+    if (!main || !calculator || !result) return;
+
+    if (result.parentElement !== main || result.previousElementSibling !== calculator) {
+      calculator.insertAdjacentElement('afterend', result);
+    }
+
+    result.id = 'bmiReportOutput';
+    result.classList.add('bmi-rebuilt-output', 'bmi-clean-result', 'bmi-box-output');
+    result.hidden = false;
+
+    result.style.setProperty('grid-column', '2', 'important');
+    result.style.setProperty('grid-row', '2', 'important');
+    result.style.setProperty('position', 'static', 'important');
+    result.style.setProperty('z-index', '1', 'important');
+    result.style.setProperty('clear', 'both', 'important');
+    result.style.setProperty('display', 'block', 'important');
+    result.style.setProperty('visibility', 'visible', 'important');
+    result.style.setProperty('opacity', '1', 'important');
+    result.style.setProperty('margin', '24px 0 0', 'important');
+    result.style.setProperty('padding', '0', 'important');
+    result.style.setProperty('box-sizing', 'border-box', 'important');
+    result.style.setProperty('transform', 'none', 'important');
+
+    var width = Math.round(calculator.getBoundingClientRect().width);
+    if (width > 0 && window.innerWidth > 850) {
+      result.style.setProperty('width', width + 'px', 'important');
+      result.style.setProperty('max-width', width + 'px', 'important');
+    } else {
+      result.style.setProperty('width', '100%', 'important');
+      result.style.setProperty('max-width', '100%', 'important');
+      result.style.setProperty('grid-column', '1', 'important');
+      result.style.setProperty('grid-row', 'auto', 'important');
+    }
+
+    var card = result.querySelector('.bmi-rebuilt-result-card');
+    if (card) {
+      card.style.setProperty('width', '100%', 'important');
+      card.style.setProperty('max-width', '100%', 'important');
+      card.style.setProperty('box-sizing', 'border-box', 'important');
+      card.style.setProperty('overflow', 'hidden', 'important');
+    }
+
+    if (instruction) {
+      instruction.style.setProperty('grid-column', window.innerWidth > 850 ? '2' : '1', 'important');
+      instruction.style.setProperty('grid-row', window.innerWidth > 850 ? '3' : 'auto', 'important');
+      instruction.style.setProperty('position', 'static', 'important');
+      instruction.style.setProperty('z-index', '0', 'important');
+      instruction.style.setProperty('width', window.innerWidth > 850 && width > 0 ? width + 'px' : '100%', 'important');
+      instruction.style.setProperty('max-width', window.innerWidth > 850 && width > 0 ? width + 'px' : '100%', 'important');
+      instruction.style.setProperty('margin-top', '24px', 'important');
+    }
+  }
+
+  function scheduleSync() {
+    syncBmiResultLayout();
+    setTimeout(syncBmiResultLayout, 60);
+    setTimeout(syncBmiResultLayout, 220);
+    setTimeout(syncBmiResultLayout, 700);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', scheduleSync);
+  } else {
+    scheduleSync();
+  }
+
+  window.addEventListener('resize', scheduleSync);
+  document.addEventListener('input', scheduleSync, true);
+  document.addEventListener('change', scheduleSync, true);
+
+  if (window.MutationObserver) {
+    var observer = new MutationObserver(function () { scheduleSync(); });
+    if (document.body) observer.observe(document.body, { childList: true, subtree: true });
+  }
+})();
+/* ===== END BMI RESULT WIDTH SYNC + NO OVERLAY FIX (FINAL) ===== */

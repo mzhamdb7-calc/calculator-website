@@ -6211,3 +6211,209 @@ body.page-bmi main.bmi-calculator-container > .instruction-box {
 }
 /* ===== END BMI ORIENTATION CLEAN FIX (FINAL) ===== */
 
+
+
+/* ===== BMI RESULT WIDTH + CLEAN FAQ FIX (FINAL) ===== */
+body[data-page="bmi"] main.bmi-calculator-container,
+body.page-bmi main.bmi-calculator-container {
+  align-items: start !important;
+}
+
+body[data-page="bmi"] main.bmi-calculator-container > .calculator.bmi-calculator-box,
+body.page-bmi main.bmi-calculator-container > .calculator.bmi-calculator-box {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  justify-self: stretch !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+}
+
+body[data-page="bmi"] main.bmi-calculator-container > #bmiReportOutput,
+body[data-page="bmi"] main.bmi-calculator-container > .bmi-rebuilt-output,
+body[data-page="bmi"] main.bmi-calculator-container > .bmi-clean-result,
+body[data-page="bmi"] main.bmi-calculator-container > .bmi-box-output,
+body.page-bmi main.bmi-calculator-container > #bmiReportOutput,
+body.page-bmi main.bmi-calculator-container > .bmi-rebuilt-output,
+body.page-bmi main.bmi-calculator-container > .bmi-clean-result,
+body.page-bmi main.bmi-calculator-container > .bmi-box-output {
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+  position: static !important;
+  z-index: 1 !important;
+  clear: both !important;
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin: 24px 0 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+  justify-self: stretch !important;
+  transform: none !important;
+  overflow: visible !important;
+}
+
+body[data-page="bmi"] #bmiReportOutput.bmi-rebuilt-output .bmi-rebuilt-result-card,
+body.page-bmi #bmiReportOutput.bmi-rebuilt-output .bmi-rebuilt-result-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: clamp(20px, 2.4vw, 30px) !important;
+  border: 1px solid #cfe3da !important;
+  border-radius: 24px !important;
+  background: #ffffff !important;
+  box-shadow: 0 14px 34px rgba(38, 58, 51, 0.07) !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+body[data-page="bmi"] #bmiReportOutput .bmi-rebuilt-header,
+body.page-bmi #bmiReportOutput .bmi-rebuilt-header {
+  margin-bottom: 16px !important;
+  padding-bottom: 16px !important;
+}
+
+body[data-page="bmi"] #bmiReportOutput .bmi-rebuilt-summary-grid,
+body.page-bmi #bmiReportOutput .bmi-rebuilt-summary-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)) !important;
+  gap: 12px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 0 18px !important;
+  box-sizing: border-box !important;
+}
+
+body[data-page="bmi"] #bmiReportOutput .bmi-rebuilt-summary-item,
+body.page-bmi #bmiReportOutput .bmi-rebuilt-summary-item {
+  min-width: 0 !important;
+  width: 100% !important;
+  padding: 15px !important;
+  box-sizing: border-box !important;
+}
+
+body[data-page="bmi"] #bmiReportOutput .bmi-rebuilt-group-grid,
+body.page-bmi #bmiReportOutput .bmi-rebuilt-group-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)) !important;
+  gap: 16px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  align-items: start !important;
+  box-sizing: border-box !important;
+}
+
+body[data-page="bmi"] #bmiReportOutput .bmi-rebuilt-group,
+body.page-bmi #bmiReportOutput .bmi-rebuilt-group {
+  min-width: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+body[data-page="bmi"] #bmiReportOutput .bmi-rebuilt-row,
+body.page-bmi #bmiReportOutput .bmi-rebuilt-row {
+  grid-template-columns: minmax(130px, .42fr) minmax(0, 1fr) !important;
+  gap: 12px !important;
+  min-width: 0 !important;
+}
+
+body[data-page="bmi"] #bmiReportOutput .bmi-rebuilt-label,
+body[data-page="bmi"] #bmiReportOutput .bmi-rebuilt-value,
+body.page-bmi #bmiReportOutput .bmi-rebuilt-label,
+body.page-bmi #bmiReportOutput .bmi-rebuilt-value {
+  min-width: 0 !important;
+  overflow-wrap: anywhere !important;
+}
+
+body[data-page="bmi"] main.bmi-calculator-container > .instruction-box,
+body.page-bmi main.bmi-calculator-container > .instruction-box {
+  grid-column: 2 !important;
+  grid-row: 3 !important;
+  position: static !important;
+  z-index: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin-top: 24px !important;
+  box-sizing: border-box !important;
+  transform: none !important;
+  overflow: visible !important;
+}
+
+body[data-page="bmi"] .bmi-faq-box,
+body.page-bmi .bmi-faq-box {
+  margin-top: 18px !important;
+}
+
+body[data-page="bmi"] .bmi-faq-box h3,
+body.page-bmi .bmi-faq-box h3 {
+  margin-bottom: 14px !important;
+}
+
+body[data-page="bmi"] .bmi-faq-list,
+body.page-bmi .bmi-faq-list {
+  display: grid !important;
+  gap: 12px !important;
+}
+
+body[data-page="bmi"] .bmi-faq-item,
+body.page-bmi .bmi-faq-item {
+  padding: 14px 16px !important;
+  border: 1px solid #dcebe4 !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+}
+
+body[data-page="bmi"] .bmi-faq-item h4,
+body.page-bmi .bmi-faq-item h4 {
+  margin: 0 0 6px !important;
+  color: #116149 !important;
+  font-size: 1rem !important;
+  line-height: 1.28 !important;
+  font-weight: 900 !important;
+}
+
+body[data-page="bmi"] .bmi-faq-item p,
+body.page-bmi .bmi-faq-item p {
+  margin: 0 !important;
+  color: #60766e !important;
+  font-size: .95rem !important;
+  line-height: 1.55 !important;
+}
+
+@media screen and (max-width: 850px) {
+  body[data-page="bmi"] main.bmi-calculator-container > .calculator.bmi-calculator-box,
+  body[data-page="bmi"] main.bmi-calculator-container > #bmiReportOutput,
+  body[data-page="bmi"] main.bmi-calculator-container > .bmi-rebuilt-output,
+  body[data-page="bmi"] main.bmi-calculator-container > .bmi-clean-result,
+  body[data-page="bmi"] main.bmi-calculator-container > .bmi-box-output,
+  body[data-page="bmi"] main.bmi-calculator-container > .instruction-box,
+  body.page-bmi main.bmi-calculator-container > .calculator.bmi-calculator-box,
+  body.page-bmi main.bmi-calculator-container > #bmiReportOutput,
+  body.page-bmi main.bmi-calculator-container > .bmi-rebuilt-output,
+  body.page-bmi main.bmi-calculator-container > .bmi-clean-result,
+  body.page-bmi main.bmi-calculator-container > .bmi-box-output,
+  body.page-bmi main.bmi-calculator-container > .instruction-box {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  body[data-page="bmi"] #bmiReportOutput .bmi-rebuilt-row,
+  body.page-bmi #bmiReportOutput .bmi-rebuilt-row {
+    grid-template-columns: 1fr !important;
+    gap: 4px !important;
+  }
+}
+/* ===== END BMI RESULT WIDTH + CLEAN FAQ FIX (FINAL) ===== */
