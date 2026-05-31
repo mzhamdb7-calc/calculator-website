@@ -7109,3 +7109,70 @@ body.page-bmi .bmi-faq-box strong {
   }
 }
 /* ===== END BMI FINAL FLOW + INSTRUCTION/FAQ VISIBILITY FIX ===== */
+
+
+/* ===== BMI SIDEBAR FOLLOW-SCROLL FINAL FIX ===== */
+@media screen and (min-width: 851px) {
+  body[data-page="bmi"] main.bmi-calculator-container.tool-layout,
+  body.page-bmi main.bmi-calculator-container.tool-layout {
+    display: grid !important;
+    grid-template-columns: minmax(230px, 280px) minmax(0, 1fr) !important;
+    grid-template-rows: auto auto auto auto !important;
+    gap: 24px 28px !important;
+    align-items: start !important;
+    overflow: visible !important;
+    max-width: 1280px !important;
+  }
+
+  body[data-page="bmi"] main.bmi-calculator-container.tool-layout > .tool-group-nav,
+  body.page-bmi main.bmi-calculator-container.tool-layout > .tool-group-nav,
+  body[data-page="bmi"] main.bmi-calculator-container.tool-layout > .loan-history-box.extra-side-box,
+  body.page-bmi main.bmi-calculator-container.tool-layout > .loan-history-box.extra-side-box {
+    grid-column: 1 !important;
+    grid-row: 1 / span 99 !important;
+    position: sticky !important;
+    top: 92px !important;
+    z-index: 30 !important;
+    align-self: start !important;
+    justify-self: stretch !important;
+    width: 100% !important;
+    max-width: 280px !important;
+    height: fit-content !important;
+    max-height: calc(100vh - 112px) !important;
+    overflow: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  body[data-page="bmi"] main.bmi-calculator-container.tool-layout > .calculator.bmi-calculator-box,
+  body.page-bmi main.bmi-calculator-container.tool-layout > .calculator.bmi-calculator-box {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  body[data-page="bmi"] main.bmi-calculator-container.tool-layout > #bmiReportOutput,
+  body.page-bmi main.bmi-calculator-container.tool-layout > #bmiReportOutput,
+  body[data-page="bmi"] main.bmi-calculator-container.tool-layout > .bmi-rebuilt-output,
+  body.page-bmi main.bmi-calculator-container.tool-layout > .bmi-rebuilt-output,
+  body[data-page="bmi"] main.bmi-calculator-container.tool-layout > .bmi-clean-result,
+  body.page-bmi main.bmi-calculator-container.tool-layout > .bmi-clean-result,
+  body[data-page="bmi"] main.bmi-calculator-container.tool-layout > .bmi-box-output,
+  body.page-bmi main.bmi-calculator-container.tool-layout > .bmi-box-output {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  body[data-page="bmi"] main.bmi-calculator-container.tool-layout > .instruction-box,
+  body.page-bmi main.bmi-calculator-container.tool-layout > .instruction-box {
+    grid-column: 2 !important;
+    grid-row: 3 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+}
