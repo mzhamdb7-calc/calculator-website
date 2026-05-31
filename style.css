@@ -3555,3 +3555,13 @@ body[data-page="age"] #ageReportOutput .age-point-result-list li {
     gap: 4px !important;
   }
 }
+
+/* Go Up button: green arrow when not hovered */
+#scrollTopBtn {
+  color: #0f8f70 !important;
+}
+
+#scrollTopBtn:hover,
+#scrollTopBtn:focus-visible {
+  color: #ffffff !important;
+}
