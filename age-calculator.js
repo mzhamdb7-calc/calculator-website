@@ -544,7 +544,7 @@
       '<h2 class="age-single-result-title">Age result</h2>' +
       liveCountdownHtml(birth) +
       '<div class="age-single-result-grid">' +
-      group('Essential Outputs: Age Summary', [
+      group('Age Summary', [
         row('Name', name),
         row('Birth date', formatDateInput(birthValue)),
         row('Calculation date', formatDateInput(targetValue)),
@@ -585,7 +585,7 @@
         row('Days until retirement age', target.utc >= retirementUtc ? 'Retirement age reached' : comma(retirementDays) + ' days'),
         row('Retirement date', formatLongDateFromUtc(retirementUtc))
       ]) +
-      group('Useful Life Milestones', [
+      group('Milestones', [
         row('18 years old', daysUntilAge(birth, target, 18, '18 years old')),
         row('21 years old', daysUntilAge(birth, target, 21, '21 years old')),
         row('30 years old', daysUntilAge(birth, target, 30, '30 years old')),
