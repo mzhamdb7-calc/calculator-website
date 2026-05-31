@@ -2317,3 +2317,206 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
   else start();
 })();
+
+/* ===== Age Calculator final below-input grouped result override ===== */
+(function(){
+  'use strict';
+  if (!document.body || document.body.dataset.page !== 'age') return;
+
+  function $(id){ return document.getElementById(id); }
+  function esc(value){
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c];
+    });
+  }
+  function todayISO(){
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  function parseISO(value, endOfDay){
+    if(!value) return null;
+    var parts = String(value).split('-').map(Number);
+    if(parts.length !== 3 || parts.some(function(n){ return !Number.isFinite(n); })) return null;
+    return new Date(parts[0], parts[1]-1, parts[2], endOfDay ? 23 : 0, endOfDay ? 59 : 0, endOfDay ? 59 : 0, endOfDay ? 999 : 0);
+  }
+  function formatDMY(value){
+    var p = String(value || '').split('-');
+    return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : value;
+  }
+  function breakdown(birth, target){
+    if(!birth || !target || target < birth) return null;
+    var y = target.getFullYear() - birth.getFullYear();
+    var m = target.getMonth() - birth.getMonth();
+    var d = target.getDate() - birth.getDate();
+    if(d < 0){
+      m -= 1;
+      d += new Date(target.getFullYear(), target.getMonth(), 0).getDate();
+    }
+    if(m < 0){
+      y -= 1;
+      m += 12;
+    }
+    return { years:y, months:m, days:d };
+  }
+  function zodiac(month, day){
+    var signs=[['Capricorn',1,19],['Aquarius',2,18],['Pisces',3,20],['Aries',4,19],['Taurus',5,20],['Gemini',6,20],['Cancer',7,22],['Leo',8,22],['Virgo',9,22],['Libra',10,22],['Scorpio',11,21],['Sagittarius',12,21]];
+    for(var i=0;i<signs.length;i++){
+      if(month < signs[i][1] || (month === signs[i][1] && day <= signs[i][2])) return signs[i][0];
+    }
+    return 'Capricorn';
+  }
+  function chinese(year){
+    var animals=['Rat','Ox','Tiger','Rabbit','Dragon','Snake','Horse','Goat','Monkey','Rooster','Dog','Pig'];
+    var index=(year-1900)%12;
+    if(index < 0) index += 12;
+    return animals[index];
+  }
+  function nextBirthdayDays(birth, target){
+    var base = new Date(target.getFullYear(), target.getMonth(), target.getDate());
+    var next = new Date(base.getFullYear(), birth.getMonth(), birth.getDate());
+    if(next < base) next = new Date(base.getFullYear()+1, birth.getMonth(), birth.getDate());
+    return Math.max(0, Math.ceil((next.getTime() - base.getTime()) / 86400000));
+  }
+  function row(label, value){
+    return '<li class="age-final-result-row"><strong>'+esc(label)+'</strong><span>'+esc(value)+'</span></li>';
+  }
+  function group(title, rows){
+    return '<section class="age-final-group-box"><h3>'+esc(title)+'</h3><ul class="age-final-result-list">'+rows.join('')+'</ul></section>';
+  }
+  function ensurePanelInsideCalculator(){
+    var panel = $('ageReportOutput');
+    var calc = document.querySelector('main.age-calculator-container > .calculator');
+    if(!calc) return null;
+    if(!panel){
+      panel = document.createElement('section');
+      panel.id = 'ageReportOutput';
+      panel.className = 'loan-style-output-panel calculator-clean-result age-clean-result age-point-output';
+      panel.setAttribute('aria-label','Age Calculator result');
+      panel.hidden = true;
+    }
+    if(panel.parentElement !== calc) calc.appendChild(panel);
+    panel.style.removeProperty('width');
+    panel.style.removeProperty('max-width');
+    return panel;
+  }
+  function hidePanel(){
+    var panel = ensurePanelInsideCalculator();
+    if(!panel) return;
+    panel.hidden = true;
+    panel.setAttribute('aria-hidden','true');
+    panel.innerHTML = '';
+    panel.style.setProperty('display','none','important');
+  }
+  function showPanel(html){
+    var panel = ensurePanelInsideCalculator();
+    if(!panel) return;
+    panel.innerHTML = html;
+    panel.hidden = false;
+    panel.removeAttribute('aria-hidden');
+    panel.style.setProperty('display','block','important');
+    panel.style.setProperty('visibility','visible','important');
+    panel.style.setProperty('opacity','1','important');
+  }
+  function calculateAgeFinal(){
+    var nameInput = $('ageName');
+    var birthInput = $('birthdate');
+    var targetInput = $('dateToCalculate');
+    if(targetInput && !targetInput.value) targetInput.value = todayISO();
+    if(!birthInput || !birthInput.value){ hidePanel(); return; }
+
+    var targetValue = targetInput && targetInput.value ? targetInput.value : todayISO();
+    var birth = parseISO(birthInput.value, false);
+    var target = parseISO(targetValue, true);
+    if(!birth || !target || birth > target){
+      showPanel('<div class="age-final-result-shell age-point-result-box"><div class="age-final-error">Please choose a valid birth date before the calculation date.</div></div>');
+      return;
+    }
+
+    var exact = breakdown(birth, target);
+    if(!exact){ hidePanel(); return; }
+    var totalDays = Math.floor((target.getTime() - birth.getTime()) / 86400000);
+    var totalSeconds = Math.floor((target.getTime() - birth.getTime()) / 1000);
+    var totalMonths = exact.years * 12 + exact.months;
+    var totalWeeks = Math.floor(totalDays / 7);
+    var birthdayDays = nextBirthdayDays(birth, target);
+    var name = nameInput && nameInput.value.trim() ? nameInput.value.trim() : '-';
+    var asianAge = target.getFullYear() - birth.getFullYear() + 1;
+
+    var html = '<div class="age-final-result-shell age-point-result-box"><div class="age-final-result-grid">' +
+      group('Birth & calendar',[
+        row('Name', name),
+        row('Date range', formatDMY(birthInput.value)+' to '+formatDMY(targetValue)),
+        row('Day of week born', birth.toLocaleDateString('en-US',{weekday:'long'}))
+      ]) +
+      group('Current age',[
+        row('Exact age', exact.years+' years, '+exact.months+' months, '+exact.days+' days'),
+        row('Normal age', exact.years+' years old'),
+        row('Asian age', asianAge+' years old')
+      ]) +
+      group('Total time lived',[
+        row('Months old', totalMonths.toLocaleString()),
+        row('Weeks old', totalWeeks.toLocaleString()),
+        row('Days old', totalDays.toLocaleString()),
+        row('Seconds old', totalSeconds.toLocaleString())
+      ]) +
+      group('Birthday & milestones',[
+        row('Next birthday countdown', birthdayDays + ' day' + (birthdayDays === 1 ? '' : 's')),
+        row('Legal age', exact.years >= 18 ? 'Legal adult age reached' : (18-exact.years)+' years before legal adult age'),
+        row('Retirement', exact.years >= 60 ? 'Retirement age reached' : (60-exact.years)+' years before retirement')
+      ]) +
+      group('Life summary',[
+        row('Estimated sleep time', Math.floor(totalDays/3).toLocaleString()+' days'),
+        row('Estimated breaths', Math.round(totalSeconds/60*16).toLocaleString()),
+        row('Estimated heartbeats', Math.round(totalSeconds/60*70).toLocaleString())
+      ]) +
+      group('Zodiac',[
+        row('Western zodiac', zodiac(birth.getMonth()+1, birth.getDate())),
+        row('Chinese zodiac', chinese(birth.getFullYear()))
+      ]) +
+      '</div></div>';
+    showPanel(html);
+  }
+  function schedule(){
+    setTimeout(calculateAgeFinal, 0);
+  }
+  function protect(){
+    ensurePanelInsideCalculator();
+    var calc = document.querySelector('main.age-calculator-container > .calculator');
+    if(calc){
+      calc.style.setProperty('pointer-events','auto','important');
+      calc.style.setProperty('position','relative','important');
+      calc.style.setProperty('z-index','50','important');
+    }
+    ['ageName','birthdate','dateToCalculate','ageCalculateBtn'].forEach(function(idName){
+      var el = $(idName);
+      if(el){
+        el.style.setProperty('pointer-events','auto','important');
+        el.style.setProperty('position','relative','important');
+        el.style.setProperty('z-index','60','important');
+      }
+    });
+  }
+  function start(){
+    var target = $('dateToCalculate');
+    if(target && !target.value) target.value = todayISO();
+    protect();
+    ['ageName','birthdate','dateToCalculate'].forEach(function(idName){
+      var el = $(idName);
+      if(!el) return;
+      el.addEventListener('input', schedule, true);
+      el.addEventListener('change', schedule, true);
+      el.addEventListener('click', protect, true);
+      el.addEventListener('focus', protect, true);
+    });
+    var button = $('ageCalculateBtn');
+    if(button){
+      button.addEventListener('click', function(ev){ ev.preventDefault(); protect(); calculateAgeFinal(); }, true);
+    }
+    window.calculateAge = calculateAgeFinal;
+    window.calculateAgeStandalone = calculateAgeFinal;
+    calculateAgeFinal();
+    [50,250,600,1200].forEach(function(delay){ setTimeout(function(){ protect(); calculateAgeFinal(); }, delay); });
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
