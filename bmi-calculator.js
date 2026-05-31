@@ -2408,3 +2408,28 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
 
   ready(init);
 })();
+
+
+/* ===== BMI: remove unused blank result placeholder below calculator ===== */
+(function () {
+  'use strict';
+
+  function removeEmptyBmiPlaceholder() {
+    if (!document.body || document.body.dataset.page !== 'bmi') return;
+    document.querySelectorAll('main.bmi-calculator-container > .bmi-result-below, main.bmi-calculator-container > .age-bmi-result-below').forEach(function (box) {
+      if (box.querySelector('#bmiResult') || !box.textContent.trim()) {
+        box.remove();
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', removeEmptyBmiPlaceholder);
+  } else {
+    removeEmptyBmiPlaceholder();
+  }
+
+  setTimeout(removeEmptyBmiPlaceholder, 80);
+  setTimeout(removeEmptyBmiPlaceholder, 300);
+  setTimeout(removeEmptyBmiPlaceholder, 900);
+})();

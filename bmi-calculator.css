@@ -4754,3 +4754,17 @@ body[data-page="bmi"] .bmi-input-groups > .bmi-body-box:not(.bmi-details-box) {
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* ===== BMI: remove unused blank result box below calculator ===== */
+body[data-page="bmi"] main.bmi-calculator-container > .bmi-result-below,
+body[data-page="bmi"] main.bmi-calculator-container > .age-bmi-result-below {
+  display: none !important;
+  min-height: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
