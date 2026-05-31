@@ -405,78 +405,73 @@
     var html = '<div class="age-single-result-shell">' +
       '<h2 class="age-single-result-title">Age result</h2>' +
       '<div class="age-single-result-grid">' +
-      group('Age summary', [
+      group('Essential Outputs: Age Summary', [
         row('Name', name),
-        row('Exact age', exactAgeText),
-        row('Normal age', parts.years + ' years old'),
-        row('Asian age', asianAge + ' years old'),
         row('Birth date', formatDateInput(birthValue)),
         row('Calculation date', formatDateInput(targetValue)),
         row('Date range', formatDateInput(birthValue) + ' to ' + formatDateInput(targetValue)),
+        row('Exact age', exactAgeText),
+        row('Normal age', parts.years + ' years old'),
+        row('Asian age', asianAge + ' years old'),
         row('Day of week born', birth.date.toLocaleDateString('en-US', { weekday: 'long' }))
       ]) +
-      group('Time lived', [
-        row('Total months old', comma(totalMonths)),
-        row('Total weeks old', comma(totalWeeks)),
-        row('Total days old', comma(totalDays)),
-        row('Total hours old', comma(totalHours)),
-        row('Total minutes old', comma(totalMinutes)),
-        row('Total seconds old', comma(totalSeconds)),
-        row('Estimated sleep time', comma(Math.floor(totalDays / 3)) + ' days'),
-        row('Estimated heartbeats', comma(Math.round(totalDays * 24 * 60 * 70)))
+      group('Time Lived Totals', [
+        row('Months old', comma(totalMonths)),
+        row('Weeks old', comma(totalWeeks)),
+        row('Days old', comma(totalDays)),
+        row('Hours old', comma(totalHours)),
+        row('Minutes old', comma(totalMinutes)),
+        row('Seconds old', comma(totalSeconds)),
+        row('Estimated sleep time', comma(Math.floor(totalDays / 3)) + ' days')
       ]) +
-      group('Next birthday countdown', [
+      group('Next Birthday Countdown', [
         row('Countdown', nextBirthdayText),
         row('Next birthday date', formatLongDateFromUtc(nextBirthday.utc)),
         row('Age on next birthday', ordinal(nextBirthday.age) + ' birthday'),
-        row('Birthday progress', nextBirthday.progress.toFixed(1) + '% of current birthday year completed'),
+        row('Birthday cycle progress', nextBirthday.progress.toFixed(1) + '% completed'),
         row('Birthday message', nextBirthday.days === 0 ? 'Happy birthday!' : 'Your next birthday is getting closer')
       ]) +
-      group('Zodiac information', [
+      group('Zodiac Information', [
         row('Western zodiac', westernZodiac(birth.month, birth.day)),
         row('Chinese zodiac', animal),
         row('Chinese zodiac element', animalElement),
-        row('Chinese calendar date', safeCalendar(birth, 'en-GB-u-ca-chinese')),
         row('Islamic calendar date', safeCalendar(birth, 'en-GB-u-ca-islamic')),
-        row('Birth year animal age label', parts.years + ' years old in ' + animal + ' year')
+        row('Chinese calendar date', safeCalendar(birth, 'en-GB-u-ca-chinese')),
+        row('Zodiac age label', parts.years + ' years old in ' + animal + ' year')
       ]) +
-      group('Retirement countdown', [
+      group('Retirement Countdown', [
         row('Retirement target age', retirementAge + ' years old'),
-        row('Retirement countdown', retirementText),
+        row('Countdown to retirement age', retirementText),
         row('Days until retirement age', target.utc >= retirementUtc ? 'Retirement age reached' : comma(retirementDays) + ' days'),
         row('Retirement date', formatLongDateFromUtc(retirementUtc)),
         row('Progress to retirement age', retirementProgress.toFixed(1) + '%')
       ]) +
-      group('High engagement outputs', [
+      group('High Engagement Outputs', [
         row('Born on', birth.date.toLocaleDateString('en-US', { weekday: 'long' })),
         row('Next celebration', nextBirthdayText + ' until birthday'),
-        row('Fun time lived', comma(totalDays) + ' sunrises lived'),
+        row('Sunrises lived', comma(totalDays)),
         row('Moon cycles experienced', (totalDays / 29.530588).toFixed(1)),
+        row('Approximate heartbeats', comma(Math.round(totalDays * 24 * 60 * 70))),
         row('Approximate breaths', comma(Math.round(totalDays * 24 * 60 * 16)))
       ]) +
-      group('Essential outputs', [
-        row('Years', parts.years),
-        row('Months after last birthday', parts.months),
-        row('Days after last month', parts.days),
-        row('Weeks old', comma(totalWeeks)),
-        row('Days old', comma(totalDays))
-      ]) +
-      group('Shareable output', [
+      group('Shareable Output', [
         row('Short summary', shareText),
         row('Share line', 'Age: ' + exactAgeText + ' • Days lived: ' + comma(totalDays) + ' • Next birthday: ' + nextBirthdayText),
         row('Profile style', (name !== '-' ? name : 'This person') + ' was born on ' + birth.date.toLocaleDateString('en-US', { weekday: 'long' }) + ' and is a ' + westernZodiac(birth.month, birth.day) + '.')
       ]) +
-      group('Useful life milestones', [
+      group('Useful Life Milestones', [
         row('18 years old', daysUntilAge(birth, target, 18, '18 years old')),
         row('21 years old', daysUntilAge(birth, target, 21, '21 years old')),
         row('30 years old', daysUntilAge(birth, target, 30, '30 years old')),
         row('40 years old', daysUntilAge(birth, target, 40, '40 years old')),
         row('50 years old', daysUntilAge(birth, target, 50, '50 years old')),
-        row('60 years old', daysUntilAge(birth, target, 60, '60 years old'))
+        row('60 years old', daysUntilAge(birth, target, 60, '60 years old')),
+        row('80 years old', daysUntilAge(birth, target, 80, '80 years old')),
+        row('100 years old', daysUntilAge(birth, target, 100, '100 years old'))
       ]) +
-      visualGroup('Visual elements',
+      visualGroup('Visual Elements',
         '<div class="age-visual-stack">' +
-        progressItem('Year progress', yearProgress.toFixed(1) + '%', yearProgress) +
+        progressItem('Current year progress', yearProgress.toFixed(1) + '%', yearProgress) +
         progressItem('Birthday cycle progress', nextBirthday.progress.toFixed(1) + '%', nextBirthday.progress) +
         progressItem('Progress to retirement age 60', retirementProgress.toFixed(1) + '%', retirementProgress) +
         progressItem('Estimated life progress to age 80', lifeProgress.toFixed(1) + '%', lifeProgress) +
