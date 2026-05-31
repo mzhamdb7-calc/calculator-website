@@ -552,7 +552,9 @@
       }).join('') + '</div>';
     }
 
-    var sections = (data.groups || []).map(function (groupData) {
+    var sections = (data.groups || []).filter(function (groupData) {
+      return groupData && groupData.title !== 'Visual Elements';
+    }).map(function (groupData) {
       return '<section class="report-section"><h2>' + escapeHtml(groupData.title) + '</h2>' + renderRows(groupData.rows) + renderVisuals(groupData.visuals) + '</section>';
     }).join('');
 
@@ -610,10 +612,8 @@
       '</style></head>' +
       '<body><div class="print-toolbar"><button class="primary" onclick="window.print()">Print / Save PDF</button><button onclick="window.close()">Close</button></div>' +
       '<main class="report-page">' +
-      '<header class="report-header"><div><p class="brand">CalcStudio</p><h1>Professional Age Report</h1><p class="subtitle">Printable summary generated from the Age Calculator.</p></div>' +
+      '<header class="report-header"><p class="brand">CalcStudio</p>' +
       '<div class="report-meta"><strong>Generated</strong>' + escapeHtml(data.generated) + '<br><strong>Calculation date</strong>' + escapeHtml(calculationDate) + '</div></header>' +
-      '<section class="hero"><div class="hero-main"><p class="hero-label">Report for</p><p class="hero-name">' + escapeHtml(personName) + '</p><p class="hero-age">' + escapeHtml(exactAge) + '</p></div>' +
-      '<div class="countdown-card"><p class="hero-label">Next age countdown</p><strong>' + escapeHtml(data.countdown || nextBirthday) + '</strong></div></section>' +
       '<section class="stats">' + stat('Birth date', birthDate) + stat('Normal age', normalAge) + stat('Days old', daysOld) + stat('Zodiac', zodiac) + '</section>' +
       '<section class="section-grid">' + sections + '</section>' +
       '<footer class="report-footer">This report is generated automatically by the Age Calculator. Results are for general reference only.</footer>' +
@@ -709,8 +709,6 @@
     var retirementText = retirementParts ? retirementParts.years + ' years, ' + retirementParts.months + ' months, ' + retirementParts.days + ' days' : 'Retirement age reached';
 
     var html = '<div class="age-single-result-shell">' +
-      '<h2 class="age-single-result-title">Age Report</h2>' +
-      '<p class="age-print-meta">Professional printable age calculation report</p>' +
       liveCountdownHtml(birth) +
       '<div class="age-single-result-grid">' +
       group('Age Summary', [
@@ -763,12 +761,6 @@
         row('80 years old', daysUntilAge(birth, target, 80, '80 years old')),
         row('100 years old', daysUntilAge(birth, target, 100, '100 years old'))
       ]) +
-      visualGroup('Visual Elements',
-        '<div class="age-visual-stack">' +
-        progressItem('Current year progress', yearProgress.toFixed(1) + '%', yearProgress) +
-        progressItem('Estimated life progress to age 80', lifeProgress.toFixed(1) + '%', lifeProgress) +
-        '</div>'
-      ) +
       '</div>' + resultActionsHtml() + '</div>';
 
     showPanel(html);
