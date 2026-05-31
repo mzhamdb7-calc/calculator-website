@@ -1218,7 +1218,6 @@
     function updateButton() {
       var shouldShow = window.scrollY > 180;
       button.classList.toggle('is-visible', shouldShow);
-      button.classList.toggle('age-scroll-visible', shouldShow);
       button.style.display = shouldShow ? 'flex' : 'none';
     }
 
