@@ -2101,3 +2101,125 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
   else bind();
 })();
+
+
+/* ===== AGE CALCULATOR SIZE-ONLY WIDTH SYNC 20260531-C ===== */
+(function () {
+  'use strict';
+
+  function setImportant(el, prop, value) {
+    if (el && el.style) el.style.setProperty(prop, value, 'important');
+  }
+
+  function syncAgeWidthOnly() {
+    if (!document.body || document.body.dataset.page !== 'age') return;
+
+    var main = document.querySelector('main.age-calculator-container');
+    var calculator = main && main.querySelector(':scope > .calculator');
+    var result = document.getElementById('ageReportOutput');
+    if (!main || !calculator || !result) return;
+
+    var calcRect = calculator.getBoundingClientRect();
+    var width = Math.round(calcRect.width || calculator.offsetWidth || 0);
+
+    if (window.innerWidth > 850 && width > 0) {
+      document.documentElement.style.setProperty('--age-calculator-real-width', width + 'px');
+      setImportant(result, 'width', width + 'px');
+      setImportant(result, 'max-width', width + 'px');
+      setImportant(result, 'justify-self', 'start');
+    } else {
+      document.documentElement.style.setProperty('--age-calculator-real-width', '100%');
+      setImportant(result, 'width', '100%');
+      setImportant(result, 'max-width', '100%');
+      setImportant(result, 'justify-self', 'stretch');
+    }
+
+    setImportant(result, 'min-width', '0');
+    setImportant(result, 'box-sizing', 'border-box');
+
+    if (result.parentElement === main) {
+      var calcStyle = window.getComputedStyle(calculator);
+      var start = calcStyle.gridColumnStart;
+      var end = calcStyle.gridColumnEnd;
+      if (start && start !== 'auto') setImportant(result, 'grid-column-start', start);
+      if (end && end !== 'auto') setImportant(result, 'grid-column-end', end);
+      setImportant(result, 'grid-row', window.innerWidth > 850 ? '2' : 'auto');
+    }
+
+    result.querySelectorAll('.age-result-group-grid, .age-final-result-grid, .age-result-clean-box').forEach(function (grid) {
+      setImportant(grid, 'display', 'grid');
+      setImportant(grid, 'grid-template-columns', window.innerWidth <= 1050 ? '1fr' : 'repeat(2, minmax(0, 1fr))');
+      setImportant(grid, 'gap', '18px');
+      setImportant(grid, 'width', '100%');
+      setImportant(grid, 'max-width', '100%');
+      setImportant(grid, 'box-sizing', 'border-box');
+    });
+
+    result.querySelectorAll('.age-result-group-box, .age-final-group-box, .age-result-clean-section').forEach(function (box) {
+      setImportant(box, 'display', 'block');
+      setImportant(box, 'padding', '18px');
+      setImportant(box, 'border', '1.5px solid #c9ded5');
+      setImportant(box, 'border-radius', '20px');
+      setImportant(box, 'background', '#fbfefd');
+      setImportant(box, 'box-shadow', '0 8px 22px rgba(38, 58, 51, .085)');
+      setImportant(box, 'box-sizing', 'border-box');
+      setImportant(box, 'overflow', 'hidden');
+    });
+
+    result.querySelectorAll('.age-point-result-list li, .age-final-result-row, .age-result-clean-section li').forEach(function (row) {
+      setImportant(row, 'display', 'grid');
+      setImportant(row, 'grid-template-columns', window.innerWidth <= 850 ? '1fr' : 'minmax(135px, .42fr) minmax(0, 1fr)');
+      setImportant(row, 'gap', window.innerWidth <= 850 ? '4px' : '12px');
+      setImportant(row, 'padding', '10px 0');
+      setImportant(row, 'border', '0');
+      setImportant(row, 'border-bottom', '1px solid #edf4f1');
+      setImportant(row, 'border-radius', '0');
+      setImportant(row, 'background', 'transparent');
+      setImportant(row, 'box-shadow', 'none');
+      setImportant(row, 'box-sizing', 'border-box');
+    });
+  }
+
+  function queueAgeWidthOnly() {
+    syncAgeWidthOnly();
+    if (window.requestAnimationFrame) window.requestAnimationFrame(syncAgeWidthOnly);
+    [80, 220, 500, 1000, 2000, 3500].forEach(function (delay) {
+      setTimeout(syncAgeWidthOnly, delay);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', queueAgeWidthOnly);
+  } else {
+    queueAgeWidthOnly();
+  }
+
+  window.addEventListener('load', queueAgeWidthOnly);
+  window.addEventListener('resize', queueAgeWidthOnly);
+
+  ['input', 'change', 'click'].forEach(function (name) {
+    document.addEventListener(name, function (event) {
+      var target = event.target;
+      if (!target) return;
+      if (target.closest && (target.closest('main.age-calculator-container') || target.closest('#ageReportOutput'))) {
+        queueAgeWidthOnly();
+      }
+    }, true);
+  });
+
+  if (window.MutationObserver && document.body) {
+    new MutationObserver(function (mutations) {
+      var shouldSync = false;
+      mutations.forEach(function (mutation) {
+        if (shouldSync) return;
+        if (mutation.target && (mutation.target.id === 'ageReportOutput' || mutation.target.closest && mutation.target.closest('#ageReportOutput'))) shouldSync = true;
+        Array.prototype.slice.call(mutation.addedNodes || []).forEach(function (node) {
+          if (node && node.nodeType === 1 && (node.id === 'ageReportOutput' || node.querySelector && node.querySelector('#ageReportOutput, .age-result-group-box, .age-final-group-box, .age-result-clean-section'))) {
+            shouldSync = true;
+          }
+        });
+      });
+      if (shouldSync) queueAgeWidthOnly();
+    }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style', 'hidden'] });
+  }
+})();
