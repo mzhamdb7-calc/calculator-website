@@ -758,7 +758,7 @@
       '<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">' +
       '<title>' + escapeHtml('Age Report - ' + personName) + '</title>' +
       '<style>' +
-      '@page{size:A4 portrait;margin:8mm}' +
+      '@page{size:A4 portrait;margin:0}' +
       '*{box-sizing:border-box}' +
       'html,body{margin:0;padding:0;min-height:auto;overflow:auto}' +
       'body{font-family:Arial,Inter,sans-serif;color:#111827;background:#eef2f7;line-height:1.25}' +
@@ -766,7 +766,7 @@
       '.print-toolbar button{border:0;border-radius:999px;background:#ffffff;color:#0f172a;padding:9px 16px;font-weight:800;cursor:pointer}' +
       '.print-toolbar button.primary{background:#0f8f72;color:#ffffff}' +
       '.print-toolbar span{display:flex;align-items:center;color:#cbd5e1;font-size:12px;font-weight:700}' +
-      '.report-page{width:210mm;max-width:calc(100vw - 24px);min-height:297mm;margin:16px auto;padding:12mm 15mm 10mm;background:#ffffff;border:1px solid #d1d5db;box-shadow:0 24px 70px rgba(15,23,42,.16);overflow:hidden}' +
+      '.report-page{width:210mm;height:297mm;max-width:calc(100vw - 24px);margin:16px auto;padding:12mm 15mm 10mm;background:#ffffff;border:0;box-shadow:0 18px 55px rgba(15,23,42,.14);overflow:hidden}' +
       '.report-header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;padding-bottom:9px;border-bottom:3px solid #0f8f72}' +
       '.brand{font-size:9px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#0f8f72;margin:0}' +
       '.report-meta{text-align:right;color:#475569;font-size:8.5px;line-height:1.35;min-width:150px}' +
@@ -785,10 +785,10 @@
       'td{color:#111827;font-weight:700;overflow-wrap:anywhere}' +
       '.report-footer{margin-top:9px;padding-top:7px;border-top:1px solid #e5e7eb;color:#64748b;font-size:7.3px;text-align:center}' +
       'pre{white-space:pre-wrap;font:inherit;font-size:8px;margin:0;padding:8px}' +
-      '@media(max-width:800px){.report-page{width:auto;max-width:calc(100vw - 20px);min-height:auto;padding:20px}.stats,.section-grid{grid-template-columns:1fr}.report-meta{text-align:left;margin-top:8px}.report-header{display:block}}' +
-      '@media print{html,body{width:210mm;background:#fff!important;overflow:visible!important}.print-toolbar{display:none!important}.report-page{width:auto;max-width:none;min-height:auto;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;overflow:visible!important;break-after:avoid;page-break-after:avoid}.report-header{padding-bottom:7px}.stats{gap:5px;margin-top:7px}.report-stat{min-height:30px;padding:5px 6px;border-radius:6px}.section-grid{gap:6px;margin-top:7px}.report-section{border-radius:6px;break-inside:avoid;page-break-inside:avoid}.report-section h2{padding:4px 6px;font-size:8.8px}th,td{padding:3.2px 5.5px;font-size:7.15px;line-height:1.12}.report-footer{margin-top:6px;padding-top:5px;font-size:6.8px}}' +
+      '@media(max-width:800px){.report-page{width:auto;height:auto;max-width:calc(100vw - 20px);padding:20px}.stats,.section-grid{grid-template-columns:1fr}.report-meta{text-align:left;margin-top:8px}.report-header{display:block}}' +
+      '@media print{html,body{width:210mm;height:297mm;background:#fff!important;overflow:hidden!important}.print-toolbar{display:none!important}.report-page{width:210mm!important;height:297mm!important;max-width:none!important;margin:0 auto!important;padding:12mm 15mm 10mm!important;border:0!important;box-shadow:none!important;overflow:hidden!important;break-after:avoid;page-break-after:avoid}.report-header{padding-bottom:9px}.stats{gap:7px;margin-top:10px}.report-stat{min-height:36px;padding:7px 8px;border-radius:8px}.section-grid{gap:8px;margin-top:9px}.report-section{border-radius:8px;break-inside:avoid;page-break-inside:avoid}.report-section h2{padding:6px 8px;font-size:9.5px}th,td{padding:4px 7px;font-size:7.6px;line-height:1.18}.report-footer{margin-top:9px;padding-top:7px;font-size:7.3px}}' +
       '</style></head>' +
-      '<body><div class="print-toolbar"><button class="primary" onclick="window.print()">Print / Save PDF</button><button onclick="window.close()">Close</button><span>Same one-page report for Save and Print / Save PDF.</span></div>' +
+      '<body><div class="print-toolbar"><button class="primary" onclick="window.print()">Print / Save PDF</button><button onclick="window.close()">Close</button><span>The report you see is the same one-page layout used for printing and saving.</span></div>' +
       '<main class="report-page">' +
       '<header class="report-header"><p class="brand">CalcStudio</p>' +
       '<div class="report-meta"><strong>Generated</strong>' + escapeHtml(data.generated) + '<br><strong>Calculation date</strong>' + escapeHtml(calculationDate) + '</div></header>' +
