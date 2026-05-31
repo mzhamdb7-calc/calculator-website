@@ -3693,3 +3693,67 @@ body[data-page="age"] .age-result-error {
     gap: 4px !important;
   }
 }
+
+
+/* ===== Age Calculator no-conflict final override ===== */
+body[data-page="age"] main.age-calculator-container,
+body[data-page="age"] main.age-calculator-container > .calculator,
+body[data-page="age"] .age-input-layout,
+body[data-page="age"] .age-input-box,
+body[data-page="age"] .age-field,
+body[data-page="age"] .age-date-input-grid,
+body[data-page="age"] #ageName,
+body[data-page="age"] #birthdate,
+body[data-page="age"] #dateToCalculate,
+body[data-page="age"] #ageCalculateBtn {
+  pointer-events: auto !important;
+}
+body[data-page="age"] main.age-calculator-container > .calculator {
+  position: relative !important;
+  z-index: 10010 !important;
+}
+body[data-page="age"] .age-input-layout,
+body[data-page="age"] .age-input-box,
+body[data-page="age"] .age-field {
+  position: relative !important;
+  z-index: 10011 !important;
+}
+body[data-page="age"] #ageName,
+body[data-page="age"] #birthdate,
+body[data-page="age"] #dateToCalculate,
+body[data-page="age"] #ageCalculateBtn {
+  position: relative !important;
+  z-index: 10020 !important;
+}
+body[data-page="age"] main.age-calculator-container > #ageReportOutput[hidden],
+body[data-page="age"] main.age-calculator-container > #ageReportOutput:empty {
+  display: none !important;
+  pointer-events: none !important;
+}
+body[data-page="age"] main.age-calculator-container > #ageReportOutput:not([hidden]),
+body[data-page="age"] main.age-calculator-container > #ageReportOutput:has(.age-result-clean-box),
+body[data-page="age"] main.age-calculator-container > #ageReportOutput:has(.age-point-result-box) {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+  position: relative !important;
+  z-index: 5 !important;
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+}
+body[data-page="age"] #ageReportOutput .age-point-result-box,
+body[data-page="age"] #ageReportOutput .age-result-clean-box {
+  width: 100% !important;
+}
+@media screen and (max-width: 850px) {
+  body[data-page="age"] main.age-calculator-container > #ageReportOutput:not([hidden]),
+  body[data-page="age"] main.age-calculator-container > #ageReportOutput:has(.age-result-clean-box),
+  body[data-page="age"] main.age-calculator-container > #ageReportOutput:has(.age-point-result-box) {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+}
