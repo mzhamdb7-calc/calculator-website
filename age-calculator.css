@@ -5372,3 +5372,85 @@ body[data-page="age"] #ageReportOutput .age-single-error {
     gap: 4px !important;
   }
 }
+
+
+/* ===== AGE CALCULATOR NEW RESULT GROUPS ===== */
+body[data-page="age"] #ageReportOutput .age-visual-group {
+  background: linear-gradient(180deg, #ffffff, #f7fffb) !important;
+}
+
+body[data-page="age"] #ageReportOutput .age-visual-stack {
+  display: grid !important;
+  gap: 14px !important;
+  width: 100% !important;
+}
+
+body[data-page="age"] #ageReportOutput .age-visual-item {
+  display: grid !important;
+  gap: 8px !important;
+  padding: 12px !important;
+  border: 1px solid #e4f0ea !important;
+  border-radius: 16px !important;
+  background: #fbfefc !important;
+}
+
+body[data-page="age"] #ageReportOutput .age-visual-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  color: #17352f !important;
+}
+
+body[data-page="age"] #ageReportOutput .age-visual-top strong {
+  font-size: .92rem !important;
+  font-weight: 850 !important;
+  color: #40594f !important;
+}
+
+body[data-page="age"] #ageReportOutput .age-visual-top span {
+  font-size: .92rem !important;
+  font-weight: 850 !important;
+  color: #086452 !important;
+  white-space: nowrap !important;
+}
+
+body[data-page="age"] #ageReportOutput .age-progress-track {
+  width: 100% !important;
+  height: 12px !important;
+  overflow: hidden !important;
+  border-radius: 999px !important;
+  background: #e9f4ef !important;
+  border: 1px solid #d8e8e0 !important;
+}
+
+body[data-page="age"] #ageReportOutput .age-progress-track span {
+  display: block !important;
+  height: 100% !important;
+  min-width: 3px !important;
+  border-radius: inherit !important;
+  background: linear-gradient(90deg, #0f8f72, #1bbf91) !important;
+}
+
+body[data-page="age"] #ageReportOutput .age-single-result-row span {
+  word-break: normal !important;
+  overflow-wrap: anywhere !important;
+}
+
+@media screen and (min-width: 1051px) {
+  body[data-page="age"] #ageReportOutput .age-visual-group {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  body[data-page="age"] #ageReportOutput .age-visual-top {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+  }
+
+  body[data-page="age"] #ageReportOutput .age-visual-top span {
+    white-space: normal !important;
+  }
+}

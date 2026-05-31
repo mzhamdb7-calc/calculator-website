@@ -123,16 +123,125 @@
     return animals[index];
   }
 
+  function birthdayUtcForYear(birth, year) {
+    var day = birth.day;
+    if (birth.month === 2 && birth.day === 29 && daysInMonth(year, 2) < 29) {
+      day = 28;
+    }
+    return Date.UTC(year, birth.month - 1, day);
+  }
+
+  function parsedFromUtc(utc) {
+    var date = new Date(utc);
+    var year = date.getUTCFullYear();
+    var month = date.getUTCMonth() + 1;
+    var day = date.getUTCDate();
+    return {
+      year: year,
+      month: month,
+      day: day,
+      date: new Date(year, month - 1, day),
+      utc: Date.UTC(year, month - 1, day)
+    };
+  }
+
+  function formatLongDateFromUtc(utc) {
+    try {
+      return new Intl.DateTimeFormat('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      }).format(new Date(utc));
+    } catch (err) {
+      return '-';
+    }
+  }
+
+  function nextBirthdayInfo(birth, target) {
+    var nextYear = target.year;
+    var nextUtc = birthdayUtcForYear(birth, nextYear);
+
+    if (nextUtc < target.utc) {
+      nextYear += 1;
+      nextUtc = birthdayUtcForYear(birth, nextYear);
+    }
+
+    var previousYear = nextUtc === target.utc ? nextYear - 1 : nextYear - 1;
+    var previousUtc = birthdayUtcForYear(birth, previousYear);
+    if (previousUtc > target.utc) previousUtc = birthdayUtcForYear(birth, previousYear - 1);
+
+    var daysLeft = Math.max(0, Math.ceil((nextUtc - target.utc) / DAY_MS));
+    var cycleDays = Math.max(1, Math.ceil((nextUtc - previousUtc) / DAY_MS));
+    var daysPassed = Math.max(0, Math.floor((target.utc - previousUtc) / DAY_MS));
+    var progress = daysLeft === 0 ? 100 : Math.min(100, Math.max(0, (daysPassed / cycleDays) * 100));
+
+    return {
+      utc: nextUtc,
+      year: nextYear,
+      days: daysLeft,
+      age: nextYear - birth.year,
+      progress: progress
+    };
+  }
+
   function nextBirthdayDays(birth, target) {
-    var nextUtc = Date.UTC(target.year, birth.month - 1, birth.day);
-    if (nextUtc < target.utc) nextUtc = Date.UTC(target.year + 1, birth.month - 1, birth.day);
-    return Math.max(0, Math.ceil((nextUtc - target.utc) / DAY_MS));
+    return nextBirthdayInfo(birth, target).days;
+  }
+
+  function milestoneUtc(birth, wantedAge) {
+    var year = birth.year + wantedAge;
+    var day = birth.day;
+    if (birth.month === 2 && birth.day === 29 && daysInMonth(year, 2) < 29) {
+      day = 28;
+    }
+    return Date.UTC(year, birth.month - 1, day);
   }
 
   function daysUntilAge(birth, target, wantedAge, label) {
-    var milestoneUtc = Date.UTC(birth.year + wantedAge, birth.month - 1, birth.day);
-    if (target.utc >= milestoneUtc) return label + ' reached';
-    return comma(Math.ceil((milestoneUtc - target.utc) / DAY_MS)) + ' days before ' + label;
+    var ageUtc = milestoneUtc(birth, wantedAge);
+    if (target.utc >= ageUtc) return label + ' reached';
+    return comma(Math.ceil((ageUtc - target.utc) / DAY_MS)) + ' days before ' + label;
+  }
+
+  function countdownToAgeParts(birth, target, wantedAge) {
+    var ageUtc = milestoneUtc(birth, wantedAge);
+    if (target.utc >= ageUtc) return null;
+    return getAgeParts(target, parsedFromUtc(ageUtc));
+  }
+
+  function ordinal(value) {
+    var n = Math.abs(Number(value));
+    var mod100 = n % 100;
+    if (mod100 >= 11 && mod100 <= 13) return n + 'th';
+    switch (n % 10) {
+      case 1: return n + 'st';
+      case 2: return n + 'nd';
+      case 3: return n + 'rd';
+      default: return n + 'th';
+    }
+  }
+
+  function chineseZodiacElement(year) {
+    var elements = ['Metal', 'Metal', 'Water', 'Water', 'Wood', 'Wood', 'Fire', 'Fire', 'Earth', 'Earth'];
+    var index = (year - 1900) % 10;
+    if (index < 0) index += 10;
+    return elements[index];
+  }
+
+  function clampPercent(value) {
+    var number = Number(value);
+    if (!isFinite(number)) return 0;
+    return Math.max(0, Math.min(100, number));
+  }
+
+  function progressItem(label, value, percent) {
+    var safePercent = clampPercent(percent);
+    return '<div class="age-visual-item"><div class="age-visual-top"><strong>' + escapeHtml(label) + '</strong><span>' + escapeHtml(value) + '</span></div><div class="age-progress-track" aria-hidden="true"><span style="width:' + safePercent.toFixed(1) + '%"></span></div></div>';
+  }
+
+  function visualGroup(title, html) {
+    return '<section class="age-single-group-box age-visual-group"><h3>' + escapeHtml(title) + '</h3>' + html + '</section>';
   }
 
   function row(label, value) {
@@ -270,51 +379,110 @@
     var totalDays = Math.max(0, Math.floor((target.utc - birth.utc) / DAY_MS));
     var totalWeeks = Math.floor(totalDays / 7);
     var totalMonths = parts.years * 12 + parts.months;
-    var totalSeconds = totalDays * 24 * 60 * 60;
+    var totalHours = totalDays * 24;
+    var totalMinutes = totalHours * 60;
+    var totalSeconds = totalMinutes * 60;
     var animal = chineseZodiac(birth.year);
+    var animalElement = chineseZodiacElement(birth.year);
     var name = nameInput && nameInput.value.trim() ? nameInput.value.trim() : '-';
     var asianAge = target.year - birth.year + 1;
-    var birthdayDays = nextBirthdayDays(birth, target);
+    var nextBirthday = nextBirthdayInfo(birth, target);
+    var retirementAge = 60;
+    var retirementUtc = milestoneUtc(birth, retirementAge);
+    var retirementDays = Math.max(0, Math.ceil((retirementUtc - target.utc) / DAY_MS));
+    var retirementParts = countdownToAgeParts(birth, target, retirementAge);
+    var yearStartUtc = Date.UTC(target.year, 0, 1);
+    var yearEndUtc = Date.UTC(target.year + 1, 0, 1);
+    var yearProgress = ((target.utc - yearStartUtc) / Math.max(1, yearEndUtc - yearStartUtc)) * 100;
+    var lifeEstimateAge = 80;
+    var lifeProgress = Math.min(100, (totalDays / Math.max(1, lifeEstimateAge * 365.2425)) * 100);
+    var retirementProgress = target.utc >= retirementUtc ? 100 : Math.min(100, (totalDays / Math.max(1, (retirementUtc - birth.utc) / DAY_MS)) * 100);
+    var exactAgeText = parts.years + ' years, ' + parts.months + ' months, ' + parts.days + ' days';
+    var nextBirthdayText = nextBirthday.days === 0 ? 'Today' : nextBirthday.days + ' day' + (nextBirthday.days === 1 ? '' : 's');
+    var shareText = (name !== '-' ? name + ' is ' : 'I am ') + exactAgeText + ' old on ' + formatDateInput(targetValue) + '. ' + (name !== '-' ? name + ' has' : 'I have') + ' lived ' + comma(totalDays) + ' days and the next birthday countdown is ' + nextBirthdayText + '.';
+    var retirementText = retirementParts ? retirementParts.years + ' years, ' + retirementParts.months + ' months, ' + retirementParts.days + ' days' : 'Retirement age reached';
 
     var html = '<div class="age-single-result-shell">' +
       '<h2 class="age-single-result-title">Age result</h2>' +
       '<div class="age-single-result-grid">' +
-      group('Birth & calendar', [
+      group('Age summary', [
         row('Name', name),
-        row('Date range', formatDateInput(birthValue) + ' to ' + formatDateInput(targetValue)),
-        row('Day of week born', birth.date.toLocaleDateString('en-US', { weekday: 'long' })),
-        row('Born date in Islamic calendar', safeCalendar(birth, 'en-GB-u-ca-islamic')),
-        row('Born date in Chinese calendar', safeCalendar(birth, 'en-GB-u-ca-chinese'))
-      ]) +
-      group('Current age', [
-        row('Exact age', parts.years + ' years, ' + parts.months + ' months, ' + parts.days + ' days'),
+        row('Exact age', exactAgeText),
         row('Normal age', parts.years + ' years old'),
         row('Asian age', asianAge + ' years old'),
-        row('Age in ' + animal + ' year', parts.years + ' years old')
+        row('Birth date', formatDateInput(birthValue)),
+        row('Calculation date', formatDateInput(targetValue)),
+        row('Date range', formatDateInput(birthValue) + ' to ' + formatDateInput(targetValue)),
+        row('Day of week born', birth.date.toLocaleDateString('en-US', { weekday: 'long' }))
       ]) +
-      group('Total time lived', [
-        row('Months old', comma(totalMonths)),
-        row('Weeks old', comma(totalWeeks)),
-        row('Days old', comma(totalDays)),
-        row('Seconds old', comma(totalSeconds))
-      ]) +
-      group('Birthday & milestones', [
-        row('Next birthday countdown', birthdayDays + ' day' + (birthdayDays === 1 ? '' : 's')),
-        row('Legal age', daysUntilAge(birth, target, 18, 'legal adult age')),
-        row('Retirement', daysUntilAge(birth, target, 60, 'retirement'))
-      ]) +
-      group('Life summary', [
+      group('Time lived', [
+        row('Total months old', comma(totalMonths)),
+        row('Total weeks old', comma(totalWeeks)),
+        row('Total days old', comma(totalDays)),
+        row('Total hours old', comma(totalHours)),
+        row('Total minutes old', comma(totalMinutes)),
+        row('Total seconds old', comma(totalSeconds)),
         row('Estimated sleep time', comma(Math.floor(totalDays / 3)) + ' days'),
-        row('Estimated breaths', comma(Math.round(totalDays * 24 * 60 * 16))),
-        row('Estimated heartbeats', comma(Math.round(totalDays * 24 * 60 * 70))),
-        row('Moon cycles experienced', (totalDays / 29.530588).toFixed(1))
+        row('Estimated heartbeats', comma(Math.round(totalDays * 24 * 60 * 70)))
       ]) +
-      group('Zodiac', [
+      group('Next birthday countdown', [
+        row('Countdown', nextBirthdayText),
+        row('Next birthday date', formatLongDateFromUtc(nextBirthday.utc)),
+        row('Age on next birthday', ordinal(nextBirthday.age) + ' birthday'),
+        row('Birthday progress', nextBirthday.progress.toFixed(1) + '% of current birthday year completed'),
+        row('Birthday message', nextBirthday.days === 0 ? 'Happy birthday!' : 'Your next birthday is getting closer')
+      ]) +
+      group('Zodiac information', [
         row('Western zodiac', westernZodiac(birth.month, birth.day)),
-        row('Chinese zodiac', animal)
+        row('Chinese zodiac', animal),
+        row('Chinese zodiac element', animalElement),
+        row('Chinese calendar date', safeCalendar(birth, 'en-GB-u-ca-chinese')),
+        row('Islamic calendar date', safeCalendar(birth, 'en-GB-u-ca-islamic')),
+        row('Birth year animal age label', parts.years + ' years old in ' + animal + ' year')
       ]) +
+      group('Retirement countdown', [
+        row('Retirement target age', retirementAge + ' years old'),
+        row('Retirement countdown', retirementText),
+        row('Days until retirement age', target.utc >= retirementUtc ? 'Retirement age reached' : comma(retirementDays) + ' days'),
+        row('Retirement date', formatLongDateFromUtc(retirementUtc)),
+        row('Progress to retirement age', retirementProgress.toFixed(1) + '%')
+      ]) +
+      group('High engagement outputs', [
+        row('Born on', birth.date.toLocaleDateString('en-US', { weekday: 'long' })),
+        row('Next celebration', nextBirthdayText + ' until birthday'),
+        row('Fun time lived', comma(totalDays) + ' sunrises lived'),
+        row('Moon cycles experienced', (totalDays / 29.530588).toFixed(1)),
+        row('Approximate breaths', comma(Math.round(totalDays * 24 * 60 * 16)))
+      ]) +
+      group('Essential outputs', [
+        row('Years', parts.years),
+        row('Months after last birthday', parts.months),
+        row('Days after last month', parts.days),
+        row('Weeks old', comma(totalWeeks)),
+        row('Days old', comma(totalDays))
+      ]) +
+      group('Shareable output', [
+        row('Short summary', shareText),
+        row('Share line', 'Age: ' + exactAgeText + ' • Days lived: ' + comma(totalDays) + ' • Next birthday: ' + nextBirthdayText),
+        row('Profile style', (name !== '-' ? name : 'This person') + ' was born on ' + birth.date.toLocaleDateString('en-US', { weekday: 'long' }) + ' and is a ' + westernZodiac(birth.month, birth.day) + '.')
+      ]) +
+      group('Useful life milestones', [
+        row('18 years old', daysUntilAge(birth, target, 18, '18 years old')),
+        row('21 years old', daysUntilAge(birth, target, 21, '21 years old')),
+        row('30 years old', daysUntilAge(birth, target, 30, '30 years old')),
+        row('40 years old', daysUntilAge(birth, target, 40, '40 years old')),
+        row('50 years old', daysUntilAge(birth, target, 50, '50 years old')),
+        row('60 years old', daysUntilAge(birth, target, 60, '60 years old'))
+      ]) +
+      visualGroup('Visual elements',
+        '<div class="age-visual-stack">' +
+        progressItem('Year progress', yearProgress.toFixed(1) + '%', yearProgress) +
+        progressItem('Birthday cycle progress', nextBirthday.progress.toFixed(1) + '%', nextBirthday.progress) +
+        progressItem('Progress to retirement age 60', retirementProgress.toFixed(1) + '%', retirementProgress) +
+        progressItem('Estimated life progress to age 80', lifeProgress.toFixed(1) + '%', lifeProgress) +
+        '</div>'
+      ) +
       '</div></div>';
-
     showPanel(html);
     return true;
   }
