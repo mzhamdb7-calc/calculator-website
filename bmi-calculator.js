@@ -2297,23 +2297,23 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
     var goalBox = qs('.bmi-goal-box', shell.row);
     var optionalBox = qs('.bmi-optional-box', shell.row);
 
-    // Move all activity/body measurement items into Details.
+    // Keep main BMI inputs in Details only.
     var detailPairs = [
       ['weightLabel', 'weight'],
       ['heightLabel', 'height'],
-      ['waistLabel', 'waist'],
       ['bmiGenderLabel', 'bmiGender'],
-      ['bmiActivityLabel', 'bmiActivityLevel'],
-      ['bmiNeckLabel', 'bmiNeck'],
-      ['bmiWristLabel', 'bmiWrist'],
-      ['bmiShoulderLabel', 'bmiShoulder'],
-      ['bmiHipLabel', 'bmiHip']
+      ['bmiActivityLabel', 'bmiActivityLevel']
     ];
 
-    // Move name, age, and optional target items into the Option dropdown box.
+    // Move optional profile, body measurements, and target items into the Option dropdown box.
     var optionPairs = [
       ['bmiNameLabel', 'bmiName'],
       ['bmiAgeLabel', 'bmiAge'],
+      ['waistLabel', 'waist'],
+      ['bmiNeckLabel', 'bmiNeck'],
+      ['bmiWristLabel', 'bmiWrist'],
+      ['bmiShoulderLabel', 'bmiShoulder'],
+      ['bmiHipLabel', 'bmiHip'],
       ['bmiTargetWeightLabel', 'bmiTargetWeight'],
       ['bmiTimeGoalLabel', 'bmiTimeGoalAmount', 'bmiTimeGoal']
     ];
@@ -2432,4 +2432,418 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
   setTimeout(removeEmptyBmiPlaceholder, 80);
   setTimeout(removeEmptyBmiPlaceholder, 300);
   setTimeout(removeEmptyBmiPlaceholder, 900);
+})();
+
+/* ===== BMI: rebuild result box with same outputs ===== */
+(function () {
+  'use strict';
+
+  function ready(fn) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+    else fn();
+  }
+
+  function isBmiPage() {
+    return document.body && document.body.dataset && document.body.dataset.page === 'bmi';
+  }
+
+  function esc(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function clean(value) {
+    return String(value == null ? '' : value).replace(/\s+/g, ' ').trim();
+  }
+
+  function getPanel() {
+    return document.getElementById('bmiReportOutput') || document.querySelector('.bmi-box-output, .bmi-clean-result');
+  }
+
+  function textFrom(element) {
+    return clean(element ? element.textContent : '');
+  }
+
+  function addRow(rows, seen, label, value) {
+    label = clean(label).replace(/:$/, '');
+    value = clean(value);
+    if (!label || !value) return;
+    var key = label.toLowerCase();
+    if (seen[key]) return;
+    seen[key] = true;
+    rows.push({ label: label, value: value });
+  }
+
+  function collectRows(panel) {
+    var rows = [];
+    var seen = {};
+
+    panel.querySelectorAll('.bmi-summary-card').forEach(function (card) {
+      addRow(rows, seen, textFrom(card.querySelector('.bmi-summary-card-label')), textFrom(card.querySelector('.bmi-summary-card-value')));
+    });
+
+    panel.querySelectorAll('.bmi-rebuilt-summary-item, .bmi-rebuilt-row, .bmi-point-result-list li').forEach(function (item) {
+      var label = textFrom(item.querySelector('[data-bmi-label], strong, .bmi-rebuilt-label'));
+      var value = textFrom(item.querySelector('[data-bmi-value], span, .bmi-rebuilt-value'));
+      if (!label || !value) {
+        var raw = textFrom(item);
+        var parts = raw.split(':');
+        if (parts.length >= 2) {
+          label = parts.shift();
+          value = parts.join(':');
+        }
+      }
+      addRow(rows, seen, label, value);
+    });
+
+    return rows;
+  }
+
+  function find(rows, pattern) {
+    return rows.find(function (row) { return pattern.test(row.label); });
+  }
+
+  function rowsByPatterns(rows, patterns, used) {
+    return rows.filter(function (row, index) {
+      if (used[index]) return false;
+      var ok = patterns.some(function (pattern) { return pattern.test(row.label); });
+      if (ok) used[index] = true;
+      return ok;
+    });
+  }
+
+  function plainText(rows) {
+    return rows.map(function (row) { return row.label + ': ' + row.value; }).join('\n');
+  }
+
+  function fileStamp() {
+    var now = new Date();
+    return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+  }
+
+  function downloadText(filename, text) {
+    var blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(function () {
+      URL.revokeObjectURL(url);
+      link.remove();
+    }, 0);
+  }
+
+  function tempText(button, text) {
+    if (!button) return;
+    var old = button.textContent;
+    button.textContent = text;
+    setTimeout(function () { button.textContent = old; }, 1200);
+  }
+
+  function copyResult(text, button) {
+    if (window.copyText) {
+      window.copyText(text, button);
+      return;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { tempText(button, 'Copied'); }).catch(function () {});
+    }
+  }
+
+  function makeSummaryItem(row, title) {
+    if (!row) return '';
+    return '<article class="bmi-rebuilt-summary-item"><span data-bmi-label>' + esc(title || row.label) + '</span><strong data-bmi-value>' + esc(row.value) + '</strong></article>';
+  }
+
+  function makeRow(row) {
+    return '<li class="bmi-rebuilt-row"><strong class="bmi-rebuilt-label" data-bmi-label>' + esc(row.label) + '</strong><span class="bmi-rebuilt-value" data-bmi-value>' + esc(row.value) + '</span></li>';
+  }
+
+  function makeGroup(title, key, groupRows) {
+    if (!groupRows.length) return '';
+    return '<section class="bmi-rebuilt-group bmi-rebuilt-group-' + esc(key) + '"><h3>' + esc(title) + '</h3><ul>' + groupRows.map(makeRow).join('') + '</ul></section>';
+  }
+
+  function buildHtml(rows) {
+    var used = [];
+    var bmi = find(rows, /^BMI$/i);
+    var category = find(rows, /^BMI category$/i);
+    var healthyRange = find(rows, /^Healthy weight range$/i);
+    var difference = find(rows, /^Difference to healthy range$/i);
+    var risk = find(rows, /^Health risk$/i);
+
+    rows.forEach(function (row, index) {
+      if ([bmi, category, healthyRange, difference, risk].indexOf(row) !== -1) used[index] = true;
+    });
+
+    var groups = [
+      {
+        title: 'Calories',
+        key: 'calories',
+        patterns: [/^Calories\/day to maintain$/i, /^Calories\/day to add weight$/i, /^Calories\/day to lose weight$/i]
+      },
+      {
+        title: 'Body composition',
+        key: 'body',
+        patterns: [/^Body fat estimate$/i, /^Body type comment$/i, /^Frame size$/i, /^Fat distribution$/i, /^Body shape$/i, /^Somatotype tendency$/i, /^Waist-to-height ratio$/i, /^Waist-to-height status$/i]
+      },
+      {
+        title: 'Body measurements',
+        key: 'measurements',
+        patterns: [/^Neck circumference$/i, /^Wrist size$/i, /^Shoulder width$/i, /^Hip circumference$/i]
+      },
+      {
+        title: 'Goal',
+        key: 'goal',
+        patterns: [/^Goal timeline$/i, /^Healthy\?$/i, /^Best$/i, /^Target weight$/i, /^Time goal$/i]
+      },
+      {
+        title: 'Profile',
+        key: 'profile',
+        patterns: [/^Unit$/i, /^Name$/i, /^Age range$/i, /^Gender$/i, /^Activity level$/i]
+      },
+      {
+        title: 'Advice',
+        key: 'advice',
+        patterns: [/^Suggested exercise$/i, /^Suggested foods$/i]
+      }
+    ];
+
+    var summaryRows = [bmi, category, healthyRange, difference, risk].filter(Boolean);
+    var groupHtml = groups.map(function (group) {
+      return makeGroup(group.title, group.key, rowsByPatterns(rows, group.patterns, used));
+    }).join('');
+
+    var otherRows = rows.filter(function (row, index) { return !used[index]; });
+    if (otherRows.length) groupHtml += makeGroup('Other details', 'other', otherRows);
+
+    return '<article class="bmi-rebuilt-result-card">' +
+      '<header class="bmi-rebuilt-header">' +
+        '<div><p class="bmi-rebuilt-kicker">BMI Result</p><h2>' + esc(bmi ? bmi.value : 'Result') + '</h2>' + (category ? '<p class="bmi-rebuilt-category">' + esc(category.value) + '</p>' : '') + '</div>' +
+      '</header>' +
+      '<section class="bmi-rebuilt-summary-grid" aria-label="BMI summary">' + summaryRows.map(function (row) { return makeSummaryItem(row); }).join('') + '</section>' +
+      '<div class="bmi-rebuilt-group-grid">' + groupHtml + '</div>' +
+      '<div class="bmi-rebuilt-actions"><button type="button" class="bmi-rebuilt-btn bmi-copy-btn">Copy</button><button type="button" class="bmi-rebuilt-btn bmi-save-btn">Save</button><button type="button" class="bmi-rebuilt-btn bmi-share-btn">Share</button><button type="button" class="bmi-rebuilt-btn bmi-report-btn">Report</button></div>' +
+    '</article>';
+  }
+
+  function rebuildBmiResult() {
+    if (!isBmiPage()) return;
+    var panel = getPanel();
+    if (!panel || panel.hidden) return;
+    var rows = collectRows(panel);
+    if (!rows.length) return;
+
+    var signature = JSON.stringify(rows);
+    if (panel.dataset.bmiRebuiltSignature === signature && panel.classList.contains('bmi-rebuilt-output')) return;
+
+    var calculator = document.querySelector('main.bmi-calculator-container > .calculator.bmi-calculator-box') || document.querySelector('.calculator.bmi-calculator-box');
+    if (calculator && panel.parentElement === calculator) calculator.insertAdjacentElement('afterend', panel);
+
+    panel.id = 'bmiReportOutput';
+    panel.dataset.bmiRebuiltSignature = signature;
+    panel.className = 'loan-style-output-panel calculator-clean-result bmi-clean-result bmi-box-output bmi-rebuilt-output';
+    panel.hidden = false;
+    panel.style.setProperty('display', 'block', 'important');
+    panel.style.setProperty('visibility', 'visible', 'important');
+    panel.style.setProperty('opacity', '1', 'important');
+    panel.innerHTML = buildHtml(rows);
+
+    var text = 'BMI Calculator Result\n\n' + plainText(rows);
+    var copyBtn = panel.querySelector('.bmi-copy-btn');
+    var saveBtn = panel.querySelector('.bmi-save-btn');
+    var shareBtn = panel.querySelector('.bmi-share-btn');
+    var reportBtn = panel.querySelector('.bmi-report-btn');
+
+    if (copyBtn) copyBtn.onclick = function () { copyResult(text, copyBtn); };
+    if (saveBtn) saveBtn.onclick = function () { downloadText('bmi-result-' + fileStamp() + '.txt', text); tempText(saveBtn, 'Saved'); };
+    if (shareBtn) shareBtn.onclick = function () {
+      if (navigator.share) {
+        navigator.share({ title: 'BMI Calculator Result', text: text }).catch(function () { copyResult(text, shareBtn); });
+      } else {
+        copyResult(text, shareBtn);
+      }
+    };
+    if (reportBtn) reportBtn.onclick = function () {
+      if (typeof window.openLatestCalculatorReport === 'function') window.openLatestCalculatorReport('bmi', reportBtn);
+      else window.print();
+    };
+  }
+
+  function wrapCalculate() {
+    if (window.__bmiRebuiltResultWrapped) return;
+    if (typeof window.calculateBMI !== 'function') return;
+    var original = window.calculateBMI;
+    window.calculateBMI = function () {
+      var result = original.apply(this, arguments);
+      setTimeout(rebuildBmiResult, 20);
+      setTimeout(rebuildBmiResult, 120);
+      return result;
+    };
+    window.calculateBmi = window.calculateBMI;
+    window.__bmiRebuiltResultWrapped = true;
+  }
+
+  function init() {
+    if (!isBmiPage()) return;
+    wrapCalculate();
+    rebuildBmiResult();
+    [80, 250, 700, 1400].forEach(function (delay) {
+      setTimeout(function () { wrapCalculate(); rebuildBmiResult(); }, delay);
+    });
+    document.addEventListener('input', function (event) {
+      if (!event.target || !event.target.closest('.bmi-calculator-box')) return;
+      setTimeout(rebuildBmiResult, 180);
+    }, true);
+    document.addEventListener('change', function (event) {
+      if (!event.target || !event.target.closest('.bmi-calculator-box')) return;
+      setTimeout(rebuildBmiResult, 180);
+    }, true);
+  }
+
+  ready(init);
+})();
+
+
+/* ===== BMI final hard fix: move body measurements into Option dropdown ===== */
+(function () {
+  'use strict';
+
+  function byId(id) { return document.getElementById(id); }
+
+  function getField(inputId) {
+    var input = byId(inputId);
+    if (!input) return null;
+    return input.closest('.bmi-field') || input.parentElement;
+  }
+
+  function makeField(labelId, inputId, labelText, inputHtml) {
+    var input = byId(inputId);
+    if (input) return getField(inputId);
+    var field = document.createElement('div');
+    field.className = 'bmi-field';
+    field.innerHTML = '<label id="' + labelId + '" for="' + inputId + '">' + labelText + '</label>' + inputHtml;
+    return field;
+  }
+
+  function ensureBmiMeasurementOptionLayout() {
+    if (!document.body || document.body.dataset.page !== 'bmi') return;
+
+    var calculator = document.querySelector('.calculator.bmi-calculator-box') || document.querySelector('.bmi-calculator-box');
+    if (!calculator) return;
+
+    var row = byId('bmiInputGroups');
+    if (!row) {
+      row = document.createElement('div');
+      row.id = 'bmiInputGroups';
+      calculator.appendChild(row);
+    }
+    row.classList.add('bmi-input-groups', 'bmi-details-option-layout');
+
+    var detailsBox = row.querySelector('.bmi-details-box');
+    if (!detailsBox) {
+      detailsBox = document.createElement('section');
+      detailsBox.className = 'bmi-input-group-box bmi-details-box bmi-body-box';
+      detailsBox.setAttribute('aria-labelledby', 'bmiDetailsTitle');
+      row.appendChild(detailsBox);
+    }
+
+    var title = detailsBox.querySelector('#bmiDetailsTitle, .bmi-extra-title');
+    if (!title) {
+      title = document.createElement('div');
+      title.className = 'bmi-extra-title';
+      detailsBox.insertBefore(title, detailsBox.firstChild);
+    }
+    title.id = 'bmiDetailsTitle';
+    title.textContent = 'Details';
+
+    var detailsGrid = detailsBox.querySelector('.bmi-details-grid');
+    if (!detailsGrid) {
+      detailsGrid = document.createElement('div');
+      detailsGrid.className = 'bmi-field-grid bmi-details-grid';
+      detailsBox.appendChild(detailsGrid);
+    }
+
+    var optionBox = byId('bmiOptionBox');
+    if (!optionBox || optionBox.tagName.toLowerCase() !== 'details') {
+      var replacement = document.createElement('details');
+      replacement.id = 'bmiOptionBox';
+      replacement.className = 'bmi-input-group-box bmi-option-box';
+      if (optionBox) optionBox.replaceWith(replacement);
+      else row.appendChild(replacement);
+      optionBox = replacement;
+    }
+    optionBox.className = 'bmi-input-group-box bmi-option-box';
+
+    var summary = optionBox.querySelector('summary');
+    if (!summary) {
+      summary = document.createElement('summary');
+      optionBox.insertBefore(summary, optionBox.firstChild);
+    }
+    summary.className = 'bmi-option-summary';
+    summary.innerHTML = '<span>Option</span><span aria-hidden="true" class="bmi-option-arrow">▾</span>';
+
+    var optionContent = optionBox.querySelector('.bmi-option-content');
+    if (!optionContent) {
+      optionContent = document.createElement('div');
+      optionContent.className = 'bmi-option-content';
+      optionBox.appendChild(optionContent);
+    }
+
+    var detailFields = [
+      getField('weight'),
+      getField('height'),
+      getField('bmiGender'),
+      getField('bmiActivityLevel')
+    ].filter(Boolean);
+
+    var optionFields = [
+      makeField('bmiNameLabel', 'bmiName', 'Name:', '<input autocomplete="name" id="bmiName" placeholder="Optional" type="text">'),
+      makeField('bmiAgeLabel', 'bmiAge', 'Age:', '<input id="bmiAge" inputmode="numeric" min="1" placeholder="Optional, example: 30" type="number">'),
+      makeField('waistLabel', 'waist', 'Waist circumference in cm:', '<input id="waist" inputmode="decimal" placeholder="Optional, Example: 80" type="number">'),
+      makeField('bmiNeckLabel', 'bmiNeck', 'Neck circumference in cm:', '<input id="bmiNeck" inputmode="decimal" placeholder="Optional, Example: 38" type="number">'),
+      makeField('bmiWristLabel', 'bmiWrist', 'Wrist size in cm:', '<input id="bmiWrist" inputmode="decimal" placeholder="Optional, Example: 16" type="number">'),
+      makeField('bmiShoulderLabel', 'bmiShoulder', 'Shoulder width in cm:', '<input id="bmiShoulder" inputmode="decimal" placeholder="Optional, Example: 46" type="number">'),
+      makeField('bmiHipLabel', 'bmiHip', 'Hip circumference in cm:', '<input id="bmiHip" inputmode="decimal" placeholder="Optional, Example: 95" type="number">'),
+      makeField('bmiTargetWeightLabel', 'bmiTargetWeight', 'Target weight in kg:', '<input id="bmiTargetWeight" inputmode="decimal" placeholder="Optional, Example: 65" type="number">'),
+      getField('bmiTimeGoalAmount')
+    ].filter(Boolean);
+
+    detailsGrid.innerHTML = '';
+    detailFields.forEach(function (field) { detailsGrid.appendChild(field); });
+
+    optionContent.innerHTML = '';
+    optionFields.forEach(function (field) { optionContent.appendChild(field); });
+
+    row.querySelectorAll('.bmi-body-box, .bmi-goal-box, .bmi-optional-box').forEach(function (box) {
+      if (box !== detailsBox && box !== optionBox) box.remove();
+    });
+
+    row.appendChild(detailsBox);
+    row.appendChild(optionBox);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ensureBmiMeasurementOptionLayout);
+  } else {
+    ensureBmiMeasurementOptionLayout();
+  }
+
+  [50, 200, 600, 1200].forEach(function (delay) {
+    setTimeout(ensureBmiMeasurementOptionLayout, delay);
+  });
+
+  if (window.MutationObserver) {
+    var observer = new MutationObserver(function () {
+      clearTimeout(window.__bmiMeasureOptionTimer);
+      window.__bmiMeasureOptionTimer = setTimeout(ensureBmiMeasurementOptionLayout, 60);
+    });
+    if (document.body) observer.observe(document.body, { childList: true, subtree: true });
+  }
 })();
