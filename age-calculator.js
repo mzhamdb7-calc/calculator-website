@@ -454,7 +454,174 @@
     }, 500);
   }
 
+  function getReportData() {
+    var panel = byId('ageReportOutput');
+    if (!panel) return null;
+
+    var titleEl = panel.querySelector('.age-single-result-title');
+    var countdownEl = panel.querySelector('.age-live-countdown');
+    var data = {
+      title: titleEl ? (titleEl.textContent || '').trim() : 'Age Report',
+      countdown: countdownEl ? (countdownEl.textContent || '').trim() : '',
+      generated: new Date().toLocaleString('en-GB', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }),
+      groups: []
+    };
+
+    all('.age-single-group-box', panel).forEach(function (section) {
+      var headingEl = section.querySelector('h3');
+      var groupData = {
+        title: headingEl ? (headingEl.textContent || '').trim() : 'Details',
+        rows: [],
+        visuals: []
+      };
+
+      all('.age-single-result-row', section).forEach(function (rowEl) {
+        var labelEl = rowEl.querySelector('strong');
+        var valueEl = rowEl.querySelector('span');
+        var label = labelEl ? (labelEl.textContent || '').replace(/:\s*$/, '').trim() : '';
+        var value = valueEl ? (valueEl.textContent || '').trim() : '';
+        if (label || value) groupData.rows.push({ label: label, value: value });
+      });
+
+      all('.age-visual-item', section).forEach(function (visualEl) {
+        var visualLabelEl = visualEl.querySelector('.age-visual-top strong');
+        var visualValueEl = visualEl.querySelector('.age-visual-top span');
+        var visualFillEl = visualEl.querySelector('.age-progress-track span');
+        var visualLabel = visualLabelEl ? (visualLabelEl.textContent || '').trim() : '';
+        var visualValue = visualValueEl ? (visualValueEl.textContent || '').trim() : '';
+        var visualWidth = visualFillEl ? (visualFillEl.style.width || '0%') : '0%';
+        if (visualLabel || visualValue) {
+          groupData.visuals.push({ label: visualLabel, value: visualValue, width: visualWidth });
+        }
+      });
+
+      if (groupData.rows.length || groupData.visuals.length) data.groups.push(groupData);
+    });
+
+    return data;
+  }
+
+  function findReportValue(data, label) {
+    if (!data || !data.groups) return '';
+
+    for (var groupIndex = 0; groupIndex < data.groups.length; groupIndex += 1) {
+      var rows = data.groups[groupIndex].rows || [];
+      for (var rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
+        if ((rows[rowIndex].label || '').toLowerCase() === String(label).toLowerCase()) {
+          return rows[rowIndex].value || '';
+        }
+      }
+    }
+
+    return '';
+  }
+
+  function buildPrintableReportHtml(data, plainText) {
+    data = data || { title: 'Age Report', generated: new Date().toLocaleString(), countdown: '', groups: [] };
+
+    var personName = findReportValue(data, 'Name') || 'Age Calculator User';
+    var exactAge = findReportValue(data, 'Exact age') || '-';
+    var normalAge = findReportValue(data, 'Normal age') || '-';
+    var birthDate = findReportValue(data, 'Birth date') || '-';
+    var calculationDate = findReportValue(data, 'Calculation date') || '-';
+    var daysOld = findReportValue(data, 'Days old') || '-';
+    var nextBirthday = findReportValue(data, 'Countdown') || '-';
+    var zodiac = findReportValue(data, 'Western zodiac') || '-';
+
+    function stat(label, value) {
+      return '<div class="report-stat"><span>' + escapeHtml(label) + '</span><strong>' + escapeHtml(value) + '</strong></div>';
+    }
+
+    function renderRows(rows) {
+      if (!rows || !rows.length) return '';
+      return '<table><tbody>' + rows.map(function (item) {
+        return '<tr><th>' + escapeHtml(item.label) + '</th><td>' + escapeHtml(item.value) + '</td></tr>';
+      }).join('') + '</tbody></table>';
+    }
+
+    function renderVisuals(visuals) {
+      if (!visuals || !visuals.length) return '';
+      return '<div class="report-visuals">' + visuals.map(function (item) {
+        return '<div class="report-visual"><div><strong>' + escapeHtml(item.label) + '</strong><span>' + escapeHtml(item.value) + '</span></div><p><i style="width:' + escapeHtml(item.width) + '"></i></p></div>';
+      }).join('') + '</div>';
+    }
+
+    var sections = (data.groups || []).map(function (groupData) {
+      return '<section class="report-section"><h2>' + escapeHtml(groupData.title) + '</h2>' + renderRows(groupData.rows) + renderVisuals(groupData.visuals) + '</section>';
+    }).join('');
+
+    if (!sections && plainText) {
+      sections = '<section class="report-section"><h2>Report Details</h2><pre>' + escapeHtml(plainText) + '</pre></section>';
+    }
+
+    return '<!doctype html>' +
+      '<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">' +
+      '<title>Age Report</title>' +
+      '<style>' +
+      '@page{size:A4;margin:14mm}' +
+      '*{box-sizing:border-box}' +
+      'html,body{margin:0;padding:0}' +
+      'body{font-family:Inter,Arial,sans-serif;color:#111827;background:#eef2f7;line-height:1.45}' +
+      '.print-toolbar{position:sticky;top:0;z-index:5;display:flex;justify-content:center;gap:10px;padding:12px;background:#0f172a;box-shadow:0 8px 24px rgba(15,23,42,.18)}' +
+      '.print-toolbar button{border:0;border-radius:999px;background:#ffffff;color:#0f172a;padding:10px 18px;font-weight:800;cursor:pointer}' +
+      '.print-toolbar button.primary{background:#0f8f72;color:#ffffff}' +
+      '.report-page{width:min(210mm,calc(100vw - 24px));margin:18px auto;padding:18mm;background:#ffffff;border:1px solid #d1d5db;box-shadow:0 24px 70px rgba(15,23,42,.16)}' +
+      '.report-header{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;padding-bottom:16px;border-bottom:3px solid #0f8f72}' +
+      '.brand{font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#0f8f72;margin:0 0 8px}' +
+      'h1{margin:0;color:#10231d;font-size:32px;line-height:1.05;letter-spacing:-.04em}' +
+      '.subtitle{margin:8px 0 0;color:#64748b;font-size:13px}' +
+      '.report-meta{text-align:right;color:#475569;font-size:12px;line-height:1.55;min-width:180px}' +
+      '.report-meta strong{display:block;color:#111827;font-size:13px}' +
+      '.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:14px;margin-top:18px}' +
+      '.hero-main,.countdown-card{padding:16px;border:1px solid #d8e8e0;border-radius:16px;background:#f8fffb}' +
+      '.hero-label{margin:0 0 6px;color:#64748b;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.09em}' +
+      '.hero-name{margin:0;color:#10231d;font-size:22px;font-weight:900}' +
+      '.hero-age{margin:8px 0 0;color:#0f8f72;font-size:20px;font-weight:900}' +
+      '.countdown-card{background:#0f8f72;color:#ffffff}' +
+      '.countdown-card .hero-label{color:rgba(255,255,255,.78)}' +
+      '.countdown-card strong{display:block;font-size:18px;line-height:1.2}' +
+      '.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}' +
+      '.report-stat{padding:12px;border:1px solid #e5e7eb;border-radius:14px;background:#ffffff}' +
+      '.report-stat span{display:block;color:#64748b;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}' +
+      '.report-stat strong{display:block;margin-top:5px;color:#111827;font-size:13px;line-height:1.25}' +
+      '.section-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}' +
+      '.report-section{break-inside:avoid;page-break-inside:avoid;border:1px solid #d1d5db;border-radius:14px;overflow:hidden;background:#ffffff}' +
+      '.report-section h2{margin:0;padding:10px 12px;color:#10231d;background:#f1f5f9;border-bottom:1px solid #d1d5db;font-size:15px;line-height:1.2}' +
+      'table{width:100%;border-collapse:collapse}' +
+      'th,td{padding:8px 12px;border-bottom:1px solid #edf2f7;vertical-align:top;font-size:12px}' +
+      'tr:last-child th,tr:last-child td{border-bottom:0}' +
+      'th{width:42%;text-align:left;color:#475569;font-weight:800}' +
+      'td{color:#111827;font-weight:650;overflow-wrap:anywhere}' +
+      '.report-visuals{display:grid;gap:10px;padding:12px}' +
+      '.report-visual div{display:flex;justify-content:space-between;gap:10px;margin-bottom:7px;color:#111827;font-size:12px;font-weight:800}' +
+      '.report-visual span{color:#0f8f72}' +
+      '.report-visual p{height:10px;margin:0;overflow:hidden;border:1px solid #d8e8e0;border-radius:999px;background:#edf7f2}' +
+      '.report-visual i{display:block;height:100%;background:#0f8f72;border-radius:999px}' +
+      '.report-footer{margin-top:18px;padding-top:10px;border-top:1px solid #e5e7eb;color:#64748b;font-size:11px;text-align:center}' +
+      'pre{white-space:pre-wrap;font:inherit;font-size:12px;margin:0;padding:12px}' +
+      '@media(max-width:800px){.report-page{padding:22px}.hero,.section-grid,.stats{grid-template-columns:1fr}.report-meta{text-align:left}.report-header{display:block}}' +
+      '@media print{body{background:#fff}.print-toolbar{display:none!important}.report-page{width:auto;margin:0;padding:0;border:0;box-shadow:none}.report-header{padding-bottom:12px}.section-grid{gap:8px}.report-section{border-radius:10px}h1{font-size:28px}.hero{margin-top:14px}.stats{gap:8px}.report-footer{position:fixed;bottom:0;left:0;right:0}}' +
+      '</style></head>' +
+      '<body><div class="print-toolbar"><button class="primary" onclick="window.print()">Print / Save PDF</button><button onclick="window.close()">Close</button></div>' +
+      '<main class="report-page">' +
+      '<header class="report-header"><div><p class="brand">CalcStudio</p><h1>Professional Age Report</h1><p class="subtitle">Printable summary generated from the Age Calculator.</p></div>' +
+      '<div class="report-meta"><strong>Generated</strong>' + escapeHtml(data.generated) + '<br><strong>Calculation date</strong>' + escapeHtml(calculationDate) + '</div></header>' +
+      '<section class="hero"><div class="hero-main"><p class="hero-label">Report for</p><p class="hero-name">' + escapeHtml(personName) + '</p><p class="hero-age">' + escapeHtml(exactAge) + '</p></div>' +
+      '<div class="countdown-card"><p class="hero-label">Next age countdown</p><strong>' + escapeHtml(data.countdown || nextBirthday) + '</strong></div></section>' +
+      '<section class="stats">' + stat('Birth date', birthDate) + stat('Normal age', normalAge) + stat('Days old', daysOld) + stat('Zodiac', zodiac) + '</section>' +
+      '<section class="section-grid">' + sections + '</section>' +
+      '<footer class="report-footer">This report is generated automatically by the Age Calculator. Results are for general reference only.</footer>' +
+      '</main></body></html>';
+  }
+
   function openPrintableReport(text) {
+    var data = getReportData();
     var win = window.open('', '_blank');
     if (!win) {
       downloadTextFile('age-report.txt', text);
@@ -462,12 +629,13 @@
       return;
     }
 
-    win.document.write('<!doctype html><html><head><title>Age Report</title><meta charset="utf-8"><style>body{font-family:Arial,sans-serif;line-height:1.5;padding:28px;color:#10231d}h1{color:#086452}pre{white-space:pre-wrap;font:inherit}</style></head><body><h1>Age Report</h1><pre>' + escapeHtml(text) + '</pre></body></html>');
+    win.document.open();
+    win.document.write(buildPrintableReportHtml(data, text));
     win.document.close();
     win.focus();
     setTimeout(function () {
       win.print();
-    }, 250);
+    }, 450);
   }
 
   function resultActionsHtml() {
@@ -541,7 +709,8 @@
     var retirementText = retirementParts ? retirementParts.years + ' years, ' + retirementParts.months + ' months, ' + retirementParts.days + ' days' : 'Retirement age reached';
 
     var html = '<div class="age-single-result-shell">' +
-      '<h2 class="age-single-result-title">Age result</h2>' +
+      '<h2 class="age-single-result-title">Age Report</h2>' +
+      '<p class="age-print-meta">Professional printable age calculation report</p>' +
       liveCountdownHtml(birth) +
       '<div class="age-single-result-grid">' +
       group('Age Summary', [

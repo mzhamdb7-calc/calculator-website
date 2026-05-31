@@ -5529,3 +5529,191 @@ body[data-page="age"] #ageReportOutput .age-action-feedback {
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* ===== AGE CALCULATOR PROFESSIONAL PRINT REPORT ===== */
+body[data-page="age"] #ageReportOutput .age-print-meta {
+  margin: -8px 0 16px !important;
+  color: #60776f !important;
+  font-size: .95rem !important;
+  font-weight: 750 !important;
+  line-height: 1.45 !important;
+  text-align: center !important;
+}
+
+body[data-page="age"] #ageReportOutput .age-single-result-title {
+  letter-spacing: -.035em !important;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+
+  html,
+  body[data-page="age"] {
+    width: auto !important;
+    min-height: auto !important;
+    background: #ffffff !important;
+    color: #111827 !important;
+    overflow: visible !important;
+  }
+
+  body[data-page="age"] .clean-navbar,
+  body[data-page="age"] #scrollTopBtn,
+  body[data-page="age"] .loan-history-box,
+  body[data-page="age"] .extra-side-box,
+  body[data-page="age"] main.age-calculator-container > .calculator,
+  body[data-page="age"] main.age-calculator-container > .instruction-box,
+  body[data-page="age"] #ageReportOutput .age-result-actions,
+  body[data-page="age"] #ageReportOutput .age-action-feedback {
+    display: none !important;
+  }
+
+  body[data-page="age"] main.age-calculator-container {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body[data-page="age"] main.age-calculator-container > #ageReportOutput.age-single-output {
+    display: block !important;
+    visibility: visible !important;
+    grid-column: auto !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    color: #111827 !important;
+  }
+
+  body[data-page="age"] #ageReportOutput .age-single-result-shell {
+    position: relative !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
+
+  body[data-page="age"] #ageReportOutput .age-single-result-shell::before {
+    content: "CalcStudio" !important;
+    display: block !important;
+    margin: 0 0 6px !important;
+    color: #0f8f72 !important;
+    font-size: 9pt !important;
+    font-weight: 900 !important;
+    letter-spacing: .16em !important;
+    text-transform: uppercase !important;
+  }
+
+  body[data-page="age"] #ageReportOutput .age-single-result-title {
+    margin: 0 0 4px !important;
+    padding: 0 0 10px !important;
+    border-bottom: 3px solid #0f8f72 !important;
+    color: #10231d !important;
+    font-size: 24pt !important;
+    line-height: 1.05 !important;
+    text-align: left !important;
+  }
+
+  body[data-page="age"] #ageReportOutput .age-print-meta {
+    margin: 6px 0 14px !important;
+    color: #64748b !important;
+    font-size: 10pt !important;
+    text-align: left !important;
+  }
+
+  body[data-page="age"] #ageReportOutput .age-live-countdown {
+    margin: 0 0 12px !important;
+    padding: 10px 12px !important;
+    border: 1px solid #94d1c1 !important;
+    border-radius: 10px !important;
+    background: #f7fffb !important;
+    color: #0f8f72 !important;
+    font-size: 13pt !important;
+    text-align: left !important;
+    box-shadow: none !important;
+  }
+
+  body[data-page="age"] #ageReportOutput .age-single-result-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    width: 100% !important;
+    align-items: start !important;
+  }
+
+  body[data-page="age"] #ageReportOutput .age-single-group-box {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    min-width: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 10px 11px !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 10px !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+  }
+
+  body[data-page="age"] #ageReportOutput .age-single-group-box h3 {
+    margin: 0 0 7px !important;
+    padding: 0 0 6px !important;
+    border-bottom: 1px solid #d1d5db !important;
+    color: #10231d !important;
+    font-size: 11pt !important;
+    line-height: 1.2 !important;
+  }
+
+  body[data-page="age"] #ageReportOutput .age-single-result-row {
+    grid-template-columns: minmax(0, 42%) minmax(0, 58%) !important;
+    gap: 8px !important;
+    padding: 5px 0 !important;
+    border-bottom: 1px solid #edf2f7 !important;
+  }
+
+  body[data-page="age"] #ageReportOutput .age-single-result-row strong,
+  body[data-page="age"] #ageReportOutput .age-single-result-row span,
+  body[data-page="age"] #ageReportOutput .age-visual-top strong,
+  body[data-page="age"] #ageReportOutput .age-visual-top span {
+    color: #111827 !important;
+    font-size: 9.5pt !important;
+    line-height: 1.28 !important;
+  }
+
+  body[data-page="age"] #ageReportOutput .age-single-result-row strong,
+  body[data-page="age"] #ageReportOutput .age-visual-top strong {
+    color: #475569 !important;
+    font-weight: 850 !important;
+  }
+
+  body[data-page="age"] #ageReportOutput .age-visual-group {
+    grid-column: 1 / -1 !important;
+    background: #ffffff !important;
+  }
+
+  body[data-page="age"] #ageReportOutput .age-visual-item {
+    padding: 8px !important;
+    border-color: #d1d5db !important;
+    border-radius: 8px !important;
+    background: #ffffff !important;
+  }
+
+  body[data-page="age"] #ageReportOutput .age-progress-track {
+    height: 8px !important;
+    border-color: #d1d5db !important;
+    background: #eef2f7 !important;
+  }
+
+  body[data-page="age"] #ageReportOutput .age-progress-track span {
+    background: #0f8f72 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
