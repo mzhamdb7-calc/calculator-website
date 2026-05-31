@@ -1102,6 +1102,39 @@
     });
   }
 
+
+  function setupScrollTopButton() {
+    if (!isAgePage()) return;
+
+    var button = byId('scrollTopBtn');
+    if (!button) {
+      button = document.createElement('button');
+      button.id = 'scrollTopBtn';
+      button.type = 'button';
+      button.setAttribute('aria-label', 'Go to top');
+      button.textContent = '↑';
+      document.body.appendChild(button);
+    }
+
+    function updateButton() {
+      var shouldShow = window.scrollY > 180;
+      button.classList.toggle('is-visible', shouldShow);
+      button.classList.toggle('age-scroll-visible', shouldShow);
+      button.style.display = shouldShow ? 'flex' : 'none';
+    }
+
+    button.addEventListener('click', function (event) {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    window.addEventListener('scroll', updateButton, { passive: true });
+    window.addEventListener('resize', updateButton);
+    updateButton();
+    setTimeout(updateButton, 250);
+    setTimeout(updateButton, 1000);
+  }
+
   window.scrollToTop = function () {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -1115,6 +1148,7 @@
     setupLiveCountdownTimer();
     setupNavbar();
     setupSearch();
+    setupScrollTopButton();
   }
 
   if (document.readyState === 'loading') {
