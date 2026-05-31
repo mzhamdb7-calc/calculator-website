@@ -517,100 +517,193 @@
   }
 
   function buildAgeReportPdf(data, plainText) {
+    /* Direct-download PDF report used by the Save button.
+       It uses the same compact report data as the viewed report, but is written
+       as a real one-page PDF file so Save downloads age-report.pdf directly. */
     data = data || getReportData() || { generated: new Date().toLocaleString(), groups: [] };
 
     var pageWidth = 595;
     var pageHeight = 842;
-    var marginX = 48;
-    var bottomMargin = 48;
-    var y = pageHeight - 54;
-    var pages = [''];
-
-    function currentPageIndex() {
-      return pages.length - 1;
-    }
+    var marginX = 30;
+    var topY = 792;
+    var contentWidth = pageWidth - (marginX * 2);
+    var green = '0.00 0.56 0.45';
+    var border = '0.78 0.84 0.90';
+    var softBg = '0.95 0.97 0.99';
+    var textColor = '0.06 0.12 0.11';
+    var mutedColor = '0.30 0.38 0.36';
+    var commands = [];
 
     function addRaw(command) {
-      pages[currentPageIndex()] += command + '\n';
+      commands.push(command);
     }
 
-    function newPage() {
-      pages.push('');
-      y = pageHeight - 54;
+    function setStroke(rgb) {
+      addRaw(rgb + ' RG');
     }
 
-    function ensureSpace(height) {
-      if (y - height < bottomMargin) newPage();
+    function setFill(rgb) {
+      addRaw(rgb + ' rg');
     }
 
-    function drawLine() {
-      ensureSpace(12);
-      addRaw('0.82 0.88 0.86 RG 0.75 w ' + marginX + ' ' + y.toFixed(2) + ' m ' + (pageWidth - marginX) + ' ' + y.toFixed(2) + ' l S');
-      y -= 14;
+    function rect(x, y, w, h, fillRgb, strokeRgb, lineWidth) {
+      if (fillRgb) setFill(fillRgb);
+      if (strokeRgb) setStroke(strokeRgb);
+      addRaw((lineWidth || 0.7) + ' w');
+      addRaw(x.toFixed(2) + ' ' + y.toFixed(2) + ' ' + w.toFixed(2) + ' ' + h.toFixed(2) + ' re ' + (fillRgb && strokeRgb ? 'B' : (fillRgb ? 'f' : 'S')));
     }
 
-    function addTextLine(text, size, bold, indent, gapAfter) {
-      indent = indent || 0;
-      gapAfter = gapAfter || 0;
-      size = size || 10;
+    function line(x1, y1, x2, y2, strokeRgb, lineWidth) {
+      setStroke(strokeRgb || border);
+      addRaw((lineWidth || 0.5) + ' w');
+      addRaw(x1.toFixed(2) + ' ' + y1.toFixed(2) + ' m ' + x2.toFixed(2) + ' ' + y2.toFixed(2) + ' l S');
+    }
 
-      var maxChars = Math.max(22, Math.floor(((pageWidth - (marginX * 2) - indent) / (size * 0.53))));
-      var wrapped = wrapPdfText(text, maxChars);
-      wrapped.forEach(function (line) {
-        ensureSpace(size + 8);
-        addRaw('BT /' + (bold ? 'F2' : 'F1') + ' ' + size + ' Tf ' + (marginX + indent) + ' ' + y.toFixed(2) + ' Td ' + pdfString(line) + ' Tj ET');
-        y -= Math.round(size * 1.45);
+    function text(textValue, x, y, size, bold, rgb) {
+      setFill(rgb || textColor);
+      addRaw('BT /' + (bold ? 'F2' : 'F1') + ' ' + size + ' Tf ' + x.toFixed(2) + ' ' + y.toFixed(2) + ' Td ' + pdfString(textValue) + ' Tj ET');
+    }
+
+    function wrapText(value, maxChars) {
+      var clean = sanitizePdfText(value || '-');
+      if (!clean) return ['-'];
+      var words = clean.split(/\s+/);
+      var lines = [];
+      var current = '';
+      words.forEach(function (word) {
+        if (word.length > maxChars) {
+          if (current) {
+            lines.push(current);
+            current = '';
+          }
+          while (word.length > maxChars) {
+            lines.push(word.slice(0, maxChars));
+            word = word.slice(maxChars);
+          }
+        }
+        var test = current ? current + ' ' + word : word;
+        if (test.length > maxChars && current) {
+          lines.push(current);
+          current = word;
+        } else {
+          current = test;
+        }
       });
-      if (gapAfter) y -= gapAfter;
+      if (current) lines.push(current);
+      return lines.length ? lines : ['-'];
     }
 
-    function addRow(label, value) {
-      label = sanitizePdfText(label || '');
-      value = sanitizePdfText(value || '-');
-      addTextLine(label + ': ' + value, 10, false, 14, 1);
+    function findValue(label) {
+      if (!data || !data.groups) return '';
+      for (var gi = 0; gi < data.groups.length; gi += 1) {
+        var rows = data.groups[gi].rows || [];
+        for (var ri = 0; ri < rows.length; ri += 1) {
+          if ((rows[ri].label || '').toLowerCase() === String(label).toLowerCase()) return rows[ri].value || '';
+        }
+      }
+      return '';
     }
 
-    addTextLine('Age Report', 22, true, 0, 2);
-    addTextLine('Generated: ' + (data.generated || new Date().toLocaleString()), 10, false, 0, 4);
-    if (data.countdown) addTextLine('Next age countdown: ' + data.countdown, 10, true, 0, 4);
-    drawLine();
-
-    var groups = data.groups || [];
-    if (!groups.length && plainText) {
-      addTextLine('Report Details', 14, true, 0, 4);
-      String(plainText).split(/\n+/).forEach(function (line) {
-        if (line.trim()) addTextLine(line, 10, false, 14, 0);
+    function drawStat(x, y, w, h, label, value) {
+      rect(x, y, w, h, null, border, 0.8);
+      text(label, x + 8, y + h - 13, 6.8, true, mutedColor);
+      wrapText(value || '-', 22).slice(0, 2).forEach(function (lineText, index) {
+        text(lineText, x + 8, y + h - 27 - (index * 9), 8.1, true, textColor);
       });
-    } else {
-      groups.forEach(function (groupData) {
-        if (!groupData) return;
-        var hasRows = groupData.rows && groupData.rows.length;
-        var hasVisuals = groupData.visuals && groupData.visuals.length;
-        if (!hasRows && !hasVisuals) return;
+    }
 
-        ensureSpace(42);
-        addTextLine(groupData.title || 'Details', 14, true, 0, 3);
+    function rowHeight(item) {
+      var labelLines = wrapText(item.label || '-', 23).length;
+      var valueLines = wrapText(item.value || '-', 36).length;
+      return Math.max(14, 6 + (Math.max(labelLines, valueLines) * 7.2));
+    }
 
-        (groupData.rows || []).forEach(function (item) {
-          addRow(item.label, item.value);
+    function drawSection(section, x, yTop, w) {
+      var rows = (section.rows || []).slice();
+      var title = section.title || 'Details';
+      var headerH = 20;
+      var bodyH = rows.reduce(function (total, row) { return total + rowHeight(row); }, 0);
+      var sectionH = Math.max(48, headerH + bodyH + 4);
+      var y = yTop - sectionH;
+
+      rect(x, y, w, sectionH, '1 1 1', border, 0.8);
+      rect(x, yTop - headerH, w, headerH, softBg, border, 0.6);
+      text(title, x + 8, yTop - 13, 8.4, true, textColor);
+
+      var cursor = yTop - headerH;
+      rows.forEach(function (item) {
+        var h = rowHeight(item);
+        line(x, cursor - h, x + w, cursor - h, '0.90 0.93 0.96', 0.35);
+        var labelLines = wrapText(item.label || '-', 22).slice(0, 3);
+        var valueLines = wrapText(item.value || '-', 38).slice(0, 4);
+        labelLines.forEach(function (lineText, index) {
+          text(lineText, x + 8, cursor - 10 - (index * 7), 5.9, true, mutedColor);
         });
-
-        (groupData.visuals || []).forEach(function (item) {
-          addRow(item.label, item.value);
+        valueLines.forEach(function (lineText, index) {
+          text(lineText, x + 101, cursor - 10 - (index * 7), 5.9, true, textColor);
         });
-
-        y -= 6;
-        drawLine();
+        cursor -= h;
       });
+
+      return sectionH;
     }
 
-    pages.forEach(function (_, index) {
-      pages[index] += 'BT /F1 8 Tf ' + marginX + ' 26 Td ' + pdfString('Age Calculator PDF Report - Page ' + (index + 1) + ' of ' + pages.length) + ' Tj ET\n';
+    var birthDate = findValue('Birth date') || '-';
+    var calculationDate = findValue('Calculation date') || '-';
+    var normalAge = findValue('Normal age') || '-';
+    var daysOld = findValue('Days old') || '-';
+    var zodiac = findValue('Western zodiac') || '-';
+
+    text('CALCSTUDIO', marginX, topY, 7.5, true, green);
+    text('Generated', pageWidth - marginX - 65, topY, 6.2, true, textColor);
+    text(data.generated || new Date().toLocaleString(), pageWidth - marginX - 95, topY - 9, 6, false, textColor);
+    text('Calculation date', pageWidth - marginX - 65, topY - 20, 6.2, true, textColor);
+    text(calculationDate, pageWidth - marginX - 62, topY - 29, 6, false, textColor);
+    line(marginX, topY - 44, pageWidth - marginX, topY - 44, green, 1.8);
+
+    var statY = topY - 92;
+    var statGap = 6;
+    var statW = (contentWidth - (statGap * 3)) / 4;
+    drawStat(marginX, statY, statW, 36, 'Birth date', birthDate);
+    drawStat(marginX + (statW + statGap), statY, statW, 36, 'Normal age', normalAge);
+    drawStat(marginX + ((statW + statGap) * 2), statY, statW, 36, 'Days old', daysOld);
+    drawStat(marginX + ((statW + statGap) * 3), statY, statW, 36, 'Zodiac', zodiac);
+
+    var sections = (data.groups || []).filter(function (section) {
+      return section && section.title !== 'Visual Elements' && section.rows && section.rows.length;
     });
 
+    if (!sections.length && plainText) {
+      sections = [{ title: 'Report Details', rows: String(plainText).split(/\n+/).filter(Boolean).map(function (lineText) {
+        return { label: '', value: lineText };
+      }) }];
+    }
+
+    var colGap = 8;
+    var colW = (contentWidth - colGap) / 2;
+    var leftX = marginX;
+    var rightX = marginX + colW + colGap;
+    var leftTop = statY - 12;
+    var rightTop = statY - 12;
+
+    sections.forEach(function (section, index) {
+      var useLeft = leftTop <= rightTop ? false : true;
+      if (index === 0) useLeft = true;
+      if (index === 1) useLeft = false;
+      var x = useLeft ? leftX : rightX;
+      var top = useLeft ? leftTop : rightTop;
+      var h = drawSection(section, x, top, colW);
+      if (useLeft) leftTop -= h + 8;
+      else rightTop -= h + 8;
+    });
+
+    line(marginX, 52, pageWidth - marginX, 52, '0.88 0.91 0.94', 0.5);
+    text('This report is generated automatically by the Age Calculator. Results are for general reference only.', marginX + 135, 36, 5.8, false, mutedColor);
+
+    var content = commands.join('\n') + '\n';
     var objects = [];
-    function addObject(content) {
-      objects.push(content);
+    function addObject(contentValue) {
+      objects.push(contentValue);
       return objects.length;
     }
 
@@ -618,21 +711,16 @@
     var pagesId = addObject('');
     var fontId = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
     var fontBoldId = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>');
-    var pageIds = [];
+    var contentId = addObject('<< /Length ' + content.length + ' >>\nstream\n' + content + 'endstream');
+    var pageId = addObject('<< /Type /Page /Parent ' + pagesId + ' 0 R /MediaBox [0 0 ' + pageWidth + ' ' + pageHeight + '] /Resources << /Font << /F1 ' + fontId + ' 0 R /F2 ' + fontBoldId + ' 0 R >> >> /Contents ' + contentId + ' 0 R >>');
 
-    pages.forEach(function (content) {
-      var contentId = addObject('<< /Length ' + content.length + ' >>\nstream\n' + content + 'endstream');
-      var pageId = addObject('<< /Type /Page /Parent ' + pagesId + ' 0 R /MediaBox [0 0 ' + pageWidth + ' ' + pageHeight + '] /Resources << /Font << /F1 ' + fontId + ' 0 R /F2 ' + fontBoldId + ' 0 R >> >> /Contents ' + contentId + ' 0 R >>');
-      pageIds.push(pageId);
-    });
-
-    objects[pagesId - 1] = '<< /Type /Pages /Kids [' + pageIds.map(function (id) { return id + ' 0 R'; }).join(' ') + '] /Count ' + pageIds.length + ' >>';
+    objects[pagesId - 1] = '<< /Type /Pages /Kids [' + pageId + ' 0 R] /Count 1 >>';
 
     var pdf = '%PDF-1.4\n';
     var offsets = [0];
-    objects.forEach(function (content, index) {
+    objects.forEach(function (objectContent, index) {
       offsets.push(pdf.length);
-      pdf += (index + 1) + ' 0 obj\n' + content + '\nendobj\n';
+      pdf += (index + 1) + ' 0 obj\n' + objectContent + '\nendobj\n';
     });
 
     var xrefOffset = pdf.length;
@@ -642,17 +730,28 @@
       pdf += String(offsets[i]).padStart(10, '0') + ' 00000 n \n';
     }
     pdf += 'trailer\n<< /Size ' + (objects.length + 1) + ' /Root ' + catalogId + ' 0 R >>\nstartxref\n' + xrefOffset + '\n%%EOF';
-
     return pdf;
   }
 
+  function downloadPdfFile(filename, pdf) {
+    var blob = new Blob([pdf], { type: 'application/pdf' });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(function () {
+      URL.revokeObjectURL(url);
+    }, 500);
+  }
+
   function saveAgeReportPdf(text) {
-    /* Save must use the same professional report layout as the Report / Print PDF page.
-       A browser cannot silently choose the system "Save as PDF" destination, so this
-       opens the printable report and immediately opens the browser print dialog.
-       The user can then choose Save as PDF and the saved file matches the report layout. */
-    openPrintableReport(text, { autoPrint: true, sourceAction: 'save' });
-    setActionFeedback('One-page report opened. Choose Save as PDF.');
+    var data = getReportData();
+    var pdf = buildAgeReportPdf(data, text);
+    downloadPdfFile('age-report.pdf', pdf);
+    setActionFeedback('PDF report saved.');
   }
 
   function getReportData() {
