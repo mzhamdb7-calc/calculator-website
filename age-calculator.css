@@ -5833,3 +5833,56 @@ body[data-page="age"] #scrollTopBtn:focus-visible {
     min-width: 0 !important;
   }
 }
+
+/* ===== AGE GO-UP BUTTON SIZE MATCH OTHER PAGES ===== */
+body[data-page="age"] #scrollTopBtn {
+  right: 18px !important;
+  bottom: 22px !important;
+  width: 46px !important;
+  height: 46px !important;
+  min-width: 46px !important;
+  min-height: 46px !important;
+  padding: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(255, 255, 255, .10) !important;
+  background: var(--nav, #0f172a) !important;
+  color: #ffffff !important;
+  font-size: 1.15rem !important;
+  line-height: 1 !important;
+  box-shadow: var(--shadow-md, 0 18px 38px rgba(15, 23, 42, .09)) !important;
+}
+
+body[data-page="age"] #scrollTopBtn:not(.is-visible):not(.age-scroll-visible) {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: translateY(12px) !important;
+  pointer-events: none !important;
+}
+
+body[data-page="age"] #scrollTopBtn.is-visible,
+body[data-page="age"] #scrollTopBtn.age-scroll-visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) !important;
+  pointer-events: auto !important;
+}
+
+body[data-page="age"] #scrollTopBtn:hover,
+body[data-page="age"] #scrollTopBtn:focus-visible {
+  background: var(--primary-dark, #155e75) !important;
+  color: #ffffff !important;
+}
+
+@media screen and (max-width: 700px) {
+  body[data-page="age"] #scrollTopBtn {
+    right: 14px !important;
+    bottom: 18px !important;
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+    font-size: 1.05rem !important;
+  }
+}
