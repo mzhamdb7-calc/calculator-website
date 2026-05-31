@@ -1,0 +1,169 @@
+<!--
+  Copyright © 2026 Hamdi. All rights reserved.
+  Do not copy, modify, redistribute, or reuse this project without permission.
+-->
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Percentage Calculator</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Free percentage calculator to calculate percentages quickly online." name="description"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="percentage-calculator.css?v=page-local-20260531" rel="stylesheet"/>
+<link href="favicon.ico" rel="icon"/>
+</head>
+<!-- submenu-regroup-fixed-v2 -->
+<body class="extra-calculator-page app-redesign page-percentage" data-page="percentage">
+<button aria-label="Go to top" id="scrollTopBtn" onclick="scrollToTop()" type="button">
+    ↑
+  </button>
+<nav class="clean-navbar" id="navbar">
+<div class="clean-nav-inner">
+<a class="clean-nav-link" href="index.html">Home</a>
+<div class="clean-nav-dropdown clean-calculator-dropdown">
+<button aria-expanded="false" class="clean-nav-link clean-nav-button" type="button">Tools <span aria-hidden="true">▼</span></button>
+<div class="clean-nav-dropdown-panel clean-calculator-panel">
+<div class="clean-nav-submenu clean-general-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">General <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="basic-calculator.html">Basic Calculator</a>
+<a href="percentage-calculator.html">Percentage Calculator</a>
+<a href="unit-converter-calculator.html">Unit Converter</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-health-age-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Health &amp; Age <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="age-calculator.html">Age Calculator</a>
+<a href="bmi-calculator.html">BMI Calculator</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-education-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Education <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="grade.html">Pointer Grade Calculator</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-income-tax-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Income &amp; Tax <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="salary-calculator.html">Salary Calculator</a>
+<a href="gaji-penjawat-awam-calculator.html">Gaji Penjawat Awam</a>
+<a href="tax-calculator.html">Tax Calculator</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-finance-growth-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Finance &amp; Growth <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="inflation-calculator.html">Inflation Calculator</a>
+<a href="compound-interest-calculator.html">Compound Interest</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-loans-debt-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Loans &amp; Debt <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="loan-calculator.html">Loan Calculator</a>
+<a href="mortgage-calculator.html">Mortgage Calculator</a>
+<a href="personal-loan-calculator.html">Personal Loan</a>
+<a href="loan-comparison-calculator.html">Loan Comparison</a>
+<a href="debt-payoff-calculator.html">Debt Payoff</a>
+<a href="credit-card-payoff-calculator.html">Credit Card Payoff</a>
+<a href="credit-card-interest-calculator.html">Credit Card Interest</a>
+</div>
+</div>
+<div class="clean-nav-submenu clean-property-travel-submenu">
+<button class="clean-nav-panel-row clean-nav-submenu-button" type="button">Property &amp; Travel <span aria-hidden="true">▶</span></button>
+<div class="clean-nav-submenu-panel">
+<a href="rental-yield-calculator.html">Rental Yield</a>
+<a href="fuel-cost-calculator.html">Fuel Cost</a>
+</div>
+</div>
+</div>
+</div>
+<div class="clean-nav-dropdown clean-info-dropdown">
+<button aria-expanded="false" class="clean-nav-link clean-nav-button" type="button">Resources <span aria-hidden="true">▼</span></button>
+<div class="clean-nav-dropdown-panel clean-info-panel">
+<a href="about.html">About</a>
+<a href="FAQS.html">FAQs</a>
+<a href="privacy-policy.html">Privacy Policy</a>
+<a href="contact.html">Contact</a>
+</div>
+</div>
+<a class="clean-nav-link clean-chat-link" href="review.html">Review</a>
+<a class="clean-nav-link clean-wall-link" href="Wall.html">Wall</a>
+<form autocomplete="off" class="clean-nav-search" role="search">
+<label class="clean-nav-search-label" for="cleanCalculatorSearchInput">Search tools</label>
+<input aria-label="Search tools" class="clean-nav-search-input" id="cleanCalculatorSearchInput" placeholder="Search tools" type="search"/>
+<button aria-label="Search" class="clean-nav-search-button" type="submit">🔍</button>
+<ul class="clean-nav-search-results" hidden=""></ul>
+</form>
+</div>
+</nav>
+<main class="percentage-calculator-container tool-layout">
+<section aria-label="Related calculator tools" class="loan-history-box extra-side-box tool-group-nav">
+<div class="loan-history-top">
+<h3>General Tools</h3>
+</div>
+<div class="extra-side-links">
+<a href="basic-calculator.html">Basic Calculator</a>
+<a class="current-extra-link" href="percentage-calculator.html">Percentage Calculator</a>
+<a href="unit-converter-calculator.html">Unit Converter</a>
+</div>
+</section>
+<section class="calculator percentage-type-calculator">
+<h1>Percentage Calculator</h1>
+<p class="subtitle">
+        Choose a calculation type, enter Input A and Input B, and the result updates automatically.
+      </p>
+<div aria-label="Percentage calculation type" class="percentage-type-box">
+<span class="percentage-type-label">Calculation type</span>
+<div aria-label="Calculation type buttons" class="percentage-type-buttons" role="group">
+<button class="percentage-type-btn active" data-type="of" type="button">1. What is A% of B</button>
+<button class="percentage-type-btn" data-type="iswhat" type="button">2. A is what % of B</button>
+<button class="percentage-type-btn" data-type="increase" type="button">3. Percentage increase</button>
+<button class="percentage-type-btn" data-type="decrease" type="button">4. Percentage decrease</button>
+<button class="percentage-type-btn" data-type="difference" type="button">5. Percentage difference</button>
+<button class="percentage-type-btn" data-type="discount" type="button">6. Discount calculator</button>
+<button class="percentage-type-btn" data-type="salary" type="button">7. Salary increment</button>
+<button class="percentage-type-btn" data-type="reverse" type="button">8. Reverse percentage</button>
+<button class="percentage-type-btn" data-type="profitmargin" type="button">9. Profit margin</button>
+<button class="percentage-type-btn" data-type="markup" type="button">10. Markup calculator</button>
+<button class="percentage-type-btn" data-type="gstsst" type="button">11. GST/SST calculator</button>
+<button class="percentage-type-btn" data-type="commission" type="button">12. Commission calculator</button>
+</div>
+</div>
+<div class="percentage-input-grid">
+<div class="percentage-input-item">
+<label for="percentageInputA" id="percentageLabelA">Input A</label>
+<input id="percentageInputA" inputmode="decimal" placeholder="Example: 20" step="any" type="number"/>
+</div>
+<div class="percentage-input-item">
+<label for="percentageInputB" id="percentageLabelB">Input B</label>
+<input id="percentageInputB" inputmode="decimal" placeholder="Example: 150" step="any" type="number"/>
+</div>
+</div>
+<section aria-live="polite" class="age-bmi-result-below percentage-result-below percentage-result-compact" id="percentageLiveResultBox">
+<div class="percentage-result-kicker">Result</div>
+<div class="percentage-result-square-box">
+<h2 id="percentageLiveResult">Enter values</h2>
+<p class="percentage-result-formula" hidden="" id="percentageFormula"></p>
+</div>
+<button class="percentage-copy-btn" id="percentageCopyBtn" type="button">Copy result</button>
+</section>
+<p class="percentage-helper" id="percentageHelper">Example: A = 20, B = 150 gives 20% of 150.</p>
+</section>
+<aside aria-label="Calculator guide" class="instruction-box universal-help-panel">
+<section class="instruction-section instruction-what-box"><h3>What does this calculator do?</h3><p>Use this to calculate common percentage questions, reverse percentage, profit margin, markup, GST/SST, commission, discount, and salary increment.</p></section>
+<h2 class="instruction-main-title">Instructions</h2>
+<section class="instruction-section instruction-how-box"><h3>How to use it</h3><p>Choose the calculation type, then enter Input A and Input B. The labels change based on the selected mode, and the result updates automatically.</p></section>
+<section class="instruction-section instruction-formula-box"><h3>Formula used</h3><p>The calculation changes based on the selected mode. The result box shows only the final result, without formula text.</p></section>
+<section class="instruction-section instruction-example-box"><h3>Example calculation</h3><p>Example: 20% of 150 = 30. If sales are 5000 and commission is 5%, commission is 250.</p></section>
+<section class="instruction-section instruction-faq-box"><h3>FAQs</h3><p><strong>What does Input A and Input B mean?</strong><br/>The meaning changes based on the selected calculation type. The labels above the inputs show what to enter.</p><p><strong>Why does the result change automatically?</strong><br/>The calculator updates as soon as you change the calculation type or enter new values.</p><p><strong>Can I copy the percentage result?</strong><br/>Yes. Use the Copy result button inside the result box.</p><p><strong>Does the calculator show formulas?</strong><br/>No. The output is kept clean and shows only the final result.</p></section>
+
+</aside>
+</main>
+<script defer src="percentage-calculator.js?v=page-local-20260531"></script>
+</body>
+</html>
