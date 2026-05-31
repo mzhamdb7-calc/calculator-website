@@ -1,8 +1,10 @@
-/* Age Calculator page-only JavaScript. Auto-calculate, single result box, no shared files. */
+/* Age Calculator page-only JavaScript. Auto-calculate, single result box, live countdown, result actions. */
 (function () {
   'use strict';
 
   var DAY_MS = 24 * 60 * 60 * 1000;
+  var liveCountdownTimer = null;
+  var feedbackTimer = null;
 
   function byId(id) {
     return document.getElementById(id);
@@ -66,6 +68,10 @@
     return Number(value || 0).toLocaleString('en-US');
   }
 
+  function plainNumber(value) {
+    return String(Math.max(0, Math.floor(Number(value) || 0)));
+  }
+
   function daysInMonth(year, month) {
     return new Date(year, month, 0).getDate();
   }
@@ -123,12 +129,27 @@
     return animals[index];
   }
 
+  function chineseZodiacElement(year) {
+    var elements = ['Metal', 'Metal', 'Water', 'Water', 'Wood', 'Wood', 'Fire', 'Fire', 'Earth', 'Earth'];
+    var index = (year - 1900) % 10;
+    if (index < 0) index += 10;
+    return elements[index];
+  }
+
   function birthdayUtcForYear(birth, year) {
     var day = birth.day;
     if (birth.month === 2 && birth.day === 29 && daysInMonth(year, 2) < 29) {
       day = 28;
     }
     return Date.UTC(year, birth.month - 1, day);
+  }
+
+  function birthdayLocalForYear(birth, year) {
+    var day = birth.day;
+    if (birth.month === 2 && birth.day === 29 && daysInMonth(year, 2) < 29) {
+      day = 28;
+    }
+    return new Date(year, birth.month - 1, day, 0, 0, 0, 0);
   }
 
   function parsedFromUtc(utc) {
@@ -167,7 +188,7 @@
       nextUtc = birthdayUtcForYear(birth, nextYear);
     }
 
-    var previousYear = nextUtc === target.utc ? nextYear - 1 : nextYear - 1;
+    var previousYear = nextYear - 1;
     var previousUtc = birthdayUtcForYear(birth, previousYear);
     if (previousUtc > target.utc) previousUtc = birthdayUtcForYear(birth, previousYear - 1);
 
@@ -183,10 +204,6 @@
       age: nextYear - birth.year,
       progress: progress
     };
-  }
-
-  function nextBirthdayDays(birth, target) {
-    return nextBirthdayInfo(birth, target).days;
   }
 
   function milestoneUtc(birth, wantedAge) {
@@ -220,13 +237,6 @@
       case 3: return n + 'rd';
       default: return n + 'th';
     }
-  }
-
-  function chineseZodiacElement(year) {
-    var elements = ['Metal', 'Metal', 'Water', 'Water', 'Wood', 'Wood', 'Fire', 'Fire', 'Earth', 'Earth'];
-    var index = (year - 1900) % 10;
-    if (index < 0) index += 10;
-    return elements[index];
   }
 
   function clampPercent(value) {
@@ -266,23 +276,18 @@
   function ensurePanel() {
     var main = document.querySelector('main.age-calculator-container');
     var calculator = getCalculator();
-    if (!main || !calculator) return null;
+    var panel = byId('ageReportOutput');
 
-    var panels = all('#ageReportOutput');
-    var panel = panels[0];
+    if (!main || !calculator) return panel;
 
     if (!panel) {
       panel = document.createElement('section');
       panel.id = 'ageReportOutput';
+      panel.setAttribute('aria-label', 'Age Calculator result');
+      panel.hidden = true;
     }
 
-    panels.forEach(function (duplicate) {
-      if (duplicate !== panel) duplicate.remove();
-    });
-
-    panel.className = 'age-single-output';
-    panel.setAttribute('aria-label', 'Age Calculator result');
-    panel.setAttribute('aria-live', 'polite');
+    panel.classList.add('age-single-output', 'loan-style-output-panel', 'calculator-clean-result', 'age-clean-result', 'age-point-output', 'age-final-output');
 
     if (panel.parentElement !== main || panel.previousElementSibling !== calculator) {
       calculator.insertAdjacentElement('afterend', panel);
@@ -292,7 +297,9 @@
   }
 
   function syncPanelWidth() {
-    var panel = byId('ageReportOutput');
+    if (!isAgePage()) return;
+
+    var panel = ensurePanel();
     var calculator = getCalculator();
     if (!panel || !calculator) return;
 
@@ -331,6 +338,7 @@
     panel.style.setProperty('visibility', 'visible', 'important');
     panel.style.setProperty('opacity', '1', 'important');
     syncPanelWidth();
+    updateLiveCountdown();
 
     setTimeout(syncPanelWidth, 0);
     setTimeout(syncPanelWidth, 100);
@@ -338,6 +346,137 @@
 
   function showError(message) {
     showPanel('<div class="age-single-result-shell"><div class="age-single-error">' + escapeHtml(message) + '</div></div>');
+  }
+
+  function getLiveNextAgeCountdown(birth) {
+    var now = new Date();
+    var thisYear = now.getFullYear();
+    var nextBirthday = birthdayLocalForYear(birth, thisYear);
+
+    if (nextBirthday.getTime() <= now.getTime()) {
+      nextBirthday = birthdayLocalForYear(birth, thisYear + 1);
+    }
+
+    var seconds = Math.max(0, Math.floor((nextBirthday.getTime() - now.getTime()) / 1000));
+    var nextAge = nextBirthday.getFullYear() - birth.year;
+
+    return {
+      seconds: seconds,
+      nextAge: nextAge,
+      text: plainNumber(seconds) + 'seconds to ' + nextAge + ' years old'
+    };
+  }
+
+  function liveCountdownHtml(birth) {
+    var countdown = getLiveNextAgeCountdown(birth);
+    return '<div class="age-live-countdown" aria-live="polite"><span id="ageLiveCountdownText" data-birth-year="' + escapeHtml(birth.year) + '" data-birth-month="' + escapeHtml(birth.month) + '" data-birth-day="' + escapeHtml(birth.day) + '">' + escapeHtml(countdown.text) + '</span></div>';
+  }
+
+  function updateLiveCountdown() {
+    var target = byId('ageLiveCountdownText');
+    if (!target) return;
+
+    var birth = {
+      year: Number(target.getAttribute('data-birth-year')),
+      month: Number(target.getAttribute('data-birth-month')),
+      day: Number(target.getAttribute('data-birth-day'))
+    };
+
+    if (!birth.year || !birth.month || !birth.day) return;
+    target.textContent = getLiveNextAgeCountdown(birth).text;
+  }
+
+  function getResultText() {
+    var panel = byId('ageReportOutput');
+    if (!panel) return '';
+
+    var clone = panel.cloneNode(true);
+    all('.age-result-actions, .age-action-feedback', clone).forEach(function (node) {
+      node.remove();
+    });
+
+    return (clone.innerText || clone.textContent || '').replace(/\n{3,}/g, '\n\n').trim();
+  }
+
+  function setActionFeedback(message) {
+    var feedback = byId('ageActionFeedback');
+    if (!feedback) return;
+
+    feedback.textContent = message;
+    clearTimeout(feedbackTimer);
+    feedbackTimer = setTimeout(function () {
+      feedback.textContent = '';
+    }, 2500);
+  }
+
+  function fallbackCopy(text) {
+    var area = document.createElement('textarea');
+    area.value = text;
+    area.setAttribute('readonly', 'readonly');
+    area.style.position = 'fixed';
+    area.style.top = '-9999px';
+    document.body.appendChild(area);
+    area.select();
+
+    try {
+      document.execCommand('copy');
+      setActionFeedback('Copied');
+    } catch (err) {
+      setActionFeedback('Copy failed');
+    }
+
+    document.body.removeChild(area);
+  }
+
+  function copyResultText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        setActionFeedback('Copied');
+      }).catch(function () {
+        fallbackCopy(text);
+      });
+    } else {
+      fallbackCopy(text);
+    }
+  }
+
+  function downloadTextFile(filename, text) {
+    var blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(function () {
+      URL.revokeObjectURL(url);
+    }, 500);
+  }
+
+  function openPrintableReport(text) {
+    var win = window.open('', '_blank');
+    if (!win) {
+      downloadTextFile('age-report.txt', text);
+      setActionFeedback('Report saved');
+      return;
+    }
+
+    win.document.write('<!doctype html><html><head><title>Age Report</title><meta charset="utf-8"><style>body{font-family:Arial,sans-serif;line-height:1.5;padding:28px;color:#10231d}h1{color:#086452}pre{white-space:pre-wrap;font:inherit}</style></head><body><h1>Age Report</h1><pre>' + escapeHtml(text) + '</pre></body></html>');
+    win.document.close();
+    win.focus();
+    setTimeout(function () {
+      win.print();
+    }, 250);
+  }
+
+  function resultActionsHtml() {
+    return '<div class="age-result-actions" aria-label="Age result actions">' +
+      '<button type="button" data-age-action="copy">Copy</button>' +
+      '<button type="button" data-age-action="save">Save</button>' +
+      '<button type="button" data-age-action="share">Share</button>' +
+      '<button type="button" data-age-action="report">Report</button>' +
+      '</div><p id="ageActionFeedback" class="age-action-feedback" aria-live="polite"></p>';
   }
 
   function calculateAge() {
@@ -396,7 +535,6 @@
     var yearProgress = ((target.utc - yearStartUtc) / Math.max(1, yearEndUtc - yearStartUtc)) * 100;
     var lifeEstimateAge = 80;
     var lifeProgress = Math.min(100, (totalDays / Math.max(1, lifeEstimateAge * 365.2425)) * 100);
-    var retirementProgress = target.utc >= retirementUtc ? 100 : Math.min(100, (totalDays / Math.max(1, (retirementUtc - birth.utc) / DAY_MS)) * 100);
     var exactAgeText = parts.years + ' years, ' + parts.months + ' months, ' + parts.days + ' days';
     var nextBirthdayText = nextBirthday.days === 0 ? 'Today' : nextBirthday.days + ' day' + (nextBirthday.days === 1 ? '' : 's');
     var shareText = (name !== '-' ? name + ' is ' : 'I am ') + exactAgeText + ' old on ' + formatDateInput(targetValue) + '. ' + (name !== '-' ? name + ' has' : 'I have') + ' lived ' + comma(totalDays) + ' days and the next birthday countdown is ' + nextBirthdayText + '.';
@@ -404,6 +542,7 @@
 
     var html = '<div class="age-single-result-shell">' +
       '<h2 class="age-single-result-title">Age result</h2>' +
+      liveCountdownHtml(birth) +
       '<div class="age-single-result-grid">' +
       group('Essential Outputs: Age Summary', [
         row('Name', name),
@@ -461,7 +600,8 @@
         progressItem('Estimated life progress to age 80', lifeProgress.toFixed(1) + '%', lifeProgress) +
         '</div>'
       ) +
-      '</div></div>';
+      '</div>' + resultActionsHtml() + '</div>';
+
     showPanel(html);
     return true;
   }
@@ -492,6 +632,47 @@
 
     calculateAge();
     syncPanelWidth();
+  }
+
+  function setupResultActions() {
+    if (!isAgePage() || document.body.dataset.ageActionsReady === '1') return;
+    document.body.dataset.ageActionsReady = '1';
+
+    document.body.addEventListener('click', function (event) {
+      var button = event.target.closest('[data-age-action]');
+      if (!button) return;
+
+      var action = button.getAttribute('data-age-action');
+      var text = getResultText();
+      if (!text) return;
+
+      if (action === 'copy') {
+        copyResultText(text);
+      } else if (action === 'save') {
+        downloadTextFile('age-result.txt', text);
+        setActionFeedback('Saved');
+      } else if (action === 'share') {
+        if (navigator.share) {
+          navigator.share({ title: 'Age result', text: text }).then(function () {
+            setActionFeedback('Shared');
+          }).catch(function () {
+            copyResultText(text);
+            setActionFeedback('Share unavailable, copied instead');
+          });
+        } else {
+          copyResultText(text);
+          setActionFeedback('Share unavailable, copied instead');
+        }
+      } else if (action === 'report') {
+        openPrintableReport(text);
+        setActionFeedback('Report opened');
+      }
+    });
+  }
+
+  function setupLiveCountdownTimer() {
+    if (liveCountdownTimer) return;
+    liveCountdownTimer = setInterval(updateLiveCountdown, 1000);
   }
 
   function setupNavbar() {
@@ -573,6 +754,8 @@
 
   function ready() {
     bindAgeInputs();
+    setupResultActions();
+    setupLiveCountdownTimer();
     setupNavbar();
     setupSearch();
   }
