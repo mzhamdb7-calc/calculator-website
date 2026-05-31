@@ -647,20 +647,11 @@
   }
 
   function saveAgeReportPdf(text) {
-    var data = getReportData();
-    var pdf = buildAgeReportPdf(data, text);
-    var blob = new Blob([pdf], { type: 'application/pdf' });
-    var url = URL.createObjectURL(blob);
-    var link = document.createElement('a');
-    link.href = url;
-    link.download = 'age-report.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setTimeout(function () {
-      URL.revokeObjectURL(url);
-    }, 800);
-    setActionFeedback('PDF report saved');
+    /* Use the same clean report layout for Save and browser PDF saving.
+       Browsers do not allow a webpage to silently choose "Save as PDF",
+       so this opens the report and the print/PDF dialog instead of saving text. */
+    openPrintableReport(text, { autoPrint: true });
+    setActionFeedback('Report opened for PDF saving');
   }
 
   function getReportData() {
@@ -819,7 +810,7 @@
       '@media(max-width:800px){.report-page{padding:22px}.hero,.section-grid,.stats{grid-template-columns:1fr}.report-meta{text-align:left}.report-header{display:block}}' +
       '@media print{body{background:#fff}.print-toolbar{display:none!important}.report-page{width:auto;margin:0;padding:0;border:0;box-shadow:none}.report-header{padding-bottom:12px}.section-grid{gap:8px}.report-section{border-radius:10px}h1{font-size:28px}.hero{margin-top:14px}.stats{gap:8px}.report-footer{position:fixed;bottom:0;left:0;right:0}}' +
       '</style></head>' +
-      '<body><div class="print-toolbar"><button class="primary" onclick="window.print()">Save as PDF</button><button onclick="window.close()">Close</button></div>' +
+      '<body><div class="print-toolbar"><button class="primary" onclick="window.print()">Print / Save PDF</button><button onclick="window.close()">Close</button></div>' +
       '<main class="report-page">' +
       '<header class="report-header"><p class="brand">CalcStudio</p>' +
       '<div class="report-meta"><strong>Generated</strong>' + escapeHtml(data.generated) + '<br><strong>Calculation date</strong>' + escapeHtml(calculationDate) + '</div></header>' +
@@ -829,7 +820,8 @@
       '</main></body></html>';
   }
 
-  function openPrintableReport(text) {
+  function openPrintableReport(text, options) {
+    options = options || {};
     var data = getReportData();
     var reportHtml = buildPrintableReportHtml(data, text);
     var win = window.open('', '_blank');
@@ -843,6 +835,17 @@
     win.document.write(reportHtml);
     win.document.close();
     win.focus();
+
+    if (options.autoPrint) {
+      setTimeout(function () {
+        try {
+          win.focus();
+          win.print();
+        } catch (error) {
+          setActionFeedback('Open the report tab to save as PDF');
+        }
+      }, 450);
+    }
   }
 
   function resultActionsHtml() {
