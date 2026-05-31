@@ -11,7 +11,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="Calculate BMI and waist-to-height ratio with this free online BMI calculator." name="description"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
-<link href="bmi-calculator.css?v=bmi-measurements-option-final-20260601" rel="stylesheet"/>
+<link href="bmi-calculator.css?v=bmi-layout-repaired-20260601" rel="stylesheet"/>
 <link href="favicon.ico" rel="icon" type="image/x-icon"/>
 </head>
 <!-- submenu-regroup-fixed-v2 -->
@@ -125,12 +125,30 @@
 </button>
 </div>
 <div class="bmi-input-groups bmi-details-option-layout" id="bmiInputGroups">
-
-
-<></><details class="bmi-input-group-box bmi-option-box" id="bmiOptionBox">
+<section aria-labelledby="bmiDetailsTitle" class="bmi-input-group-box bmi-details-box bmi-body-box">
+<div class="bmi-extra-title" id="bmiDetailsTitle">Details</div>
+<div class="bmi-field-grid bmi-details-grid">
+<div class="bmi-field"><label for="weight" id="weightLabel">Weight in kg:</label><input id="weight" inputmode="decimal" placeholder="Example: 70" type="number"/></div>
+<div class="bmi-field"><label for="height" id="heightLabel">Height in cm:</label><input id="height" inputmode="decimal" placeholder="Example: 170" type="number"/></div>
+<div class="bmi-field"><label for="bmiGender" id="bmiGenderLabel">Gender:</label><select id="bmiGender"><option value="male">Male</option><option value="female">Female</option></select></div>
+<div class="bmi-field"><label for="bmiActivityLevel" id="bmiActivityLabel">Activity level:</label><select id="bmiActivityLevel"><option value="sedentary">Sedentary</option><option value="light">Light activity</option><option selected="" value="moderate">Moderate activity</option><option value="active">Active</option><option value="veryActive">Very active</option></select></div>
+</div>
+</section>
+<details class="bmi-input-group-box bmi-option-box" id="bmiOptionBox">
 <summary class="bmi-option-summary"><span>Option</span><span aria-hidden="true" class="bmi-option-arrow">▾</span></summary>
-<div class="bmi-option-content"><div class="bmi-field"><label for="bmiName" id="bmiNameLabel">Name:</label><input autocomplete="name" id="bmiName" placeholder="Optional" type="text"/></div><div class="bmi-field"><label for="bmiAge" id="bmiAgeLabel">Age:</label><input id="bmiAge" inputmode="numeric" min="1" placeholder="Optional, example: 30" type="number"/></div><div class="bmi-field"><label for="waist" id="waistLabel">Waist circumference in cm:</label><input id="waist" inputmode="decimal" placeholder="Optional, Example: 80" type="number"/></div><div class="bmi-field"><label for="bmiNeck" id="bmiNeckLabel">Neck circumference in cm:</label><input id="bmiNeck" inputmode="decimal" placeholder="Optional, Example: 38" type="number"/></div><div class="bmi-field"><label for="bmiWrist" id="bmiWristLabel">Wrist size in cm:</label><input id="bmiWrist" inputmode="decimal" placeholder="Optional, Example: 16" type="number"/></div><div class="bmi-field"><label for="bmiShoulder" id="bmiShoulderLabel">Shoulder width in cm:</label><input id="bmiShoulder" inputmode="decimal" placeholder="Optional, Example: 46" type="number"/></div><div class="bmi-field"><label for="bmiHip" id="bmiHipLabel">Hip circumference in cm:</label><input id="bmiHip" inputmode="decimal" placeholder="Optional, Example: 95" type="number"/></div><div class="bmi-field"><label for="bmiTargetWeight" id="bmiTargetWeightLabel">Target weight in kg:</label><input id="bmiTargetWeight" inputmode="decimal" placeholder="Optional, Example: 65" type="number"/></div><div class="bmi-field bmi-time-goal-field"><label for="bmiTimeGoalAmount" id="bmiTimeGoalLabel">Target time:</label><div class="bmi-time-goal-row" id="bmiTimeGoalWrapper"><input id="bmiTimeGoalAmount" inputmode="numeric" min="1" placeholder="Example: 12" step="1" type="number"/><select id="bmiTimeGoal"><option value="daily">Days</option><option selected="" value="weekly">Weeks</option><option value="monthly">Months</option></select></div></div></div>
-</details></div>
+<div class="bmi-option-content">
+<div class="bmi-field"><label for="bmiName" id="bmiNameLabel">Name:</label><input autocomplete="name" id="bmiName" placeholder="Optional" type="text"/></div>
+<div class="bmi-field"><label for="bmiAge" id="bmiAgeLabel">Age:</label><input id="bmiAge" inputmode="numeric" min="1" placeholder="Optional, example: 30" type="number"/></div>
+<div class="bmi-field"><label for="waist" id="waistLabel">Waist circumference in cm:</label><input id="waist" inputmode="decimal" placeholder="Optional, Example: 80" type="number"/></div>
+<div class="bmi-field"><label for="bmiNeck" id="bmiNeckLabel">Neck circumference in cm:</label><input id="bmiNeck" inputmode="decimal" placeholder="Optional, Example: 38" type="number"/></div>
+<div class="bmi-field"><label for="bmiWrist" id="bmiWristLabel">Wrist size in cm:</label><input id="bmiWrist" inputmode="decimal" placeholder="Optional, Example: 16" type="number"/></div>
+<div class="bmi-field"><label for="bmiShoulder" id="bmiShoulderLabel">Shoulder width in cm:</label><input id="bmiShoulder" inputmode="decimal" placeholder="Optional, Example: 46" type="number"/></div>
+<div class="bmi-field"><label for="bmiHip" id="bmiHipLabel">Hip circumference in cm:</label><input id="bmiHip" inputmode="decimal" placeholder="Optional, Example: 95" type="number"/></div>
+<div class="bmi-field"><label for="bmiTargetWeight" id="bmiTargetWeightLabel">Target weight in kg:</label><input id="bmiTargetWeight" inputmode="decimal" placeholder="Optional, Example: 65" type="number"/></div>
+<div class="bmi-field bmi-time-goal-field"><label for="bmiTimeGoalAmount" id="bmiTimeGoalLabel">Target time:</label><div class="bmi-time-goal-row" id="bmiTimeGoalWrapper"><input id="bmiTimeGoalAmount" inputmode="numeric" min="1" placeholder="Example: 12" step="1" type="number"/><select id="bmiTimeGoal"><option value="daily">Days</option><option selected="" value="weekly">Weeks</option><option value="monthly">Months</option></select></div></div>
+</div>
+</details>
+</div>
 </section>
 <aside aria-label="Calculator guide" class="instruction-box universal-help-panel">
 <section class="instruction-section instruction-what-box"><h3>What does this calculator do?</h3><p>Use this to estimate Body Mass Index, waist-to-height ratio, activity-based calorie guidance, and optional target details.</p></section>
@@ -140,6 +158,6 @@
 <section class="instruction-section instruction-example-box"><h3>Example calculation</h3><p>70 kg and 170 cm gives a BMI of about 24.2.</p></section>
 </aside>
 </main>
-<script defer="" src="bmi-calculator.js?v=bmi-measurements-option-final-20260601"></script>
+<script defer="" src="bmi-calculator.js?v=bmi-layout-repaired-20260601"></script>
 </body>
 </html>

@@ -2711,139 +2711,151 @@ document.addEventListener('DOMContentLoaded', calculatePointerGrade);
 })();
 
 
-/* ===== BMI final hard fix: move body measurements into Option dropdown ===== */
+
+
+/* ===== BMI final clean layout: Details + Option without mutation loop ===== */
 (function () {
   'use strict';
 
+  function ready(fn) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+    else fn();
+  }
   function byId(id) { return document.getElementById(id); }
+  function qs(selector, root) { return (root || document).querySelector(selector); }
 
-  function getField(inputId) {
-    var input = byId(inputId);
-    if (!input) return null;
-    return input.closest('.bmi-field') || input.parentElement;
+  function makeField(ids) {
+    var wrapper = document.createElement('div');
+    wrapper.className = 'bmi-field';
+    ids.forEach(function (id) {
+      var el = byId(id);
+      if (el) wrapper.appendChild(el);
+    });
+    return wrapper.childNodes.length ? wrapper : null;
   }
 
-  function makeField(labelId, inputId, labelText, inputHtml) {
-    var input = byId(inputId);
-    if (input) return getField(inputId);
-    var field = document.createElement('div');
-    field.className = 'bmi-field';
-    field.innerHTML = '<label id="' + labelId + '" for="' + inputId + '">' + labelText + '</label>' + inputHtml;
-    return field;
-  }
-
-  function ensureBmiMeasurementOptionLayout() {
-    if (!document.body || document.body.dataset.page !== 'bmi') return;
-
-    var calculator = document.querySelector('.calculator.bmi-calculator-box') || document.querySelector('.bmi-calculator-box');
-    if (!calculator) return;
+  function ensureShell() {
+    if (!document.body || document.body.dataset.page !== 'bmi') return null;
+    var calculator = qs('.calculator.bmi-calculator-box');
+    if (!calculator) return null;
 
     var row = byId('bmiInputGroups');
     if (!row) {
       row = document.createElement('div');
       row.id = 'bmiInputGroups';
-      calculator.appendChild(row);
+      var titleRow = qs('.bmi-title-row', calculator);
+      if (titleRow) titleRow.insertAdjacentElement('afterend', row);
+      else calculator.appendChild(row);
     }
-    row.classList.add('bmi-input-groups', 'bmi-details-option-layout');
+    row.className = 'bmi-input-groups bmi-details-option-layout';
 
-    var detailsBox = row.querySelector('.bmi-details-box');
-    if (!detailsBox) {
-      detailsBox = document.createElement('section');
-      detailsBox.className = 'bmi-input-group-box bmi-details-box bmi-body-box';
-      detailsBox.setAttribute('aria-labelledby', 'bmiDetailsTitle');
-      row.appendChild(detailsBox);
-    }
+    var details = qs('.bmi-details-box', row) || document.createElement('section');
+    details.className = 'bmi-input-group-box bmi-details-box bmi-body-box';
+    details.setAttribute('aria-labelledby', 'bmiDetailsTitle');
 
-    var title = detailsBox.querySelector('#bmiDetailsTitle, .bmi-extra-title');
-    if (!title) {
-      title = document.createElement('div');
-      title.className = 'bmi-extra-title';
-      detailsBox.insertBefore(title, detailsBox.firstChild);
-    }
-    title.id = 'bmiDetailsTitle';
-    title.textContent = 'Details';
-
-    var detailsGrid = detailsBox.querySelector('.bmi-details-grid');
-    if (!detailsGrid) {
-      detailsGrid = document.createElement('div');
-      detailsGrid.className = 'bmi-field-grid bmi-details-grid';
-      detailsBox.appendChild(detailsGrid);
-    }
-
-    var optionBox = byId('bmiOptionBox');
-    if (!optionBox || optionBox.tagName.toLowerCase() !== 'details') {
+    var option = byId('bmiOptionBox');
+    if (!option || option.tagName.toLowerCase() !== 'details') {
       var replacement = document.createElement('details');
       replacement.id = 'bmiOptionBox';
-      replacement.className = 'bmi-input-group-box bmi-option-box';
-      if (optionBox) optionBox.replaceWith(replacement);
-      else row.appendChild(replacement);
-      optionBox = replacement;
+      if (option) option.replaceWith(replacement);
+      option = replacement;
     }
-    optionBox.className = 'bmi-input-group-box bmi-option-box';
+    option.className = 'bmi-input-group-box bmi-option-box';
 
-    var summary = optionBox.querySelector('summary');
-    if (!summary) {
-      summary = document.createElement('summary');
-      optionBox.insertBefore(summary, optionBox.firstChild);
-    }
+    var detailsTitle = byId('bmiDetailsTitle') || document.createElement('div');
+    detailsTitle.id = 'bmiDetailsTitle';
+    detailsTitle.className = 'bmi-extra-title';
+    detailsTitle.textContent = 'Details';
+
+    var detailsGrid = qs('.bmi-details-grid', details) || document.createElement('div');
+    detailsGrid.className = 'bmi-field-grid bmi-details-grid';
+
+    var summary = qs('summary', option) || document.createElement('summary');
     summary.className = 'bmi-option-summary';
     summary.innerHTML = '<span>Option</span><span aria-hidden="true" class="bmi-option-arrow">▾</span>';
 
-    var optionContent = optionBox.querySelector('.bmi-option-content');
-    if (!optionContent) {
-      optionContent = document.createElement('div');
-      optionContent.className = 'bmi-option-content';
-      optionBox.appendChild(optionContent);
-    }
+    var content = qs('.bmi-option-content', option) || document.createElement('div');
+    content.className = 'bmi-option-content';
 
-    var detailFields = [
-      getField('weight'),
-      getField('height'),
-      getField('bmiGender'),
-      getField('bmiActivityLevel')
-    ].filter(Boolean);
+    return { row: row, details: details, detailsTitle: detailsTitle, detailsGrid: detailsGrid, option: option, summary: summary, content: content };
+  }
 
-    var optionFields = [
-      makeField('bmiNameLabel', 'bmiName', 'Name:', '<input autocomplete="name" id="bmiName" placeholder="Optional" type="text">'),
-      makeField('bmiAgeLabel', 'bmiAge', 'Age:', '<input id="bmiAge" inputmode="numeric" min="1" placeholder="Optional, example: 30" type="number">'),
-      makeField('waistLabel', 'waist', 'Waist circumference in cm:', '<input id="waist" inputmode="decimal" placeholder="Optional, Example: 80" type="number">'),
-      makeField('bmiNeckLabel', 'bmiNeck', 'Neck circumference in cm:', '<input id="bmiNeck" inputmode="decimal" placeholder="Optional, Example: 38" type="number">'),
-      makeField('bmiWristLabel', 'bmiWrist', 'Wrist size in cm:', '<input id="bmiWrist" inputmode="decimal" placeholder="Optional, Example: 16" type="number">'),
-      makeField('bmiShoulderLabel', 'bmiShoulder', 'Shoulder width in cm:', '<input id="bmiShoulder" inputmode="decimal" placeholder="Optional, Example: 46" type="number">'),
-      makeField('bmiHipLabel', 'bmiHip', 'Hip circumference in cm:', '<input id="bmiHip" inputmode="decimal" placeholder="Optional, Example: 95" type="number">'),
-      makeField('bmiTargetWeightLabel', 'bmiTargetWeight', 'Target weight in kg:', '<input id="bmiTargetWeight" inputmode="decimal" placeholder="Optional, Example: 65" type="number">'),
-      getField('bmiTimeGoalAmount')
-    ].filter(Boolean);
+  function moveBmiFields() {
+    var shell = ensureShell();
+    if (!shell) return;
 
-    detailsGrid.innerHTML = '';
-    detailFields.forEach(function (field) { detailsGrid.appendChild(field); });
-
-    optionContent.innerHTML = '';
-    optionFields.forEach(function (field) { optionContent.appendChild(field); });
-
-    row.querySelectorAll('.bmi-body-box, .bmi-goal-box, .bmi-optional-box').forEach(function (box) {
-      if (box !== detailsBox && box !== optionBox) box.remove();
+    var timeWrap = byId('bmiTimeGoalWrapper') || document.createElement('div');
+    timeWrap.id = 'bmiTimeGoalWrapper';
+    timeWrap.className = 'bmi-time-goal-row';
+    ['bmiTimeGoalAmount', 'bmiTimeGoal'].forEach(function (id) {
+      var el = byId(id);
+      if (el) timeWrap.appendChild(el);
     });
 
-    row.appendChild(detailsBox);
-    row.appendChild(optionBox);
+    var timeField = document.createElement('div');
+    timeField.className = 'bmi-field bmi-time-goal-field';
+    var timeLabel = byId('bmiTimeGoalLabel');
+    if (timeLabel) timeField.appendChild(timeLabel);
+    timeField.appendChild(timeWrap);
+
+    var details = [
+      ['weightLabel', 'weight'],
+      ['heightLabel', 'height'],
+      ['bmiGenderLabel', 'bmiGender'],
+      ['bmiActivityLabel', 'bmiActivityLevel']
+    ];
+    var options = [
+      ['bmiNameLabel', 'bmiName'],
+      ['bmiAgeLabel', 'bmiAge'],
+      ['waistLabel', 'waist'],
+      ['bmiNeckLabel', 'bmiNeck'],
+      ['bmiWristLabel', 'bmiWrist'],
+      ['bmiShoulderLabel', 'bmiShoulder'],
+      ['bmiHipLabel', 'bmiHip'],
+      ['bmiTargetWeightLabel', 'bmiTargetWeight']
+    ];
+
+    shell.detailsGrid.innerHTML = '';
+    details.forEach(function (ids) {
+      var f = makeField(ids);
+      if (f) shell.detailsGrid.appendChild(f);
+    });
+
+    shell.content.innerHTML = '';
+    options.forEach(function (ids) {
+      var f = makeField(ids);
+      if (f) shell.content.appendChild(f);
+    });
+    if (timeField.childNodes.length > 1 || byId('bmiTimeGoalAmount')) shell.content.appendChild(timeField);
+
+    shell.details.innerHTML = '';
+    shell.details.appendChild(shell.detailsTitle);
+    shell.details.appendChild(shell.detailsGrid);
+    shell.option.innerHTML = '';
+    shell.option.appendChild(shell.summary);
+    shell.option.appendChild(shell.content);
+    shell.row.innerHTML = '';
+    shell.row.appendChild(shell.details);
+    shell.row.appendChild(shell.option);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', ensureBmiMeasurementOptionLayout);
-  } else {
-    ensureBmiMeasurementOptionLayout();
+  function wrapCalculate() {
+    if (window.__bmiFinalCleanLayoutWrapped || typeof window.calculateBMI !== 'function') return;
+    var original = window.calculateBMI;
+    window.calculateBMI = function () {
+      var result = original.apply(this, arguments);
+      setTimeout(moveBmiFields, 0);
+      return result;
+    };
+    window.calculateBmi = window.calculateBMI;
+    window.__bmiFinalCleanLayoutWrapped = true;
   }
 
-  [50, 200, 600, 1200].forEach(function (delay) {
-    setTimeout(ensureBmiMeasurementOptionLayout, delay);
+  ready(function () {
+    moveBmiFields();
+    wrapCalculate();
+    [100, 400, 900, 1600].forEach(function (delay) {
+      setTimeout(function () { wrapCalculate(); moveBmiFields(); }, delay);
+    });
   });
-
-  if (window.MutationObserver) {
-    var observer = new MutationObserver(function () {
-      clearTimeout(window.__bmiMeasureOptionTimer);
-      window.__bmiMeasureOptionTimer = setTimeout(ensureBmiMeasurementOptionLayout, 60);
-    });
-    if (document.body) observer.observe(document.body, { childList: true, subtree: true });
-  }
 })();

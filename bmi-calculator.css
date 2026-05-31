@@ -5178,3 +5178,16 @@ body[data-page="bmi"] #bmiInputGroups .bmi-details-box #bmiHip:where(input) + * 
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* ===== BMI layout repair: clean Details + Option sizing ===== */
+body[data-page="bmi"] #bmiInputGroups > .bmi-details-box,
+body[data-page="bmi"] #bmiInputGroups > #bmiOptionBox.bmi-option-box {
+  min-height: 0 !important;
+}
+body[data-page="bmi"] #bmiInputGroups .bmi-field {
+  min-width: 0 !important;
+}
+body[data-page="bmi"] #bmiInputGroups .bmi-field label {
+  overflow-wrap: anywhere !important;
+}
